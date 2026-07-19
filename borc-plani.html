@@ -212,6 +212,13 @@
   .doku-gren { opacity: var(--doku-gren-op); }
   /* Vinyet + ışık yönü: sol-üstten yumuşak aydınlanma, sağ-alta koyulaşma */
   .doku-vinyet { background: linear-gradient(135deg, var(--doku-isik), transparent 42%, var(--doku-golge) 108%), radial-gradient(115% 95% at 50% 42%, transparent 58%, var(--doku-vinyet) 100%); }
+  /* Selamlama: zamanla sönümlenir — ilk günler belirgin (taze), sonra
+     küçülüp arka plana çekilir (orta → eski). Kalıcı büyük durursa yapaylaşır. */
+  #selamKap { text-align: center; }
+  #selamSatir.selam-taze { font-size: 18px; font-weight: 600; color: var(--accent-strong); }
+  #selamSatir.selam-orta { font-size: 15px; font-weight: 600; color: var(--text); }
+  #selamSatir.selam-eski { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+  #baglamSatir { margin-top: 2px; font-size: 13px; color: var(--text-muted); }
   .halka-kap { position: relative; width: min(250px, 68vw); }
   /* Aura: halkanın tam merkezinden dışa yumuşak ışıma — pseudo halka-kap'a
      bağlı olduğundan her ekran boyutunda merkeze hizalı kalır */
@@ -490,6 +497,11 @@
         <rect width="100%" height="100%" filter="url(#dokuGren)"/>
       </svg>
       <div class="doku-vinyet"></div>
+    </div>
+    <!-- Selamlama + bağlama duyarlı tek cümle (kural motorundan, dış çağrı yok) -->
+    <div id="selamKap">
+      <p id="selamSatir"></p>
+      <p id="baglamSatir"></p>
     </div>
     <div class="halka-kap">
       <svg class="halka" viewBox="0 0 220 220" aria-hidden="true">
@@ -842,6 +854,11 @@
         <input type="checkbox" id="paylasGizle">
         <span data-i18n="paylas_gizle">Kişisel rakamları gizle</span>
       </label>
+      <!-- Ad varsayılan olarak kartta GÖRÜNMEZ; kullanıcı isterse açar -->
+      <label class="check">
+        <input type="checkbox" id="paylasAd">
+        <span data-i18n="paylas_ad">Adımı kartta göster</span>
+      </label>
       <canvas id="paylasKanvas" width="1080" height="1080"
         style="width:100%; max-width:340px; border-radius:14px; margin-top:0.75rem; display:block; border:1px solid var(--border)"></canvas>
       <div style="display:flex; gap:0.6rem; margin-top:0.75rem; flex-wrap:wrap">
@@ -950,6 +967,20 @@
     </p>
   </section>
 
+  <!-- Kişiselleştirme: ad yalnızca cihazda (localStorage) — hesap/sunucu yok -->
+  <section class="card">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 3.5-6 7-6s6 2 7 6"/></svg><span data-i18n="kisi_h">Kişiselleştirme</span></h2>
+    <div class="form-grid" style="max-width:260px">
+      <div>
+        <label for="kisiAd" data-i18n="kisi_lbl">Sana nasıl hitap edelim?</label>
+        <input id="kisiAd" type="text" maxlength="30" autocomplete="off">
+      </div>
+    </div>
+    <p class="muted" style="margin-top:0.5rem" data-i18n="kisi_not">
+      Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.
+    </p>
+  </section>
+
   <!-- Yedekleme: tüm veri tek JSON; isteğe bağlı parolayla şifreli -->
   <section class="card no-print">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v5h7"/><path d="M8 21v-6h8v6"/></svg><span data-i18n="yedek_h">Yedekleme</span></h2>
@@ -1050,9 +1081,16 @@
       <h2 data-i18n="ob4b">Verin sadece sende — internet gerekmez.</h2>
       <p data-i18n="ob4m">Her şey cihazında çalışır; hiçbir veri gönderilmez.</p>
     </section>
+    <section class="ob-kart">
+      <svg class="buyuk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="17" r="7"/><path d="M10 41c2-8 7-12 14-12s12 4 14 12"/></svg>
+      <h2 data-i18n="ob5b">Sana nasıl hitap edelim?</h2>
+      <input id="obAd" type="text" maxlength="30" autocomplete="off" style="max-width:240px; margin:0 auto; text-align:center">
+      <p data-i18n="ob5m">Bu bilgi yalnızca cihazında kalır — istersen boş bırak.</p>
+      <button id="obAdGec" class="ghost" data-i18n="ob_gec" style="margin-top:6px">Şimdilik geç</button>
+    </section>
   </div>
   <div class="ob-alt">
-    <div class="ob-noktalar" id="obNoktalar"><i class="aktif"></i><i></i><i></i><i></i></div>
+    <div class="ob-noktalar" id="obNoktalar"><i class="aktif"></i><i></i><i></i><i></i><i></i></div>
     <div style="display:flex; gap:8px">
       <button id="obAtla" class="ghost" data-i18n="ob_atla">Atla</button>
       <button id="obBasla" data-i18n="ob_basla">Başla</button>
@@ -1148,6 +1186,13 @@ const SOZLUK = {
       btn_pro: "Kilidi aç — şimdilik ücretsiz (yerel)",
       pro_not: "Ödeme entegrasyonu henüz yok: kilit yalnızca bu cihazda, tek seferlik yerel bir işaretle açılır.",
       btn_yazdir: "PDF için yazdır", btn_rapor: "HTML raporu indir",
+      ob5b: "Sana nasıl hitap edelim?",
+      ob5m: "Bu bilgi yalnızca cihazında kalır — istersen boş bırak.",
+      ob_gec: "Şimdilik geç",
+      kisi_h: "Kişiselleştirme",
+      kisi_lbl: "Sana nasıl hitap edelim?",
+      kisi_not: "Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.",
+      paylas_ad: "Adımı kartta göster",
       zil_h: "Bildirimler", zil_okundu: "Tümünü okundu işaretle",
       bil_h: "Bildirimler",
       bil_ici: "Uygulama içi bildirimler (zil paneli)",
@@ -1211,6 +1256,24 @@ const SOZLUK = {
       zilSeriB: (n) => `Serin ${n} aya çıktı`, zilSeriM: "Üst üste her ay borcun azalıyor — böyle devam.",
       zilSeriRiskB: "Serin bozulmak üzere", zilSeriRiskM: "Ay bitmeden check-in yapmayı unutma; serin devam etsin.",
       zilOzetB: "Aylık özet hazır", zilOzetM: "Geçen ayın gidişatı Bu Ay sekmesinde.",
+      zilOzetAdB: (adIyelik, ay) => `${adIyelik} ${ay} özeti hazır`,
+      /* Selamlama: saate duyarlı, varyantlar günlük döner; Bey/Hanım yok */
+      selam: {
+        sabah: ["Günaydın", "İyi sabahlar"],
+        gun: ["Merhaba", "İyi günler"],
+        aksam: ["İyi akşamlar", "Merhaba"],
+        gece: ["İyi geceler", "Merhaba"]
+      },
+      /* Bağlama duyarlı tek cümle — sakin yol arkadaşı tonu */
+      bgIlkBorc: "Başlamak için ilk borcunu ekle.",
+      bgOdemeBugun: "Bugün bir ödemen var.",
+      bgOdemeYarin: "Yarın bir ödemen var.",
+      bgOdeme: (g) => `${g} gün sonra bir ödemen var.`,
+      bgCheckin: "Bu ayı işaretlemedin — planına uydun mu?",
+      bgSeriRisk: "Ay bitmeden check-in yaparsan serin sürer.",
+      bgSeri: (n) => `${n} aydır üst üste azaltıyorsun.`,
+      bgEsik: (y) => y === 50 ? "Borcunun %50'sini bitirdin." : `Borcunun %${y}'ini bitirdin.`,
+      bgDevam: ["Planındasın, böyle devam.", "Küçük adımlar, büyük fark.", "Her ödeme seni biraz daha hafifletiyor."],
       zilBosTxt: "Şimdilik her şey yolunda.",
       zilGrupBugun: "Bugün", zilGrupHafta: "Bu hafta", zilGrupOnce: "Daha önce",
       zilSilTxt: "Sil",
@@ -1458,6 +1521,13 @@ const SOZLUK = {
       btn_pro: "Unlock — free for now (local)",
       pro_not: "No payment integration yet: the unlock is a one-time local flag on this device only.",
       btn_yazdir: "Print to PDF", btn_rapor: "Download HTML report",
+      ob5b: "What should we call you?",
+      ob5m: "This stays only on your device — leave it blank if you like.",
+      ob_gec: "Skip for now",
+      kisi_h: "Personalization",
+      kisi_lbl: "What should we call you?",
+      kisi_not: "Stored only on your device; used in greetings and summaries. You can leave it blank.",
+      paylas_ad: "Show my name on the card",
       zil_h: "Notifications", zil_okundu: "Mark all read",
       bil_h: "Notifications",
       bil_ici: "In-app notifications (bell panel)",
@@ -1521,6 +1591,22 @@ const SOZLUK = {
       zilSeriB: (n) => `Streak up to ${n} months`, zilSeriM: "Your balance has dropped every month in a row — keep going.",
       zilSeriRiskB: "Streak at risk", zilSeriRiskM: "Do your check-in before the month ends to keep the streak alive.",
       zilOzetB: "Monthly summary ready", zilOzetM: "Last month's progress is on the This Month tab.",
+      zilOzetAdB: (ad, ay) => `${ad}'s ${ay} summary is ready`,
+      selam: {
+        sabah: ["Good morning", "Morning"],
+        gun: ["Hello", "Good afternoon"],
+        aksam: ["Good evening", "Hello"],
+        gece: ["Good night", "Hello"]
+      },
+      bgIlkBorc: "Add your first debt to get started.",
+      bgOdemeBugun: "You have a payment due today.",
+      bgOdemeYarin: "You have a payment due tomorrow.",
+      bgOdeme: (g) => `You have a payment in ${g} days.`,
+      bgCheckin: "You haven't marked this month — did you stick to the plan?",
+      bgSeriRisk: "Check in before the month ends to keep your streak.",
+      bgSeri: (n) => `You've cut your balance ${n} months in a row.`,
+      bgEsik: (y) => `You've paid off ${y}% of your debt.`,
+      bgDevam: ["You're on plan — keep going.", "Small steps, big difference.", "Every payment makes you a little lighter."],
       zilBosTxt: "All clear for now.",
       zilGrupBugun: "Today", zilGrupHafta: "This week", zilGrupOnce: "Earlier",
       zilSilTxt: "Delete",
@@ -2196,6 +2282,7 @@ const STORAGE = (() => {
   const VARSAYILAN = () => ({
     borclar: [], ekstra: 0, tema: null, ayarlar: null, yontem: "avalanche",
     dil: "tr", pro: false, palet: "teal", sekme: "genel",
+    ad: "", selamIlk: null, // kişiselleştirme: ad yalnızca cihazda
     referanslar: null, ilkPlan: null, schemaVersion: SEMA
   });
 
@@ -2364,6 +2451,67 @@ const STORAGE = (() => {
     paylasKartiCiz(); // kart renkleri temadan okunur
   });
 
+  /* ---- Kişiselleştirme: selamlama + bağlama duyarlı tek cümle ----
+     Ad yalnızca cihazda (durum.ad); hesap/sunucu yok. Ton: sakin yol arkadaşı. */
+  // Türkçe iyelik eki: son sesliye göre ('ın/'in/'un/'ün, sesliyle bitince n- kaynaştırma)
+  function iyelik(ad) {
+    const sesliler = "aeıioöuü";
+    const kucuk = ad.toLocaleLowerCase("tr");
+    let sonSesli = "";
+    for (const c of kucuk) if (sesliler.includes(c)) sonSesli = c;
+    const ek = { a: "ı", ı: "ı", e: "i", i: "i", o: "u", u: "u", "ö": "ü", "ü": "ü" }[sonSesli] || "i";
+    const sesliyleBiter = sesliler.includes(kucuk[kucuk.length - 1]);
+    return ad + "'" + (sesliyleBiter ? "n" : "") + ek + "n";
+  }
+
+  /* Öncelik sırasıyla TEK mesaj: borç yok > yaklaşan ödeme > seri riski >
+     check-in > seri kutlaması > yakın kilometre taşı > sakin devam cümlesi.
+     Rakam ve tarihler motordan/durumdan gelir; sabit metin gömülü değildir. */
+  function baglamCumlesi(yilGunu) {
+    const s = sd();
+    if (durum.borclar.length === 0) return s.bgIlkBorc;
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    let enYakin = null;
+    for (const b of acik) {
+      if (!b.dueDay) continue;
+      const { kalanGun } = sonrakiSonOdeme(b.dueDay);
+      if (kalanGun <= 3 && (enYakin === null || kalanGun < enYakin)) enYakin = kalanGun;
+    }
+    if (enYakin !== null) {
+      return enYakin === 0 ? s.bgOdemeBugun : enYakin === 1 ? s.bgOdemeYarin : s.bgOdeme(enYakin);
+    }
+    const simdi = new Date();
+    const checkinYok = acik.length > 0 && rozetDurum.checkin[ayAnahtari(simdi)] !== true;
+    const seri = azalisSerisi();
+    if (simdi.getDate() >= 25 && seri >= 2 && checkinYok) return s.bgSeriRisk;
+    if (simdi.getDate() >= 7 && checkinYok) return s.bgCheckin; // ay başında dırdır etme
+    if (seri >= 2) return s.bgSeri(seri);
+    // Son 7 günde geçilen eşik (zil üretim kaydından — en yükseği önce)
+    for (const e of [75, 50, 25]) {
+      const t = zilVeri.uretim["esik" + e];
+      if (t && Date.now() - new Date(t).getTime() < 7 * 864e5) return s.bgEsik(e);
+    }
+    return s.bgDevam[yilGunu % s.bgDevam.length];
+  }
+
+  function selamCiz() {
+    const s = sd();
+    if (!durum.selamIlk) {
+      durum.selamIlk = new Date().toISOString().slice(0, 10);
+      STORAGE.kaydet(durum);
+    }
+    const saat = new Date().getHours();
+    const dilim = saat >= 5 && saat < 11 ? "sabah" : saat < 18 ? "gun" : saat < 23 ? "aksam" : "gece";
+    const yilGunu = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 1)) / 864e5);
+    const kalip = s.selam[dilim][yilGunu % s.selam[dilim].length];
+    const satir = $("selamSatir");
+    satir.textContent = durum.ad ? `${kalip} ${durum.ad}` : kalip; // Bey/Hanım yok
+    // Sönümlenme: 0-3 gün belirgin, 4-14 gün normal, sonrası arka planda
+    const gecen = Math.max(0, Math.floor((Date.now() - new Date(durum.selamIlk).getTime()) / 864e5));
+    satir.className = gecen < 4 ? "selam-taze" : gecen < 15 ? "selam-orta" : "selam-eski";
+    $("baglamSatir").textContent = baglamCumlesi(yilGunu);
+  }
+
   /* ---- Hero: ilerleme halkası + iki istatistik ---- */
   function ozetCiz() {
     const s = sd();
@@ -2397,6 +2545,7 @@ const STORAGE = (() => {
     const uc = $("halkaUc");
     uc.style.transform = `rotate(${(yuzde * 3.6).toFixed(1)}deg)`;
     uc.setAttribute("opacity", yuzde > 0 ? "1" : "0");
+    selamCiz(); // selamlama + bağlam cümlesi hero ile birlikte tazelenir
   }
 
   /* ---- Borç grafikleri: dağılım çubuğu + sparkline (inline SVG) ---- */
@@ -3701,9 +3850,25 @@ const STORAGE = (() => {
     ctx.fillStyle = solukYazi;
     ctx.font = "400 36px -apple-system, 'Segoe UI', sans-serif";
     ctx.fillText(s.kartMotto, W / 2, 950);
+
+    // Ad karta YALNIZCA kullanıcı isterse yazılır (varsayılan gizli)
+    if ($("paylasAd").checked && durum.ad) {
+      ctx.fillStyle = accentS;
+      ctx.font = "600 40px -apple-system, sans-serif";
+      ctx.fillText(durum.ad, W / 2, 1012);
+    }
   }
 
   $("paylasGizle").addEventListener("change", paylasKartiCiz);
+  $("paylasAd").addEventListener("change", paylasKartiCiz);
+  // Kişiselleştirme: ad değişince selamlama, özet başlıkları ve kart tazelenir
+  $("kisiAd").addEventListener("change", () => {
+    durum.ad = $("kisiAd").value.trim();
+    STORAGE.kaydet(durum);
+    selamCiz();
+    zilCiz();
+    paylasKartiCiz();
+  });
 
   $("indirBtn").addEventListener("click", () => {
     const a = document.createElement("a");
@@ -4006,7 +4171,16 @@ const STORAGE = (() => {
       case "faiz": return [s.zilFaizB, s.zilFaizM(p.ad)];
       case "seri": return [s.zilSeriB(p.n), s.zilSeriM];
       case "seriRisk": return [s.zilSeriRiskB, s.zilSeriRiskM];
-      case "ozet": return [s.zilOzetB, s.zilOzetM];
+      case "ozet": {
+        // "Emirhan'ın Temmuz özeti hazır" — özet bir önceki aya aittir
+        const t = new Date(o.ts || Date.now());
+        const ayAdi = new Intl.DateTimeFormat(s.yerel, { month: "long" })
+          .format(new Date(t.getFullYear(), t.getMonth() - 1, 1));
+        const baslik = durum.ad
+          ? s.zilOzetAdB(durum.dil === "tr" ? iyelik(durum.ad) : durum.ad, ayAdi)
+          : s.zilOzetB;
+        return [baslik, s.zilOzetM];
+      }
       default: return ["", ""];
     }
   }
@@ -4541,6 +4715,14 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   }
   function turKapat(basla) {
     try { localStorage.setItem(TUR_ANAHTAR, "1"); } catch (e) { /* yoksay */ }
+    // Ad zorunlu değil: doluysa kaydet, boşsa isimsiz ama sıcak dille devam
+    const yeniAd = $("obAd").value.trim();
+    if (yeniAd) {
+      durum.ad = yeniAd;
+      $("kisiAd").value = yeniAd;
+      STORAGE.kaydet(durum);
+      selamCiz();
+    }
     $("onboard").hidden = true;
     if (basla) {
       sekmeGoster("borclar"); // borç ekleme ekranına götür
@@ -4549,6 +4731,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   }
   $("obAtla").addEventListener("click", () => turKapat(false));
   $("obBasla").addEventListener("click", () => turKapat(true));
+  $("obAdGec").addEventListener("click", () => { $("obAd").value = ""; turKapat(true); });
   $("turBtn").addEventListener("click", () => {
     try { localStorage.removeItem(TUR_ANAHTAR); } catch (e) { /* yoksay */ }
     turGoster();
@@ -4585,6 +4768,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   $("hatirlatmaGun").value = durum.ayarlar.hatirlatmaGun;
   $("dil").value = durum.dil;
   $("palet").value = durum.palet;
+  $("kisiAd").value = durum.ad || "";
   $("refMarket").value = durum.referanslar.market || "";
   $("refKira").value = durum.referanslar.kira || "";
   $("refBilet").value = durum.referanslar.bilet || "";
