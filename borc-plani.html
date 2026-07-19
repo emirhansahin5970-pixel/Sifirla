@@ -39,6 +39,14 @@
     --grad-b: #4A6E9E;
     --gradyan: linear-gradient(100deg, var(--grad-a), var(--grad-b));
     --shadow: 0 1px 2px rgba(47, 79, 126, 0.05), 0 4px 14px rgba(47, 79, 126, 0.07);
+    /* Hero doku katmanları — açık modda çok kısık (beyazı kirletme) */
+    --doku-aura: rgba(47, 79, 126, 0.05);
+    --doku-mesh-1: #2F4F7E;  /* gece mavisi */
+    --doku-mesh-2: #4C3F8C;  /* derin indigo */
+    --doku-mesh-3: #5E8D92;  /* kısık gümüş-teal */
+    --doku-mesh-op: 0.035;
+    --doku-gren-op: 0.02;
+    --doku-vinyet: rgba(22, 32, 46, 0.04);
   }
   /* Gece Mavisi + Gümüş — koyu mod: derin lacivert zemin, gümüş vurgular */
   :root[data-theme="dark"] {
@@ -60,12 +68,20 @@
     --grad-a: #7FA0C8;
     --grad-b: #BCD1E6;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 18px rgba(0, 0, 0, 0.28);
+    /* Hero doku katmanları — koyu modda ışıma hissi */
+    --doku-aura: rgba(127, 160, 200, 0.13);
+    --doku-mesh-1: #3C64A0;  /* gece mavisi */
+    --doku-mesh-2: #5A5AB4;  /* derin indigo */
+    --doku-mesh-3: #6FA8A8;  /* kısık gümüş-teal */
+    --doku-mesh-op: 0.14;
+    --doku-gren-op: 0.045;
+    --doku-vinyet: rgba(0, 0, 0, 0.18);
   }
   /* Alternatif paletler (Pro): aynı değişken setini override eder */
-  :root[data-palet="orman"] { --accent: #2E7D44; --accent-strong: #1F5C31; --accent-soft: #E3F1E5; --border: #CDE3D2; --grad-a: #2E7D44; --grad-b: #4C9A5C; }
-  :root[data-theme="dark"][data-palet="orman"] { --accent: #52A96B; --accent-strong: #86CE9E; --accent-soft: #17301D; --border: #24402A; --grad-a: #52A96B; --grad-b: #7CBD6B; }
-  :root[data-palet="bakir"] { --accent: #A66B3C; --accent-strong: #7E4E27; --accent-soft: #F2E8DD; --border: #E2D5C4; --grad-a: #A66B3C; --grad-b: #0F7A5A; }
-  :root[data-theme="dark"][data-palet="bakir"] { --accent: #C08552; --accent-strong: #DDA97B; --accent-soft: #2E241A; --border: #3D3122; --grad-a: #C08552; --grad-b: #2FB283; }
+  :root[data-palet="orman"] { --accent: #2E7D44; --accent-strong: #1F5C31; --accent-soft: #E3F1E5; --border: #CDE3D2; --grad-a: #2E7D44; --grad-b: #4C9A5C; --doku-aura: rgba(46, 125, 68, 0.06); --doku-mesh-1: #2E7D44; --doku-mesh-2: #2F6E5E; --doku-mesh-3: #7C9A55; }
+  :root[data-theme="dark"][data-palet="orman"] { --accent: #52A96B; --accent-strong: #86CE9E; --accent-soft: #17301D; --border: #24402A; --grad-a: #52A96B; --grad-b: #7CBD6B; --doku-aura: rgba(82, 169, 107, 0.12); --doku-mesh-1: #52A96B; --doku-mesh-2: #3E8AA0; --doku-mesh-3: #7CBD6B; }
+  :root[data-palet="bakir"] { --accent: #A66B3C; --accent-strong: #7E4E27; --accent-soft: #F2E8DD; --border: #E2D5C4; --grad-a: #A66B3C; --grad-b: #0F7A5A; --doku-aura: rgba(166, 107, 60, 0.06); --doku-mesh-1: #A66B3C; --doku-mesh-2: #0F7A5A; --doku-mesh-3: #8C5E3F; }
+  :root[data-theme="dark"][data-palet="bakir"] { --accent: #C08552; --accent-strong: #DDA97B; --accent-soft: #2E241A; --border: #3D3122; --grad-a: #C08552; --grad-b: #2FB283; --doku-aura: rgba(192, 133, 82, 0.12); --doku-mesh-1: #C08552; --doku-mesh-2: #2FB283; --doku-mesh-3: #8A6450; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: var(--font-govde, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
@@ -136,11 +152,39 @@
   .warning { background: var(--danger-bg); color: var(--danger); border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: 13px; }
   .info { background: var(--accent-soft); color: var(--accent-strong); border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: 13px; }
   .muted { color: var(--text-muted); font-size: 13px; }
-  /* Hero: sakin, ferah imza ekran — tek güçlü öğe olarak ilerleme halkası */
-  .hero { position: relative; z-index: 0; display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 32px 16px 8px; margin-bottom: 24px; text-align: center; }
-  /* İmza doku: çok silik, statik topografik konturlar — hareketsiz */
-  .doku { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; color: var(--accent); opacity: 0.04; }
+  /* Hero: sakin, ferah imza ekran — tek güçlü öğe olarak ilerleme halkası.
+     Doku katmanları (alttan üste): mesh gradyan (z:-3) → aura (z:-2, halka
+     merkezine kilitli) → gren + vinyet (z:-1). Hepsi statik ve GPU-dostu:
+     blur/backdrop-filter yok, gren tek seferlik feTurbulence. overflow:hidden
+     dokuyu hero alanının içinde tutar; diğer sekmelere taşmaz. */
+  .hero { position: relative; z-index: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 32px 16px 8px; margin-bottom: 24px; text-align: center; }
+  .doku-arka, .doku-on { position: absolute; inset: 0; pointer-events: none; }
+  .doku-arka { z-index: -3; }
+  .doku-on { z-index: -1; }
+  .doku-arka svg, .doku-on svg, .doku-vinyet { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* Mesh ve gren hero sınırına ulaşmadan eriyip biter — sert dikdörtgen
+     kenarı oluşmaz, doku sayfa zeminine kesintisiz karışır */
+  .doku-mesh, .doku-gren {
+    -webkit-mask-image: radial-gradient(78% 88% at 50% 45%, #000 30%, transparent 90%);
+    mask-image: radial-gradient(78% 88% at 50% 45%, #000 30%, transparent 90%);
+  }
+  .doku-mesh { opacity: var(--doku-mesh-op); }
+  .doku-mesh stop { stop-opacity: 1; }
+  .doku-mesh stop + stop { stop-opacity: 0; }
+  #dokuMesh1 stop { stop-color: var(--doku-mesh-1); }
+  #dokuMesh2 stop { stop-color: var(--doku-mesh-2); }
+  #dokuMesh3 stop { stop-color: var(--doku-mesh-3); }
+  .doku-gren { opacity: var(--doku-gren-op); }
+  .doku-vinyet { background: radial-gradient(115% 95% at 50% 42%, transparent 58%, var(--doku-vinyet) 100%); }
   .halka-kap { position: relative; width: min(250px, 68vw); }
+  /* Aura: halkanın tam merkezinden dışa yumuşak ışıma — pseudo halka-kap'a
+     bağlı olduğundan her ekran boyutunda merkeze hizalı kalır */
+  .halka-kap::before { content: ""; position: absolute; inset: -42%; z-index: -2; border-radius: 50%; background: radial-gradient(circle closest-side, var(--doku-aura), transparent 78%); pointer-events: none; }
+  /* Aura nefesi: 26sn, fark edilmesi zor; reduced-motion'da hiç yok */
+  @media (prefers-reduced-motion: no-preference) {
+    .halka-kap::before { animation: auraNefes 26s ease-in-out infinite; }
+  }
+  @keyframes auraNefes { 0%, 100% { opacity: 0.72; } 50% { opacity: 1; } }
   .halka { width: 100%; height: auto; display: block; transform: rotate(-90deg); }
   .halka-iz { fill: none; stroke: var(--surface-2); stroke-width: 13; }
   .halka-dolu { fill: none; stroke: url(#halkaGrad); stroke-width: 13; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -329,15 +373,32 @@
 
   <!-- Hero: sayfanın tezi — tek büyük, sakin ilerleme halkası -->
   <section class="hero" id="ozetKart">
-    <svg class="doku" viewBox="0 0 500 320" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-      <path d="M60 260c-30-40-24-96 12-128s96-40 140-16 60 72 40 112-72 56-116 48-56-8-76-16z"/>
-      <path d="M84 244c-22-32-16-76 12-100s76-30 110-12 46 56 30 88-58 44-92 38-44-6-60-14z"/>
-      <path d="M108 228c-15-24-10-56 10-73s56-22 80-9 33 41 21 64-42 33-67 28-32-4-44-10z"/>
-      <path d="M132 212c-9-16-6-36 7-47s36-14 51-5 21 26 13 41-27 21-43 18-20-3-28-7z"/>
-      <path d="M380 90c26-20 62-18 84 4s26 58 8 82-54 32-80 18-38-46-28-72 8-24 16-32z"/>
-      <path d="M396 108c17-13 41-12 55 3s17 38 5 54-35 21-52 12-25-30-19-47 6-16 11-22z"/>
-      <path d="M412 126c9-7 22-6 30 2s9 20 3 29-19 11-28 6-14-16-10-25 3-8 5-12z"/>
-    </svg>
+    <!-- Doku katmanı 1 (en arka): mesh gradyan — büyük, yumuşak renk lekeleri.
+         Bulanıklık SVG radialGradient'in kendisinden gelir; blur filtresi yok. -->
+    <div class="doku-arka" aria-hidden="true">
+      <svg class="doku-mesh" viewBox="0 0 500 340" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="dokuMesh1"><stop offset="0"/><stop offset="1"/></radialGradient>
+          <radialGradient id="dokuMesh2"><stop offset="0"/><stop offset="1"/></radialGradient>
+          <radialGradient id="dokuMesh3"><stop offset="0"/><stop offset="1"/></radialGradient>
+        </defs>
+        <ellipse cx="110" cy="80" rx="240" ry="185" fill="url(#dokuMesh1)"/>
+        <ellipse cx="405" cy="245" rx="250" ry="195" fill="url(#dokuMesh2)"/>
+        <ellipse cx="340" cy="30" rx="205" ry="150" fill="url(#dokuMesh3)"/>
+      </svg>
+    </div>
+    <!-- Doku katmanı 3 (en ön): film greni + vinyet. Gren feTurbulence ile
+         tek seferlik üretilir, statiktir; vinyet gözü merkeze kilitler. -->
+    <div class="doku-on" aria-hidden="true">
+      <svg class="doku-gren">
+        <filter id="dokuGren">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+          <feColorMatrix type="saturate" values="0"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#dokuGren)"/>
+      </svg>
+      <div class="doku-vinyet"></div>
+    </div>
     <div class="halka-kap">
       <svg class="halka" viewBox="0 0 220 220" aria-hidden="true">
         <defs>
