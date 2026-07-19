@@ -20,50 +20,53 @@
   /* Gece Mavisi + Gümüş paleti — açık mod: gümüş kırık beyaz zemin,
      derin lacivert vurgular (WCAG AA gözetilerek seçildi) */
   :root {
-    --bg: #F2F5FA;
-    --surface: #ffffff;
-    --surface-2: #E9EEF6;
-    --text: #16202E;
-    --text-muted: #5B6B80;
-    --accent: #2F4F7E;
-    --accent-strong: #1E3A63;
-    --accent-soft: #E5EBF4;
-    --border: #D9E0EA;
-    --amber: #2F4F7E;      /* aksiyon rengi: açık modda derin mavi */
+    /* Açık mod ilkesi: "temiz ve net" — zemin kırık beyaz (kağıt), kartlar
+       SAF beyaz (koyu modun tersi), marka renkleri koyu, derinlik gölgeden */
+    --bg: #F4F6F8;         /* hafif sıcak/nötr kırık beyaz — saf beyaz değil */
+    --surface: #ffffff;    /* kartlar saf beyaz: zeminden ayrışır */
+    --surface-2: #EDF0F4;
+    --text: #131A22;       /* neredeyse siyah */
+    --text-muted: #5A6672;
+    --accent: #24406B;     /* beyaz üstünde açık ton görünmez: 2-3 ton koyu */
+    --accent-strong: #142E52;
+    --accent-soft: #E2E9F2;
+    --border: #E3E7EC;     /* 1px çok kısık kenarlık */
+    --amber: #24406B;      /* aksiyon rengi: açık modda derin lacivert */
     --amber-ink: #F4F6F9;  /* aksiyon üzerindeki mürekkep */
-    --danger: #C05646;     /* kısık terracotta — yalnızca gerçek uyarı */
+    --danger: #B04A3A;     /* kısık terracotta — yalnızca gerçek uyarı */
     --danger-bg: #F6E7E3;
-    --ok: #2F7A55;
+    --ok: #276A4A;
     --ok-bg: #E3F0E9;
-    --grad-a: #2F4F7E;     /* imzalı gradyan: derin mavi → çelik mavi */
-    --grad-b: #4A6E9E;
+    --grad-a: #24406B;     /* imzalı gradyan: derin lacivert → çelik */
+    --grad-b: #3A5C8C;
     --gradyan: linear-gradient(100deg, var(--grad-a), var(--grad-b));
-    --shadow: 0 1px 2px rgba(47, 79, 126, 0.05), 0 4px 14px rgba(47, 79, 126, 0.07);
-    /* Hero doku katmanları — açık modda çok kısık (beyazı kirletme) */
-    --doku-aura: rgba(47, 79, 126, 0.05);
-    --doku-mesh-1: #2F4F7E;  /* gece mavisi */
+    --shadow: 0 1px 2px rgba(19, 26, 34, 0.04), 0 2px 8px rgba(19, 26, 34, 0.05);
+    /* Hero doku katmanları — açık modda koyunun ~1/3'ü: temiz kağıt hissi,
+       bulanık beyazlık değil */
+    --doku-aura: rgba(36, 64, 107, 0.025);
+    --doku-mesh-1: #24406B;  /* gece mavisi */
     --doku-mesh-2: #4C3F8C;  /* derin indigo */
     --doku-mesh-3: #5E8D92;  /* kısık gümüş-teal */
-    --doku-mesh-op: 0.035;
-    --doku-gren-op: 0.03;
-    --doku-vinyet: rgba(22, 32, 46, 0.04);
+    --doku-mesh-op: 0.015;
+    --doku-gren-op: 0.02;
+    --doku-vinyet: rgba(19, 26, 34, 0.02);
     /* Sıcak kıvılcım (~%10): şampanya — açık modda kısık bronz */
-    --sicak: #8F7A48;
-    --halka-a: var(--grad-a);          /* halka gradyanı: soğuk uç */
-    --halka-b: #A08A54;                /* halka gradyanı: sıcak uç */
-    --halka-iz: #D3DBE7;               /* ray: zeminden koyu, mat */
-    --halka-spek: rgba(255, 255, 255, 0.55);
-    --doku-aura-sicak: rgba(143, 122, 72, 0.045);
-    /* Işık yönü: sol-üst aydınlık → sağ-alt gölge */
-    --doku-isik: rgba(255, 255, 255, 0.4);
-    --doku-golge: rgba(22, 32, 46, 0.05);
+    --sicak: #8A7442;
+    --halka-a: var(--grad-a);          /* halka gradyanı: soğuk uç (doygun/koyu) */
+    --halka-b: #A68E58;                /* halka gradyanı: gümüş-şampanya, koyu */
+    --halka-iz: #C7D2E0;               /* ray: zeminden NET ayrışan gri-mavi */
+    --halka-spek: rgba(255, 255, 255, 0.6);
+    --doku-aura-sicak: rgba(138, 116, 66, 0.02);
+    /* Işık yönü: sol-üst aydınlık → sağ-alt gölge (açıkta çok hafif) */
+    --doku-isik: rgba(255, 255, 255, 0.25);
+    --doku-golge: rgba(19, 26, 34, 0.03);
     /* Cam disk (yüzdenin arkası) */
     --cam-ust: rgba(255, 255, 255, 0.7);
     --cam-alt: rgba(255, 255, 255, 0.2);
-    --cam-kenar: rgba(47, 79, 126, 0.12);
-    --cam-golge: rgba(47, 79, 126, 0.12);
-    --yuzde-isik: #4E5C64;             /* yüzde rakamı üst highlight */
-    --hero-alt-op: 0.95;               /* hero alt metin opaklığı (AA korunur) */
+    --cam-kenar: rgba(36, 64, 107, 0.12);
+    --cam-golge: rgba(36, 64, 107, 0.1);
+    --yuzde-isik: #44536A;             /* yüzde rakamı üst highlight */
+    --hero-alt-op: 1;                  /* hero alt metin: açıkta kısmadan (AA) */
   }
   /* Gece Mavisi + Gümüş — koyu mod: derin lacivert zemin, gümüş vurgular */
   :root[data-theme="dark"] {
@@ -109,9 +112,9 @@
     --hero-alt-op: 0.72;
   }
   /* Alternatif paletler (Pro): aynı değişken setini override eder */
-  :root[data-palet="orman"] { --accent: #2E7D44; --accent-strong: #1F5C31; --accent-soft: #E3F1E5; --border: #CDE3D2; --grad-a: #2E7D44; --grad-b: #4C9A5C; --doku-aura: rgba(46, 125, 68, 0.06); --doku-mesh-1: #2E7D44; --doku-mesh-2: #2F6E5E; --doku-mesh-3: #7C9A55; }
+  :root[data-palet="orman"] { --accent: #256B39; --accent-strong: #17492A; --accent-soft: #E3F1E5; --border: #CDE3D2; --grad-a: #256B39; --grad-b: #3D824C; --doku-aura: rgba(37, 107, 57, 0.03); --doku-mesh-1: #256B39; --doku-mesh-2: #2F6E5E; --doku-mesh-3: #7C9A55; }
   :root[data-theme="dark"][data-palet="orman"] { --accent: #52A96B; --accent-strong: #86CE9E; --accent-soft: #17301D; --border: #24402A; --grad-a: #52A96B; --grad-b: #7CBD6B; --doku-aura: rgba(82, 169, 107, 0.12); --doku-mesh-1: #52A96B; --doku-mesh-2: #3E8AA0; --doku-mesh-3: #7CBD6B; }
-  :root[data-palet="bakir"] { --accent: #A66B3C; --accent-strong: #7E4E27; --accent-soft: #F2E8DD; --border: #E2D5C4; --grad-a: #A66B3C; --grad-b: #0F7A5A; --doku-aura: rgba(166, 107, 60, 0.06); --doku-mesh-1: #A66B3C; --doku-mesh-2: #0F7A5A; --doku-mesh-3: #8C5E3F; }
+  :root[data-palet="bakir"] { --accent: #8F5A30; --accent-strong: #663E1E; --accent-soft: #F2E8DD; --border: #E2D5C4; --grad-a: #8F5A30; --grad-b: #0C6650; --doku-aura: rgba(143, 90, 48, 0.03); --doku-mesh-1: #8F5A30; --doku-mesh-2: #0C6650; --doku-mesh-3: #8C5E3F; }
   :root[data-theme="dark"][data-palet="bakir"] { --accent: #C08552; --accent-strong: #DDA97B; --accent-soft: #2E241A; --border: #3D3122; --grad-a: #C08552; --grad-b: #2FB283; --doku-aura: rgba(192, 133, 82, 0.12); --doku-mesh-1: #C08552; --doku-mesh-2: #2FB283; --doku-mesh-3: #8A6450; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -375,6 +378,16 @@
   .kay-statlar { display: flex; gap: 2.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
   .kay-statlar .deger { font-size: 1.3rem; font-weight: 700; color: var(--accent-strong); }
   .kontroller { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  /* Açık mod: üst bar zemine karışmasın — denetimler beyaz yüzeyde, net
+     kenarlıklı; barın altına ince bir ayırıcı. Koyu moda dokunulmaz. */
+  :root[data-theme="light"] header { border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+  :root[data-theme="light"] header .kontroller select,
+  :root[data-theme="light"] header .kontroller button.ghost {
+    background: var(--surface);
+    border: 1px solid #C9D2DD;
+    color: var(--accent-strong);
+    box-shadow: 0 1px 2px rgba(19, 26, 34, 0.05);
+  }
   .kontroller select { width: auto; padding: 0.4rem 0.5rem; font-size: 0.85rem; }
   .reklam { border: 2px dashed var(--border); border-radius: 10px; padding: 0.9rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.82rem; margin-bottom: 1.25rem; }
   .pro-liste { margin: 0.5rem 0 0.75rem 1.2rem; font-size: 0.92rem; }
