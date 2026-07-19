@@ -127,9 +127,18 @@
     padding: 24px 16px 48px;
   }
   .container { max-width: 880px; margin: 0 auto; }
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  h1 { font-size: 24px; font-weight: 600; color: var(--accent-strong); }
-  .marka .slogan { margin: 1px 0 0 30px; font-size: 12px; letter-spacing: 0.04em; color: var(--text-muted); }
+  /* Üst bar: solda işaret+wordmark, sağda zil+tema. Altta çok kısık ayırıcı,
+     içerikle arasında nefes payı. */
+  header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 28px; }
+  /* Wordmark: düz tek renk, ağır (700), hafif sıkı — üst bardaki her şeyden büyük */
+  h1 { display: flex; align-items: center; gap: 8px; font-family: var(--font-baslik); font-size: 27px; font-weight: 700; letter-spacing: -0.02em; color: var(--accent-strong); line-height: 1.1; }
+  h1 .ikn { width: 24px; height: 24px; margin-top: 2px; } /* optik hizalama: göz hizası, matematik değil */
+  /* İmza detayı (tek dokunuş): ilk "ı"nın üstünde, işaretteki uç noktasının
+     minik akrabası — noktasız harfe işaretten ödünç bir nokta */
+  .marka-i { position: relative; }
+  .marka-i::after { content: ""; position: absolute; top: -0.02em; left: 50%; transform: translateX(-50%); width: 0.11em; height: 0.11em; border-radius: 50%; background: var(--sicak); }
+  .marka .slogan { margin: 2px 0 0 32px; font-size: 12px; letter-spacing: 0.04em; color: var(--text-muted); white-space: nowrap; }
+  @media (max-width: 359px) { .marka .slogan { display: none; } } /* asla iki satıra kırılmaz */
   h2 { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--accent-strong); }
   .card {
     background: var(--surface);
@@ -386,10 +395,8 @@
   .kay-statlar { display: flex; gap: 2.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
   .kay-statlar .deger { font-size: 1.3rem; font-weight: 700; color: var(--accent-strong); }
   .kontroller { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-  /* Açık mod: üst bar zemine karışmasın — denetimler beyaz yüzeyde, net
-     kenarlıklı; barın altına ince bir ayırıcı. Koyu moda dokunulmaz. */
-  :root[data-theme="light"] header { border-bottom: 1px solid var(--border); padding-bottom: 14px; }
-  :root[data-theme="light"] header .kontroller select,
+  /* Açık mod: üst bar düğmeleri (zil+tema) zemine karışmasın —
+     beyaz yüzey, net kenarlık. Koyu moda dokunulmaz. */
   :root[data-theme="light"] header .kontroller button.ghost {
     background: var(--surface);
     border: 1px solid #C9D2DD;
@@ -410,9 +417,10 @@
   h1, h2, h3, .alt-baslik { font-family: var(--font-baslik); font-style: normal; letter-spacing: -0.01em; }
   /* İkonlar: tek çizgi, currentColor, 20px */
   .ikn { width: 20px; height: 20px; flex: none; }
-  h1 .ikn { width: 22px; height: 22px; }
+  h1 .ikn { width: 24px; height: 24px; }
   h1, h2 { display: flex; align-items: center; gap: 8px; }
   h1 .ikn { color: var(--accent); }
+  h1 { letter-spacing: -0.02em; } /* wordmark: genel -0.01em kuralını ezer */
 
   /* Sekmeler + alt gezinme çubuğu */
   .sekme { display: none; }
@@ -446,22 +454,13 @@
 <body>
 <div class="container">
   <header>
-    <!-- Marka işareti: kapanmaya yaklaşan sıfır/halka + uç noktası
-         (hero ilerleme halkasıyla akraba; yaprak ikonunun yerini aldı) -->
+    <!-- Marka işareti + wordmark. Yazı statiktir (marka çevrilmez, data-i18n yok);
+         imza detayı: ilk "ı"nın üstünde işaretteki sıcak noktanın minik akrabası -->
     <div class="marka">
-      <h1><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-dasharray="44 9.4" transform="rotate(-80 12 12)"/><circle cx="8.8" cy="4.1" r="1.5" fill="currentColor" stroke="none"/></svg><span data-i18n="baslik">Sıfırla</span></h1>
+      <h1><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-dasharray="44 9.4" transform="rotate(-80 12 12)"/><circle cx="8.8" cy="4.1" r="1.5" fill="currentColor" stroke="none"/></svg><span class="wordmark">S<span class="marka-i">ı</span>fırla</span></h1>
       <p class="slogan" data-i18n="slogan">Borcunu sıfırla.</p>
     </div>
     <div class="kontroller no-print">
-      <select id="palet" title="Tema paleti">
-        <option value="teal" data-i18n="opt_teal">Gece Mavisi &amp; Gümüş (varsayılan)</option>
-        <option value="orman" data-i18n="opt_orman">Orman (Pro)</option>
-        <option value="bakir" data-i18n="opt_bakir">Bakır-Yeşil (Pro)</option>
-      </select>
-      <select id="dil" title="Dil / Language">
-        <option value="tr">Türkçe</option>
-        <option value="en">English</option>
-      </select>
       <button id="zilBtn" class="ghost" title="Bildirimler" aria-label="Bildirimler"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span id="zilRozet" hidden>0</span></button>
       <button id="temaBtn" class="ghost" title="Açık/koyu mod"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg></button>
     </div>
@@ -967,6 +966,29 @@
     </p>
   </section>
 
+  <!-- Ayarlar: tema paleti + dil (üst bardan buraya taşındı; id'ler aynı,
+       dinleyiciler ve dilUygula değişmeden çalışır) -->
+  <section class="card">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg><span data-i18n="ayar_h">Ayarlar</span></h2>
+    <div class="form-grid" style="max-width:420px">
+      <div>
+        <label for="palet" data-i18n="ayar_palet">Tema paleti</label>
+        <select id="palet">
+          <option value="teal" data-i18n="opt_teal">Gece Mavisi &amp; Gümüş (varsayılan)</option>
+          <option value="orman" data-i18n="opt_orman">Orman (Pro)</option>
+          <option value="bakir" data-i18n="opt_bakir">Bakır-Yeşil (Pro)</option>
+        </select>
+      </div>
+      <div>
+        <label for="dil">Dil / Language</label>
+        <select id="dil">
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
   <!-- Kişiselleştirme: ad yalnızca cihazda (localStorage) — hesap/sunucu yok -->
   <section class="card">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 3.5-6 7-6s6 2 7 6"/></svg><span data-i18n="kisi_h">Kişiselleştirme</span></h2>
@@ -1189,6 +1211,8 @@ const SOZLUK = {
       ob5b: "Sana nasıl hitap edelim?",
       ob5m: "Bu bilgi yalnızca cihazında kalır — istersen boş bırak.",
       ob_gec: "Şimdilik geç",
+      ayar_h: "Ayarlar",
+      ayar_palet: "Tema paleti",
       kisi_h: "Kişiselleştirme",
       kisi_lbl: "Sana nasıl hitap edelim?",
       kisi_not: "Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.",
@@ -1524,6 +1548,8 @@ const SOZLUK = {
       ob5b: "What should we call you?",
       ob5m: "This stays only on your device — leave it blank if you like.",
       ob_gec: "Skip for now",
+      ayar_h: "Settings",
+      ayar_palet: "Theme palette",
       kisi_h: "Personalization",
       kisi_lbl: "What should we call you?",
       kisi_not: "Stored only on your device; used in greetings and summaries. You can leave it blank.",
