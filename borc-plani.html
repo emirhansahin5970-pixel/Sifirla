@@ -45,8 +45,25 @@
     --doku-mesh-2: #4C3F8C;  /* derin indigo */
     --doku-mesh-3: #5E8D92;  /* kısık gümüş-teal */
     --doku-mesh-op: 0.035;
-    --doku-gren-op: 0.02;
+    --doku-gren-op: 0.03;
     --doku-vinyet: rgba(22, 32, 46, 0.04);
+    /* Sıcak kıvılcım (~%10): şampanya — açık modda kısık bronz */
+    --sicak: #8F7A48;
+    --halka-a: var(--grad-a);          /* halka gradyanı: soğuk uç */
+    --halka-b: #A08A54;                /* halka gradyanı: sıcak uç */
+    --halka-iz: #D3DBE7;               /* ray: zeminden koyu, mat */
+    --halka-spek: rgba(255, 255, 255, 0.55);
+    --doku-aura-sicak: rgba(143, 122, 72, 0.045);
+    /* Işık yönü: sol-üst aydınlık → sağ-alt gölge */
+    --doku-isik: rgba(255, 255, 255, 0.4);
+    --doku-golge: rgba(22, 32, 46, 0.05);
+    /* Cam disk (yüzdenin arkası) */
+    --cam-ust: rgba(255, 255, 255, 0.7);
+    --cam-alt: rgba(255, 255, 255, 0.2);
+    --cam-kenar: rgba(47, 79, 126, 0.12);
+    --cam-golge: rgba(47, 79, 126, 0.12);
+    --yuzde-isik: #4E5C64;             /* yüzde rakamı üst highlight */
+    --hero-alt-op: 0.95;               /* hero alt metin opaklığı (AA korunur) */
   }
   /* Gece Mavisi + Gümüş — koyu mod: derin lacivert zemin, gümüş vurgular */
   :root[data-theme="dark"] {
@@ -74,8 +91,22 @@
     --doku-mesh-2: #5A5AB4;  /* derin indigo */
     --doku-mesh-3: #6FA8A8;  /* kısık gümüş-teal */
     --doku-mesh-op: 0.14;
-    --doku-gren-op: 0.045;
+    --doku-gren-op: 0.06;
     --doku-vinyet: rgba(0, 0, 0, 0.18);
+    /* Sıcak kıvılcım (~%10): şampanya / soluk altın */
+    --sicak: #E3C88F;
+    --halka-b: #E8D9B8;
+    --halka-iz: #060D18;               /* ray: zeminden koyu, mat */
+    --halka-spek: rgba(238, 242, 247, 0.22);
+    --doku-aura-sicak: rgba(227, 200, 143, 0.09);
+    --doku-isik: rgba(238, 242, 247, 0.05);
+    --doku-golge: rgba(0, 0, 0, 0.16);
+    --cam-ust: rgba(238, 242, 247, 0.075);
+    --cam-alt: rgba(238, 242, 247, 0.02);
+    --cam-kenar: rgba(238, 242, 247, 0.07);
+    --cam-golge: rgba(0, 0, 0, 0.24);
+    --yuzde-isik: #F2E9D3;
+    --hero-alt-op: 0.72;
   }
   /* Alternatif paletler (Pro): aynı değişken setini override eder */
   :root[data-palet="orman"] { --accent: #2E7D44; --accent-strong: #1F5C31; --accent-soft: #E3F1E5; --border: #CDE3D2; --grad-a: #2E7D44; --grad-b: #4C9A5C; --doku-aura: rgba(46, 125, 68, 0.06); --doku-mesh-1: #2E7D44; --doku-mesh-2: #2F6E5E; --doku-mesh-3: #7C9A55; }
@@ -175,22 +206,39 @@
   #dokuMesh2 stop { stop-color: var(--doku-mesh-2); }
   #dokuMesh3 stop { stop-color: var(--doku-mesh-3); }
   .doku-gren { opacity: var(--doku-gren-op); }
-  .doku-vinyet { background: radial-gradient(115% 95% at 50% 42%, transparent 58%, var(--doku-vinyet) 100%); }
+  /* Vinyet + ışık yönü: sol-üstten yumuşak aydınlanma, sağ-alta koyulaşma */
+  .doku-vinyet { background: linear-gradient(135deg, var(--doku-isik), transparent 42%, var(--doku-golge) 108%), radial-gradient(115% 95% at 50% 42%, transparent 58%, var(--doku-vinyet) 100%); }
   .halka-kap { position: relative; width: min(250px, 68vw); }
   /* Aura: halkanın tam merkezinden dışa yumuşak ışıma — pseudo halka-kap'a
      bağlı olduğundan her ekran boyutunda merkeze hizalı kalır */
-  .halka-kap::before { content: ""; position: absolute; inset: -42%; z-index: -2; border-radius: 50%; background: radial-gradient(circle closest-side, var(--doku-aura), transparent 78%); pointer-events: none; }
+  .halka-kap::before { content: ""; position: absolute; inset: -42%; z-index: -2; border-radius: 50%; background: radial-gradient(circle at 44% 41%, var(--doku-aura-sicak), transparent 32%), radial-gradient(circle at 46% 43%, var(--doku-aura), transparent 74%); pointer-events: none; }
   /* Aura nefesi: 26sn, fark edilmesi zor; reduced-motion'da hiç yok */
   @media (prefers-reduced-motion: no-preference) {
     .halka-kap::before { animation: auraNefes 26s ease-in-out infinite; }
   }
   @keyframes auraNefes { 0%, 100% { opacity: 0.72; } 50% { opacity: 1; } }
   .halka { width: 100%; height: auto; display: block; transform: rotate(-90deg); }
-  .halka-iz { fill: none; stroke: var(--surface-2); stroke-width: 13; }
-  .halka-dolu { fill: none; stroke: url(#halkaGrad); stroke-width: 13; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
-  @media (prefers-reduced-motion: reduce) { .halka-dolu { transition: none; } }
+  /* Ray: zeminden koyu, mat ve ince — dolu kısım kalın ve gradyanlı; ikisi
+     arasındaki kalınlık+değer farkı halkayı zeminden ayırır */
+  .halka-iz { fill: none; stroke: var(--halka-iz); stroke-width: 9; }
+  .halka-dolu { fill: none; stroke: url(#halkaGrad); stroke-width: 15; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+  /* Uç parlaması: ilerlemenin ucundaki sıcak nokta — dolgu geçişiyle aynı
+     süre/easing'de döner, senkron kalır */
+  #halkaUc { transform-box: view-box; transform-origin: 50% 50%; transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s; }
+  @media (prefers-reduced-motion: reduce) { .halka-dolu, #halkaUc { transition: none; } }
+  /* Specular: sol-üst kenarda 1px ışık çizgisi — tek ışık kaynağı hissi */
+  .halka-kap::after { content: ""; position: absolute; inset: 2.2%; border-radius: 50%; border: 1px solid transparent; border-top-color: var(--halka-spek); transform: rotate(-45deg); pointer-events: none; }
   .halka-merkez { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0 28px; }
-  .halka-yuzde { font-family: var(--font-baslik); font-size: 46px; font-weight: 600; letter-spacing: -0.02em; color: var(--accent-strong); line-height: 1.1; }
+  /* Cam disk: yüzdenin arkasında, üstten alta sönen bir ton açıklık +
+     1px iç kenarlık + iç gölge — rakam gömülü diskin üstünde durur */
+  .halka-merkez::before { content: ""; position: absolute; inset: 15%; border-radius: 50%; background: linear-gradient(180deg, var(--cam-ust), var(--cam-alt)); border: 1px solid var(--cam-kenar); box-shadow: inset 0 10px 22px var(--cam-golge); pointer-events: none; }
+  .halka-merkez > * { position: relative; }
+  .halka-yuzde { font-family: var(--font-baslik); font-size: 52px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent-strong); line-height: 1.1; }
+  /* Rakamın üst kenarına çok hafif sıcak highlight (destek yoksa düz renk kalır) */
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .halka-yuzde { background: linear-gradient(180deg, var(--yuzde-isik), var(--accent-strong) 58%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  }
+  #heroTarih { font-size: 12px; letter-spacing: 0.05em; opacity: var(--hero-alt-op); }
   .hero-statlar { display: flex; gap: 48px; justify-content: center; }
   .geri-ic { display: flex; align-items: center; gap: 16px; }
   .geri-halka { width: 64px; height: 64px; flex: none; }
@@ -402,13 +450,24 @@
     <div class="halka-kap">
       <svg class="halka" viewBox="0 0 220 220" aria-hidden="true">
         <defs>
-          <linearGradient id="halkaGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="var(--grad-a)"/>
-            <stop offset="1" stop-color="var(--grad-b)"/>
+          <!-- SVG -90° döndüğü için vektör buna göre seçildi: görsel üst
+               (başlangıç) soğuk, saat yönünde ilerledikçe şampanyaya ısınır -->
+          <linearGradient id="halkaGrad" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--halka-a)"/>
+            <stop offset="1" stop-color="var(--halka-b)"/>
           </linearGradient>
+          <radialGradient id="halkaUcHale">
+            <stop offset="0" stop-color="var(--sicak)" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="var(--sicak)" stop-opacity="0"/>
+          </radialGradient>
         </defs>
         <circle class="halka-iz" cx="110" cy="110" r="96"/>
         <circle class="halka-dolu" id="halkaDolu" cx="110" cy="110" r="96" style="stroke-dasharray:603.2; stroke-dashoffset:603.2"/>
+        <!-- Uç parlaması: JS ilerleme açısına döndürür (ozetCiz) -->
+        <g id="halkaUc" opacity="0">
+          <circle cx="206" cy="110" r="10" fill="url(#halkaUcHale)"/>
+          <circle cx="206" cy="110" r="3.2" fill="var(--halka-b)"/>
+        </g>
       </svg>
       <div class="halka-merkez">
         <p class="halka-yuzde" id="genelYuzde">%0</p>
@@ -2214,6 +2273,10 @@ const STORAGE = (() => {
     const cevre = 2 * Math.PI * 96; // r=96 (SVG'deki daireyle aynı)
     dolu.style.strokeDasharray = cevre.toFixed(1);
     dolu.style.strokeDashoffset = (cevre * (1 - yuzde / 100)).toFixed(1);
+    // Uç parlaması: dolgu ucuyla aynı açıya döner (CSS geçişi dolgu ile senkron)
+    const uc = $("halkaUc");
+    uc.style.transform = `rotate(${(yuzde * 3.6).toFixed(1)}deg)`;
+    uc.setAttribute("opacity", yuzde > 0 ? "1" : "0");
   }
 
   /* ---- Borç grafikleri: dağılım çubuğu + sparkline (inline SVG) ---- */
