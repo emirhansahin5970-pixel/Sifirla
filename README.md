@@ -1,6 +1,7 @@
-# Borç Planlayıcı
+# Sıfırla
 
-Tamamen çevrimdışı, sunucusuz, tek HTML dosyalık borç kapatma planlayıcısı (TR/EN).
+*Borcunu sıfırla.* Tamamen çevrimdışı, sunucusuz, tek HTML dosyalık borç kapatma
+planlayıcısı (TR/EN).
 
 Borçlarını gir (kredi kartı/KMH veya taksitli kredi); deterministik simülasyon
 motoru **kartopu** (en küçük bakiye önce) ve **çığ** (en yüksek faiz önce)

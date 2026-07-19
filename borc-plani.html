@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Borç Planlayıcı</title>
+<title>Sıfırla</title>
 <!-- PWA: manifest + ikonlar yereldir; dış çağrı yok kuralı bozulmaz -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="ikon-192.png">
@@ -129,6 +129,7 @@
   .container { max-width: 880px; margin: 0 auto; }
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   h1 { font-size: 24px; font-weight: 600; color: var(--accent-strong); }
+  .marka .slogan { margin: 1px 0 0 30px; font-size: 12px; letter-spacing: 0.04em; color: var(--text-muted); }
   h2 { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: var(--accent-strong); }
   .card {
     background: var(--surface);
@@ -438,7 +439,12 @@
 <body>
 <div class="container">
   <header>
-    <h1><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20C4 12 10 5 20 4c0 10-7 16-14 16"/><path d="M4 20c2-6 6-10 11-12"/></svg><span data-i18n="baslik">Borç Planlayıcı</span></h1>
+    <!-- Marka işareti: kapanmaya yaklaşan sıfır/halka + uç noktası
+         (hero ilerleme halkasıyla akraba; yaprak ikonunun yerini aldı) -->
+    <div class="marka">
+      <h1><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-dasharray="44 9.4" transform="rotate(-80 12 12)"/><circle cx="8.8" cy="4.1" r="1.5" fill="currentColor" stroke="none"/></svg><span data-i18n="baslik">Sıfırla</span></h1>
+      <p class="slogan" data-i18n="slogan">Borcunu sıfırla.</p>
+    </div>
     <div class="kontroller no-print">
       <select id="palet" title="Tema paleti">
         <option value="teal" data-i18n="opt_teal">Gece Mavisi &amp; Gümüş (varsayılan)</option>
@@ -1026,7 +1032,7 @@
   <div class="ob-serit" id="obSerit">
     <section class="ob-kart">
       <svg class="buyuk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8 6 12v28l12-4 12 4 12-4V8l-12 4-12-4z"/><path d="M18 8v28M30 12v28"/><path d="M36 4v10M36 4h7l-2 3 2 3h-7"/></svg>
-      <h2 data-i18n="ob1b">Borçtan çıkışını planla.</h2>
+      <h2 data-i18n="ob1b">Sıfırla: borcunu sıfırla.</h2>
       <p data-i18n="ob1m">Borçlarını gir, borçsuz olacağın tarihi anında gör.</p>
     </section>
     <section class="ob-kart">
@@ -1064,8 +1070,9 @@
 const SOZLUK = {
   tr: {
     statik: {
-      docTitle: "Borç Planlayıcı",
-      baslik: "Borç Planlayıcı",
+      docTitle: "Sıfırla",
+      baslik: "Sıfırla",
+      slogan: "Borcunu sıfırla.",
       opt_teal: "Gece Mavisi & Gümüş (varsayılan)", opt_orman: "Orman (Pro)", opt_bakir: "Bakır-Yeşil (Pro)",
       ozet_bakiye: "Toplam bakiye", hero_buay: "Bu ay ödenecek",
       hayat_h: "Önlenen Faizin Karşılığı",
@@ -1089,7 +1096,7 @@ const SOZLUK = {
       k6m: "Her ay tek dokunuşla check-in yap. Harita yeşillenir, serin büyür, yol kısalır.",
       kilavuz_feragat: "Feragatnameyi oku",
       kilavuz_tur: "Turu tekrar göster",
-      ob1b: "Borçtan çıkışını planla.", ob1m: "Borçlarını gir, borçsuz olacağın tarihi anında gör.",
+      ob1b: "Sıfırla: borcunu sıfırla.", ob1m: "Borçlarını gir, borçsuz olacağın tarihi anında gör.",
       ob2b: "Bilimsel yöntemle: kartopu ve çığ.", ob2m: "İki kanıtlı stratejiyi yan yana karşılaştır, sana uyanı seç.",
       ob3b: "Sadece bu ay ne yapacağını gör.", ob3m: "Her ay tek net liste: hangi borca ne kadar.",
       ob4b: "Verin sadece sende — internet gerekmez.", ob4m: "Her şey cihazında çalışır; hiçbir veri gönderilmez.",
@@ -1300,7 +1307,7 @@ const SOZLUK = {
       kartBos: "Önce borç ekle — başarı kartın burada oluşacak.",
       kartDosya: "basari-karti.png",
       kartPaylasMetin: "Borç kapatma yolculuğumda ilerliyorum!",
-      yedekDosya: (t) => `borc-plani-yedek-${t}.json`,
+      yedekDosya: (t) => `sifirla-yedek-${t}.json`,
       yedekOk: "✓ Yedek indirildi (şifresiz).",
       yedekSifreliOk: "✓ Şifreli yedek indirildi. Parolanı unutma — kurtarma yolu yok!",
       yedekParolaGerek: "Bu yedek şifreli: içe aktarmak için parola alanına aynı parolayı yaz.",
@@ -1372,8 +1379,10 @@ const SOZLUK = {
   },
   en: {
     statik: {
-      docTitle: "Debt Planner",
-      baslik: "Debt Planner",
+      /* Marka çevrilmez: "Sıfırla" her dilde aynı; yalnızca slogan yerelleşir */
+      docTitle: "Sıfırla",
+      baslik: "Sıfırla",
+      slogan: "Debt payoff planner",
       opt_teal: "Midnight Blue & Silver (default)", opt_orman: "Forest (Pro)", opt_bakir: "Copper-Green (Pro)",
       ozet_bakiye: "Total balance", hero_buay: "Due this month",
       hayat_h: "What Your Saved Interest Buys",
@@ -1397,7 +1406,7 @@ const SOZLUK = {
       k6m: "Check in once a month with a single tap. The map turns green, your streak grows, the road gets shorter.",
       kilavuz_feragat: "Read the disclaimer",
       kilavuz_tur: "Show the tour again",
-      ob1b: "Plan your way out of debt.", ob1m: "Enter your debts and instantly see your debt-free date.",
+      ob1b: "Sıfırla: zero out your debt.", ob1m: "Enter your debts and instantly see your debt-free date.",
       ob2b: "With proven methods: snowball & avalanche.", ob2m: "Compare the two strategies side by side and pick yours.",
       ob3b: "See only what to do this month.", ob3m: "One clear list each month: which debt, how much.",
       ob4b: "Your data stays with you — no internet needed.", ob4m: "Everything runs on your device; nothing is ever sent.",
@@ -1607,7 +1616,7 @@ const SOZLUK = {
       kartBos: "Add a debt first — your achievement card will appear here.",
       kartDosya: "achievement-card.png",
       kartPaylasMetin: "Making progress on my debt-free journey!",
-      yedekDosya: (t) => `debt-plan-backup-${t}.json`,
+      yedekDosya: (t) => `sifirla-backup-${t}.json`,
       yedekOk: "✓ Backup downloaded (unencrypted).",
       yedekSifreliOk: "✓ Encrypted backup downloaded. Don't forget the password — there is no recovery!",
       yedekParolaGerek: "This backup is encrypted: type the same password into the password field to import it.",

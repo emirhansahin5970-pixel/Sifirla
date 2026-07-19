@@ -1,11 +1,11 @@
-/* Borç Planlayıcı — isteğe bağlı service worker.
+/* Sıfırla — isteğe bağlı service worker.
    1) Çevrimdışı önbellek: uygulama kabuğu kurulumda önbelleğe alınır; istekler
       önce ağdan denenir (güncellemeler hemen yansır), ağ yoksa önbellekten döner.
    2) Bildirim gösterimi ve bildirime tıklayınca uygulamayı öne getirme.
    Zamanlanmış/arka plan bildirim GARANTİSİ VERMEZ; sayfa kapalıyken tarayıcı
    bu dosyayı istediği an durdurabilir. Güvenilir kaynak uygulama içindeki panodur. */
 
-const ONBELLEK = "borc-plani-v1";
+const ONBELLEK = "borc-plani-v2"; // v2: Sıfırla markası — ikonlar/manifest değişti
 const KABUK = [
   "./",
   "./index.html",

@@ -1,7 +1,7 @@
 {
-  "name": "Borç Planlayıcı",
-  "short_name": "Borç Planı",
-  "description": "Borçlarını gir, kartopu veya çığ stratejisiyle ay ay kapatma planını gör. Tamamen çevrimdışı; verin cihazından çıkmaz.",
+  "name": "Sıfırla",
+  "short_name": "Sıfırla",
+  "description": "Borcunu sıfırla. Kartopu veya çığ stratejisiyle ay ay kapatma planını gör. Tamamen çevrimdışı; verin cihazından çıkmaz.",
   "lang": "tr",
   "start_url": "./borc-plani.html",
   "scope": "./",
