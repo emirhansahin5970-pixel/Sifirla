@@ -279,8 +279,14 @@
   @keyframes cubukDol { from { transform: scaleX(0); } }
   @media (prefers-reduced-motion: reduce) { .progress-bar { animation: none; } }
   .islemler { display: flex; gap: 0.35rem; }
-  .check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text); cursor: pointer; }
-  .check input { width: auto; accent-color: var(--accent); }
+  /* Onay/seçim satırı — taşmaya dayanıklı ortak kalıp: kutu sabit, metin
+     kabı min-width:0 ile sarar, satır kartın iç genişliğini aşmaz, dokunma
+     hedefi ≥44px. Bu ekrandaki tüm checkbox/radio'lar bunu kullanır. */
+  .check { display: flex; align-items: flex-start; gap: 10px; width: 100%; box-sizing: border-box; min-height: 44px; padding: 11px 0; margin-bottom: 0; font-size: 0.92rem; color: var(--text); cursor: pointer; }
+  .check input { width: auto; flex: none; margin-top: 1px; accent-color: var(--accent); }
+  .check > span { min-width: 0; overflow-wrap: break-word; }
+  /* Onay kutusunun altındaki açıklama: metinle hizalı (kutu + gap kadar girinti) */
+  .check-not { margin: 0 0 10px 23px; }
   .sira { margin: 0.5rem 0 0.25rem 1.2rem; font-size: 0.88rem; }
   .sira li { margin-bottom: 0.15rem; }
   .alt-baslik { font-size: 15px; font-weight: 600; color: var(--accent-strong); margin: 24px 0 4px; }
@@ -616,11 +622,11 @@
     <!-- Bildirim ayarları — varsayılan: uygulama içi açık, kilit ekranı (yerel) kapalı -->
     <div class="no-print" style="margin-top:0.9rem">
       <h3 style="font-size:15px; margin:0 0 6px"><span data-i18n="bil_h">Bildirimler</span></h3>
-      <label style="display:flex; gap:8px; align-items:center; cursor:pointer">
+      <label class="check" for="zilIciAc">
         <input type="checkbox" id="zilIciAc">
         <span data-i18n="bil_ici">Uygulama içi bildirimler (zil paneli)</span>
       </label>
-      <p class="muted" style="margin:4px 0 10px" data-i18n="bil_ici_not">
+      <p class="muted check-not" data-i18n="bil_ici_not">
         Yaklaşan ödemeler, kilometre taşları ve akıllı öneriler sağ üstteki zilde birikir.
         Hepsi cihazında üretilir; hiçbir yere gönderilmez.
       </p>
