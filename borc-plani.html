@@ -4567,6 +4567,13 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   $("refKira").value = durum.referanslar.kira || "";
   $("refBilet").value = durum.referanslar.bilet || "";
   // Geliştirici modu (?dev=1): bilinen-cevap doğrulama tablosunu aç
+  // Test kolaylığı (?pro=1): Pro kilidini açar ve kaydeder. Kilit zaten
+  // "şimdilik ücretsiz (yerel)" düğmesiyle açılabildiğinden ek bir hak vermez;
+  // yalnızca simülatör/cihaz testinde dokunma adımını atlatır.
+  if (new URLSearchParams(location.search).get("pro") === "1" && !durum.pro) {
+    durum.pro = true;
+    STORAGE.kaydet(durum);
+  }
   if (new URLSearchParams(location.search).get("dev") === "1") {
     $("dogrulamaKart").hidden = false;
     dogrulamaTablosu();
