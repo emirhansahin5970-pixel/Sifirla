@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Sıfırla — Borcunu sıfırla.">
+  <defs>
+    <linearGradient id="ogHalka" x1="0.15" y1="0.9" x2="0.92" y2="0.12">
+      <stop offset="0" stop-color="#7FA0C8"/><stop offset="0.5" stop-color="#C6D2E2"/><stop offset="1" stop-color="#E8D9B8"/>
+    </linearGradient>
+    <linearGradient id="ogKilit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EEF2F7"/><stop offset="1" stop-color="#C6D0DE"/>
+    </linearGradient>
+    <radialGradient id="ogAura" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#3A5C8C" stop-opacity="0.5"/><stop offset="1" stop-color="#3A5C8C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ogGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F5E7C4" stop-opacity="0.35"/><stop offset="1" stop-color="#F5E7C4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0A1220"/>
+  <ellipse cx="360" cy="315" rx="420" ry="360" fill="url(#ogAura)"/>
+  <!-- logo (0..512 → ölçekli, sola yerleşik) -->
+  <g transform="translate(150,120) scale(0.76)">
+    <circle cx="403" cy="149" r="80" fill="url(#ogGlow)"/>
+    <path d="M435.2 224.4 A182 182 0 1 1 341.4 95.3" fill="none" stroke="url(#ogHalka)" stroke-width="42" stroke-linecap="round"/>
+    <circle cx="341.4" cy="95.3" r="8.5" fill="#FBF3DE"/>
+    <path fill-rule="evenodd" fill="url(#ogKilit)" d="M214 290 L298 290 A18 18 0 0 1 316 308 L316 376 A18 18 0 0 1 298 394 L214 394 A18 18 0 0 1 196 376 L196 308 A18 18 0 0 1 214 290 Z M245 334 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M251 345 L261 345 L265 373 L247 373 Z"/>
+    <path d="M222 290 L222 258 A34 34 0 0 1 282 236" fill="none" stroke="url(#ogKilit)" stroke-width="22" stroke-linecap="round"/>
+    <path d="M292 250 L290 290" fill="none" stroke="url(#ogKilit)" stroke-width="22" stroke-linecap="round"/>
+    <path d="M288 232 l6 10 -6 10 -6 -10 Z" fill="#E3C88F"/>
+  </g>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+    <text x="600" y="300" font-size="120" font-weight="700" fill="#DCE7F4" letter-spacing="-3">Sıfırla</text>
+    <text x="602" y="382" font-size="52" font-weight="500" fill="#AEC0D6">Borcunu sıfırla.</text>
+    <text x="602" y="452" font-size="30" font-weight="400" fill="#7FA0C8">Verilerin telefonundan çıkmaz.</text>
+  </g>
+</svg>
