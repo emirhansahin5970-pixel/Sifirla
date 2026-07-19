@@ -274,6 +274,30 @@
   .kilavuz-gorsel { width: 48px; height: 48px; flex: none; color: var(--accent); }
   .kilavuz-satir h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
   .kilavuz-satir p { font-size: 14px; color: var(--text-muted); }
+  /* Zil: uygulama içi bildirim merkezi — sağdan kayan panel */
+  #zilBtn { position: relative; }
+  #zilRozet { position: absolute; top: -5px; right: -5px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--amber); color: var(--amber-ink); font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; pointer-events: none; }
+  #zilPerde { position: fixed; inset: 0; z-index: 150; background: rgba(4, 8, 16, 0.45); opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s; }
+  #zilPerde.acik { opacity: 1; visibility: visible; }
+  #zilPanel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 151; width: min(380px, 94vw); display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border); box-shadow: var(--shadow); transform: translateX(103%); visibility: hidden; transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.28s; }
+  #zilPanel.acik { transform: none; visibility: visible; }
+  .zil-ust { display: flex; align-items: center; gap: 6px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .zil-ust h2 { margin: 0; flex: 1; }
+  .zil-ust button { flex: none; }
+  #zilListe { flex: 1; overflow-y: auto; padding: 4px 12px 20px; }
+  .zil-grup { margin: 14px 4px 2px; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+  .zil-oge { position: relative; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; margin-top: 6px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); border-left: 2px solid transparent; cursor: pointer; touch-action: pan-y; transition: transform 0.2s ease, opacity 0.2s ease; }
+  .zil-oge.yeni { border-left-color: var(--accent); }
+  .zil-oge.yeni strong { color: var(--accent-strong); }
+  .zil-oge > .ikn { flex: none; margin-top: 2px; color: var(--accent); }
+  .zil-oge strong { display: block; font-size: 14px; }
+  .zil-oge p { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
+  .zil-zaman { display: block; margin-top: 3px; font-size: 11px; color: var(--text-muted); opacity: 0.8; }
+  .zil-sil { flex: none; background: none !important; border: none; color: var(--text-muted); font-size: 16px; line-height: 1; padding: 2px 4px; cursor: pointer; }
+  .zil-bos { text-align: center; padding: 48px 16px; color: var(--text-muted); }
+  .zil-bos .ikn { width: 44px; height: 44px; opacity: 0.6; }
+  body.widget-modu #zilPanel, body.widget-modu #zilPerde { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { #zilPerde, #zilPanel, .zil-oge { transition: none !important; } }
   /* Onboarding turu: tam ekran, kaydırmalı kartlar */
   #onboard { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; flex-direction: column; animation: obFade 0.3s ease; }
   #onboard[hidden] { display: none; }
@@ -412,6 +436,7 @@
         <option value="tr">Türkçe</option>
         <option value="en">English</option>
       </select>
+      <button id="zilBtn" class="ghost" title="Bildirimler" aria-label="Bildirimler"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span id="zilRozet" hidden>0</span></button>
       <button id="temaBtn" class="ghost" title="Açık/koyu mod"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg></button>
     </div>
   </header>
@@ -558,9 +583,26 @@
       </div>
     </div>
     <div id="pano" style="margin-top:0.75rem"></div>
-    <div class="no-print" style="margin-top:0.9rem; display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap">
-      <button id="bildirimBtn" class="ghost">Bildirimleri dene (isteğe bağlı)</button>
-      <span id="bildirimDurum" class="muted"></span>
+    <!-- Bildirim ayarları — varsayılan: uygulama içi açık, kilit ekranı (yerel) kapalı -->
+    <div class="no-print" style="margin-top:0.9rem">
+      <h3 style="font-size:15px; margin:0 0 6px"><span data-i18n="bil_h">Bildirimler</span></h3>
+      <label style="display:flex; gap:8px; align-items:center; cursor:pointer">
+        <input type="checkbox" id="zilIciAc">
+        <span data-i18n="bil_ici">Uygulama içi bildirimler (zil paneli)</span>
+      </label>
+      <p class="muted" style="margin:4px 0 10px" data-i18n="bil_ici_not">
+        Yaklaşan ödemeler, kilometre taşları ve akıllı öneriler sağ üstteki zilde birikir.
+        Hepsi cihazında üretilir; hiçbir yere gönderilmez.
+      </p>
+      <p class="muted" style="margin:0 0 8px" data-i18n="bil_yerel_not">
+        Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan tarayıcı bir kez izin
+        ister; kilit ekranına düşen metinde asla tutar veya borç adı geçmez — yalnızca nötr
+        bir hatırlatma görünür.
+      </p>
+      <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap">
+        <button id="bildirimBtn" class="ghost">Kilit ekranı bildirimlerini aç</button>
+        <span id="bildirimDurum" class="muted"></span>
+      </div>
     </div>
     <p class="muted" style="margin-top:0.5rem" data-i18n="hat_not">
       Tarayıcı bildirimleri deneyseldir: genellikle yalnızca uygulama açıkken çalışır ve
@@ -956,6 +998,17 @@
 </nav>
 
 <!-- Onboarding turu: yalnızca ilk açılışta (gorduByte bayrağı) -->
+<!-- Zil paneli: tüm bildirimler cihazda üretilir; sunucu/dış çağrı yok -->
+<div id="zilPerde" class="no-print" aria-hidden="true"></div>
+<aside id="zilPanel" class="no-print" role="dialog" aria-label="Bildirimler">
+  <div class="zil-ust">
+    <h2 data-i18n="zil_h">Bildirimler</h2>
+    <button id="zilTumOkundu" class="ghost" data-i18n="zil_okundu">Tümünü okundu işaretle</button>
+    <button id="zilKapatBtn" class="ghost" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div id="zilListe"></div>
+</aside>
+
 <div id="onboard" class="no-print" hidden>
   <div class="ob-serit" id="obSerit">
     <section class="ob-kart">
@@ -1075,6 +1128,11 @@ const SOZLUK = {
       btn_pro: "Kilidi aç — şimdilik ücretsiz (yerel)",
       pro_not: "Ödeme entegrasyonu henüz yok: kilit yalnızca bu cihazda, tek seferlik yerel bir işaretle açılır.",
       btn_yazdir: "PDF için yazdır", btn_rapor: "HTML raporu indir",
+      zil_h: "Bildirimler", zil_okundu: "Tümünü okundu işaretle",
+      bil_h: "Bildirimler",
+      bil_ici: "Uygulama içi bildirimler (zil paneli)",
+      bil_ici_not: "Yaklaşan ödemeler, kilometre taşları ve akıllı öneriler sağ üstteki zilde birikir. Hepsi cihazında üretilir; hiçbir yere gönderilmez.",
+      bil_yerel_not: "Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan tarayıcı bir kez izin ister; kilit ekranına düşen metinde asla tutar veya borç adı geçmez — yalnızca nötr bir hatırlatma görünür.",
       test_h: "Motor Doğrulama Testleri",
       feragat: "<strong>Feragatname:</strong> Bu araç yalnızca eğitim ve bilgilendirme amaçlıdır; finansal danışmanlık değildir. Hesaplamalar basitleştirilmiş varsayımlara dayanır (aylık bileşik faiz, sabit oranlar) ve bankanızın gerçek hesaplama yöntemi, vergiler (KKDF/BSMV), ücretler veya oran değişiklikleri nedeniyle gerçek tutarlar farklı olabilir. Önemli finansal kararlar öncesinde lütfen bir uzmana danışın."
     },
@@ -1119,11 +1177,28 @@ const SOZLUK = {
       panoBos: 'Son ödeme günü girilmiş borç yok. Borç eklerken "son ödeme günü" alanını doldurursanız burada görünür.',
       bilYok: "Bu tarayıcı bildirimleri desteklemiyor; hatırlatmalar yalnızca bu panoda.",
       bilRed: "Bildirim izni tarayıcıda reddedilmiş; hatırlatmalar yalnızca bu panoda görünecek.",
-      bilAcikTxt: "Bildirimler açık — yine de yalnızca uygulama açıkken güvenilirdir.",
-      bilDene: "Bildirimleri dene (isteğe bağlı)", bilKapat: "Bildirimleri kapat",
-      bilBaslik: "Borç Planlayıcı",
-      bilBugun: (ad, t) => `${ad} için son ödeme günü BUGÜN (en az ${t}).`,
+      bilAcikTxt: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir ve uygulama açıkken güvenilirdir.",
+      bilDene: "Kilit ekranı bildirimlerini aç", bilKapat: "Kilit ekranı bildirimlerini kapat",
       bilKala: (ad, g, t) => `${ad} son ödeme gününe ${g} gün kaldı (en az ${t}).`,
+      /* Zil paneli metinleri (uygulama İÇİ: detay serbest) */
+      zilOdemeB: "Yaklaşan ödeme",
+      zilCheckinB: "Aylık check-in", zilCheckinM: "Yeni ay başladı — geçen ay planına uydun mu? Bu Ay sekmesinden işaretle.",
+      zilKapandiB: "Bir borç kapandı", zilKapandiM: (ad) => `${ad} tamamen kapandı. Yolun geri kalanı daha hafif.`,
+      zilEsikB: (y) => `%${y} geride kaldı`, zilEsikM: (y) => `Başlangıçtaki toplam borcunun %${y}'i bitti.`,
+      zilRozetB: "Yeni rozet açıldı", zilRozetM: (ad) => `"${ad}" rozetini kazandın.`,
+      zilHamleB: "Akıllı hamle",
+      zilFaizB: "Faiz uyarısı", zilFaizM: (ad) => `${ad} sadece asgari ödemeyle hiç bitmiyor. Plan sekmesinde çözüm önerileri var.`,
+      zilSeriB: (n) => `Serin ${n} aya çıktı`, zilSeriM: "Üst üste her ay borcun azalıyor — böyle devam.",
+      zilSeriRiskB: "Serin bozulmak üzere", zilSeriRiskM: "Ay bitmeden check-in yapmayı unutma; serin devam etsin.",
+      zilOzetB: "Aylık özet hazır", zilOzetM: "Geçen ayın gidişatı Bu Ay sekmesinde.",
+      zilBosTxt: "Şimdilik her şey yolunda.",
+      zilGrupBugun: "Bugün", zilGrupHafta: "Bu hafta", zilGrupOnce: "Daha önce",
+      zilSilTxt: "Sil",
+      /* Kilit ekranı (yerel) bildirimleri: ASLA tutar/borç adı içermez */
+      zilYerelBaslik: "Sıfırla",
+      zilYerelHatirlatma: "Bir hatırlatman var.",
+      zilYerelOzet: "Yeni bir özetin var.",
+      zilYerelGenel: "Yeni bir bildirimin var.",
       proEtkin: "Pro etkin ✓", proDegil: "Ücretsiz sürüm",
       senBos: "Değişiklik girmediniz; iki alandan en az birini doldurun.",
       senBorcYok: "Önce en az bir açık borç ekleyin.",
@@ -1361,6 +1436,11 @@ const SOZLUK = {
       btn_pro: "Unlock — free for now (local)",
       pro_not: "No payment integration yet: the unlock is a one-time local flag on this device only.",
       btn_yazdir: "Print to PDF", btn_rapor: "Download HTML report",
+      zil_h: "Notifications", zil_okundu: "Mark all read",
+      bil_h: "Notifications",
+      bil_ici: "In-app notifications (bell panel)",
+      bil_ici_not: "Upcoming payments, milestones and smart moves collect in the bell at the top right. Everything is generated on your device; nothing is sent anywhere.",
+      bil_yerel_not: "Lock-screen notifications are off by default. If you turn them on, the browser asks for permission once; the lock-screen text never contains amounts or debt names — only a neutral reminder.",
       test_h: "Engine Verification Tests",
       feragat: "<strong>Disclaimer:</strong> This tool is for education and information only; it is not financial advice. Calculations rely on simplified assumptions (monthly compounding, fixed rates); your bank's actual method, taxes (KKDF/BSMV), fees or rate changes may produce different real figures. Please consult a professional before important financial decisions."
     },
@@ -1405,11 +1485,28 @@ const SOZLUK = {
       panoBos: 'No debts with a due day yet. Fill the "due day" field when adding a debt and it will show up here.',
       bilYok: "This browser doesn't support notifications; reminders live only on this board.",
       bilRed: "Notification permission is denied in the browser; reminders will appear only on this board.",
-      bilAcikTxt: "Notifications are on — still only reliable while the app is open.",
-      bilDene: "Try notifications (optional)", bilKapat: "Turn off notifications",
-      bilBaslik: "Debt Planner",
-      bilBugun: (ad, t) => `${ad} is due TODAY (at least ${t}).`,
+      bilAcikTxt: "Lock-screen notifications are on — only neutral text is sent, and they are reliable only while the app is open.",
+      bilDene: "Turn on lock-screen notifications", bilKapat: "Turn off lock-screen notifications",
       bilKala: (ad, g, t) => `${ad} is due in ${g} days (at least ${t}).`,
+      /* Bell panel texts (IN-app: detail is allowed) */
+      zilOdemeB: "Upcoming payment",
+      zilCheckinB: "Monthly check-in", zilCheckinM: "A new month has started — did you stick to the plan last month? Mark it on the This Month tab.",
+      zilKapandiB: "A debt is paid off", zilKapandiM: (ad) => `${ad} is fully paid off. The rest of the road is lighter.`,
+      zilEsikB: (y) => `${y}% behind you`, zilEsikM: (y) => `${y}% of your starting total debt is gone.`,
+      zilRozetB: "New badge unlocked", zilRozetM: (ad) => `You earned the "${ad}" badge.`,
+      zilHamleB: "Smart move",
+      zilFaizB: "Interest warning", zilFaizM: (ad) => `${ad} never ends with minimum payments only. See fixes on the Plan tab.`,
+      zilSeriB: (n) => `Streak up to ${n} months`, zilSeriM: "Your balance has dropped every month in a row — keep going.",
+      zilSeriRiskB: "Streak at risk", zilSeriRiskM: "Do your check-in before the month ends to keep the streak alive.",
+      zilOzetB: "Monthly summary ready", zilOzetM: "Last month's progress is on the This Month tab.",
+      zilBosTxt: "All clear for now.",
+      zilGrupBugun: "Today", zilGrupHafta: "This week", zilGrupOnce: "Earlier",
+      zilSilTxt: "Delete",
+      /* Lock-screen (local) notifications: NEVER contain amounts/debt names */
+      zilYerelBaslik: "Sıfırla",
+      zilYerelHatirlatma: "You have a reminder.",
+      zilYerelOzet: "You have a new summary.",
+      zilYerelGenel: "You have a new notification.",
       proEtkin: "Pro active ✓", proDegil: "Free version",
       senBos: "No change entered; fill at least one of the two fields.",
       senBorcYok: "Add at least one open debt first.",
@@ -2169,7 +2266,7 @@ const STORAGE = (() => {
 
   // Ayarlar — başlangıç değerleri; kullanıcı hepsini arayüzden değiştirebilir
   durum.ayarlar = Object.assign(
-    { vergiUygula: false, kkdf: 15, bsmv: 15, hatirlatmaGun: 7, bildirimAcik: false },
+    { vergiUygula: false, kkdf: 15, bsmv: 15, hatirlatmaGun: 7, bildirimAcik: false, uygulamaIci: true },
     durum.ayarlar || {});
 
   // Hayat karşılığı referansları — kullanıcı tanımlar, hiçbir tutar gömülü değildir
@@ -2220,6 +2317,7 @@ const STORAGE = (() => {
     sizintiCiz();
     erimeCiz();
     rozetKontrol();
+    zilUret(); // veri değişti: zil kuralları yeni bildirim üretebilir
     // Başarı anı: bir borç kapandıysa kısa kutlama
     const kapali = durum.borclar.filter(b => b.balance <= 0.005).length;
     if (kapali > oncekiKapali) {
@@ -3149,6 +3247,7 @@ const STORAGE = (() => {
     checkinCiz();
     zamanCiz();
     kesCiz();
+    zilCiz(); // dil/tema değişiminde panel metinleri tazelensin
   }
 
   /* ---- Ödeme serisi ısı haritası ----
@@ -3833,14 +3932,298 @@ const STORAGE = (() => {
     panoCiz();
   });
 
-  /* ---- İsteğe bağlı tarayıcı bildirimi ----
+  /* ============================================================
+     ZİL — uygulama içi bildirim merkezi
+     Sunucu yok, e-posta yok, dış çağrı yok: tüm bildirimler cihazda
+     kural motorundan üretilir ve localStorage'da tutulur.
+     GİZLİLİK: uygulama İÇİNDE detay serbest; kilit ekranına giden
+     yerel bildirimde ASLA tutar veya borç adı geçmez (nötr metin).
+     ============================================================ */
+  const ZIL_ANAHTAR = "borcPlanlayici.zil.v1";
+  const ZIL_GUNLUK_SINIR = 3;  // kullanıcıyı boğma: günde en çok 3 üretim
+  const ZIL_LISTE_SINIR = 40;  // en eskiler sessizce düşer
+
+  let zilVeri = (() => {
+    try {
+      const h = JSON.parse(localStorage.getItem(ZIL_ANAHTAR) || "{}");
+      return {
+        liste: Array.isArray(h.liste) ? h.liste : [],
+        uretim: h.uretim && typeof h.uretim === "object" ? h.uretim : {}
+      };
+    } catch (e) { return { liste: [], uretim: {} }; }
+  })();
+  function zilKaydet() {
+    try { localStorage.setItem(ZIL_ANAHTAR, JSON.stringify(zilVeri)); } catch (e) { /* kota: zil kritik değil */ }
+  }
+
+  // Tür → hedef sekme ve panel ikonu (inline SVG path'leri, emoji yasak)
+  const ZIL_EKRAN = { odeme: "genel", checkin: "buay", kapandi: "borclar", esik: "genel", rozet: "buay", hamle: "plan", faiz: "plan", seri: "buay", seriRisk: "buay", ozet: "buay" };
+  const ZIL_IKON = {
+    odeme: '<path d="M8 3v3M16 3v3M4 9h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>',
+    checkin: '<path d="M20 6 9 17l-5-5"/>',
+    kapandi: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+    esik: '<path d="M3 17l6-6 4 4 7-8"/><path d="M14 7h6v6"/>',
+    rozet: '<path d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/>',
+    hamle: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.8.7-1 1.4-1 2.5h-6c0-1.1-.2-1.8-1-2.5A6 6 0 0 1 12 3z"/>',
+    faiz: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.1"/>',
+    seri: '<path d="M12 3s5 4 5 9a5 5 0 0 1-10 0c0-2 1-3.5 2-5 .5 2 1.5 3 3 3-1-2-1-5 0-7z"/>',
+    ozet: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>'
+  };
+  ZIL_IKON.seriRisk = ZIL_IKON.seri;
+
+  // Panel metinleri her çizimde aktif dilden üretilir (dil değişimine dayanıklı)
+  function zilBaslikMetin(o) {
+    const s = sd(), p = o.p || {};
+    switch (o.tur) {
+      case "odeme": return [s.zilOdemeB, s.bilKala(p.ad, p.gun, paraFmt.format(p.tutar))];
+      case "checkin": return [s.zilCheckinB, s.zilCheckinM];
+      case "kapandi": return [s.zilKapandiB, s.zilKapandiM(p.ad)];
+      case "esik": return [s.zilEsikB(p.y), s.zilEsikM(p.y)];
+      case "rozet": return [s.zilRozetB, s.zilRozetM((s.rozet[p.id] || {}).ad || p.id)];
+      case "hamle": return [s.zilHamleB, typeof p.metin === "object" ? (p.metin[durum.dil] || p.metin.tr) : p.metin];
+      case "faiz": return [s.zilFaizB, s.zilFaizM(p.ad)];
+      case "seri": return [s.zilSeriB(p.n), s.zilSeriM];
+      case "seriRisk": return [s.zilSeriRiskB, s.zilSeriRiskM];
+      case "ozet": return [s.zilOzetB, s.zilOzetM];
+      default: return ["", ""];
+    }
+  }
+
+  /* Kural motoru: adaylar toplanır, daha önce üretilenler (uretim kaydı)
+     elenir, öncelik sırasıyla günlük sınıra kadar eklenir. */
+  function zilUret() {
+    if (durum.ayarlar.uygulamaIci === false) { zilCiz(); return; }
+    const bugun = new Date();
+    const bugunK = bugun.toISOString().slice(0, 10);
+    const buAyK = ayAnahtari(bugun);
+    const adaylar = [];
+    const oner = (oncelik, anahtar, tur, p, yerelTur) => {
+      if (!zilVeri.uretim[anahtar]) adaylar.push({ oncelik, anahtar, tur, p, yerelTur });
+    };
+
+    // 1) Yaklaşan ödeme: 3 gün / 1 gün kala (ayda bir kez, borç başına)
+    for (const b of durum.borclar) {
+      if (!b.dueDay || b.balance <= 0.005) continue;
+      const { kalanGun } = sonrakiSonOdeme(b.dueDay);
+      if (kalanGun === 3) oner(2, `odeme3|${b.ad}|${buAyK}`, "odeme", { ad: b.ad, gun: 3, tutar: b.payment }, "hatirlatma");
+      if (kalanGun === 1) oner(1, `odeme1|${b.ad}|${buAyK}`, "odeme", { ad: b.ad, gun: 1, tutar: b.payment }, "hatirlatma");
+    }
+
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+
+    // 5) Faiz uyarısı: "sadece asgari" tuzağındaki borç (ayda bir)
+    for (const b of acik) {
+      if (ENGINE.minimumOnlyProjection(b, durum.ayarlar).hicBitmez) {
+        oner(2, `faiz|${b.ad}|${buAyK}`, "faiz", { ad: b.ad }, "genel");
+      }
+    }
+
+    // 3) Kilometre taşları: kapanan borç, %25/50/75 eşiği, açılan rozet
+    for (const b of durum.borclar) {
+      if (b.balance <= 0.005 && b.initialBalance > 0.005) {
+        oner(3, `kapandi|${b.ad}`, "kapandi", { ad: b.ad }, "genel");
+      }
+    }
+    const ilkToplam = durum.borclar.reduce((t, b) => t + (b.initialBalance > 0 ? b.initialBalance : b.balance), 0);
+    const toplamBakiye = durum.borclar.reduce((t, b) => t + b.balance, 0);
+    const yuzde = ilkToplam > 0 ? (1 - toplamBakiye / ilkToplam) * 100 : 0;
+    for (const e of [25, 50, 75]) {
+      if (durum.borclar.length > 0 && yuzde >= e) oner(3, `esik${e}`, "esik", { y: e }, "genel");
+    }
+    for (const id of Object.keys(rozetDurum.acilan)) {
+      oner(4, `rozet|${id}`, "rozet", { id }, "genel");
+    }
+
+    // 6) Seri durumu: büyüdü / bozulmak üzere (ayda bir)
+    const seri = azalisSerisi();
+    if (seri >= 2) oner(5, `seri|${buAyK}|${seri}`, "seri", { n: seri }, "genel");
+    if (bugun.getDate() >= 25 && seri >= 2 && rozetDurum.checkin[buAyK] !== true) {
+      oner(4, `seriRisk|${buAyK}`, "seriRisk", {}, "hatirlatma");
+    }
+
+    // 2) Aylık check-in + 7) aylık özet: yalnızca ay başında
+    if (bugun.getDate() <= 5) {
+      if (durum.borclar.length > 0 && rozetDurum.checkin[buAyK] !== true) {
+        oner(5, `checkin|${buAyK}`, "checkin", {}, "hatirlatma");
+      }
+      const oncekiAyK = ayAnahtari(new Date(bugun.getFullYear(), bugun.getMonth() - 1, 1));
+      if (rozetDurum.aylik[oncekiAyK] !== undefined) {
+        oner(6, `ozet|${buAyK}`, "ozet", {}, "ozet");
+      }
+    }
+
+    // 4) Akıllı hamle: haftada en çok bir kez (motor taraması pahalı,
+    //    o yüzden önce üretim kaydına bakılır)
+    const yilBasi = new Date(bugun.getFullYear(), 0, 1);
+    const hafta = bugun.getFullYear() + "-h" + Math.ceil(((bugun - yilBasi) / 864e5 + 1) / 7);
+    if (acik.length > 0 && !zilVeri.uretim[`hamle|${hafta}`]) {
+      // Metin iki dilde de saklanır; panel sonradan dil değişse bile doğru gösterir
+      const girdi = { borclar: durum.borclar, ekstra: parseFloat($("ekstra").value) || 0, yontem: durum.yontem, ayarlar: durum.ayarlar };
+      const hTr = ONERI.enIyiHamle(Object.assign({ dil: "tr" }, girdi));
+      if (hTr && hTr.metin && hTr.metin !== SOZLUK.tr.d.hamleYok) {
+        const hEn = ONERI.enIyiHamle(Object.assign({ dil: "en" }, girdi));
+        const soy = (m) => String(m || "").replace(/<[^>]*>/g, "");
+        adaylar.push({ oncelik: 7, anahtar: `hamle|${hafta}`, tur: "hamle", p: { metin: { tr: soy(hTr.metin), en: soy(hEn && hEn.metin) } }, yerelTur: "genel" });
+      }
+    }
+
+    // Günlük sınır: öncelik sırasıyla eklenir, kalanlar sonraki güne kalır
+    let kalan = ZIL_GUNLUK_SINIR - zilVeri.liste.filter(o => o.gun === bugunK).length;
+    adaylar.sort((a, b) => a.oncelik - b.oncelik);
+    for (const a of adaylar) {
+      if (kalan <= 0) break;
+      zilVeri.uretim[a.anahtar] = bugunK;
+      zilVeri.liste.unshift({
+        id: Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+        tur: a.tur, p: a.p, ts: Date.now(), gun: bugunK, okundu: false
+      });
+      kalan--;
+      yerelBildir(a.yerelTur);
+    }
+    if (zilVeri.liste.length > ZIL_LISTE_SINIR) zilVeri.liste.length = ZIL_LISTE_SINIR;
+    zilKaydet();
+    zilCiz();
+  }
+
+  /* Kilit ekranı (yerel) bildirimi — GİZLİLİK: gövde her zaman nötrdür,
+     tutar/borç adı asla geçmez. Varsayılan kapalı; kullanıcı ayardan açar. */
+  async function yerelBildir(tur) {
+    if (!durum.ayarlar.bildirimAcik) return;
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const s = sd();
+    const govde = tur === "ozet" ? s.zilYerelOzet : tur === "hatirlatma" ? s.zilYerelHatirlatma : s.zilYerelGenel;
+    try {
+      const kayit = "serviceWorker" in navigator ? await navigator.serviceWorker.getRegistration() : null;
+      const tag = "zil-" + new Date().toISOString().slice(0, 10); // aynı gün tek kart
+      if (kayit && kayit.showNotification) kayit.showNotification(s.zilYerelBaslik, { body: govde, tag });
+      else new Notification(s.zilYerelBaslik, { body: govde, tag });
+    } catch (e) { /* sessizce zil paneline düş */ }
+  }
+
+  /* ---- Panel çizimi ---- */
+  function zilCiz() {
+    const s = sd();
+    const okunmamis = zilVeri.liste.filter(o => !o.okundu).length;
+    const rozetEl = $("zilRozet");
+    rozetEl.hidden = okunmamis === 0;
+    rozetEl.textContent = okunmamis > 9 ? "9+" : String(okunmamis);
+
+    const kap = $("zilListe");
+    if (zilVeri.liste.length === 0) {
+      kap.innerHTML = `<div class="zil-bos">
+        <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/><path d="M9.5 8.5 11.5 10.5 15 7" opacity="0.6"/></svg>
+        <p>${s.zilBosTxt}</p></div>`;
+      return;
+    }
+    const saatFmt = new Intl.DateTimeFormat(s.yerel, { hour: "2-digit", minute: "2-digit" });
+    const kisaFmt = new Intl.DateTimeFormat(s.yerel, { day: "numeric", month: "short" });
+    const simdi = new Date();
+    const bugunStr = simdi.toDateString();
+    const gruplar = { bugun: [], hafta: [], once: [] };
+    for (const o of zilVeri.liste) {
+      const t = new Date(o.ts);
+      if (t.toDateString() === bugunStr) gruplar.bugun.push(o);
+      else if (simdi - t < 7 * 864e5) gruplar.hafta.push(o);
+      else gruplar.once.push(o);
+    }
+    const oge = (o) => {
+      const [baslik, metin] = zilBaslikMetin(o);
+      const t = new Date(o.ts);
+      const zaman = t.toDateString() === bugunStr ? saatFmt.format(t) : kisaFmt.format(t);
+      return `<div class="zil-oge ${o.okundu ? "" : "yeni"}" data-id="${o.id}" role="button" tabindex="0">
+        <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ZIL_IKON[o.tur] || ZIL_IKON.ozet}</svg>
+        <div style="flex:1; min-width:0"><strong>${kacis(baslik)}</strong><p>${kacis(metin)}</p><span class="zil-zaman">${zaman}</span></div>
+        <button class="zil-sil" data-zil-sil="${o.id}" aria-label="${s.zilSilTxt}" title="${s.zilSilTxt}">×</button>
+      </div>`;
+    };
+    const bolum = (ad, dizi) => dizi.length ? `<p class="zil-grup">${ad}</p>` + dizi.map(oge).join("") : "";
+    kap.innerHTML = bolum(s.zilGrupBugun, gruplar.bugun) + bolum(s.zilGrupHafta, gruplar.hafta) + bolum(s.zilGrupOnce, gruplar.once);
+  }
+
+  /* ---- Panel etkileşimi ---- */
+  function zilPanelAc(ac) {
+    $("zilPanel").classList.toggle("acik", ac);
+    $("zilPerde").classList.toggle("acik", ac);
+  }
+  $("zilBtn").addEventListener("click", () => { zilCiz(); zilPanelAc(true); });
+  $("zilKapatBtn").addEventListener("click", () => zilPanelAc(false));
+  $("zilPerde").addEventListener("click", () => zilPanelAc(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") zilPanelAc(false); });
+  $("zilTumOkundu").addEventListener("click", () => {
+    zilVeri.liste.forEach(o => { o.okundu = true; });
+    zilKaydet(); zilCiz();
+  });
+  function zilSil(id) {
+    zilVeri.liste = zilVeri.liste.filter(o => o.id !== id);
+    zilKaydet(); zilCiz();
+  }
+  $("zilListe").addEventListener("click", (e) => {
+    const silBtn = e.target.closest("[data-zil-sil]");
+    if (silBtn) { zilSil(silBtn.dataset.zilSil); return; }
+    const oge = e.target.closest(".zil-oge");
+    if (!oge || oge.dataset.kaydirildi === "1") return;
+    const o = zilVeri.liste.find(x => x.id === oge.dataset.id);
+    if (!o) return;
+    o.okundu = true;
+    zilKaydet(); zilCiz();
+    zilPanelAc(false);
+    sekmeGoster(ZIL_EKRAN[o.tur] || "genel"); // ilgili ekrana git
+  });
+
+  /* Kaydırarak silme: yatay sürükleme (dokunmatik + fare), dikey kaydırma
+     touch-action: pan-y ile serbest kalır */
+  let zilKaydirma = null;
+  $("zilListe").addEventListener("pointerdown", (e) => {
+    const oge = e.target.closest(".zil-oge");
+    if (!oge || e.target.closest("[data-zil-sil]")) return;
+    zilKaydirma = { oge, x0: e.clientX, dx: 0 };
+    oge.style.transition = "none";
+  });
+  $("zilListe").addEventListener("pointermove", (e) => {
+    if (!zilKaydirma) return;
+    zilKaydirma.dx = e.clientX - zilKaydirma.x0;
+    if (Math.abs(zilKaydirma.dx) > 6) zilKaydirma.oge.dataset.kaydirildi = "1";
+    zilKaydirma.oge.style.transform = `translateX(${zilKaydirma.dx}px)`;
+    zilKaydirma.oge.style.opacity = String(Math.max(0.3, 1 - Math.abs(zilKaydirma.dx) / 220));
+  });
+  const zilKaydirmaBitir = (e) => {
+    if (!zilKaydirma) return;
+    const { oge } = zilKaydirma;
+    // Bazı ortamlar ara pointermove üretmez; son konumdan da hesapla
+    const dx = (e && typeof e.clientX === "number" && e.type !== "pointercancel")
+      ? e.clientX - zilKaydirma.x0
+      : zilKaydirma.dx;
+    if (Math.abs(dx) > 6) oge.dataset.kaydirildi = "1";
+    oge.style.transition = "";
+    if (Math.abs(dx) > 80) {
+      oge.style.transform = `translateX(${dx > 0 ? 110 : -110}%)`;
+      oge.style.opacity = "0";
+      const id = oge.dataset.id;
+      setTimeout(() => zilSil(id), 180);
+    } else {
+      oge.style.transform = "";
+      oge.style.opacity = "";
+      setTimeout(() => { delete oge.dataset.kaydirildi; }, 50);
+    }
+    zilKaydirma = null;
+  };
+  $("zilListe").addEventListener("pointerup", zilKaydirmaBitir);
+  $("zilListe").addEventListener("pointercancel", zilKaydirmaBitir);
+  $("zilIciAc").addEventListener("change", () => {
+    durum.ayarlar.uygulamaIci = $("zilIciAc").checked;
+    STORAGE.kaydet(durum);
+    if (durum.ayarlar.uygulamaIci) zilUret();
+  });
+
+  /* ---- İsteğe bağlı kilit ekranı bildirimi (yerel) ----
      Notification API + (varsa) service worker denenir; başarısız olursa
-     kullanıcıya abartılı vaat verilmez, pano zaten her zaman çalışır. */
+     kullanıcıya abartılı vaat verilmez, zil paneli her zaman çalışır. */
   const BILDIRIM_LOG_ANAHTAR = "borcPlanlayici.bildirimLog";
 
   function bildirimDurumGoster() {
     const btn = $("bildirimBtn"), yazi = $("bildirimDurum");
     const s = sd();
+    $("zilIciAc").checked = durum.ayarlar.uygulamaIci !== false;
     if (!("Notification" in window)) {
       btn.hidden = true;
       yazi.textContent = s.bilYok;
@@ -3860,34 +4243,11 @@ const STORAGE = (() => {
     }
   }
 
-  async function hatirlatmaKontrol() {
-    if (!durum.ayarlar.bildirimAcik) return;
-    if (!("Notification" in window) || Notification.permission !== "granted") return;
-    const bugunKey = new Date().toISOString().slice(0, 10);
-    let log = {};
-    try { log = JSON.parse(localStorage.getItem(BILDIRIM_LOG_ANAHTAR) || "{}"); } catch (e) { /* yoksay */ }
-    const eylemler = kocEylemleri(); // koç: bildirime borca özel eylem eklenir
-    for (const b of durum.borclar) {
-      if (!b.dueDay) continue;
-      const { kalanGun } = sonrakiSonOdeme(b.dueDay);
-      if (kalanGun > (durum.ayarlar.hatirlatmaGun ?? 7)) continue;
-      const anahtar = b.ad + "|" + bugunKey; // aynı gün aynı borç için tek bildirim
-      if (log[anahtar]) continue;
-      const koc = kocMetni(eylemler[b.ad]);
-      const metin = (kalanGun === 0
-        ? sd().bilBugun(b.ad, paraFmt.format(b.payment))
-        : sd().bilKala(b.ad, kalanGun, paraFmt.format(b.payment))) + (koc ? " · " + koc : "");
-      try {
-        const kayit = "serviceWorker" in navigator ? await navigator.serviceWorker.getRegistration() : null;
-        if (kayit && kayit.showNotification) {
-          kayit.showNotification(sd().bilBaslik, { body: metin, tag: anahtar });
-        } else {
-          new Notification(sd().bilBaslik, { body: metin, tag: anahtar });
-        }
-        log[anahtar] = true;
-      } catch (e) { /* sessizce panoya düş */ }
-    }
-    try { localStorage.setItem(BILDIRIM_LOG_ANAHTAR, JSON.stringify(log)); } catch (e) { /* yoksay */ }
+  /* Eskiden burada detaylı (borç adı + tutar içeren) sistem bildirimi
+     üretiliyordu; gizlilik kuralı gereği artık tüm üretim zil motorunda:
+     detay uygulama İÇİNDE kalır, kilit ekranına yalnızca nötr metin gider. */
+  function hatirlatmaKontrol() {
+    zilUret();
   }
 
   $("bildirimBtn").addEventListener("click", async () => {
