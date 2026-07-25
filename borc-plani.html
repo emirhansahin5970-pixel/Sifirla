@@ -480,6 +480,15 @@
   /* Tipografi disiplini: rakamlar sabit genişlikte hizalansın */
   .deger, .stat-blok .buyuk, td.num, th.num, .halka-yuzde, .hero-statlar .deger { font-variant-numeric: tabular-nums; }
 
+  /* Kayıt sonrası onay: kısa, sakin — kullanıcı boş ekrana düşmesin */
+  .kayit-sonrasi { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--ok-bg); color: var(--ok); animation: kayitGir 0.25s ease; }
+  .kayit-sonrasi .ikn { flex: none; }
+  .kayit-sonrasi .btnler { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  @keyframes kayitGir { from { opacity: 0; transform: translateY(6px); } }
+  @media (prefers-reduced-motion: reduce) { .kayit-sonrasi { animation: none; } }
+  #formGeriBtn { margin-bottom: 10px; }
+  #heroEkleBtn { margin-top: -6px; }
+
   /* Yükleme iskeleti — gelecekteki eşzamansız işler için hazır yardımcı.
      Uygulama tamamen yerel/senkron olduğundan sahte yükleme GÖSTERİLMEZ. */
   .iskelet { position: relative; overflow: hidden; background: var(--surface-2); border-radius: 8px; color: transparent; }
@@ -610,6 +619,8 @@
         <p class="deger" id="ozetOdeme">₺0</p>
       </div>
     </div>
+    <!-- Boş durumda birincil çağrı: doğrudan borç kayıt formuna götürür -->
+    <button id="heroEkleBtn" class="borcEkleGit no-print" hidden data-i18n="btn_borc_ekle">Borç ekle</button>
   </section>
 
   <!-- Önlenen faiz → hayat karşılığı: kullanıcı tanımlı referanslarla -->
@@ -718,6 +729,8 @@
 
   <!-- Borç ekleme formu -->
   <section class="card no-print">
+    <!-- Akıştan gelindiyse görünür: kullanıcı vazgeçerse geldiği ekrana döner -->
+    <button id="formGeriBtn" class="ghost small" hidden><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
     <h2 data-i18n="form_h">Borç Ekle</h2>
     <form id="borcForm" novalidate>
       <div class="form-grid">
@@ -759,6 +772,15 @@
         </div>
       </div>
     </form>
+    <!-- Kayıt sonrası onay: kısa kutlama + iki net yol (boş ekrana düşme yok) -->
+    <div id="kayitSonrasi" class="kayit-sonrasi no-print" role="status" hidden>
+      <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.8 2.8L16.5 9"/></svg>
+      <strong data-i18n="kayit_ok">Kaydedildi</strong>
+      <span class="btnler">
+        <button type="button" id="birDahaBtn" class="ghost small" data-i18n="kayit_bir_daha">Bir borç daha ekle</button>
+        <button type="button" id="bittiBtn" class="small" data-i18n="kayit_bitti">Bitti, özeti gör</button>
+      </span>
+    </div>
     <p id="limitUyari" class="warning" hidden></p>
     <p class="muted" style="margin-top:0.6rem" data-i18n="form_not">
       Taksitli kredide bakiye olarak <strong>kalan toplam taksit tutarını</strong> (faiz dahil) girin; faiz oranı yalnızca öncelik sıralamasında kullanılır.
@@ -1350,6 +1372,11 @@ const SOZLUK = {
       ayar_palet: "Tema paleti",
       btn_rapor: "Aylık raporu gör",
       devam_btn: "Devam et",
+      btn_borc_ekle: "Borç ekle",
+      form_geri: "Geri",
+      kayit_ok: "Kaydedildi",
+      kayit_bir_daha: "Bir borç daha ekle",
+      kayit_bitti: "Bitti, özeti gör",
       kisi_h: "Kişiselleştirme",
       kisi_lbl: "Sana nasıl hitap edelim?",
       kisi_not: "Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.",
@@ -1706,6 +1733,11 @@ const SOZLUK = {
       ayar_palet: "Theme palette",
       btn_rapor: "See monthly report",
       devam_btn: "Continue",
+      btn_borc_ekle: "Add a debt",
+      form_geri: "Back",
+      kayit_ok: "Saved",
+      kayit_bir_daha: "Add another debt",
+      kayit_bitti: "Done, see overview",
       kisi_h: "Personalization",
       kisi_lbl: "What should we call you?",
       kisi_not: "Stored only on your device; used in greetings and summaries. You can leave it blank.",
@@ -2769,7 +2801,9 @@ const STORAGE = (() => {
     const uc = $("halkaUc");
     uc.style.transform = `rotate(${(yuzde * 3.6).toFixed(1)}deg)`;
     uc.setAttribute("opacity", yuzde > 0 ? "1" : "0");
-    $("ozetTrend").innerHTML = trendHtml(); // geçen aya göre minik değişim göstergesi
+    $("ozetTrend").innerHTML = durum.borclar.length > 0 ? trendHtml() : ""; // boş durumda trend anlamsız
+    // İlk kullanım: hiç borç yoksa akış "başla" gibi davranır (birincil çağrı görünür)
+    $("heroEkleBtn").hidden = durum.borclar.length !== 0;
     selamCiz(); // selamlama + bağlam cümlesi hero ile birlikte tazelenir
   }
 
@@ -2995,6 +3029,7 @@ const STORAGE = (() => {
     }
     $("limitUyari").hidden = true;
     dogrulamaAktif = true;
+    const yeniEkleme = duzenlenen === null; // onay paneli yalnızca yeni kayıtta
     const d = borcFormuDogrula();
     if (!d.gecerli) return; // hatalar alanların altında; alert yok
     const veri = {
@@ -3023,6 +3058,7 @@ const STORAGE = (() => {
     $("sonuclar").innerHTML = "";
     kaydetVeCiz();
     titret(12); // önemli aksiyon: borç eklendi/güncellendi
+    if (yeniEkleme) kayitOnayiGoster(); // kısa onay + "bir daha / bitti" yolları
   });
 
   /* ---- Faiz & vergi ayarları ---- */
@@ -3325,7 +3361,8 @@ const STORAGE = (() => {
     const s = sd();
     if (durum.borclar.length === 0) {
       $("buayHeroKart").hidden = true;
-      kap.innerHTML = `<p class="empty">${s.buayBos}</p>`;
+      kap.innerHTML = `<p class="empty">${s.buayBos}</p>
+        <p class="no-print" style="text-align:center; margin-top:4px"><button type="button" class="borcEkleGit">${st().btn_borc_ekle}</button></p>`;
       return;
     }
     const ekstra = parseFloat($("ekstra").value) || 0;
@@ -5073,12 +5110,59 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     durum.sekme = ad; // otomatik yenilemede aynı sekmede kalınsın
     STORAGE.kaydet(durum);
     window.scrollTo({ top: 0 });
+    // Borç ekleme akışının kalıntıları başka sekmelerde görünmesin
+    if (ad !== "borclar") {
+      $("formGeriBtn").hidden = true;
+      $("kayitSonrasi").hidden = true;
+      ekleDonus = null;
+    }
     // Gizliyken çizilen SVG'nin uzunluk ölçümü bazı tarayıcılarda 0 dönebilir;
     // sekme görünür olunca haritayı tazele
     if (ad === "genel") yolculukCiz();
   }
   document.querySelectorAll(".alt-nav button").forEach(b =>
     b.addEventListener("click", () => sekmeGoster(b.dataset.sekme)));
+
+  /* ---- "Borç ekle / başla" akışı: her yerden doğrudan kayıt formuna ----
+     Geçiş sekme animasyonuyla yumuşaktır (0.22s); ardından ilk alan odaklanır.
+     Geldiği sekme hatırlanır — Geri ile kapana kısılmadan dönülür. */
+  let ekleDonus = null;
+  function borcEkleAkisi() {
+    if (durum.sekme !== "borclar") ekleDonus = durum.sekme;
+    sekmeGoster("borclar");
+    $("formGeriBtn").hidden = !ekleDonus;
+    $("kayitSonrasi").hidden = true;
+    // Sekme geçişi bitince odakla: ekran okuyucu odağı doğal biçimde forma taşır
+    setTimeout(() => { $("ad").focus(); }, 240);
+  }
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".borcEkleGit")) borcEkleAkisi();
+  });
+  $("formGeriBtn").addEventListener("click", () => {
+    const hedef = ekleDonus || "genel";
+    ekleDonus = null;
+    $("formGeriBtn").hidden = true;
+    sekmeGoster(hedef);
+  });
+
+  /* Kayıt sonrası: kısa onay + iki net yol (boş ekrana düşme yok) */
+  function kayitOnayiGoster() {
+    const p = $("kayitSonrasi");
+    p.hidden = false;
+    p.style.animation = "none"; void p.offsetWidth; p.style.animation = ""; // animasyonu tazele
+  }
+  $("birDahaBtn").addEventListener("click", () => {
+    $("kayitSonrasi").hidden = true;
+    $("ad").focus();
+  });
+  $("bittiBtn").addEventListener("click", () => {
+    $("kayitSonrasi").hidden = true;
+    ekleDonus = null;
+    $("formGeriBtn").hidden = true;
+    sekmeGoster("genel"); // halka ve özet artık dolu
+  });
+  // Kullanıcı yeni kayda başlayınca onay paneli kendiliğinden çekilir
+  $("borcForm").addEventListener("input", () => { $("kayitSonrasi").hidden = true; });
 
   /* ---- Onboarding turu: yalnızca ilk açılışta (gorduByte bayrağı) ---- */
   const TUR_ANAHTAR = "borcPlanlayici.gorduByte";
@@ -5106,10 +5190,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
       selamCiz();
     }
     $("onboard").hidden = true;
-    if (basla) {
-      sekmeGoster("borclar"); // borç ekleme ekranına götür
-      $("ad").focus();
-    }
+    if (basla) borcEkleAkisi(); // borç kayıt akışı: form + odak + geri yolu
   }
   $("obAtla").addEventListener("click", () => turKapat(false));
   $("obBasla").addEventListener("click", () => turKapat(true));
