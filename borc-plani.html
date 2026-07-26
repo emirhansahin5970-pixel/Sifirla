@@ -480,6 +480,94 @@
   /* Tipografi disiplini: rakamlar sabit genişlikte hizalansın */
   .deger, .stat-blok .buyuk, td.num, th.num, .halka-yuzde, .hero-statlar .deger { font-variant-numeric: tabular-nums; }
 
+  /* Faiz yardımcısı: bilmeyen kullanıcıyı engellemeyen küçük rehber */
+  .mini-ipucu { margin-top: 4px; font-size: 11.5px; color: var(--text-muted); }
+  .link-btn { background: none !important; border: none; padding: 4px 0 0; margin: 0; color: var(--accent); font-size: 12.5px; font-weight: 600; cursor: pointer; box-shadow: none; }
+  .link-btn:hover { text-decoration: underline; }
+  /* Panel açılır (dropdown) olarak konumlanır: form-grid satırını şişirmez,
+     komşu alanlar yerinden oynamaz */
+  .faiz-hucre { position: relative; }
+  .faiz-yardim { position: absolute; left: 0; top: 100%; margin-top: 6px; z-index: 40; width: max(100%, 250px); max-width: 290px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 12px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
+  .faiz-yardim .ghost.small { width: 100%; text-align: left; }
+
+  /* ============================================================
+     BORÇ EKLEME SİHİRBAZI — her adım tek soru, tam ekran, sakin.
+     Yalnızca transform/opacity animasyonu; reduced-motion'da sade.
+     ============================================================ */
+  .gorunmez-metin { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #sihirbaz { position: fixed; inset: 0; z-index: 190; background: var(--bg); display: flex; flex-direction: column; }
+  #sihirbaz[hidden] { display: none; }
+  .sb-ust { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
+  .sb-ilerleme { flex: 1; height: 4px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .sb-ilerleme i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--halka-a), var(--halka-b)); transition: width 0.25s ease; }
+  .sb-govde { flex: 1; position: relative; overflow-y: auto; }
+  .sb-adim { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 24px 20px 40px; max-width: 560px; margin: 0 auto; text-align: center; overflow-y: auto; }
+  .sb-adim.aktif { display: flex; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sb-adim.aktif { animation: sbGirIleri 0.24s ease; }
+    #sihirbaz[data-yon="geri"] .sb-adim.aktif { animation: sbGirGeri 0.24s ease; }
+  }
+  @keyframes sbGirIleri { from { opacity: 0; transform: translateX(28px); } }
+  @keyframes sbGirGeri { from { opacity: 0; transform: translateX(-28px); } }
+  .sb-soru { font-size: clamp(24px, 6vw, 32px); font-weight: 700; letter-spacing: -0.02em; color: var(--accent-strong); font-family: var(--font-baslik); }
+  /* Dev para/faiz alanı: tek kahraman öğe, şampanya vurgulu */
+  .sb-buyuk-alan { display: flex; align-items: baseline; gap: 8px; justify-content: center; max-width: 100%; }
+  .sb-buyuk-alan input { width: min(320px, 72vw); font-size: clamp(32px, 9vw, 46px); font-weight: 700; text-align: center; background: none; border: none; border-bottom: 2px solid var(--border); border-radius: 0; color: var(--sicak); font-family: var(--font-baslik); font-variant-numeric: tabular-nums; padding: 4px 4px 8px; letter-spacing: -0.02em; }
+  .sb-buyuk-alan input::placeholder { color: var(--text-muted); opacity: 0.4; }
+  .sb-buyuk-alan input:focus { outline: none; border-bottom-color: var(--accent); }
+  .sb-birim { font-size: clamp(20px, 5vw, 28px); font-weight: 600; color: var(--text-muted); font-family: var(--font-baslik); }
+  /* Tür kartları: büyük, dokunulası; ince gradyan kenarlık + seçili parlaması */
+  .sb-tur-kartlar { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; width: 100%; }
+  /* Çift seçici: koyu temadaki genel button kuralının özgüllüğünü aşar
+     (bilinen tuzak — aksi halde kartlar amber'e boyanır) */
+  .sb-tur, :root[data-theme="dark"] .sb-tur { position: relative; flex: 1 1 190px; max-width: 240px; min-width: 160px; padding: 24px 16px; border-radius: 16px; cursor: pointer; text-align: center; font-family: inherit; color: var(--text); border: 0;
+    background: linear-gradient(180deg, var(--cam-ust), transparent 55%), var(--surface); box-shadow: var(--shadow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  .sb-tur::before { content: ""; position: absolute; inset: 0; border-radius: 16px; padding: 1px; pointer-events: none;
+    background: linear-gradient(180deg, var(--cam-kenar-a), var(--cam-kenar-b));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; transition: background 0.2s ease; }
+  .sb-tur:hover { transform: translateY(-2px); }
+  .sb-tur.secili { transform: scale(1.03); box-shadow: 0 10px 28px -10px color-mix(in srgb, var(--accent) 45%, transparent); }
+  .sb-tur.secili::before { background: linear-gradient(180deg, var(--sicak), var(--cam-kenar-b)); }
+  @media (prefers-reduced-motion: reduce) { .sb-tur, .sb-tur:hover, .sb-tur.secili { transform: none; transition: none; } }
+  .sb-tur .ikn { width: 36px; height: 36px; color: var(--accent); margin: 0 auto 10px; display: block; }
+  .sb-tur strong { display: block; font-size: 16px; color: var(--accent-strong); margin-bottom: 3px; }
+  .sb-tur span { font-size: 12.5px; color: var(--text-muted); }
+  .sb-ipucu { font-size: 13px; color: var(--text-muted); margin-top: -10px; }
+  .sb-hata { color: var(--danger); font-size: 13px; min-height: 18px; margin-top: -12px; }
+  .sb-btnlar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  /* Özet kartı: canlı önizleme */
+  .sb-ozet { width: min(360px, 88vw); text-align: left; border-radius: 14px; padding: 14px 18px;
+    background: linear-gradient(180deg, var(--cam-ust), transparent 55%), var(--surface); box-shadow: var(--shadow); position: relative; }
+  .sb-ozet::before { content: ""; position: absolute; inset: 0; border-radius: 14px; padding: 1px; pointer-events: none;
+    background: linear-gradient(180deg, var(--cam-kenar-a), var(--cam-kenar-b));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .sb-ozet-baslik { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .sb-ozet dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-size: 14px; }
+  .sb-ozet dt { color: var(--text-muted); }
+  .sb-ozet dd { margin: 0; text-align: right; color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sb-ozet dd.vurgu { color: var(--sicak); font-family: var(--font-baslik); }
+  /* Onay: halka çizilir + tik belirir (konfeti yok, zarif an) */
+  .sb-onay-halka { width: 110px; height: 110px; }
+  .sb-onay-cizgi { stroke-dasharray: 330; stroke-dashoffset: 330; }
+  .sb-onay-tik { stroke-dasharray: 60; stroke-dashoffset: 60; }
+  .sb-adim.aktif .sb-onay-cizgi { animation: sbOnayCiz 0.9s 0.1s cubic-bezier(0.6, 0, 0.2, 1) forwards; }
+  .sb-adim.aktif .sb-onay-tik { animation: sbOnayCiz 0.4s 0.85s ease forwards; }
+  @keyframes sbOnayCiz { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .sb-onay-cizgi, .sb-onay-tik { stroke-dashoffset: 0; animation: none !important; }
+    .sb-adim.aktif { animation: none; }
+    .sb-ilerleme i { transition: none; }
+  }
+  /* Köşe canlı önizleme: yalnızca geniş ekran */
+  .sb-mini { position: absolute; top: 60px; right: 18px; width: 200px; border-radius: 12px; padding: 10px 14px; font-size: 12.5px;
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); color: var(--text-muted); }
+  .sb-mini strong { display: block; color: var(--accent-strong); font-size: 13px; margin-bottom: 2px; }
+  .sb-mini .tutar { color: var(--sicak); font-weight: 700; font-family: var(--font-baslik); font-variant-numeric: tabular-nums; }
+  @media (max-width: 719px) { .sb-mini { display: none; } }
+
   /* Kayıt sonrası onay: kısa, sakin — kullanıcı boş ekrana düşmesin */
   .kayit-sonrasi { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--ok-bg); color: var(--ok); animation: kayitGir 0.25s ease; }
   .kayit-sonrasi .ikn { flex: none; }
@@ -727,8 +815,19 @@
   <!-- SEKME: Borçlar — ekleme formu + liste -->
   <div class="sekme" id="sekme-borclar">
 
-  <!-- Borç ekleme formu -->
-  <section class="card no-print">
+  <!-- Borç ekleme girişi: birincil yol adım adım sihirbazdır -->
+  <section class="card no-print" id="ekleGirisKart">
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+      <button class="borcEkleGit" style="flex:1 1 220px" data-i18n="btn_borc_ekle">Borç ekle</button>
+      <!-- Hızlı kullanıcı için gizli alternatif: klasik tek ekran form -->
+      <button type="button" id="hizliFormBtn" class="link-btn" aria-expanded="false" data-i18n="sb_tek_ekran">hepsini tek ekranda gir</button>
+    </div>
+  </section>
+
+  <!-- Klasik borç formu: varsayılan gizli; "tek ekran" seçeneği ve düzenleme açar.
+       Sihirbaz da kayıtta bu formun alanlarını doldurup submit'ini tetikler —
+       doğrulama/tahmini faiz/limit/kayıt-sonrası akışı tek yerden yönetilir. -->
+  <section class="card no-print" id="klasikFormKart" hidden>
     <!-- Akıştan gelindiyse görünür: kullanıcı vazgeçerse geldiği ekrana döner -->
     <button id="formGeriBtn" class="ghost small" hidden><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
     <h2 data-i18n="form_h">Borç Ekle</h2>
@@ -751,9 +850,24 @@
           <input id="bakiye" type="text" inputmode="decimal" placeholder="25000">
           <p class="alan-uyari" id="hataBakiye" hidden></p>
         </div>
-        <div>
+        <div class="faiz-hucre">
           <label for="faiz" data-i18n="lbl_faiz">Yıllık faiz (%)</label>
+          <!-- Faiz bilinmiyorsa boş bırakılabilir: kayıtta tipe göre tahmini kullanılır -->
           <input id="faiz" type="text" inputmode="decimal" placeholder="60">
+          <p class="mini-ipucu" data-i18n="faiz_ornek">kredi kartıysa genelde iki haneli</p>
+          <button type="button" id="faizYardimBtn" class="link-btn" aria-expanded="false" data-i18n="faiz_yardim">Faizini bilmiyor musun?</button>
+          <div id="faizYardim" class="faiz-yardim" hidden>
+            <button type="button" id="fyTahmini" class="ghost small" data-i18n="fy_tahmini">Bilmiyorum, tahmini kullan</button>
+            <button type="button" id="fyKendim" class="ghost small" data-i18n="fy_kendim">Kendim gireceğim</button>
+            <button type="button" id="fyNerede" class="ghost small" data-i18n="fy_nerede">Ekstremde nerede yazar?</button>
+            <p id="fyAciklama" class="mini-ipucu" hidden data-i18n="fy_aciklama">Kredi kartı ekstresinde "akdi faiz" ya da "alışveriş faiz oranı" satırında aylık oran yazar; yıllığı için 12 ile çarpabilirsin. KMH'de "kredili mevduat hesabı faizi" olarak geçer.</p>
+          </div>
+          <label class="check" style="min-height:0; padding:6px 0 0; font-size:12.5px">
+            <input type="checkbox" id="faizAylik">
+            <span data-i18n="faiz_aylik">aylık giriyorum</span>
+          </label>
+          <p class="mini-ipucu" id="faizAylikNot" hidden data-i18n="faiz_aylik_not">yıllığa basitçe ×12 çevrilir (bileşik değildir)</p>
+          <p class="mini-ipucu" id="faizBilgi" hidden></p>
           <p class="alan-uyari" id="hataFaiz" hidden></p>
         </div>
         <div>
@@ -818,6 +932,7 @@
         <p class="etiket" id="phFaizLbl"></p>
       </div>
     </div>
+    <p class="mini-ipucu" id="phTahminiNot" hidden style="margin-top:10px; text-align:center"></p>
   </section>
 
   <!-- Akıllı hamle: motorla denenen senaryolardan en kazançlı TEK öneri (AI yok) -->
@@ -881,6 +996,11 @@
       <div>
         <label for="bsmv" data-i18n="lbl_bsmv">BSMV oranı (%)</label>
         <input id="bsmv" type="number" min="0" step="0.01">
+      </div>
+      <div>
+        <!-- Faizini bilmeyen kullanıcı için: boş bırakılan faizde kullanılan tahmin -->
+        <label for="varsayilanFaiz" data-i18n="lbl_varsayilan_faiz">Bilinmeyen faiz için varsayılan — kredi kartı/KMH (yıllık %)</label>
+        <input id="varsayilanFaiz" type="number" min="0" max="500" step="0.5">
       </div>
     </div>
     <p class="muted" style="margin-top:0.6rem" data-i18n="vergi_not">
@@ -1204,6 +1324,98 @@
 </nav>
 
 <!-- Onboarding turu: yalnızca ilk açılışta (gorduByte bayrağı) -->
+<!-- Borç ekleme sihirbazı: her adım tek soru, tam ekran, büyük ve sakin.
+     Veri toplama klasik formla AYNI; yalnızca sunum farklı. -->
+<div id="sihirbaz" class="no-print" role="dialog" aria-modal="true" aria-labelledby="sbBaslikAria" hidden>
+  <h2 id="sbBaslikAria" class="gorunmez-metin" data-i18n="form_h">Borç Ekle</h2>
+  <div class="sb-ust">
+    <button type="button" id="sbGeriBtn" class="ghost small" hidden><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
+    <div class="sb-ilerleme" aria-hidden="true"><i id="sbIlerleme"></i></div>
+    <button type="button" id="sbKapatBtn" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="sb-govde">
+
+    <div class="sb-adim" id="sbTur">
+      <p class="sb-soru" data-i18n="sb_tur_soru">Ne tür bir borç?</p>
+      <div class="sb-tur-kartlar">
+        <button type="button" class="sb-tur" data-tur="revolving">
+          <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="3"/><path d="M2.5 10h19"/><path d="M6.5 14.5h5"/></svg>
+          <strong data-i18n="sb_tur_kk">Kredi kartı / KMH</strong>
+          <span data-i18n="sb_tur_kk_alt">faiz işler</span>
+        </button>
+        <button type="button" class="sb-tur" data-tur="installment">
+          <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M3.5 10.5h17"/><path d="M8 15h3M13 15h3M8 18h3"/></svg>
+          <strong data-i18n="sb_tur_taksit">Taksitli kredi / alışveriş</strong>
+          <span data-i18n="sb_tur_taksit_alt">sabit taksit</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sb-adim" id="sbTutar">
+      <p class="sb-soru" data-i18n="sb_tutar_soru">Ne kadar?</p>
+      <div class="sb-buyuk-alan">
+        <input id="sbTutarInp" type="text" inputmode="numeric" autocomplete="off" placeholder="25.000">
+        <span class="sb-birim">₺</span>
+      </div>
+      <p class="sb-hata" id="sbTutarHata"></p>
+      <button type="button" class="sb-devam" data-i18n="sb_devam">Devam</button>
+    </div>
+
+    <div class="sb-adim" id="sbFaiz">
+      <p class="sb-soru" data-i18n="sb_faiz_soru">Yıllık faizi?</p>
+      <div class="sb-buyuk-alan">
+        <span class="sb-birim">%</span>
+        <input id="sbFaizInp" type="text" inputmode="decimal" autocomplete="off" placeholder="60">
+      </div>
+      <p class="sb-hata" id="sbFaizHata"></p>
+      <button type="button" class="sb-devam" data-i18n="sb_devam">Devam</button>
+      <button type="button" id="sbFaizTahmini" class="link-btn" data-i18n="sb_faiz_bilmiyorum">Bilmiyor musun? Tahmini kullan</button>
+    </div>
+
+    <div class="sb-adim" id="sbOdeme">
+      <p class="sb-soru" data-i18n="sb_odeme_soru">Aylık asgari / taksit?</p>
+      <div class="sb-buyuk-alan">
+        <input id="sbOdemeInp" type="text" inputmode="numeric" autocomplete="off" placeholder="1.200">
+        <span class="sb-birim">₺</span>
+      </div>
+      <p class="sb-ipucu" data-i18n="sb_odeme_ipucu">kredi kartında ekstredeki "asgari ödeme" tutarı</p>
+      <p class="sb-hata" id="sbOdemeHata"></p>
+      <button type="button" class="sb-devam" data-i18n="sb_devam">Devam</button>
+    </div>
+
+    <div class="sb-adim" id="sbAd">
+      <p class="sb-soru" data-i18n="sb_ad_soru">Adını koy</p>
+      <div style="width:min(360px,88vw)">
+        <input id="sbAdInp" type="text" maxlength="40" autocomplete="off" data-i18n-ph="ph_ad" placeholder="Örn. X Bankası kartı" style="text-align:center; font-size:18px">
+        <p class="sb-hata" id="sbAdHata"></p>
+        <label for="sbGunInp" class="mini-ipucu" style="display:block; margin-top:10px" data-i18n="sb_gun_lbl">Son ödeme günü (opsiyonel, ayın kaçı)</label>
+        <input id="sbGunInp" type="number" min="1" max="31" step="1" style="max-width:120px; margin:4px auto 0; display:block; text-align:center">
+      </div>
+      <!-- Canlı önizleme: girilenlerin özeti, rakam sayarak dolar -->
+      <div class="sb-ozet" aria-live="polite">
+        <p class="sb-ozet-baslik" data-i18n="sb_ozet">Özet</p>
+        <dl id="sbOzetListe"></dl>
+      </div>
+      <button type="button" id="sbKaydetBtn" data-i18n="sb_kaydet">Kaydet</button>
+    </div>
+
+    <div class="sb-adim" id="sbOnay">
+      <div class="sb-onay-halka" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><defs><linearGradient id="sbGrad" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--halka-a)"/><stop offset="1" stop-color="var(--halka-b)"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="var(--halka-iz)" stroke-width="7"/><path class="sb-onay-cizgi" d="M60 8 a52 52 0 1 1 -0.01 0" fill="none" stroke="url(#sbGrad)" stroke-width="7" stroke-linecap="round"/><path class="sb-onay-tik" d="M40 62l14 14 26 -30" fill="none" stroke="var(--sicak)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="sb-soru" data-i18n="sb_onay">Eklendi</p>
+      <p class="sb-ipucu" id="sbOnayAd"></p>
+      <div class="sb-btnlar">
+        <button type="button" id="sbBirDaha" class="ghost" data-i18n="kayit_bir_daha">Bir borç daha ekle</button>
+        <button type="button" id="sbBitti" data-i18n="kayit_bitti">Bitti, özeti gör</button>
+      </div>
+    </div>
+
+  </div>
+  <!-- Köşe canlı önizleme (masaüstü): adım ilerledikçe dolar -->
+  <div class="sb-mini" id="sbMini" aria-hidden="true" hidden></div>
+</div>
+
 <!-- Kilometre taşı anı: tam ekran, sakin kutlama (zil üretiminden tetiklenir) -->
 <div id="anOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="anBaslik" hidden>
   <div class="an-ic">
@@ -1377,6 +1589,30 @@ const SOZLUK = {
       kayit_ok: "Kaydedildi",
       kayit_bir_daha: "Bir borç daha ekle",
       kayit_bitti: "Bitti, özeti gör",
+      sb_tur_soru: "Ne tür bir borç?",
+      sb_tur_kk: "Kredi kartı / KMH", sb_tur_kk_alt: "faiz işler",
+      sb_tur_taksit: "Taksitli kredi / alışveriş", sb_tur_taksit_alt: "sabit taksit",
+      sb_tutar_soru: "Ne kadar?",
+      sb_faiz_soru: "Yıllık faizi?",
+      sb_faiz_bilmiyorum: "Bilmiyor musun? Tahmini kullan",
+      sb_odeme_soru: "Aylık asgari / taksit?",
+      sb_odeme_ipucu: "kredi kartında ekstredeki \"asgari ödeme\" tutarı",
+      sb_ad_soru: "Adını koy",
+      sb_gun_lbl: "Son ödeme günü (opsiyonel, ayın kaçı)",
+      sb_ozet: "Özet",
+      sb_devam: "Devam",
+      sb_kaydet: "Kaydet",
+      sb_tek_ekran: "hepsini tek ekranda gir",
+      sb_onay: "Eklendi",
+      faiz_yardim: "Faizini bilmiyor musun?",
+      fy_tahmini: "Bilmiyorum, tahmini kullan",
+      fy_kendim: "Kendim gireceğim",
+      fy_nerede: "Ekstremde nerede yazar?",
+      fy_aciklama: "Kredi kartı ekstresinde \"akdi faiz\" ya da \"alışveriş faiz oranı\" satırında aylık oran yazar; yıllığı için 12 ile çarpabilirsin. KMH'de \"kredili mevduat hesabı faizi\" olarak geçer.",
+      faiz_ornek: "kredi kartıysa genelde iki haneli",
+      faiz_aylik: "aylık giriyorum",
+      faiz_aylik_not: "yıllığa basitçe ×12 çevrilir (bileşik değildir)",
+      lbl_varsayilan_faiz: "Bilinmeyen faiz için varsayılan — kredi kartı/KMH (yıllık %)",
       kisi_h: "Kişiselleştirme",
       kisi_lbl: "Sana nasıl hitap edelim?",
       kisi_not: "Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.",
@@ -1468,6 +1704,17 @@ const SOZLUK = {
       /* Premium sunum: stat blokları, trend ve aylık rapor */
       trendAz: "geçen aya göre azaldı",
       trendCok: "geçen aya göre arttı",
+      tahmini: "tahmini",
+      sbHataTutar: "Bir tutar gir.",
+      sbHataOdeme: "Aylık ödeme tutarı gerekli.",
+      sbHataAd: "Bu borca kısa bir ad ver.",
+      sbHataGun: "Gün 1–31 arasında olmalı.",
+      sbOzetTur: "tür", sbOzetTutar: "tutar", sbOzetFaiz: "yıllık faiz",
+      sbOzetOdeme: "aylık ödeme", sbOzetGun: "son ödeme günü",
+      sbTahminiDeger: (v) => `tahmini %${v}`,
+      faizTahminiNot: "Faiz tahmini olduğu için süre ve faiz yaklaşıktır. Gerçek oranını girersen plan netleşir.",
+      faizEminMisin: (v) => `%${v} sıra dışı görünüyor — eminsen tekrar Ekle'ye bas.`,
+      faizBosNot: (v) => `Boş bırakabilirsin: kayıtta tahmini %${v} kullanılır (Plan sekmesindeki ayarlardan değişir).`,
       bhToplamBorc: "toplam borç",
       bhAcikBorc: "açık borç",
       bhKapananLbl: "bu ay kapanıyor",
@@ -1738,6 +1985,30 @@ const SOZLUK = {
       kayit_ok: "Saved",
       kayit_bir_daha: "Add another debt",
       kayit_bitti: "Done, see overview",
+      sb_tur_soru: "What kind of debt?",
+      sb_tur_kk: "Credit card / overdraft", sb_tur_kk_alt: "interest accrues",
+      sb_tur_taksit: "Installment loan / purchase", sb_tur_taksit_alt: "fixed installments",
+      sb_tutar_soru: "How much?",
+      sb_faiz_soru: "Annual rate?",
+      sb_faiz_bilmiyorum: "Don't know? Use an estimate",
+      sb_odeme_soru: "Monthly minimum / installment?",
+      sb_odeme_ipucu: "for a credit card, the \"minimum payment\" on your statement",
+      sb_ad_soru: "Name it",
+      sb_gun_lbl: "Due day (optional, day of month)",
+      sb_ozet: "Summary",
+      sb_devam: "Continue",
+      sb_kaydet: "Save",
+      sb_tek_ekran: "enter everything on one screen",
+      sb_onay: "Added",
+      faiz_yardim: "Don't know your rate?",
+      fy_tahmini: "I don't know — use an estimate",
+      fy_kendim: "I'll enter it myself",
+      fy_nerede: "Where is it on my statement?",
+      fy_aciklama: "On a credit card statement it appears as the monthly \"contractual\" or \"purchase\" interest rate; multiply by 12 for the annual figure. For overdrafts it's listed as the overdraft interest rate.",
+      faiz_ornek: "usually two digits for a credit card",
+      faiz_aylik: "I'm entering monthly",
+      faiz_aylik_not: "converted to annual with a simple ×12 (not compounded)",
+      lbl_varsayilan_faiz: "Default for unknown rates — credit card/overdraft (annual %)",
       kisi_h: "Personalization",
       kisi_lbl: "What should we call you?",
       kisi_not: "Stored only on your device; used in greetings and summaries. You can leave it blank.",
@@ -1827,6 +2098,17 @@ const SOZLUK = {
       /* Premium presentation: stat blocks, trend and monthly report */
       trendAz: "down from last month",
       trendCok: "up from last month",
+      tahmini: "estimated",
+      sbHataTutar: "Enter an amount.",
+      sbHataOdeme: "A monthly payment is required.",
+      sbHataAd: "Give this debt a short name.",
+      sbHataGun: "Day must be between 1 and 31.",
+      sbOzetTur: "type", sbOzetTutar: "amount", sbOzetFaiz: "annual rate",
+      sbOzetOdeme: "monthly payment", sbOzetGun: "due day",
+      sbTahminiDeger: (v) => `estimated ${v}%`,
+      faizTahminiNot: "Because the rate is estimated, the time and interest are approximate. Enter your real rate to sharpen the plan.",
+      faizEminMisin: (v) => `${v}% looks unusual — press Add again if you're sure.`,
+      faizBosNot: (v) => `You can leave this empty: an estimated ${v}% will be used (changeable in Plan settings).`,
       bhToplamBorc: "total debt",
       bhAcikBorc: "open debts",
       bhKapananLbl: "closing this month",
@@ -2606,7 +2888,7 @@ const STORAGE = (() => {
 
   // Ayarlar — başlangıç değerleri; kullanıcı hepsini arayüzden değiştirebilir
   durum.ayarlar = Object.assign(
-    { vergiUygula: false, kkdf: 15, bsmv: 15, hatirlatmaGun: 7, bildirimAcik: false, uygulamaIci: true },
+    { vergiUygula: false, kkdf: 15, bsmv: 15, hatirlatmaGun: 7, bildirimAcik: false, uygulamaIci: true, varsayilanFaiz: 60 },
     durum.ayarlar || {});
 
   // Hayat karşılığı referansları — kullanıcı tanımlar, hiçbir tutar gömülü değildir
@@ -2887,7 +3169,7 @@ const STORAGE = (() => {
         <td>${kacis(b.ad)}</td>
         <td>${s.tur[b.type]}</td>
         <td class="num">${paraFmt.format(b.balance)}</td>
-        <td class="num">%${b.annualRate}</td>
+        <td class="num">%${b.annualRate}${b.faizTahmini ? ` <span class="badge accent">${s.tahmini}</span>` : ""}</td>
         <td class="num">${paraFmt.format(b.payment)}</td>
         <td class="num">${b.dueDay ? s.gunlu(b.dueDay) : "—"}</td>
         <td><span class="progress"><span class="progress-bar" style="width:${yuzde}%"></span></span><span class="muted" style="font-size:0.75rem">%${yuzde}</span></td>
@@ -2923,10 +3205,21 @@ const STORAGE = (() => {
   /* ---- Borç düzenleme ---- */
   function duzenlemeBaslat(i) {
     const b = durum.borclar[i];
+    $("klasikFormKart").hidden = false; // düzenleme klasik formda yapılır
     $("ad").value = b.ad;
     $("tur").value = b.type;
     $("bakiye").value = b.balance;
-    $("faiz").value = b.annualRate;
+    // Tahmini faizli borçta alan boş kalır: kullanıcı gerçek oranı girmeye
+    // teşvik edilir ama zorlanmaz (boş kalırsa yine tahmini kullanılır)
+    $("faiz").value = b.faizTahmini ? "" : b.annualRate;
+    $("faizAylik").checked = false;
+    $("faizAylikNot").hidden = true;
+    if (b.faizTahmini) {
+      $("faizBilgi").textContent = sd().faizBosNot(durum.ayarlar.varsayilanFaiz ?? 60);
+      $("faizBilgi").hidden = false;
+    } else {
+      $("faizBilgi").hidden = true;
+    }
     $("odeme").value = b.payment;
     $("sonGun").value = b.dueDay ?? "";
     duzenlenen = i;
@@ -2964,6 +3257,7 @@ const STORAGE = (() => {
 
   const TUTAR_TAVANI = 100000000; // 100 milyon ₺
   let dogrulamaAktif = false; // ilk gönderim denemesinden sonra canlı doğrula
+  let faizOnaylandi = false;  // mantık dışı faizde "emin misin?" yumuşak onayı
 
   // Tek alan kuralı: mesaj varsa alanın altına yazar, yoksa gizler
   function alanUyari(id, mesaj) {
@@ -2976,8 +3270,10 @@ const STORAGE = (() => {
   function borcFormuDogrula() {
     const s = sd();
     const bakiye = sayiOku($("bakiye").value);
-    const faiz = sayiOku($("faiz").value);
     const odeme = sayiOku($("odeme").value);
+    // Faiz zorunlu değil: boşsa kayıtta tipe göre tahmini kullanılır
+    const faizBos = String($("faiz").value).trim() === "";
+    let faiz = faizBos ? null : sayiOku($("faiz").value);
     const gunHam = $("sonGun").value.trim();
     const gun = parseInt(gunHam, 10);
 
@@ -2992,8 +3288,17 @@ const STORAGE = (() => {
 
     const hAd = $("ad").value.trim() ? "" : s.hataBos;
     const hBakiye = sayiHatasi(bakiye, $("bakiye").value, true);  // 0 = kapalı borç, serbest
-    let hFaiz = sayiHatasi(faiz, $("faiz").value, true);
-    if (!hFaiz && (faiz < 0 || faiz > 500)) hFaiz = s.hataFaizAralik;
+    // Faiz: yalnızca gerçek hatalar engeller (sayı değil / negatif);
+    // 0 veya >500 "mantık dışı"dır ama engellenmez — yumuşak onayla geçilir
+    let hFaiz = "", faizSoft = 0;
+    if (!faizBos) {
+      if (Number.isNaN(faiz)) hFaiz = s.hataSayi;
+      else if (faiz < 0) hFaiz = s.hataNegatif;
+      else {
+        if ($("faizAylik").checked) faiz = Math.round(faiz * 12 * 100) / 100; // aylık → yıllık (basit ×12)
+        if (faiz === 0 || faiz > 500) faizSoft = faiz;
+      }
+    }
     const hOdeme = sayiHatasi(odeme, $("odeme").value, false);
     let hGun = "", nGun = "";
     if (gunHam !== "") {
@@ -3010,12 +3315,47 @@ const STORAGE = (() => {
 
     return {
       gecerli: !(hAd || hBakiye || hFaiz || hOdeme || hGun),
-      bakiye, faiz, odeme,
+      bakiye, faiz, faizBos, faizSoft, odeme,
       gun: (gunHam !== "" && !hGun) ? gun : null
     };
   }
   ["ad", "bakiye", "faiz", "odeme", "sonGun"].forEach(id => {
     $(id).addEventListener("input", () => { if (dogrulamaAktif) borcFormuDogrula(); });
+  });
+
+  /* ---- Faiz yardımcısı: bilmeyeni engelleme, yolu göster ---- */
+  $("faizYardimBtn").addEventListener("click", () => {
+    const p = $("faizYardim");
+    p.hidden = !p.hidden;
+    $("faizYardimBtn").setAttribute("aria-expanded", String(!p.hidden));
+  });
+  $("fyTahmini").addEventListener("click", () => {
+    $("faiz").value = "";
+    $("faizAylik").checked = false;
+    $("faizAylikNot").hidden = true;
+    $("faizYardim").hidden = true;
+    $("faizYardimBtn").setAttribute("aria-expanded", "false");
+    $("faizBilgi").textContent = sd().faizBosNot(durum.ayarlar.varsayilanFaiz ?? 60);
+    $("faizBilgi").hidden = false;
+    alanUyari("hataFaiz", "");
+    $("odeme").focus(); // faiz halloldu, sıradaki alana geç
+  });
+  $("fyKendim").addEventListener("click", () => {
+    $("faizYardim").hidden = true;
+    $("faizYardimBtn").setAttribute("aria-expanded", "false");
+    $("faiz").focus();
+  });
+  $("fyNerede").addEventListener("click", () => {
+    $("fyAciklama").hidden = !$("fyAciklama").hidden;
+  });
+  $("faizAylik").addEventListener("change", () => {
+    $("faizAylikNot").hidden = !$("faizAylik").checked;
+    faizOnaylandi = false;
+    if (dogrulamaAktif) borcFormuDogrula();
+  });
+  $("faiz").addEventListener("input", () => {
+    faizOnaylandi = false;
+    $("faizBilgi").hidden = true;
   });
 
   /* ---- Borç ekleme / güncelleme ---- */
@@ -3032,14 +3372,27 @@ const STORAGE = (() => {
     const yeniEkleme = duzenlenen === null; // onay paneli yalnızca yeni kayıtta
     const d = borcFormuDogrula();
     if (!d.gecerli) return; // hatalar alanların altında; alert yok
+    // Mantık dışı faiz (0 veya >500): engelleme yok — bir kez yumuşakça sor,
+    // kullanıcı eminse ikinci basışta geçer
+    if (d.faizSoft && !faizOnaylandi) {
+      faizOnaylandi = true;
+      alanUyari("hataFaiz", sd().faizEminMisin(d.faizSoft));
+      return;
+    }
+    faizOnaylandi = false;
     const veri = {
       ad: $("ad").value.trim(),
       type: $("tur").value,
       balance: d.bakiye,
-      annualRate: d.faiz,
+      // Faiz boşsa tipe göre tahmini: KK/KMH → ayarlardaki varsayılan;
+      // taksitli kredi → 0 (faiz zaten taksitin içinde)
+      annualRate: d.faizBos
+        ? ($("tur").value === "revolving" ? (durum.ayarlar.varsayilanFaiz ?? 60) : 0)
+        : d.faiz,
       payment: d.odeme,
       dueDay: d.gun
     };
+    if (d.faizBos) veri.faizTahmini = true; // listede "tahmini" rozeti + plan notu
     if (duzenlenen !== null) {
       // Başlangıç bakiyesini koru; bakiye yükseltildiyse ilerleme %0'dan başlasın
       const eski = durum.borclar[duzenlenen];
@@ -3054,6 +3407,10 @@ const STORAGE = (() => {
     }
     // Temiz sayfa: uyarılar kapanır, canlı doğrulama bir sonraki denemeye kadar susar
     dogrulamaAktif = false;
+    $("faizBilgi").hidden = true;
+    $("faizAylikNot").hidden = true;
+    $("faizYardim").hidden = true;
+    $("faizYardimBtn").setAttribute("aria-expanded", "false");
     ["hataAd", "hataBakiye", "hataFaiz", "hataOdeme", "hataGun"].forEach(id => alanUyari(id, ""));
     $("sonuclar").innerHTML = "";
     kaydetVeCiz();
@@ -3076,7 +3433,20 @@ const STORAGE = (() => {
     $("kkdf").value = durum.ayarlar.kkdf;
     $("bsmv").value = durum.ayarlar.bsmv;
     $("kkdf").disabled = $("bsmv").disabled = !durum.ayarlar.vergiUygula;
+    $("varsayilanFaiz").value = durum.ayarlar.varsayilanFaiz ?? 60;
   }
+  // Varsayılan faiz değişince tahmini işaretli borçlar da güncellenir:
+  // "ayarlardan düzenlenebilir" vaadi böylece gerçek olur (motor değişmez)
+  $("varsayilanFaiz").addEventListener("change", () => {
+    const v = parseFloat($("varsayilanFaiz").value);
+    durum.ayarlar.varsayilanFaiz = Number.isFinite(v) && v >= 0 && v <= 500 ? v : 60;
+    $("varsayilanFaiz").value = durum.ayarlar.varsayilanFaiz;
+    for (const b of durum.borclar) {
+      if (b.faizTahmini && b.type === "revolving") b.annualRate = durum.ayarlar.varsayilanFaiz;
+    }
+    $("sonuclar").innerHTML = ""; // eski sonuçlar yeni tahminle geçersiz
+    kaydetVeCiz();
+  });
   ["vergiUygula", "kkdf", "bsmv"].forEach(id => {
     $(id).addEventListener("change", () => {
       ayarlariOku();
@@ -3114,6 +3484,10 @@ const STORAGE = (() => {
     $("phSureLbl").textContent = s.phSureLbl;
     $("phFaiz").textContent = paraFmt.format(sim.toplamFaiz);
     $("phFaizLbl").textContent = faizEtiketi();
+    // Tahmini faiz varsa: yaklaşıklık notu (teşvik var, zorlama yok)
+    const tahminiVar = acik.some(b => b.faizTahmini);
+    $("phTahminiNot").hidden = !tahminiVar;
+    if (tahminiVar) $("phTahminiNot").textContent = s.faizTahminiNot;
   }
 
   function planKarti(baslik, sonuc, enIyi) {
@@ -3160,6 +3534,10 @@ const STORAGE = (() => {
       ${planKarti(s.kartKartopu, kartopu, !cigDahaIyi && kartopu.uygulanabilir && cig.uygulanabilir && kartopu.toplamFaiz < cig.toplamFaiz)}
       ${planKarti(s.kartCig, cig, cigDahaIyi)}
     </div>`;
+    // Tahmini faizli borç varsa dürüst not: plan yaklaşıktır, zorlamadan teşvik
+    if (durum.borclar.some(b => b.faizTahmini && b.balance > 0.005)) {
+      html += `<p class="info">${s.faizTahminiNot}</p>`;
+    }
 
     // Plan hesaplanamıyorsa SEBEBİ ve çözümü söyle (suçlamadan, yol göstererek)
     if (!kartopu.uygulanabilir || !cig.uygulanabilir) {
@@ -4671,6 +5049,7 @@ const STORAGE = (() => {
     zilPanelAc(false);
     $("anOverlay").hidden = true;
     $("raporOverlay").hidden = true;
+    $("sihirbaz").hidden = true; // kapana kısılmama: Esc her adımda çıkarır
   });
   $("zilTumOkundu").addEventListener("click", () => {
     zilVeri.liste.forEach(o => { o.okundu = true; });
@@ -5128,12 +5507,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
      Geldiği sekme hatırlanır — Geri ile kapana kısılmadan dönülür. */
   let ekleDonus = null;
   function borcEkleAkisi() {
-    if (durum.sekme !== "borclar") ekleDonus = durum.sekme;
-    sekmeGoster("borclar");
-    $("formGeriBtn").hidden = !ekleDonus;
-    $("kayitSonrasi").hidden = true;
-    // Sekme geçişi bitince odakla: ekran okuyucu odağı doğal biçimde forma taşır
-    setTimeout(() => { $("ad").focus(); }, 240);
+    sbAc(); // birincil yol: adım adım tam ekran sihirbaz
   }
   document.addEventListener("click", (e) => {
     if (e.target.closest(".borcEkleGit")) borcEkleAkisi();
@@ -5163,6 +5537,211 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   });
   // Kullanıcı yeni kayda başlayınca onay paneli kendiliğinden çekilir
   $("borcForm").addEventListener("input", () => { $("kayitSonrasi").hidden = true; });
+
+  /* ============================================================
+     BORÇ EKLEME SİHİRBAZI — her adım tek soru, tam ekran.
+     Kayıtta değerler klasik forma yazılır ve mevcut submit tetiklenir:
+     doğrulama, tahmini faiz, limit ve kayıt-sonrası TEK yerden yönetilir.
+     ============================================================ */
+  const SB_SIRA = ["sbTur", "sbTutar", "sbFaiz", "sbOdeme", "sbAd"];
+  let sbVeri = null, sbAdimNo = 0, sbFaizOnay = false;
+
+  function sbAdimlar() {
+    // Taksitli kredide faiz sorulmaz (faiz taksitin içinde, 0 kabul edilir)
+    return sbVeri && sbVeri.tur === "installment" ? SB_SIRA.filter(a => a !== "sbFaiz") : SB_SIRA;
+  }
+
+  function sbAc() {
+    // Ücretsiz sınır doluysa sihirbaz yerine mevcut dürüst limit mesajı
+    if (!durum.pro && durum.borclar.length >= SINIR_UCRETSIZ_BORC) {
+      sekmeGoster("borclar");
+      $("klasikFormKart").hidden = false;
+      $("limitUyari").innerHTML = sd().limit(SINIR_UCRETSIZ_BORC);
+      $("limitUyari").hidden = false;
+      return;
+    }
+    sbVeri = { tur: null, tutar: null, faiz: "", faizTahmini: false, odeme: null, ad: "", gun: "" };
+    sbFaizOnay = false;
+    ["sbTutarInp", "sbFaizInp", "sbOdemeInp", "sbAdInp", "sbGunInp"].forEach(id => { $(id).value = ""; });
+    ["sbTutarHata", "sbFaizHata", "sbOdemeHata", "sbAdHata"].forEach(id => { $(id).textContent = ""; });
+    document.querySelectorAll(".sb-tur").forEach(b => b.classList.remove("secili"));
+    $("sihirbaz").hidden = false;
+    sbGoster(0, "ileri");
+  }
+  function sbKapat() { $("sihirbaz").hidden = true; }
+
+  function sbGoster(i, yon) {
+    sbAdimNo = i;
+    $("sihirbaz").dataset.yon = yon;
+    const adlar = sbAdimlar();
+    document.querySelectorAll(".sb-adim").forEach(el => el.classList.remove("aktif"));
+    const ad = adlar[i];
+    $(ad).classList.add("aktif");
+    $("sbIlerleme").style.width = (((i + 1) / adlar.length) * 100) + "%";
+    $("sbGeriBtn").hidden = i === 0;
+    $("sbKapatBtn").hidden = false;
+    if (ad === "sbAd") sbOzetCiz();
+    sbMiniCiz();
+    // Geçiş (240ms) bitince alan otomatik odaklanır
+    setTimeout(() => { const inp = $(ad).querySelector("input"); if (inp) inp.focus(); }, 250);
+  }
+
+  function sbOnayGoster() {
+    document.querySelectorAll(".sb-adim").forEach(el => el.classList.remove("aktif"));
+    $("sbOnay").classList.add("aktif");
+    $("sbIlerleme").style.width = "100%";
+    $("sbGeriBtn").hidden = true;
+    $("sbKapatBtn").hidden = true; // onaydan iki net yolla çıkılır
+    $("sbOnayAd").textContent = sbVeri.ad;
+    $("sbMini").hidden = true;
+    $("sbBitti").focus();
+  }
+
+  /* Canlı para biçimlendirme: yazdıkça 25000 → 25.000 (aktif yerel ayara göre) */
+  function sbParaBicimle(inp) {
+    const ham = inp.value.replace(/[^\d]/g, "");
+    if (ham === "") { inp.value = ""; return null; }
+    const n = parseInt(ham.slice(0, 9), 10);
+    inp.value = n.toLocaleString(sd().yerel);
+    return n;
+  }
+  $("sbTutarInp").addEventListener("input", () => { sbParaBicimle($("sbTutarInp")); $("sbTutarHata").textContent = ""; sbMiniCiz(); });
+  $("sbOdemeInp").addEventListener("input", () => { sbParaBicimle($("sbOdemeInp")); $("sbOdemeHata").textContent = ""; sbMiniCiz(); });
+  $("sbFaizInp").addEventListener("input", () => { $("sbFaizHata").textContent = ""; sbFaizOnay = false; });
+  $("sbAdInp").addEventListener("input", () => { $("sbAdHata").textContent = ""; sbVeri.ad = $("sbAdInp").value.trim(); sbMiniCiz(); });
+  $("sbGunInp").addEventListener("input", () => { if (!$("sbAd").classList.contains("aktif")) return; sbOzetCiz(); });
+
+  /* Adım 1: tür kartları — dokununca hafif canlanma + otomatik ilerleme */
+  document.querySelectorAll(".sb-tur").forEach(k => {
+    k.addEventListener("click", () => {
+      document.querySelectorAll(".sb-tur").forEach(x => x.classList.remove("secili"));
+      k.classList.add("secili");
+      sbVeri.tur = k.dataset.tur;
+      titret(8);
+      setTimeout(() => sbGoster(1, "ileri"), 200);
+    });
+  });
+
+  /* Adım doğrulama + ileri */
+  function sbDevamEt() {
+    const s = sd();
+    const adlar = sbAdimlar();
+    const ad = adlar[sbAdimNo];
+    if (ad === "sbTutar") {
+      const n = sayiOku($("sbTutarInp").value);
+      if (!(n > 0)) { $("sbTutarHata").textContent = s.sbHataTutar; return; }
+      if (n > TUTAR_TAVANI) { $("sbTutarHata").textContent = s.hataBuyuk; return; }
+      sbVeri.tutar = n;
+    } else if (ad === "sbFaiz") {
+      const ham = $("sbFaizInp").value.trim();
+      if (ham === "") { sbVeri.faiz = ""; sbVeri.faizTahmini = true; }
+      else {
+        const f = sayiOku(ham);
+        if (Number.isNaN(f)) { $("sbFaizHata").textContent = s.hataSayi; return; }
+        if (f < 0) { $("sbFaizHata").textContent = s.hataNegatif; return; }
+        if ((f === 0 || f > 500) && !sbFaizOnay) { sbFaizOnay = true; $("sbFaizHata").textContent = s.faizEminMisin(f); return; }
+        sbVeri.faiz = f; sbVeri.faizTahmini = false;
+      }
+    } else if (ad === "sbOdeme") {
+      const n = sayiOku($("sbOdemeInp").value);
+      if (!(n > 0)) { $("sbOdemeHata").textContent = s.sbHataOdeme; return; }
+      if (n > TUTAR_TAVANI) { $("sbOdemeHata").textContent = s.hataBuyuk; return; }
+      sbVeri.odeme = n;
+    }
+    if (sbAdimNo < adlar.length - 1) sbGoster(sbAdimNo + 1, "ileri");
+  }
+  document.querySelectorAll(".sb-devam").forEach(b => b.addEventListener("click", sbDevamEt));
+  ["sbTutarInp", "sbFaizInp", "sbOdemeInp"].forEach(id => {
+    $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); sbDevamEt(); } });
+  });
+  ["sbAdInp", "sbGunInp"].forEach(id => {
+    $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); sbKaydet(); } });
+  });
+
+  $("sbGeriBtn").addEventListener("click", () => { if (sbAdimNo > 0) sbGoster(sbAdimNo - 1, "geri"); });
+  $("sbKapatBtn").addEventListener("click", sbKapat);
+
+  /* Faiz bilinmiyor: sakin tahmini yolu (varsayılana düşer) */
+  $("sbFaizTahmini").addEventListener("click", () => {
+    $("sbFaizInp").value = "";
+    sbVeri.faiz = ""; sbVeri.faizTahmini = true;
+    $("sbFaizHata").textContent = "";
+    sbGoster(sbAdimNo + 1, "ileri");
+  });
+
+  /* Son adım özeti: canlı önizleme, tutar sayarak dolar */
+  function sbOzetCiz() {
+    const s = sd();
+    const satirlar = [
+      [s.sbOzetTur, kacis(s.tur[sbVeri.tur] || "—"), ""],
+      [s.sbOzetTutar, `<span id="sbOzetTutarDeger">${paraFmt.format(0)}</span>`, "vurgu"],
+      [s.sbOzetFaiz, sbVeri.tur === "installment" ? "%0"
+        : (sbVeri.faizTahmini ? kacis(s.sbTahminiDeger(durum.ayarlar.varsayilanFaiz ?? 60)) : "%" + sbVeri.faiz), ""],
+      [s.sbOzetOdeme, paraFmt.format(sbVeri.odeme || 0), ""]
+    ];
+    const gunV = parseInt($("sbGunInp").value, 10);
+    if (Number.isInteger(gunV) && gunV >= 1 && gunV <= 31) satirlar.push([s.sbOzetGun, kacis(s.gunlu(gunV)), ""]);
+    $("sbOzetListe").innerHTML = satirlar.map(([k, v, c]) => `<dt>${k}</dt><dd${c ? ` class="${c}"` : ""}>${v}</dd>`).join("");
+    const el = document.getElementById("sbOzetTutarDeger");
+    if (el) { el._son = 0; sayacTween(el, sbVeri.tutar || 0, (v) => paraFmt.format(v)); } // 0'dan sayarak dolar
+  }
+
+  /* Köşe canlı önizleme (masaüstü) */
+  function sbMiniCiz() {
+    const m = $("sbMini");
+    if (!sbVeri || sbAdimNo === 0) { m.hidden = true; return; }
+    const s = sd();
+    const tutarHam = $("sbTutarInp").value.replace(/[^\d]/g, "");
+    const tutar = tutarHam ? parseInt(tutarHam, 10) : (sbVeri.tutar || 0);
+    m.hidden = false;
+    m.innerHTML = `<strong>${kacis($("sbAdInp").value.trim() || s.tur[sbVeri.tur] || "")}</strong>` +
+      `<span class="tutar">${paraFmt.format(tutar)}</span>`;
+  }
+
+  /* Kaydet: klasik form üzerinden — mevcut akış korunur */
+  function sbKaydet() {
+    const s = sd();
+    sbVeri.ad = $("sbAdInp").value.trim();
+    if (!sbVeri.ad) { $("sbAdHata").textContent = s.sbHataAd; $("sbAdInp").focus(); return; }
+    const gunHam = $("sbGunInp").value.trim();
+    let gun = "";
+    if (gunHam !== "") {
+      const g = parseInt(gunHam, 10);
+      if (!Number.isInteger(g) || g < 1 || g > 31) { $("sbAdHata").textContent = s.sbHataGun; return; }
+      gun = g;
+    }
+    $("tur").value = sbVeri.tur;
+    $("bakiye").value = sbVeri.tutar;
+    $("faiz").value = sbVeri.tur === "installment" ? "0" : (sbVeri.faizTahmini ? "" : sbVeri.faiz);
+    $("faizAylik").checked = false;
+    $("odeme").value = sbVeri.odeme;
+    $("ad").value = sbVeri.ad;
+    $("sonGun").value = gun;
+    faizOnaylandi = true; // sıra dışı faiz onayı sihirbazda alındı (taksitin %0'ı dahil)
+    const onceki = durum.borclar.length;
+    $("borcForm").dispatchEvent(new Event("submit", { cancelable: true }));
+    if (durum.borclar.length > onceki) {
+      sbOnayGoster(); // zarif onay; titreşim submit akışında
+    } else {
+      // Güvenlik ağı: beklenmedik doğrulama hatası — klasik formda göster
+      sbKapat();
+      sekmeGoster("borclar");
+      $("klasikFormKart").hidden = false;
+      dogrulamaAktif = true;
+      borcFormuDogrula();
+    }
+  }
+  $("sbKaydetBtn").addEventListener("click", sbKaydet);
+  $("sbBirDaha").addEventListener("click", sbAc);
+  $("sbBitti").addEventListener("click", () => { sbKapat(); sekmeGoster("genel"); });
+
+  /* Hızlı kullanıcı: klasik tek ekran form */
+  $("hizliFormBtn").addEventListener("click", () => {
+    const k = $("klasikFormKart");
+    k.hidden = !k.hidden;
+    $("hizliFormBtn").setAttribute("aria-expanded", String(!k.hidden));
+    if (!k.hidden) $("ad").focus();
+  });
 
   /* ---- Onboarding turu: yalnızca ilk açılışta (gorduByte bayrağı) ---- */
   const TUR_ANAHTAR = "borcPlanlayici.gorduByte";
