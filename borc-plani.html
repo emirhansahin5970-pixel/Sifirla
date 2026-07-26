@@ -568,6 +568,34 @@
   .sb-mini .tutar { color: var(--sicak); font-weight: 700; font-family: var(--font-baslik); font-variant-numeric: tabular-nums; }
   @media (max-width: 719px) { .sb-mini { display: none; } }
 
+  /* ============================================================
+     ÖDEME KAYDETME + BORÇ DETAYI — kullanıcı ödedikçe borcun
+     gözünün önünde erimesi. Motor mantığına dokunulmaz.
+     ============================================================ */
+  #borcDetay, #odemeOverlay { position: fixed; inset: 0; z-index: 192; background: var(--bg); overflow-y: auto; }
+  #borcDetay[hidden], #odemeOverlay[hidden] { display: none; }
+  .detay-ic, .odeme-ic { max-width: 560px; margin: 0 auto; padding: 20px 20px 56px; position: relative; }
+  .detay-ust { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+  .detay-ust h2 { margin: 0; font-size: 22px; }
+  /* Büyük ilerleme çubuğu: % ödendi */
+  .detay-cubuk { height: 12px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin: 10px 0 6px; }
+  .detay-cubuk i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--gradyan); transition: width 0.6s cubic-bezier(0.22, 0.61, 0.36, 1); }
+  @media (prefers-reduced-motion: reduce) { .detay-cubuk i { transition: none; } }
+  .detay-akis { font-size: 14px; color: var(--text-muted); }
+  .detay-akis strong { color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+  /* Ödeme geçmişi listesi */
+  .odeme-satir { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 10px 2px; border-bottom: 1px solid var(--border); }
+  .odeme-satir:last-child { border-bottom: none; }
+  .odeme-satir .tarih { font-size: 13px; color: var(--text-muted); flex: none; min-width: 108px; }
+  .odeme-satir .tutar { font-weight: 700; color: var(--accent-strong); font-variant-numeric: tabular-nums; font-family: var(--font-baslik); }
+  /* Not harf harf kırılmasın: makul taban genişlik, sığmazsa alt satıra sarar */
+  .odeme-satir .not { font-size: 13px; color: var(--text-muted); flex: 1 1 120px; min-width: 90px; overflow-wrap: anywhere; }
+  .odeme-satir .islemler { margin-left: auto; }
+  /* Ödeme formu: büyük canlı para alanı (sihirbazla aynı dil) */
+  .odeme-hizli { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .odeme-alanlar { display: grid; gap: 12px; max-width: 340px; margin: 0 auto; text-align: left; }
+  .odeme-onay { margin-top: 12px; }
+
   /* Kayıt sonrası onay: kısa, sakin — kullanıcı boş ekrana düşmesin */
   .kayit-sonrasi { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--ok-bg); color: var(--ok); animation: kayitGir 0.25s ease; }
   .kayit-sonrasi .ikn { flex: none; }
@@ -1065,7 +1093,13 @@
         <p class="buyuk" id="bhVade">—</p>
         <p class="etiket" id="bhVadeLbl"></p>
       </div>
+      <div class="stat-blok">
+        <p class="buyuk" id="bhOdenen">—</p>
+        <p class="etiket" id="bhOdenenLbl"></p>
+      </div>
     </div>
+    <!-- Gerçek ödemeler vs plan hedefi: "bu ay X ödedin, hedefin Y" -->
+    <p class="mini-ipucu" id="bhKarsi" hidden style="margin-top:10px; text-align:center"></p>
     <div class="no-print" style="margin-top:12px; text-align:center">
       <button id="aylikRaporBtn" class="ghost" hidden data-i18n="btn_rapor">Aylık raporu gör</button>
     </div>
@@ -1416,6 +1450,58 @@
   <div class="sb-mini" id="sbMini" aria-hidden="true" hidden></div>
 </div>
 
+<!-- Borç detayı: ilerleme + ödeme geçmişi (yeni→eski) -->
+<div id="borcDetay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="detayBaslik" hidden>
+  <div class="detay-ic">
+    <div class="detay-ust">
+      <h2 id="detayBaslik">—</h2>
+      <button type="button" id="detayKapat" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div id="detayOzet"></div>
+    <div class="kayit-sonrasi odeme-onay" id="odemeOnay" role="status" hidden>
+      <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.8 2.8L16.5 9"/></svg>
+      <strong data-i18n="odeme_kaydedildi">Ödeme kaydedildi</strong>
+    </div>
+    <div style="margin:16px 0 8px; display:flex; align-items:center; justify-content:space-between; gap:10px">
+      <h3 class="alt-baslik" style="margin:0" data-i18n="odeme_gecmisi">Ödeme geçmişi</h3>
+      <button type="button" id="detayOdemeEkle" data-i18n="btn_odeme_ekle">Ödeme ekle</button>
+    </div>
+    <div id="odemeListesi"></div>
+  </div>
+</div>
+
+<!-- Ödeme formu: tutar (canlı biçim) + tarih + not + hızlı butonlar -->
+<div id="odemeOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="odemeBaslik" hidden>
+  <div class="odeme-ic" style="text-align:center">
+    <div class="detay-ust">
+      <h2 id="odemeBaslik">—</h2>
+      <button type="button" id="odemeKapat" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="sb-buyuk-alan" style="margin:18px 0 4px">
+      <input id="odemeTutarInp" type="text" inputmode="numeric" autocomplete="off" placeholder="1.500">
+      <span class="sb-birim">₺</span>
+    </div>
+    <p class="sb-hata" id="odemeHata"></p>
+    <!-- Hızlı doldurma: o borç için hesaplanan tutarlar tek dokunuşla -->
+    <div class="odeme-hizli" id="odemeHizli"></div>
+    <div class="odeme-alanlar" style="margin-top:18px">
+      <div>
+        <label for="odemeTarihInp" data-i18n="lbl_odeme_tarih">Tarih</label>
+        <input id="odemeTarihInp" type="date">
+      </div>
+      <div>
+        <label for="odemeNotInp" data-i18n="lbl_odeme_not">Not (opsiyonel)</label>
+        <input id="odemeNotInp" type="text" maxlength="60" autocomplete="off">
+      </div>
+    </div>
+    <p class="mini-ipucu" id="odemeFazlaUyari" hidden style="margin-top:10px"></p>
+    <div class="sb-btnlar" style="margin-top:18px">
+      <button type="button" id="odemeVazgec" class="ghost" data-i18n="btn_vazgec">Vazgeç</button>
+      <button type="button" id="odemeKaydetBtn" data-i18n="btn_odeme_kaydet">Kaydet</button>
+    </div>
+  </div>
+</div>
+
 <!-- Kilometre taşı anı: tam ekran, sakin kutlama (zil üretiminden tetiklenir) -->
 <div id="anOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="anBaslik" hidden>
   <div class="an-ic">
@@ -1589,6 +1675,12 @@ const SOZLUK = {
       kayit_ok: "Kaydedildi",
       kayit_bir_daha: "Bir borç daha ekle",
       kayit_bitti: "Bitti, özeti gör",
+      btn_odeme_ekle: "Ödeme ekle",
+      odeme_gecmisi: "Ödeme geçmişi",
+      odeme_kaydedildi: "Ödeme kaydedildi",
+      lbl_odeme_tarih: "Tarih",
+      lbl_odeme_not: "Not (opsiyonel)",
+      btn_odeme_kaydet: "Kaydet",
       sb_tur_soru: "Ne tür bir borç?",
       sb_tur_kk: "Kredi kartı / KMH", sb_tur_kk_alt: "faiz işler",
       sb_tur_taksit: "Taksitli kredi / alışveriş", sb_tur_taksit_alt: "sabit taksit",
@@ -1705,6 +1797,20 @@ const SOZLUK = {
       trendAz: "geçen aya göre azaldı",
       trendCok: "geçen aya göre arttı",
       tahmini: "tahmini",
+      odemeBaslik: (ad) => `Ödeme — ${ad}`,
+      odemeAsgari: (t) => `Asgariyi öde ${t}`,
+      odemePlani: (t) => `Planı öde ${t}`,
+      odemeFazla: (t) => `Bakiyeden ${t} fazla — borç kapanacak, fazlası kaydedilmez.`,
+      odemeGelecek: "Gelecek tarihli ödeme girilemez.",
+      odemeTarihGecersiz: "Geçerli bir tarih seç.",
+      odemeBos: "Henüz ödeme eklemedin. İlk ödemeni ekle, ilerlemeni görelim.",
+      basSimdi: (x, y) => `başlangıç ${x} → şu an ${y}`,
+      odendiYuzde: (y) => `%${y} ödendi`,
+      kapandiEtiket: "kapandı",
+      btnOdeme: "Ödeme", btnDetay: "Detay",
+      buAyOdenenLbl: "bu ay ödenen",
+      buAyHedefKarsi: (o, h) => `Bu ay ${o} ödedin; hedefin ${h}.`,
+      buAyHedefUstu: (o) => `Bu ay ${o} ödedin — hedefine ulaştın.`,
       sbHataTutar: "Bir tutar gir.",
       sbHataOdeme: "Aylık ödeme tutarı gerekli.",
       sbHataAd: "Bu borca kısa bir ad ver.",
@@ -1985,6 +2091,12 @@ const SOZLUK = {
       kayit_ok: "Saved",
       kayit_bir_daha: "Add another debt",
       kayit_bitti: "Done, see overview",
+      btn_odeme_ekle: "Add payment",
+      odeme_gecmisi: "Payment history",
+      odeme_kaydedildi: "Payment saved",
+      lbl_odeme_tarih: "Date",
+      lbl_odeme_not: "Note (optional)",
+      btn_odeme_kaydet: "Save",
       sb_tur_soru: "What kind of debt?",
       sb_tur_kk: "Credit card / overdraft", sb_tur_kk_alt: "interest accrues",
       sb_tur_taksit: "Installment loan / purchase", sb_tur_taksit_alt: "fixed installments",
@@ -2099,6 +2211,20 @@ const SOZLUK = {
       trendAz: "down from last month",
       trendCok: "up from last month",
       tahmini: "estimated",
+      odemeBaslik: (ad) => `Payment — ${ad}`,
+      odemeAsgari: (t) => `Pay minimum ${t}`,
+      odemePlani: (t) => `Pay the plan ${t}`,
+      odemeFazla: (t) => `${t} more than the balance — the debt will close; the excess isn't recorded.`,
+      odemeGelecek: "Future-dated payments can't be added.",
+      odemeTarihGecersiz: "Pick a valid date.",
+      odemeBos: "No payments yet. Add your first one and let's watch the progress.",
+      basSimdi: (x, y) => `started at ${x} → now ${y}`,
+      odendiYuzde: (y) => `${y}% paid`,
+      kapandiEtiket: "paid off",
+      btnOdeme: "Payment", btnDetay: "Detail",
+      buAyOdenenLbl: "paid this month",
+      buAyHedefKarsi: (o, h) => `You've paid ${o} this month; your target is ${h}.`,
+      buAyHedefUstu: (o) => `You've paid ${o} this month — target reached.`,
       sbHataTutar: "Enter an amount.",
       sbHataOdeme: "A monthly payment is required.",
       sbHataAd: "Give this debt a short name.",
@@ -2790,7 +2916,7 @@ const ONERI = (() => {
    ============================================================ */
 const STORAGE = (() => {
   const ANAHTAR = "borcPlanlayici.v1";
-  const SEMA = 1; // güncel şema sürümü
+  const SEMA = 2; // güncel şema sürümü (v2: borç başına payments[] ödeme geçmişi)
 
   const VARSAYILAN = () => ({
     borclar: [], ekstra: 0, tema: null, ayarlar: null, yontem: "avalanche",
@@ -2805,6 +2931,12 @@ const STORAGE = (() => {
   function migrate(veri) {
     const v = typeof veri.schemaVersion === "number" ? veri.schemaVersion : 0;
     if (v === 0) { /* v0 → v1: yapı zaten uyumlu */ }
+    if (v < 2 && Array.isArray(veri.borclar)) {
+      // v1 → v2: ödeme geçmişi eklendi; eski borçlar boş geçmişle başlar
+      for (const b of veri.borclar) {
+        if (b && typeof b === "object" && !Array.isArray(b.payments)) b.payments = [];
+      }
+    }
     return veri;
   }
 
@@ -2884,6 +3016,7 @@ const STORAGE = (() => {
   for (const b of durum.borclar) {
     if (typeof b.initialBalance !== "number") b.initialBalance = b.balance;
     if (b.dueDay === undefined) b.dueDay = null;
+    if (!Array.isArray(b.payments)) b.payments = []; // v2: ödeme geçmişi
   }
 
   // Ayarlar — başlangıç değerleri; kullanıcı hepsini arayüzden değiştirebilir
@@ -3175,6 +3308,8 @@ const STORAGE = (() => {
         <td><span class="progress"><span class="progress-bar" style="width:${yuzde}%"></span></span><span class="muted" style="font-size:0.75rem">%${yuzde}</span></td>
         <td>${kivilcim(seri)}</td>
         <td><span class="islemler">
+          <button class="small" data-odeme="${i}">${s.btnOdeme}</button>
+          <button class="small ghost" data-detay="${i}">${s.btnDetay}</button>
           <button class="small ghost" data-duzenle="${i}">${s.btnDuzenle}</button>
           <button class="small ghost" data-sil="${i}">${s.btnSil}</button>
         </span></td>
@@ -3199,6 +3334,12 @@ const STORAGE = (() => {
     });
     kap.querySelectorAll("[data-duzenle]").forEach(btn => {
       btn.addEventListener("click", () => duzenlemeBaslat(Number(btn.dataset.duzenle)));
+    });
+    kap.querySelectorAll("[data-odeme]").forEach(btn => {
+      btn.addEventListener("click", () => odemeAc(Number(btn.dataset.odeme)));
+    });
+    kap.querySelectorAll("[data-detay]").forEach(btn => {
+      btn.addEventListener("click", () => detayAc(Number(btn.dataset.detay)));
     });
   }
 
@@ -3397,10 +3538,12 @@ const STORAGE = (() => {
       // Başlangıç bakiyesini koru; bakiye yükseltildiyse ilerleme %0'dan başlasın
       const eski = durum.borclar[duzenlenen];
       veri.initialBalance = Math.max(eski.initialBalance ?? eski.balance, veri.balance);
+      veri.payments = eski.payments || []; // ödeme geçmişi düzenlemede korunur
       durum.borclar[duzenlenen] = veri;
       duzenlemeBitir();
     } else {
       veri.initialBalance = veri.balance;
+      veri.payments = []; // v2: ödeme geçmişi
       durum.borclar.push(veri);
       e.target.reset();
       $("ad").focus();
@@ -3767,6 +3910,16 @@ const STORAGE = (() => {
         .sort((a, b) => a - b)[0];
       $("bhVade").textContent = yakinVade === undefined ? "—" : (yakinVade === 0 ? s.bugun : s.gunKisa(yakinVade));
       $("bhVadeLbl").textContent = s.bhVadeLbl;
+      // Gerçek ödemelerle karşılaştırma: bu ay ödenen vs plan hedefi
+      const odenen = buAyOdenen();
+      $("bhOdenen").textContent = paraFmt.format(odenen);
+      $("bhOdenenLbl").textContent = s.buAyOdenenLbl;
+      $("bhKarsi").hidden = odenen <= 0.005;
+      if (odenen > 0.005) {
+        $("bhKarsi").textContent = odenen >= buAyD.toplam - 0.005
+          ? s.buAyHedefUstu(paraFmt.format(odenen))
+          : s.buAyHedefKarsi(paraFmt.format(odenen), paraFmt.format(buAyD.toplam));
+      }
       $("aylikRaporBtn").hidden = false;
     }
     if (buAyD) {
@@ -5046,9 +5199,12 @@ const STORAGE = (() => {
   $("zilPerde").addEventListener("click", () => zilPanelAc(false));
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    // Katmanlı çıkış: önce üstteki ödeme formu, sonra kalanlar
+    if (!$("odemeOverlay").hidden) { $("odemeOverlay").hidden = true; return; }
     zilPanelAc(false);
     $("anOverlay").hidden = true;
     $("raporOverlay").hidden = true;
+    $("borcDetay").hidden = true;
     $("sihirbaz").hidden = true; // kapana kısılmama: Esc her adımda çıkarır
   });
   $("zilTumOkundu").addEventListener("click", () => {
@@ -5742,6 +5898,204 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     $("hizliFormBtn").setAttribute("aria-expanded", String(!k.hidden));
     if (!k.hidden) $("ad").focus();
   });
+
+  /* ============================================================
+     ÖDEME KAYDETME + BORÇ DETAYI — ödedikçe borç gözünün önünde erir.
+     Motorun hesap mantığı değişmez: ödeme yalnızca borcun güncel
+     bakiyesini düşürür ve payments[] geçmişine yazılır (v2 şema).
+     ============================================================ */
+  let odemeBorcIdx = null;    // ödeme formunun hedef borcu
+  let odemeDuzenlenen = null; // düzenlenen ödemenin indeksi (yoksa null)
+  let detayIdx = null;        // açık borç detayındaki borç
+
+  function bugunISO() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function buAyOdenen() {
+    const ay = ayAnahtari(new Date());
+    let t = 0;
+    for (const b of durum.borclar) {
+      for (const p of (b.payments || [])) {
+        if (String(p.tarih).slice(0, 7) === ay) t += p.tutar;
+      }
+    }
+    return t;
+  }
+  // Bu ayın plan hedefi (mevcut bakiyelerle): ilkAylar[0].toplam
+  function buAyHedefi() {
+    const acik = durum.borclar.filter(x => x.balance > 0.005);
+    if (acik.length === 0) return null;
+    const sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
+    return (sim.uygulanabilir && sim.ilkAylar[0]) ? sim.ilkAylar[0].toplam : null;
+  }
+
+  function odemeAc(bi, pi) { // pi verilirse mevcut ödeme düzenlenir
+    odemeBorcIdx = bi;
+    odemeDuzenlenen = (pi !== undefined) ? pi : null;
+    const b = durum.borclar[bi];
+    const s = sd();
+    $("odemeBaslik").textContent = s.odemeBaslik(b.ad);
+    $("odemeHata").textContent = "";
+    $("odemeFazlaUyari").hidden = true;
+    $("odemeTarihInp").max = bugunISO();
+    if (odemeDuzenlenen !== null) {
+      const p = b.payments[pi];
+      $("odemeTutarInp").value = Math.round(p.tutar).toLocaleString(s.yerel);
+      $("odemeTarihInp").value = p.tarih;
+      $("odemeNotInp").value = p.not || "";
+    } else {
+      $("odemeTutarInp").value = "";
+      $("odemeTarihInp").value = bugunISO();
+      $("odemeNotInp").value = "";
+    }
+    // Hızlı butonlar: asgari + (farklıysa) bu ay plana göre bu borca düşen toplam
+    const hizli = [];
+    if (b.payment > 0) hizli.push({ t: b.payment, etiket: s.odemeAsgari(paraFmt.format(b.payment)) });
+    if (b.balance > 0.005) {
+      const acik = durum.borclar.filter(x => x.balance > 0.005);
+      const sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
+      const o = (sim.uygulanabilir && sim.ilkAylar[0]) ? sim.ilkAylar[0].odemeler.find(x => x.ad === b.ad) : null;
+      if (o) {
+        const planT = o.asgari + o.ekstra;
+        if (Math.abs(planT - b.payment) > 0.5) hizli.push({ t: planT, etiket: s.odemePlani(paraFmt.format(planT)) });
+      }
+    }
+    $("odemeHizli").innerHTML = hizli.map(h =>
+      `<button type="button" class="ghost small" data-hizli="${h.t}">${h.etiket}</button>`).join("");
+    $("odemeOverlay").hidden = false;
+    setTimeout(() => { $("odemeTutarInp").focus(); }, 120);
+  }
+
+  function odemeFazlaKontrol() {
+    if (odemeBorcIdx === null) return;
+    const b = durum.borclar[odemeBorcIdx];
+    const t = sayiOku($("odemeTutarInp").value);
+    // Düzenlemede eski tutar bakiyeye geri eklenmiş sayılır
+    const taban = b.balance + (odemeDuzenlenen !== null ? b.payments[odemeDuzenlenen].tutar : 0);
+    if (t > 0 && t > taban + 0.005) {
+      $("odemeFazlaUyari").textContent = sd().odemeFazla(paraFmt.format(t - taban));
+      $("odemeFazlaUyari").hidden = false;
+    } else {
+      $("odemeFazlaUyari").hidden = true;
+    }
+  }
+  $("odemeTutarInp").addEventListener("input", () => {
+    sbParaBicimle($("odemeTutarInp"));
+    $("odemeHata").textContent = "";
+    odemeFazlaKontrol();
+  });
+  $("odemeHizli").addEventListener("click", (e) => {
+    const h = e.target.closest("[data-hizli]");
+    if (!h) return;
+    $("odemeTutarInp").value = Math.round(parseFloat(h.dataset.hizli)).toLocaleString(sd().yerel);
+    $("odemeHata").textContent = "";
+    odemeFazlaKontrol();
+  });
+
+  function odemeKaydet() {
+    const s = sd();
+    const b = durum.borclar[odemeBorcIdx];
+    const t = sayiOku($("odemeTutarInp").value);
+    if (!(t > 0)) { $("odemeHata").textContent = s.sbHataTutar; return; }
+    const tarih = $("odemeTarihInp").value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(tarih)) { $("odemeHata").textContent = s.odemeTarihGecersiz; return; }
+    if (tarih > bugunISO()) { $("odemeHata").textContent = s.odemeGelecek; return; }
+    const not = $("odemeNotInp").value.trim();
+    // Otomatik check-in hedefi ödeme uygulanmadan ÖNCEKİ plana göre ölçülür
+    const hedefOnce = buAyHedefi();
+    if (odemeDuzenlenen !== null) {
+      const eski = b.payments[odemeDuzenlenen];
+      b.balance = b.balance + eski.tutar; // eski ödemeyi geri al
+      b.payments.splice(odemeDuzenlenen, 1);
+    }
+    // Fazla ödeme: yalnızca borca mahsup edilen kısım kaydedilir — böylece
+    // "son ödemeyi sil" geri alması her zaman simetriktir (uyarı formda verildi)
+    const mahsup = Math.min(t, b.balance);
+    b.payments.push({ tutar: mahsup, tarih, not });
+    b.payments.sort((a, c) => a.tarih.localeCompare(c.tarih));
+    b.balance = Math.max(0, b.balance - mahsup);
+    odemeDuzenlenen = null;
+    // Seri/check-in bağı: ay içi ödemeler plan hedefine ulaştıysa o ay uyuldu sayılır
+    const ayK = ayAnahtari(new Date());
+    if (hedefOnce !== null && rozetDurum.checkin[ayK] !== true && buAyOdenen() >= hedefOnce - 0.005) {
+      rozetDurum.checkin[ayK] = true;
+      rozetKaydet();
+    }
+    $("odemeOverlay").hidden = true;
+    kaydetVeCiz(); // halka, çubuklar, sparkline ve kapanış kutlaması tek zincirden
+    titret(15);
+    if (detayIdx !== null) { detayCiz(); odemeOnayGoster(); }
+  }
+  $("odemeKaydetBtn").addEventListener("click", odemeKaydet);
+  $("odemeTutarInp").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); odemeKaydet(); } });
+  $("odemeKapat").addEventListener("click", () => { $("odemeOverlay").hidden = true; });
+  $("odemeVazgec").addEventListener("click", () => { $("odemeOverlay").hidden = true; });
+
+  function odemeSil(bi, pi) {
+    const b = durum.borclar[bi];
+    const p = b.payments[pi];
+    if (!p) return;
+    b.payments.splice(pi, 1);
+    b.balance = b.balance + p.tutar; // yanlış girişi geri alma: bakiye geri gelir
+    kaydetVeCiz();
+    if (detayIdx !== null) detayCiz();
+  }
+
+  let odemeOnayZaman = null;
+  function odemeOnayGoster() {
+    const p = $("odemeOnay");
+    p.hidden = false;
+    p.style.animation = "none"; void p.offsetWidth; p.style.animation = "";
+    clearTimeout(odemeOnayZaman);
+    odemeOnayZaman = setTimeout(() => { p.hidden = true; }, 2500);
+  }
+
+  /* ---- Borç detayı: ilerleme + geçmiş (yeni→eski) ---- */
+  function detayAc(i) {
+    detayIdx = i;
+    $("odemeOnay").hidden = true;
+    detayCiz();
+    $("borcDetay").hidden = false;
+  }
+  function detayCiz() {
+    const b = durum.borclar[detayIdx];
+    if (!b) { $("borcDetay").hidden = true; detayIdx = null; return; }
+    const s = sd();
+    const kisaTarih = new Intl.DateTimeFormat(s.yerel, { day: "numeric", month: "short", year: "numeric" });
+    $("detayBaslik").textContent = b.ad;
+    const y = ilerlemeYuzdesi(b);
+    const kapandi = b.balance <= 0.005;
+    $("detayOzet").innerHTML = `
+      ${kapandi ? `<span class="badge ok">${s.kapandiEtiket}</span>` : ""}
+      <div class="detay-cubuk"><i style="width:${y}%"></i></div>
+      <p class="detay-akis">${s.odendiYuzde(y)} · ${s.basSimdi(
+        `<strong>${paraFmt.format(b.initialBalance ?? b.balance)}</strong>`,
+        `<strong>${paraFmt.format(b.balance)}</strong>`)}</p>`;
+    const liste = (b.payments || []).slice().sort((a, c) => c.tarih.localeCompare(a.tarih));
+    $("odemeListesi").innerHTML = liste.length === 0
+      ? `<p class="empty">${s.odemeBos}</p>`
+      : liste.map(p => {
+          const pi = b.payments.indexOf(p);
+          return `<div class="odeme-satir">
+            <span class="tarih">${kisaTarih.format(new Date(p.tarih + "T12:00:00"))}</span>
+            <span class="tutar">${paraFmt.format(p.tutar)}</span>
+            ${p.not ? `<span class="not">${kacis(p.not)}</span>` : ""}
+            <span class="islemler">
+              <button class="small ghost" data-odeme-duzenle="${pi}">${s.btnDuzenle}</button>
+              <button class="small ghost" data-odeme-sil="${pi}">${s.btnSil}</button>
+            </span>
+          </div>`;
+        }).join("");
+  }
+  $("odemeListesi").addEventListener("click", (e) => {
+    const d = e.target.closest("[data-odeme-duzenle]");
+    if (d) { odemeAc(detayIdx, parseInt(d.dataset.odemeDuzenle, 10)); return; }
+    const sil = e.target.closest("[data-odeme-sil]");
+    if (sil) odemeSil(detayIdx, parseInt(sil.dataset.odemeSil, 10));
+  });
+  $("detayOdemeEkle").addEventListener("click", () => odemeAc(detayIdx));
+  $("detayKapat").addEventListener("click", () => { $("borcDetay").hidden = true; detayIdx = null; });
 
   /* ---- Onboarding turu: yalnızca ilk açılışta (gorduByte bayrağı) ---- */
   const TUR_ANAHTAR = "borcPlanlayici.gorduByte";
