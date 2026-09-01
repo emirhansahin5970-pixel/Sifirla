@@ -10,6 +10,8 @@ dosyalar doğrudan tarayıcıda açılınca çalışır. Dış çağrı, font, C
 | `index.html` | Tanıtım sayfası (TR + EN, açık/koyu tema) |
 | `gizlilik.html` | Gizlilik politikası (TR) |
 | `privacy.html` | Gizlilik politikası (EN) |
+| `veri-silme.html` | Veri silme rehberi (TR) — mağaza "veri silme URL'si" alanı için |
+| `data-deletion.html` | Veri silme rehberi (EN) |
 | `404.html` | Sayfa bulunamadı |
 | `CNAME` | Özel alan adı: `sifirla.app` |
 | `robots.txt` · `sitemap.xml` | Arama motoru |
@@ -19,7 +21,7 @@ dosyalar doğrudan tarayıcıda açılınca çalışır. Dış çağrı, font, C
 ## Doldurulması gereken yer tutucular
 Tüm dosyalarda büyük harfle, aranabilir biçimde bırakıldı:
 
-- `ILETISIM_EPOSTA` — iletişim e-posta adresi (footer + gizlilik sayfaları)
+- `ILETISIM_EPOSTA` — iletişim e-posta adresi (footer + gizlilik + veri silme sayfaları)
 - `UYGULAMA_LINKI` — yayınlanan uygulamanın (borc-plani.html) URL'si; hero'daki
   "Uygulamayı aç" butonu buraya gider
 - `APP_STORE_LINKI` / `PLAY_STORE_LINKI` — mağaza linkleri (henüz yok; "Mağazadan

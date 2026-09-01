@@ -459,6 +459,7 @@
     <div class="footer-linkler">
       <a class="cizgi-link" href="mailto:ILETISIM_EPOSTA" data-en="Contact">İletişim</a>
       <a class="cizgi-link" href="gizlilik.html" id="gizlilikLink" data-en="Privacy Policy" data-href-en="privacy.html">Gizlilik Politikası</a>
+      <a class="cizgi-link" href="veri-silme.html" id="veriSilmeLink" data-en="Delete Your Data" data-href-en="data-deletion.html">Verilerinizi Silme</a>
     </div>
     <p class="telif">© 2026 Sıfırla</p>
     <p class="feragat" data-en="Sıfırla is not licensed financial advice; it is for educational and mathematical planning purposes only.">Sıfırla lisanslı finansal danışmanlık değildir; yalnızca eğitim ve matematiksel planlama amaçlıdır.</p>
@@ -491,8 +492,9 @@
   var titleEl=document.querySelector('title'), descEl=document.getElementById('metaDesc');
   var trBaslik=titleEl.textContent, enBaslik=titleEl.getAttribute('data-en');
   var trDesc=descEl.getAttribute('content'), enDesc=descEl.getAttribute('data-en');
-  var gizLink=document.getElementById('gizlilikLink');
-  var trGizHref=gizLink.getAttribute('href'), enGizHref=gizLink.getAttribute('data-href-en');
+  // data-href-en taşıyan tüm linkler dille birlikte hedef değiştirir (gizlilik, veri silme…)
+  var ciftDilliLinkler=document.querySelectorAll('[data-href-en]');
+  ciftDilliLinkler.forEach(function(el){ el.dataset.hrefTr=el.getAttribute('href'); });
   function uygulaDil(l){
     kok.lang=l;
     document.querySelectorAll('[data-en]').forEach(function(el){
@@ -506,7 +508,7 @@
     });
     titleEl.textContent=(l==='en')?enBaslik:trBaslik;
     descEl.setAttribute('content',(l==='en')?enDesc:trDesc);
-    gizLink.setAttribute('href',(l==='en')?enGizHref:trGizHref);
+    ciftDilliLinkler.forEach(function(el){ el.setAttribute('href',(l==='en')?el.dataset.hrefEn:el.dataset.hrefTr); });
     dilBtn.textContent=(l==='en')?'TR':'EN';
     dilBtn.setAttribute('aria-label',(l==='en')?'Switch to Turkish':'İngilizceye geç');
     try{localStorage.setItem('sifirla-dil',l);}catch(e){}

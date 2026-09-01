@@ -1,26 +1,39 @@
-/* Sıfırla — isteğe bağlı service worker.
-   1) Çevrimdışı önbellek: uygulama kabuğu kurulumda önbelleğe alınır; istekler
-      önce ağdan denenir (güncellemeler hemen yansır), ağ yoksa önbellekten döner.
-   2) Bildirim gösterimi ve bildirime tıklayınca uygulamayı öne getirme.
-   Zamanlanmış/arka plan bildirim GARANTİSİ VERMEZ; sayfa kapalıyken tarayıcı
-   bu dosyayı istediği an durdurabilir. Güvenilir kaynak uygulama içindeki panodur. */
+/* Sıfırla — service worker (PWA).
+   1) Çevrimdışı: uygulama kabuğu kurulumda önbelleğe alınır. Strateji
+      STALE-WHILE-REVALIDATE'tir: yanıt ANINDA önbellekten gelir (internetsiz
+      tam açılış), aynı anda arka planda ağdan tazelenir — yeni sürüm bir
+      sonraki açılışta hazırdır (skipWaiting + clients.claim).
+   2) Sürümlü önbellek: ad değişince eski önbellekler activate'te silinir.
+   3) SW yalnızca KENDİ origin'inin GET isteklerini yönetir; dış çağrı yok.
+   4) Bildirim gösterimi/tıklaması: kilit ekranı denemeleri için (garanti yok;
+      güvenilir kaynak uygulama içindeki panodur). */
 
-const ONBELLEK = "borc-plani-v2"; // v2: Sıfırla markası — ikonlar/manifest değişti
+const ONBELLEK = "sifirla-v3"; // sürüm: her yayında artır — eskiler temizlenir
 const KABUK = [
   "./",
   "./index.html",
   "./borc-plani.html",
   "./manifest.webmanifest",
-  "./ikon-192.png",
-  "./ikon-512.png",
+  "./icons/ikon-192.png",
+  "./icons/ikon-512.png",
+  "./icons/maskable-192.png",
+  "./icons/maskable-512.png",
+  "./icons/apple-touch-icon-180.png",
+  "./icons/favicon-32.png",
+  "./icons/favicon.svg",
+  "./icons/splash-1170x2532.png",
+  "./icons/splash-1179x2556.png",
+  "./icons/splash-1290x2796.png",
   "./apple-touch-icon.png",
+  "./ikon-192.png",
+  "./ikon-512.png"
 ];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(ONBELLEK)
-      .then((c) => c.addAll(KABUK))
-      .catch(() => { /* önbellek kurulamazsa uygulama yine de ağdan çalışır */ })
+      // Tek dosya patlarsa kurulum çökmesin: her kabuk dosyası ayrı denenir
+      .then((c) => Promise.allSettled(KABUK.map((u) => c.add(u))))
       .then(() => self.skipWaiting())
   );
 });
@@ -33,25 +46,34 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-/* Ağ-öncelikli: başarılı yanıt önbelleğe kopyalanır; ağ yoksa önbellekten dön.
-   Sorgu dizisi (?widget=1, ?dev=1) önbellek eşleşmesinde yok sayılır. */
+/* Stale-while-revalidate: önbellek varsa ANINDA dön, arka planda tazele.
+   Önbellekte yoksa ağdan al ve önbelleğe koy; ağ da yoksa gezinmelerde
+   uygulama kabuğuna (borc-plani.html) düş. Sorgu dizisi (?widget=1, ?dev=1)
+   önbellek eşleşmesinde yok sayılır. */
 self.addEventListener("fetch", (e) => {
   const istek = e.request;
   if (istek.method !== "GET" || new URL(istek.url).origin !== self.location.origin) return;
   e.respondWith(
-    fetch(istek)
-      .then((yanit) => {
-        if (yanit && yanit.ok) {
-          const kopya = yanit.clone();
-          caches.open(ONBELLEK).then((c) => c.put(istek, kopya)).catch(() => { /* kota vb. */ });
-        }
-        return yanit;
-      })
-      .catch(() =>
-        caches.match(istek, { ignoreSearch: true }).then(
-          (o) => o || (istek.mode === "navigate" ? caches.match("./borc-plani.html") : Response.error())
-        )
-      )
+    caches.match(istek, { ignoreSearch: true }).then((onbellekten) => {
+      const tazele = fetch(istek)
+        .then((yanit) => {
+          if (yanit && yanit.ok) {
+            const kopya = yanit.clone();
+            caches.open(ONBELLEK).then((c) => c.put(istek, kopya)).catch(() => { /* kota vb. */ });
+          }
+          return yanit;
+        })
+        .catch(() => null);
+      if (onbellekten) {
+        e.waitUntil(tazele); // arka planda güncelle; kullanıcı beklemez
+        return onbellekten;
+      }
+      return tazele.then((yanit) =>
+        yanit || (istek.mode === "navigate"
+          ? caches.match("./borc-plani.html", { ignoreSearch: true })
+          : Response.error())
+      );
+    })
   );
 });
 
