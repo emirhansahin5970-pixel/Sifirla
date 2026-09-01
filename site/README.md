@@ -17,6 +17,7 @@ dosyalar doğrudan tarayıcıda açılınca çalışır. Dış çağrı, font, C
 | `robots.txt` · `sitemap.xml` | Arama motoru |
 | `assets/ekran-1..4.svg` | Ekran görüntüsü **yer tutucuları** |
 | `assets/og.svg` | Paylaşım görseli kaynağı (1200×630) |
+| `assets/og.png` | Paylaşım görseli (1200×630, `og.svg`'den üretildi) |
 
 ## Doldurulması gereken yer tutucular
 Tüm dosyalarda büyük harfle, aranabilir biçimde bırakıldı:
@@ -37,17 +38,21 @@ koymak için iki yol:
    `index.html`'deki `src="assets/ekran-1.svg"` → `src="assets/ekran-1.png"` yap).
 2. Telefon çerçevesi 320×680 oranındadır; bu orana yakın dikey görseller idealdir.
 
-## Paylaşım görselini (og:image) PNG'ye çevir
-Sosyal platformlar çoğunlukla SVG og:image görüntülemez; `og.svg`'yi **1200×630
-PNG**'ye çevir ve `assets/og.png` olarak kaydet (meta etiketleri buna işaret eder):
+## Paylaşım görseli (og:image)
+`assets/og.png` **üretildi** (1200×630, opak, alfa yok) — meta etiketleri buna
+işaret eder. Sosyal platformlar çoğunlukla SVG og:image görüntülemez, bu yüzden
+PNG şart; `og.svg` yalnızca kaynak dosyadır.
+
+`og.svg`'yi değiştirirsen PNG'yi yeniden üret. macOS'ta ek araç kurmadan
+(Quick Look kare tuval üretir, ortadan kırpılır):
 
 ```bash
-# Seçeneklerden biri:
-rsvg-convert -w 1200 -h 630 assets/og.svg -o assets/og.png      # librsvg
-# veya
-inkscape assets/og.svg --export-type=png -w 1200 -h 630 -o assets/og.png
-# veya tarayıcıda og.svg'yi açıp 1200x630 ekran görüntüsü al.
+qlmanage -t -s 1200 -o /tmp/og site/assets/og.svg && sips -c 630 1200 /tmp/og/og.svg.png --out site/assets/og.png
 ```
+
+Kırpma sonrası kenarlarda saydam bant kalmadığını doğrula (alfa min/max = 255).
+Araç kurabiliyorsan `rsvg-convert -w 1200 -h 630 assets/og.svg -o assets/og.png`
+veya `inkscape assets/og.svg --export-type=png -w 1200 -h 630` da olur.
 
 ## GitHub Pages'te yayına alma
 GitHub Pages yalnızca deponun **kökünden** veya **`/docs`** klasöründen yayın
