@@ -890,6 +890,16 @@
   <button type="button" id="kurulumKapatBtn" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:13px;height:13px;color:inherit"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 </div>
 
+<!-- Yedek hatırlatması: nazik, kapatılabilir, ısrarcı değil. Bir kez yedek
+     alınınca ya da kapatılınca bir daha çıkmaz. Bulut yedek YOK — yalnızca
+     kullanıcının kendi dosyasına indirme kolaylaştırılır. -->
+<div id="yedekIpucu" class="kurulum-ipucu no-print" role="dialog" aria-live="polite" hidden>
+  <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v5h7"/><path d="M8 21v-6h8v6"/></svg>
+  <span id="yedekIpucuMetin" style="flex:1"></span>
+  <button type="button" id="yedekIpucuAlBtn" class="small" data-i18n="yedek_ipucu_al">Yedek al</button>
+  <button type="button" id="yedekIpucuKapatBtn" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:13px;height:13px;color:inherit"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+
 <div class="container">
   <header>
     <!-- Marka işareti + wordmark. Yazı statiktir (marka çevrilmez, data-i18n yok);
@@ -1475,6 +1485,83 @@
   <!-- SEKME: Daha — senaryolar, Pro, testler -->
   <div class="sekme" id="sekme-daha">
 
+  <!-- Ayarlar: tema paleti + dil (üst bardan buraya taşındı; id'ler aynı,
+       dinleyiciler ve dilUygula değişmeden çalışır) -->
+  <section class="card">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg><span data-i18n="ayar_h">Ayarlar</span></h2>
+    <div class="form-grid" style="max-width:420px">
+      <div>
+        <label for="palet" data-i18n="ayar_palet">Tema paleti</label>
+        <select id="palet">
+          <option value="teal" data-i18n="opt_teal">Gece Mavisi &amp; Gümüş (varsayılan)</option>
+          <option value="orman" data-i18n="opt_orman">Orman (Pro)</option>
+          <option value="bakir" data-i18n="opt_bakir">Bakır-Yeşil (Pro)</option>
+        </select>
+      </div>
+      <div>
+        <label for="dil">Dil / Language</label>
+        <select id="dil">
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:0.7rem" data-i18n="ayar_yedek_not">
+      Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin
+      tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong>
+      bölümünden tek dosya olarak indirebilirsin.
+    </p>
+  </section>
+
+  <!-- Yedekleme: tüm veri tek JSON; isteğe bağlı parolayla şifreli -->
+  <section class="card no-print">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v5h7"/><path d="M8 21v-6h8v6"/></svg><span data-i18n="yedek_h">Yedekleme</span></h2>
+    <p class="muted" data-i18n="yedek_not">
+      Tüm verin tek bir JSON dosyası olarak yalnızca senin cihazına kaydedilir; hiçbir yere gönderilmez.
+      Cihaz değiştirirken dosyayı dışa aktarıp yeni cihazda içe aktarman yeterli.
+    </p>
+    <div class="form-grid" style="max-width:420px; margin-top:0.7rem">
+      <div>
+        <label for="yedekParola" data-i18n="lbl_yedek_parola">Parola (isteğe bağlı — şifreli yedek için)</label>
+        <input id="yedekParola" type="password" autocomplete="off">
+      </div>
+    </div>
+    <div style="display:flex; gap:0.6rem; margin-top:0.75rem; flex-wrap:wrap">
+      <button id="disaAktarBtn" data-i18n="btn_disa">Dışa aktar (JSON)</button>
+      <button id="iceAktarBtn" class="ghost" data-i18n="btn_ice">İçe aktar</button>
+      <button id="geriAlBtn" class="ghost" hidden data-i18n="btn_geri_al">Önceki veriye geri dön</button>
+      <input id="iceAktarDosya" type="file" accept="application/json,.json" hidden>
+    </div>
+    <p id="yedekDurum" style="margin-top:0.6rem"></p>
+    <!-- Tüm veriyi sıfırla: iki adımlı onay -->
+    <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:12px">
+      <button id="sifirlaBtn" class="ghost small" data-i18n="btn_sifirla">Tüm verilerimi sil</button>
+      <div id="sifirlaOnay" hidden style="margin-top:8px">
+        <p class="warning" data-i18n="sifirla_metin">Tüm borçların, ödeme geçmişin, ayarların ve adın cihazından kalıcı olarak silinecek. Bu geri alınamaz.</p>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap">
+          <button id="sifirlaYedek" class="ghost small" data-i18n="sifirla_yedek">Önce yedek al</button>
+          <button id="sifirlaEvet" class="small" data-i18n="sifirla_evet">Evet, hepsini sil</button>
+          <button id="sifirlaVazgec" class="ghost small" data-i18n="sifirla_vazgec">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kişiselleştirme: ad yalnızca cihazda (localStorage) — hesap/sunucu yok -->
+  <section class="card">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 3.5-6 7-6s6 2 7 6"/></svg><span data-i18n="kisi_h">Kişiselleştirme</span></h2>
+    <div class="form-grid" style="max-width:260px">
+      <div>
+        <label for="kisiAd" data-i18n="kisi_lbl">Sana nasıl hitap edelim?</label>
+        <input id="kisiAd" type="text" maxlength="30" autocomplete="off">
+      </div>
+    </div>
+    <p class="muted" style="margin-top:0.5rem" data-i18n="kisi_not">
+      Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.
+    </p>
+  </section>
+
+
   <!-- Kılavuz: statik "Nasıl kullanılır?" — işlev yok, yalnızca anlatım -->
   <section class="card" id="kilavuzKart">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.5-4.5-2-8-2v14c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2z"/><path d="M12 6v14"/></svg><span data-i18n="kilavuz_h">Nasıl kullanılır?</span></h2>
@@ -1544,9 +1631,10 @@
     Reklam alanı — Pro'da kaldırılır. (Şu an gerçek reklam gösterilmiyor; bu yalnızca yer tutucudur.)
   </div>
 
-  <!-- Pro: tek seferlik yerel kilit; ödeme entegrasyonu sonra -->
+  <!-- Pro: henüz satın alınamaz. Kilit yalnızca setPro() ile açılır;
+       arayüzde kilidi açan bir düğme yoktur (bkz. setPro). -->
   <section class="card no-print">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4L4.2 9.7l5.4-.8z"/></svg><span data-i18n="pro_h">Pro</span></h2>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4L4.2 9.7l5.4-.8z"/></svg><span data-i18n="pro_h">Pro <span class="badge accent">Yakında</span></span></h2>
     <p id="proDurum" class="badge accent" style="margin-bottom:0.4rem"></p>
     <ul class="pro-liste" data-i18n="pro_avantaj">
       <li>Sınırsız borç (ücretsizde en fazla 4)</li>
@@ -1556,84 +1644,14 @@
       <li>Reklamsız görünüm</li>
     </ul>
     <div style="display:flex; gap:0.6rem; flex-wrap:wrap">
-      <button id="proBtn" data-i18n="btn_pro">Kilidi aç — şimdilik ücretsiz (yerel)</button>
+      <button id="proBtn" class="ghost" disabled data-i18n="btn_pro">Yakında — satın alma henüz açık değil</button>
       <button id="yazdirBtn" class="ghost" hidden data-i18n="btn_yazdir">PDF için yazdır</button>
       <button id="raporBtn" class="ghost" hidden data-i18n="btn_rapor">HTML raporu indir</button>
     </div>
     <p class="muted" style="margin-top:0.6rem" data-i18n="pro_not">
-      Ödeme entegrasyonu henüz yok: kilit yalnızca bu cihazda, tek seferlik yerel bir işaretle açılır.
+      Pro henüz satışta değil; hazır olduğunda tek seferlik bir yükseltme olacak, abonelik olmayacak.
+      O güne kadar borç sayısı sınırsız ve uygulama tam sürümüyle ücretsiz.
     </p>
-  </section>
-
-  <!-- Ayarlar: tema paleti + dil (üst bardan buraya taşındı; id'ler aynı,
-       dinleyiciler ve dilUygula değişmeden çalışır) -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg><span data-i18n="ayar_h">Ayarlar</span></h2>
-    <div class="form-grid" style="max-width:420px">
-      <div>
-        <label for="palet" data-i18n="ayar_palet">Tema paleti</label>
-        <select id="palet">
-          <option value="teal" data-i18n="opt_teal">Gece Mavisi &amp; Gümüş (varsayılan)</option>
-          <option value="orman" data-i18n="opt_orman">Orman (Pro)</option>
-          <option value="bakir" data-i18n="opt_bakir">Bakır-Yeşil (Pro)</option>
-        </select>
-      </div>
-      <div>
-        <label for="dil">Dil / Language</label>
-        <select id="dil">
-          <option value="tr">Türkçe</option>
-          <option value="en">English</option>
-        </select>
-      </div>
-    </div>
-  </section>
-
-  <!-- Kişiselleştirme: ad yalnızca cihazda (localStorage) — hesap/sunucu yok -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 3.5-6 7-6s6 2 7 6"/></svg><span data-i18n="kisi_h">Kişiselleştirme</span></h2>
-    <div class="form-grid" style="max-width:260px">
-      <div>
-        <label for="kisiAd" data-i18n="kisi_lbl">Sana nasıl hitap edelim?</label>
-        <input id="kisiAd" type="text" maxlength="30" autocomplete="off">
-      </div>
-    </div>
-    <p class="muted" style="margin-top:0.5rem" data-i18n="kisi_not">
-      Yalnızca cihazında saklanır; selamlama ve özetlerde kullanılır. Boş bırakabilirsin.
-    </p>
-  </section>
-
-  <!-- Yedekleme: tüm veri tek JSON; isteğe bağlı parolayla şifreli -->
-  <section class="card no-print">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v5h7"/><path d="M8 21v-6h8v6"/></svg><span data-i18n="yedek_h">Yedekleme</span></h2>
-    <p class="muted" data-i18n="yedek_not">
-      Tüm verin tek bir JSON dosyası olarak yalnızca senin cihazına kaydedilir; hiçbir yere gönderilmez.
-      Cihaz değiştirirken dosyayı dışa aktarıp yeni cihazda içe aktarman yeterli.
-    </p>
-    <div class="form-grid" style="max-width:420px; margin-top:0.7rem">
-      <div>
-        <label for="yedekParola" data-i18n="lbl_yedek_parola">Parola (isteğe bağlı — şifreli yedek için)</label>
-        <input id="yedekParola" type="password" autocomplete="off">
-      </div>
-    </div>
-    <div style="display:flex; gap:0.6rem; margin-top:0.75rem; flex-wrap:wrap">
-      <button id="disaAktarBtn" data-i18n="btn_disa">Dışa aktar (JSON)</button>
-      <button id="iceAktarBtn" class="ghost" data-i18n="btn_ice">İçe aktar</button>
-      <button id="geriAlBtn" class="ghost" hidden data-i18n="btn_geri_al">Önceki veriye geri dön</button>
-      <input id="iceAktarDosya" type="file" accept="application/json,.json" hidden>
-    </div>
-    <p id="yedekDurum" style="margin-top:0.6rem"></p>
-    <!-- Tüm veriyi sıfırla: iki adımlı onay -->
-    <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:12px">
-      <button id="sifirlaBtn" class="ghost small" data-i18n="btn_sifirla">Tüm verilerimi sil</button>
-      <div id="sifirlaOnay" hidden style="margin-top:8px">
-        <p class="warning" data-i18n="sifirla_metin">Tüm borçların, ödeme geçmişin, ayarların ve adın cihazından kalıcı olarak silinecek. Bu geri alınamaz.</p>
-        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap">
-          <button id="sifirlaYedek" class="ghost small" data-i18n="sifirla_yedek">Önce yedek al</button>
-          <button id="sifirlaEvet" class="small" data-i18n="sifirla_evet">Evet, hepsini sil</button>
-          <button id="sifirlaVazgec" class="ghost small" data-i18n="sifirla_vazgec">Vazgeç</button>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- Motor kendi kendine test sonuçları: geliştirici modunda (?dev=1) görünür;
@@ -1990,6 +2008,8 @@ const SOZLUK = {
       btn_paylas: "Paylaş", btn_indir: "PNG indir",
       paylas_not: "Görsel tamamen cihazında üretilir; sen paylaşmadıkça hiçbir yere gönderilmez.",
       yedek_h: "Yedekleme",
+      ayar_yedek_not: "Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong> bölümünden tek dosya olarak indirebilirsin.",
+      yedek_ipucu_al: "Yedek al",
       yedek_not: "Tüm verin tek bir JSON dosyası olarak yalnızca senin cihazına kaydedilir; hiçbir yere gönderilmez. Cihaz değiştirirken dosyayı dışa aktarıp yeni cihazda içe aktarman yeterli.",
       lbl_yedek_parola: "Parola (isteğe bağlı — şifreli yedek için)",
       btn_disa: "Dışa aktar (JSON)", btn_ice: "İçe aktar",
@@ -2024,14 +2044,14 @@ const SOZLUK = {
       nav_genel: "Genel", nav_borclar: "Borçlar", nav_plan: "Plan", nav_buay: "Bu Ay", nav_daha: "Daha",
       buay_h: "Bu Ay Ne Yapmalıyım?",
       yontem_cig: "Çığ (önce en yüksek faiz)", yontem_kartopu: "Kartopu (önce en küçük bakiye)",
-      sen_h: 'Ya Şöyle Yaparsam? <span class="badge accent">Pro</span>',
-      sen_kilit: "Bu özellik Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.",
+      sen_h: 'Ya Şöyle Yaparsam? <span class="badge accent">Pro · Yakında</span>',
+      sen_kilit: "Bu özellik Pro ile gelecek (yakında): farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır. Henüz satışta değil.",
       lbl_sen_ekstra: "Aylık ekstraya ekle (₺)", lbl_sen_tek: "Bugün tek seferlik öde (₺)", btn_sen: "Senaryoyu hesapla",
-      reklam: "Reklam alanı — Pro'da kaldırılır. (Şu an gerçek reklam gösterilmiyor; bu yalnızca yer tutucudur.)",
-      pro_h: "Pro",
-      pro_avantaj: '<li>Sınırsız borç (ücretsizde en fazla 4)</li><li>"Ya şöyle yaparsam" senaryoları</li><li>PDF / rapor dışa aktarma</li><li>Ekstra yeşil temalar</li><li>Reklamsız görünüm</li>',
-      btn_pro: "Kilidi aç — şimdilik ücretsiz (yerel)",
-      pro_not: "Ödeme entegrasyonu henüz yok: kilit yalnızca bu cihazda, tek seferlik yerel bir işaretle açılır.",
+      reklam: "Reklam alanı — Pro geldiğinde kaldırılabilecek. (Şu an gerçek reklam gösterilmiyor; bu yalnızca yer tutucudur.)",
+      pro_h: 'Pro <span class="badge accent">Yakında</span>',
+      pro_avantaj: '<li>"Ya şöyle yaparsam" senaryoları</li><li>PDF / rapor dışa aktarma</li><li>Ekstra yeşil temalar</li><li>Reklamsız görünüm</li><li>Sınırsız borç — satın alma açılana kadar zaten herkeste açık</li>',
+      btn_pro: "Yakında — satın alma henüz açık değil",
+      pro_not: "Pro henüz satışta değil; hazır olduğunda tek seferlik bir yükseltme olacak, abonelik olmayacak. O güne kadar borç sayısı sınırsız ve uygulama tam sürümüyle ücretsiz.",
       btn_yazdir: "PDF için yazdır", btn_rapor: "HTML raporu indir",
       ob5b: "Sana nasıl hitap edelim?",
       ob5m: "Bu bilgi yalnızca cihazında kalır — istersen boş bırak.",
@@ -2296,7 +2316,7 @@ const SOZLUK = {
       zilYerelHatirlatma: "Bir hatırlatman var.",
       zilYerelOzet: "Yeni bir özetin var.",
       zilYerelGenel: "Yeni bir bildirimin var.",
-      proEtkin: "Pro etkin ✓", proDegil: "Ücretsiz sürüm",
+      proEtkin: "Pro etkin ✓", proDegil: "Ücretsiz sürüm — Pro yakında",
       senBos: "Değişiklik girmediniz; iki alandan en az birini doldurun.",
       senBorcYok: "Önce en az bir açık borç ekleyin.",
       senUygulanamaz: "Bu senaryo da makul sürede kapanmıyor; daha yüksek bir tutar deneyebilirsin.",
@@ -2403,6 +2423,10 @@ const SOZLUK = {
       yedekKriptoYok: "Bu ortamda şifreleme desteklenmiyor; parolasız dışa aktarmayı dene.",
       yedekGecersizVeri: "Dosyadaki veriler beklenen biçimde değil — içe aktarma yapılmadı, mevcut verine dokunulmadı.",
       yedekOtoYedek: "İçe aktarmadan önce mevcut verin otomatik yedeklendi; 'Son içe aktarmayı geri al' ile dönebilirsin.",
+      yedekIpucu: "Verilerin yalnızca bu cihazda. Kaybetmemek için bir yedek al.",
+      yedekIpucuEski: (g) => `${g} gündür kayıt tutuyorsun ve henüz hiç yedek almadın. Tek dosya, birkaç saniye.`,
+      yedekIpucuOk: "✓ Yedek indirildi. İyi bir yere kopyala.",
+      yedekIpucuHata: "Yedek alınamadı — Yedekleme bölümünden tekrar deneyebilirsin.",
       depoOkunamadi: "Kayıtlı verin okunamadı — uygulama güvenli varsayılanlarla açıldı; eski kayıt silinmedi ve korunuyor.",
       depoGelecekSurum: "Bu kayıt uygulamanın daha yeni bir sürümünden görünüyor. Hiçbir şey silinmedi: tanınan alanlarla açıldı, ham kopya kenara alındı. En güncel sürümü kullandığından emin olabilirsin.",
       silindiOnayMetni: "✓ Tüm verilerin bu cihazdan silindi — uygulama ilk açılış durumuna döndü.",
@@ -2517,6 +2541,8 @@ const SOZLUK = {
       btn_paylas: "Share", btn_indir: "Download PNG",
       paylas_not: "The image is generated entirely on your device; nothing is sent anywhere unless you share it.",
       yedek_h: "Backup",
+      ayar_yedek_not: "Your data lives only on this device. If you lose the phone, the only way back is a backup you took yourself — download it as a single file from the <strong>Backup</strong> section just below.",
+      yedek_ipucu_al: "Back up",
       yedek_not: "All your data is saved as a single JSON file, only to your own device; nothing is sent anywhere. To switch devices, export the file and import it on the new one.",
       lbl_yedek_parola: "Password (optional — for an encrypted backup)",
       btn_disa: "Export (JSON)", btn_ice: "Import",
@@ -2551,14 +2577,14 @@ const SOZLUK = {
       nav_genel: "Overview", nav_borclar: "Debts", nav_plan: "Plan", nav_buay: "This Month", nav_daha: "More",
       buay_h: "What Should I Do This Month?",
       yontem_cig: "Avalanche (highest interest first)", yontem_kartopu: "Snowball (smallest balance first)",
-      sen_h: 'What If? <span class="badge accent">Pro</span>',
-      sen_kilit: "This is a Pro feature: compare different extra budgets and one-off payments against your current plan.",
+      sen_h: 'What If? <span class="badge accent">Pro · Soon</span>',
+      sen_kilit: "Coming with Pro: compare different extra budgets and one-off payments against your current plan. Not on sale yet.",
       lbl_sen_ekstra: "Add to monthly extra (₺)", lbl_sen_tek: "One-off payment today (₺)", btn_sen: "Run scenario",
-      reklam: "Ad space — removed in Pro. (No real ads are shown; this is just a placeholder.)",
-      pro_h: "Pro",
-      pro_avantaj: '<li>Unlimited debts (free version allows up to 4)</li><li>"What if" scenarios</li><li>PDF / report export</li><li>Extra green themes</li><li>Ad-free view</li>',
-      btn_pro: "Unlock — free for now (local)",
-      pro_not: "No payment integration yet: the unlock is a one-time local flag on this device only.",
+      reklam: "Ad space — removable once Pro arrives. (No real ads are shown; this is just a placeholder.)",
+      pro_h: 'Pro <span class="badge accent">Soon</span>',
+      pro_avantaj: '<li>"What if" scenarios</li><li>PDF / report export</li><li>Extra green themes</li><li>Ad-free view</li><li>Unlimited debts — already open to everyone until purchasing opens</li>',
+      btn_pro: "Coming soon — purchasing isn't open yet",
+      pro_not: "Pro isn't on sale yet; when it's ready it will be a one-time upgrade, never a subscription. Until then the debt count is unlimited and the app is free in full.",
       btn_yazdir: "Print to PDF", btn_rapor: "Download HTML report",
       ob5b: "What should we call you?",
       ob5m: "This stays only on your device — leave it blank if you like.",
@@ -2816,7 +2842,7 @@ const SOZLUK = {
       zilYerelHatirlatma: "You have a reminder.",
       zilYerelOzet: "You have a new summary.",
       zilYerelGenel: "You have a new notification.",
-      proEtkin: "Pro active ✓", proDegil: "Free version",
+      proEtkin: "Pro active ✓", proDegil: "Free version — Pro coming soon",
       senBos: "No change entered; fill at least one of the two fields.",
       senBorcYok: "Add at least one open debt first.",
       senUygulanamaz: "This scenario doesn't close in a reasonable time either; you could try a larger amount.",
@@ -2922,6 +2948,10 @@ const SOZLUK = {
       yedekKriptoYok: "Encryption isn't supported in this environment; try exporting without a password.",
       yedekGecersizVeri: "The file's data isn't in the expected shape — nothing was imported, your current data is untouched.",
       yedekOtoYedek: "Your current data was auto-backed up before the import; use 'Undo last import' to go back.",
+      yedekIpucu: "Your data lives only on this device. Take a backup so you don't lose it.",
+      yedekIpucuEski: (g) => `You've been tracking for ${g} days and haven't backed up once. One file, a few seconds.`,
+      yedekIpucuOk: "✓ Backup downloaded. Keep it somewhere safe.",
+      yedekIpucuHata: "Couldn't create the backup — try again from the Backup section.",
       depoOkunamadi: "Your saved data couldn't be read — the app opened with safe defaults; the old record was NOT deleted.",
       depoGelecekSurum: "This record looks like it's from a newer version of the app. Nothing was deleted: it opened with the recognized fields and a raw copy was set aside. Make sure you're on the latest version.",
       silindiOnayMetni: "✓ All your data was deleted from this device — the app is back to its first-launch state.",
@@ -3559,15 +3589,34 @@ const ONERI = (() => {
    şemaya taşınır, bilinmeyen sürümde veri SİLİNMEZ (bilinen alanlar
    okunur, bilinmeyen alanlar aynen korunur).
    ============================================================ */
+/* Pro kilidinin meşru kaynakları. Bir kayıt yalnızca bunlardan biriyle
+   işaretlenmişse Pro sayılır; işaretsiz eski "yerel kilit" kayıtları v5'te
+   temizlenir. "yerel-test" YALNIZCA localhost'ta ?pro=1 ile yazılabilir,
+   "satinalma" ise mağaza IAP'si eklendiğinde kullanılacak. */
+const PRO_KAYNAKLARI = ["yerel-test", "satinalma"];
+
+/* Yerel geliştirme ortamı mı? Yalnızca TAM eşleşen host adları ve file:
+   protokolü yereldir — "sifirla.app.localhost" ya da "evil-localhost.com"
+   gibi benzeyen adlar yerel SAYILMAZ. Yayınlanan dosyada bu her zaman
+   false döner, dolayısıyla ?pro=1 test kısayolu canlıda hiç var olmaz. */
+function yerelOrtamMi(host, protokol) {
+  if (protokol === "file:") return true;
+  return ["localhost", "127.0.0.1", "::1", "[::1]", ""].includes(host);
+}
+
+const YEDEK_VARSAYILAN = () => ({ alindiMs: 0, kartKapatildi: false, acilisHatirlatildi: false });
+
 const STORAGE = (() => {
   const ANAHTAR = "borcPlanlayici.v1";
-  const SEMA = 4; // güncel şema sürümü (v4: taksitli borçlarda taksit sayacı + opsiyonel vade farkı)
+  const SEMA = 5; // güncel şema sürümü (v5: Pro kaynağı + yedek hatırlatma durumu)
 
   const VARSAYILAN = () => ({
     borclar: [], ekstra: 0, tema: null, ayarlar: null, yontem: "avalanche",
-    dil: "tr", pro: false, palet: "teal", sekme: "genel",
+    dil: "tr", pro: false, proKaynak: null, palet: "teal", sekme: "genel",
     ad: "", selamIlk: null, // kişiselleştirme: ad yalnızca cihazda
-    referanslar: null, ilkPlan: null, schemaVersion: SEMA
+    referanslar: null, ilkPlan: null,
+    yedek: YEDEK_VARSAYILAN(), ilkKullanimMs: Date.now(),
+    schemaVersion: SEMA
   });
 
   // Eski sürümü güncel şemaya taşır. v0 (sürümsüz eski kayıtlar) → v1:
@@ -3602,6 +3651,26 @@ const STORAGE = (() => {
         if (typeof b.vadeFarki !== "number" || !(b.vadeFarki > 0)) b.vadeFarki = null;
       }
     }
+    if (v < 5) {
+      // v4 → v5: Pro artık kaynağıyla birlikte saklanır. Kaynağı olmayan eski
+      // kayıtlar "kilidi aç — şimdilik ücretsiz" düğmesinden veya ?pro=1'den
+      // gelmiştir; ikisi de kaldırıldığı için bu kilitler kapatılır.
+      if (veri.pro === true && !PRO_KAYNAKLARI.includes(veri.proKaynak)) {
+        veri.pro = false; veri.proKaynak = null;
+      }
+      if (!veri.yedek || typeof veri.yedek !== "object") veri.yedek = YEDEK_VARSAYILAN();
+      if (!(typeof veri.ilkKullanimMs === "number" && veri.ilkKullanimMs > 0)) {
+        // Veri yaşı: en eski borç id'si "<ms>-<rastgele>" biçimindedir; yoksa bugün
+        let enEski = Infinity;
+        if (Array.isArray(veri.borclar)) {
+          for (const b of veri.borclar) {
+            const ms = b && typeof b.id === "string" ? parseInt(b.id.split("-")[0], 10) : NaN;
+            if (Number.isFinite(ms) && ms > 0 && ms < enEski) enEski = ms;
+          }
+        }
+        veri.ilkKullanimMs = Number.isFinite(enEski) ? enEski : Date.now();
+      }
+    }
     return veri;
   }
 
@@ -3628,7 +3697,15 @@ const STORAGE = (() => {
         ayarlar: (veri.ayarlar && typeof veri.ayarlar === "object") ? veri.ayarlar : null,
         yontem: veri.yontem === "snowball" ? "snowball" : "avalanche",
         dil: veri.dil === "en" ? "en" : "tr",
-        pro: veri.pro === true,
+        // Pro yalnızca meşru bir kaynakla işaretlenmişse açık sayılır
+        pro: veri.pro === true && PRO_KAYNAKLARI.includes(veri.proKaynak),
+        proKaynak: PRO_KAYNAKLARI.includes(veri.proKaynak) ? veri.proKaynak : null,
+        yedek: Object.assign(YEDEK_VARSAYILAN(), (veri.yedek && typeof veri.yedek === "object") ? {
+          alindiMs: typeof veri.yedek.alindiMs === "number" && veri.yedek.alindiMs > 0 ? veri.yedek.alindiMs : 0,
+          kartKapatildi: veri.yedek.kartKapatildi === true,
+          acilisHatirlatildi: veri.yedek.acilisHatirlatildi === true
+        } : {}),
+        ilkKullanimMs: typeof veri.ilkKullanimMs === "number" && veri.ilkKullanimMs > 0 ? veri.ilkKullanimMs : Date.now(),
         palet: ["teal", "orman", "bakir"].includes(veri.palet) ? veri.palet : "teal",
         sekme: typeof veri.sekme === "string" ? veri.sekme : "genel",
         referanslar: (veri.referanslar && typeof veri.referanslar === "object") ? veri.referanslar : null,
@@ -3666,7 +3743,11 @@ const STORAGE = (() => {
    ARAYÜZ — DOM bağlama, biçimlendirme, olaylar
    ============================================================ */
 (() => {
-  const SINIR_UCRETSIZ_BORC = 4; // ücretsiz sürümdeki borç sınırı
+  /* Mağaza IAP'si eklenince true olacak. Satın alma KAPALIYKEN ücretsiz borç
+     sınırı uygulanmaz: açılamayan bir kilidin arkasına kullanıcıyı hapsetmeyiz
+     (5. borcunu ekleyemeyen kullanıcının yapabileceği hiçbir şey olmazdı). */
+  const PRO_SATIN_ALINABILIR = false;
+  const SINIR_UCRETSIZ_BORC = PRO_SATIN_ALINABILIR ? 4 : Infinity;
   let paraFmt, tarihFmt, gunAyFmt;
 
   let durum = STORAGE.yukle();
@@ -3768,6 +3849,7 @@ const STORAGE = (() => {
     rozetKontrol();
     zilUret(); // veri değişti: zil kuralları yeni bildirim üretebilir
     tutarlilikKontrol(); // özet ↔ liste asla çelişmesin (bekçi + öz-onarım)
+    yedekHatirlatmaKontrol(); // 3. borç ya da ilk ödeme sonrası nazik yedek çağrısı
     // Başarı anı: bir borç kapandıysa kısa kutlama
     const kapali = durum.borclar.filter(b => b.balance <= 0.005).length;
     if (kapali > oncekiKapali) {
@@ -6101,14 +6183,17 @@ const STORAGE = (() => {
       ham, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
   }
 
-  $("disaAktarBtn").addEventListener("click", async () => {
+  /* Dışa aktarma tek yerde: hem Yedekleme kartındaki düğme hem de yedek
+     hatırlatma balonu bunu çağırır. Başarılıysa true döner ve "yedek alındı"
+     işareti düşülür — hatırlatmalar bir daha çıkmaz. */
+  async function yedekDisaAktar() {
     const s = sd();
     const parola = $("yedekParola").value;
     const bugun = new Date().toISOString().slice(0, 10);
     let paket;
     try {
       if (parola) {
-        if (!crypto.subtle) { yedekDurumYaz("warning", s.yedekKriptoYok); return; }
+        if (!crypto.subtle) { yedekDurumYaz("warning", s.yedekKriptoYok); return false; }
         const tuz = crypto.getRandomValues(new Uint8Array(16));
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const iter = 150000;
@@ -6127,10 +6212,16 @@ const STORAGE = (() => {
       a.click();
       URL.revokeObjectURL(a.href);
       yedekDurumYaz("info", parola ? s.yedekSifreliOk : s.yedekOk);
+      durum.yedek.alindiMs = Date.now(); // hatırlatmalar susar
+      STORAGE.kaydet(durum);
+      $("yedekIpucu").hidden = true;
+      return true;
     } catch (e) {
       yedekDurumYaz("warning", s.yedekKriptoYok);
+      return false;
     }
-  });
+  }
+  $("disaAktarBtn").addEventListener("click", yedekDisaAktar);
 
   $("iceAktarBtn").addEventListener("click", () => $("iceAktarDosya").click());
   $("iceAktarDosya").addEventListener("change", async () => {
@@ -7138,12 +7229,21 @@ const STORAGE = (() => {
     $("senaryoKilit").hidden = durum.pro;
     $("senaryoIcerik").hidden = !durum.pro;
   }
-  $("proBtn").addEventListener("click", () => {
-    durum.pro = true; // tek seferlik yerel bayrak; ödeme entegrasyonu eklenince burası değişecek
+  /* Pro kilidi TEK kapıdan açılır: setPro(). Bugün bu fonksiyonu çağıran tek
+     yer, yalnızca localhost'ta çalışan ?pro=1 test kısayoludur; mağaza IAP'si
+     eklendiğinde satın alma doğrulaması da buraya bağlanacak. Çağrılmadığı
+     sürece Pro KAPALI kalır — arayüzde kilidi açan bir düğme yoktur.
+     NOT: sunucu olmadan istemci tarafı Pro durumu %100 korunamaz (konsoldan
+     değiştirilebilir). Bu bilinçli kabul edilmiş bir sınırdır; gerçek
+     doğrulama mağaza IAP'sine geçince gelecek. */
+  function setPro(aktif, kaynak) {
+    const gecerli = aktif === true && PRO_KAYNAKLARI.includes(kaynak);
+    durum.pro = gecerli;
+    durum.proKaynak = gecerli ? kaynak : null;
     STORAGE.kaydet(durum);
     $("limitUyari").hidden = true;
     proUygula();
-  });
+  }
 
   /* ---- Tema paleti (ek paletler Pro) ---- */
   $("palet").addEventListener("change", () => {
@@ -7345,6 +7445,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     let red = false;
     try { red = localStorage.getItem(KURULUM_RED) === "1"; } catch (e) { /* yoksay */ }
     if (STANDALONE || red || ziyaretSayisi < 2) return; // ilk açılışta ve retten sonra asla
+    if (!$("yedekIpucu").hidden) return; // yedek hatırlatması açıkken üstüne binme
     $("kurulumMetin").innerHTML = metin;
     $("kurulumEkleBtn").hidden = !ekleVar;
     $("kurulumIpucu").hidden = false;
@@ -7369,6 +7470,61 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     $("kurulumIpucu").hidden = true;
     try { localStorage.setItem(KURULUM_RED, "1"); } catch (e) { /* yoksay */ }
   });
+
+  /* ---- Yedek hatırlatması ----
+     Veri yalnızca bu cihazda; tek kurtarma yolu kullanıcının kendi yedeği.
+     Bulut yedek YOKTUR (gizlilik ilkesi) — sadece indirme kolaylaştırılır.
+     İki an: (1) kullanıcı 3. borcunu ekledikten VEYA ilk ödemesini
+     kaydettikten sonra, (2) açılışta hiç yedek yoksa ve veri 30 günden
+     eskiyse tek seferlik. Bir kez alınınca/kapatılınca bir daha çıkmaz. */
+  const YEDEK_ESIK_BORC = 3;
+  const YEDEK_ESKI_GUN = 30;
+  const yedekAlindiMi = () => durum.yedek.alindiMs > 0;
+
+  function yedekIpucuGoster(metin) {
+    if (!$("kurulumIpucu").hidden) return; // iki balon üst üste binmesin
+    if (!$("yedekIpucu").hidden) return;
+    $("yedekIpucuMetin").textContent = metin;
+    $("yedekIpucuAlBtn").hidden = false;
+    $("yedekIpucu").hidden = false;
+  }
+
+  // kaydetVeCiz zincirinden çağrılır: borç/ödeme her değiştiğinde bakılır
+  function yedekHatirlatmaKontrol() {
+    if (yedekAlindiMi() || durum.yedek.kartKapatildi) return;
+    const odemeSayisi = durum.borclar.reduce(
+      (t, b) => t + (Array.isArray(b.payments) ? b.payments.length : 0), 0);
+    if (durum.borclar.length >= YEDEK_ESIK_BORC || odemeSayisi >= 1) {
+      yedekIpucuGoster(sd().yedekIpucu);
+    }
+  }
+
+  // Açılış: hiç yedek alınmamış + veri 30 günden eski → tek seferlik hatırlatma
+  function yedekAcilisHatirlatma() {
+    if (yedekAlindiMi() || durum.yedek.acilisHatirlatildi) return;
+    if (!durum.borclar.length) return;
+    const gun = Math.floor((Date.now() - durum.ilkKullanimMs) / 86400000);
+    if (gun < YEDEK_ESKI_GUN) return;
+    durum.yedek.acilisHatirlatildi = true;
+    STORAGE.kaydet(durum);
+    setTimeout(() => yedekIpucuGoster(sd().yedekIpucuEski(gun)), 1500);
+  }
+
+  $("yedekIpucuAlBtn").addEventListener("click", async () => {
+    const ok = await yedekDisaAktar(); // tek dokunuş: dosya hemen iner
+    if (!ok) { $("yedekIpucuMetin").textContent = sd().yedekIpucuHata; return; }
+    // yedekDisaAktar balonu zaten kapattı; kısa bir onay göster ve çekil
+    $("yedekIpucuMetin").textContent = sd().yedekIpucuOk;
+    $("yedekIpucuAlBtn").hidden = true;
+    $("yedekIpucu").hidden = false;
+    setTimeout(() => { $("yedekIpucu").hidden = true; }, 2600);
+  });
+  $("yedekIpucuKapatBtn").addEventListener("click", () => {
+    $("yedekIpucu").hidden = true;
+    durum.yedek.kartKapatildi = true;
+    STORAGE.kaydet(durum);
+  });
+  yedekAcilisHatirlatma();
 
   /* ---- "Borç ekle / başla" akışı: her yerden doğrudan kayıt formuna ----
      Geçiş sekme animasyonuyla yumuşaktır (0.22s); ardından ilk alan odaklanır.
@@ -8054,17 +8210,19 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   $("refMarket").value = durum.referanslar.market || "";
   $("refKira").value = durum.referanslar.kira || "";
   $("refBilet").value = durum.referanslar.bilet || "";
-  // Geliştirici modu (?dev=1): bilinen-cevap doğrulama tablosunu aç
-  // Test kolaylığı (?pro=1): Pro kilidini açar ve kaydeder. Kilit zaten
-  // "şimdilik ücretsiz (yerel)" düğmesiyle açılabildiğinden ek bir hak vermez;
-  // yalnızca simülatör/cihaz testinde dokunma adımını atlatır.
-  if (new URLSearchParams(location.search).get("pro") === "1" && !durum.pro) {
-    durum.pro = true;
-    STORAGE.kaydet(durum);
+  // Test kısayolu (?pro=1): YALNIZCA yerel geliştirme ortamında çalışır
+  // (localhost / 127.0.0.1 / file:). Canlı alan adında koşul asla sağlanmaz,
+  // dolayısıyla yayınlanan dosyada ?pro=1 diye bir kapı yoktur.
+  const YEREL_ORTAM = yerelOrtamMi(location.hostname, location.protocol);
+  if (YEREL_ORTAM && new URLSearchParams(location.search).get("pro") === "1" && !durum.pro) {
+    setPro(true, "yerel-test");
   }
+  // Geliştirici modu (?dev=1): bilinen-cevap doğrulama tablosunu aç
   if (new URLSearchParams(location.search).get("dev") === "1") {
     $("dogrulamaKart").hidden = false;
     dogrulamaTablosu();
+    // Saf, salt-okunur yardımcılar: guard'ı konsoldan doğrulayabilmek için
+    window.__sifirlaDev = { yerelOrtamMi, yerelMi: YEREL_ORTAM };
   }
   // Widget modu (?widget=1): yalnızca geri sayım görünür — ana ekrana eklenebilir
   const widgetModu = new URLSearchParams(location.search).get("widget") === "1";
