@@ -2,31 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sifirla.app/</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://sifirla.app/uygulama/</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://sifirla.app/gizlilik.html</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sifirla.app/privacy.html</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sifirla.app/veri-silme.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://sifirla.app/data-deletion.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>

@@ -12,7 +12,6 @@ const ONBELLEK = "sifirla-v5"; // sürüm: her yayında artır — eskiler temiz
 const KABUK = [
   "./",
   "./index.html",
-  "./borc-plani.html",
   "./manifest.webmanifest",
   "./icons/ikon-192.png",
   "./icons/ikon-512.png",
@@ -48,7 +47,7 @@ self.addEventListener("activate", (e) => {
 
 /* Stale-while-revalidate: önbellek varsa ANINDA dön, arka planda tazele.
    Önbellekte yoksa ağdan al ve önbelleğe koy; ağ da yoksa gezinmelerde
-   uygulama kabuğuna (borc-plani.html) düş. Sorgu dizisi (?widget=1, ?dev=1)
+   uygulama kabuğuna (index.html) düş. Sorgu dizisi (?widget=1, ?dev=1)
    önbellek eşleşmesinde yok sayılır. */
 self.addEventListener("fetch", (e) => {
   const istek = e.request;
@@ -70,7 +69,7 @@ self.addEventListener("fetch", (e) => {
       }
       return tazele.then((yanit) =>
         yanit || (istek.mode === "navigate"
-          ? caches.match("./borc-plani.html", { ignoreSearch: true })
+          ? caches.match("./index.html", { ignoreSearch: true })
           : Response.error())
       );
     })
@@ -81,7 +80,7 @@ self.addEventListener("notificationclick", (e) => {
   e.notification.close();
   e.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((ws) =>
-      ws.length ? ws[0].focus() : self.clients.openWindow("./borc-plani.html")
+      ws.length ? ws[0].focus() : self.clients.openWindow("./")
     )
   );
 });

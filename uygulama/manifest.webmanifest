@@ -4,7 +4,7 @@
   "description": "Borcunu sıfırla. Kartopu veya çığ stratejisiyle ay ay kapatma planını gör. Tamamen çevrimdışı; verin cihazından çıkmaz.",
   "lang": "tr",
   "dir": "ltr",
-  "start_url": "./borc-plani.html",
+  "start_url": ".",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -20,7 +20,7 @@
   "shortcuts": [
     {
       "name": "Geri sayım",
-      "url": "./borc-plani.html?widget=1",
+      "url": "./?widget=1",
       "icons": [{ "src": "icons/ikon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
