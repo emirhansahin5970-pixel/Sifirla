@@ -8,7 +8,7 @@
    4) Bildirim gösterimi/tıklaması: kilit ekranı denemeleri için (garanti yok;
       güvenilir kaynak uygulama içindeki panodur). */
 
-const ONBELLEK = "sifirla-v5"; // sürüm: her yayında artır — eskiler temizlenir
+const ONBELLEK = "sifirla-v6"; // sürüm: her yayında artır — eskiler temizlenir
 const KABUK = [
   "./",
   "./index.html",
