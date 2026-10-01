@@ -2147,6 +2147,7 @@ const SOZLUK = {
       bilYok: "Bu tarayıcı bildirimleri desteklemiyor; hatırlatmalar yalnızca bu panoda.",
       bilRed: "Bildirim izni tarayıcıda reddedilmiş; hatırlatmalar yalnızca bu panoda görünecek.",
       bilAcikTxt: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir ve uygulama açıkken güvenilirdir.",
+      bilAcikTxtNatif: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir.",
       bilDene: "Kilit ekranı bildirimlerini aç", bilKapat: "Kilit ekranı bildirimlerini kapat",
       bilKala: (ad, g, t) => `${ad} son ödeme gününe ${g} gün kaldı (en az ${t}).`,
       /* Zil paneli metinleri (uygulama İÇİ: detay serbest) */
@@ -2312,6 +2313,8 @@ const SOZLUK = {
       raporKapanisIyi: "Güzel gidiyorsun — istikrar, faizden daha güçlü.",
       raporKapanisBos: "Sorun değil; plan yerinde duruyor. Yeni aya hazırsın.",
       /* Kilit ekranı (yerel) bildirimleri: ASLA tutar/borç adı içermez */
+      bil_yerel_not_natif: "Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan iOS/Android bir kez izin ister; kilit ekranına düşen metinde <strong>asla tutar veya borç adı geçmez</strong> — yalnızca nötr bir hatırlatma görünür. Detayı uygulamayı açınca görürsün.",
+      hat_not_natif: "Hatırlatmalar cihazında planlanır ve <strong>uygulama kapalıyken de gelir</strong>. Hiçbir sunucuya bağlanılmaz; planlama tamamen cihazında yapılır. İstediğin an yukarıdan kapatabilirsin.",
       zilYerelBaslik: "Sıfırla",
       zilYerelHatirlatma: "Bir hatırlatman var.",
       zilYerelOzet: "Yeni bir özetin var.",
@@ -2680,6 +2683,7 @@ const SOZLUK = {
       bilYok: "This browser doesn't support notifications; reminders live only on this board.",
       bilRed: "Notification permission is denied in the browser; reminders will appear only on this board.",
       bilAcikTxt: "Lock-screen notifications are on — only neutral text is sent, and they are reliable only while the app is open.",
+      bilAcikTxtNatif: "Lock-screen notifications are on — only neutral text is sent.",
       bilDene: "Turn on lock-screen notifications", bilKapat: "Turn off lock-screen notifications",
       bilKala: (ad, g, t) => `${ad} is due in ${g} days (at least ${t}).`,
       /* Bell panel texts (IN-app: detail is allowed) */
@@ -2838,6 +2842,8 @@ const SOZLUK = {
       raporKapanisIyi: "You're doing great — consistency beats interest.",
       raporKapanisBos: "No worries; the plan is right where you left it. Ready for the new month.",
       /* Lock-screen (local) notifications: NEVER contain amounts/debt names */
+      bil_yerel_not_natif: "Lock screen notifications are off by default. If you turn them on, iOS/Android will ask once; the lock screen text <strong>never contains an amount or a debt name</strong> — only a neutral reminder. You see the detail when you open the app.",
+      hat_not_natif: "Reminders are scheduled on your device and <strong>arrive even when the app is closed</strong>. No server is contacted; all scheduling happens on your device. You can turn them off above at any time.",
       zilYerelBaslik: "Sıfırla",
       zilYerelHatirlatma: "You have a reminder.",
       zilYerelOzet: "You have a new summary.",
@@ -3584,7 +3590,285 @@ const ONERI = (() => {
 })();
 
 /* ============================================================
-   DEPOLAMA — localStorage, try/catch ile güvenli.
+   DEPO — senkron yüzlü depolama katmanı (web + native tek API)
+
+   NEDEN: iOS WKWebView, cihaz depolama baskısı altında localStorage'ı
+   HABERSİZ silebilir. Native sürümde kalıcı olan tek yer Capacitor
+   Preferences'tır (iOS'ta UserDefaults, Android'de SharedPreferences).
+
+   SORUN: Preferences API'si asenkron; uygulamanın 33 okuma/yazma noktası
+   ise senkron. Hepsini await'e çevirmek 6000 satırlık arayüzü baştan
+   yazmak olurdu.
+
+   ÇÖZÜM: açılışta (hazirla) tüm anahtarlar Preferences'tan BİR KEZ belleğe
+   okunur. Sonrasında okumalar bellekten senkron döner; yazmalar hem belleğe
+   (anında) hem Preferences'a (arka planda) gider. Çağıran kod değişmez.
+
+   WEB: native değilsek doğrudan localStorage'a geçer — sifirla.app'teki
+   davranış birebir aynı kalır, kota hatası da eskisi gibi çağırana fırlar.
+   ============================================================ */
+const DEPO = (() => {
+  const ONEK = "borcPlanlayici";
+
+  const NATIVE = (() => {
+    try {
+      return !!(window.Capacitor &&
+        typeof window.Capacitor.isNativePlatform === "function" &&
+        window.Capacitor.isNativePlatform());
+    } catch (e) { return false; }
+  })();
+
+  const ayna = new Map();   // native: senkron okumaların kaynağı
+  let Prefs = null;
+  let hazir = !NATIVE;      // web'de beklemeye gerek yok
+
+  /* ---- web yolu ---- */
+  const webGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const webDel = (k) => { try { localStorage.removeItem(k); } catch (e) { /* yoksay */ } };
+  const webKeys = () => { try { return Object.keys(localStorage); } catch (e) { return []; } };
+
+  /* ---- native yolu: yazmalar arka planda, hata sessizce yutulmaz ---- */
+  function pYaz(k, v) {
+    if (!Prefs) return;
+    Prefs.set({ key: k, value: v }).catch((e) => {
+      console.warn("Preferences yazılamadı:", k, e);
+      if (typeof DEPO.yazmaHatasi === "function") DEPO.yazmaHatasi(e);
+    });
+  }
+  function pSil(k) {
+    if (!Prefs) return;
+    Prefs.remove({ key: k }).catch((e) => console.warn("Preferences silinemedi:", k, e));
+  }
+
+  /* ---- ortak API: localStorage ile birebir aynı imza ---- */
+  function getItem(k) {
+    if (!NATIVE) return webGet(k);
+    return ayna.has(k) ? ayna.get(k) : null;
+  }
+  function setItem(k, v) {
+    v = String(v);
+    if (!NATIVE) { localStorage.setItem(k, v); return; } // kota hatası çağırana fırlar
+    ayna.set(k, v);
+    pYaz(k, v);
+  }
+  function removeItem(k) {
+    if (!NATIVE) { webDel(k); return; }
+    ayna.delete(k);
+    pSil(k);
+  }
+  function anahtarlar() {
+    return NATIVE ? Array.from(ayna.keys()) : webKeys();
+  }
+
+  /* ---- Açılış: Preferences'ı belleğe al + localStorage'dan GÜVENLİ taşıma ----
+     Taşıma kuralları:
+     · Preferences her zaman önceliklidir (güncel kaynak odur).
+     · localStorage'da olup Preferences'ta OLMAYAN anahtar varsa taşınır.
+     · Taşıma sonrası geri okunup doğrulanır; doğrulanamayan anahtar için
+       localStorage'daki değer bellekte tutulur ve sonraki açılışta yeniden
+       denenir — veri hiçbir durumda kaybolmaz.
+     · localStorage SİLİNMEZ. Emniyet ağı olarak yerinde bırakılır. */
+  async function hazirla() {
+    if (hazir) return { native: false, tasinan: 0, dogrulanan: 0 };
+    const sonuc = { native: true, tasinan: 0, dogrulanan: 0, basarisiz: [] };
+    try {
+      Prefs = window.Capacitor.Plugins.Preferences;
+      const { keys } = await Prefs.keys();
+      for (const k of keys) {
+        if (k.indexOf(ONEK) !== 0) continue;
+        const { value } = await Prefs.get({ key: k });
+        if (value !== null && value !== undefined) ayna.set(k, value);
+      }
+      // localStorage'da olup Preferences'ta olmayanları taşı
+      let yerel = [];
+      try { yerel = Object.keys(localStorage).filter(k => k.indexOf(ONEK) === 0); } catch (e) { /* yoksay */ }
+      for (const k of yerel) {
+        if (ayna.has(k)) continue;              // Preferences zaten güncel
+        const deger = webGet(k);
+        if (deger === null) continue;
+        ayna.set(k, deger);                     // oturum her hâlükârda çalışsın
+        try {
+          await Prefs.set({ key: k, value: deger });
+          const { value } = await Prefs.get({ key: k });
+          if (value === deger) sonuc.dogrulanan++;
+          else sonuc.basarisiz.push(k);         // sonraki açılışta tekrar denenir
+          sonuc.tasinan++;
+        } catch (e) {
+          sonuc.basarisiz.push(k);
+          console.warn("Taşıma başarısız (veri localStorage'da duruyor):", k, e);
+        }
+      }
+      hazir = true;
+    } catch (e) {
+      // Preferences erişilemiyorsa uygulama localStorage ile çalışmaya devam eder
+      console.warn("Preferences hazırlanamadı, localStorage'a düşülüyor:", e);
+      Prefs = null;
+      try {
+        for (const k of Object.keys(localStorage)) {
+          if (k.indexOf(ONEK) === 0) ayna.set(k, localStorage.getItem(k));
+        }
+      } catch (e2) { /* yoksay */ }
+      hazir = true;
+      sonuc.hata = String(e);
+    }
+    return sonuc;
+  }
+
+  return { getItem, setItem, removeItem, anahtarlar, hazirla, NATIVE };
+})();
+
+/* ============================================================
+   NATIF — Capacitor köprüsü (iOS / Android)
+
+   Eklentiler native WebView'da window.Capacitor.Plugins üzerinden hazır
+   gelir; paketleyici (bundler) gerekmez, uygulama tek dosya kalır.
+   Web'de VAR=false olur ve her çağrı sessizce hiçbir şey yapmaz —
+   sifirla.app davranışı değişmez.
+   ============================================================ */
+const NATIF = (() => {
+  const VAR = DEPO.NATIVE;
+  const E = () => (window.Capacitor && window.Capacitor.Plugins) || {};
+  const platform = () => {
+    try { return window.Capacitor.getPlatform(); } catch (e) { return "web"; }
+  };
+  const yut = (e) => { /* eklenti yoksa/izin yoksa uygulama akışı bozulmaz */ };
+
+  /* ---- Titreşim: web'deki navigator.vibrate'in native karşılığı ---- */
+  function titresim(tur) {
+    if (!VAR) return;
+    const H = E().Haptics;
+    if (!H) return;
+    try {
+      if (tur === "agir") H.impact({ style: "MEDIUM" }).catch(yut);
+      else if (tur === "basari") H.notification({ type: "SUCCESS" }).catch(yut);
+      else H.impact({ style: "LIGHT" }).catch(yut);
+    } catch (e) { yut(e); }
+  }
+
+  /* ---- Durum çubuğu: uygulamanın AKTİF temasını takip eder ----
+     Capacitor'da "DARK" = açık renk yazı (koyu zemin için), "LIGHT" =
+     koyu renk yazı (açık zemin için). Sabitlersek açık temada saat
+     okunmaz hale gelir; bu yüzden temaUygula() her çalıştığında çağrılır. */
+  async function durumCubugu(koyuTema) {
+    if (!VAR) return;
+    const S = E().StatusBar;
+    if (!S) return;
+    try {
+      await S.setStyle({ style: koyuTema ? "DARK" : "LIGHT" });
+      if (platform() === "android") {
+        await S.setBackgroundColor({ color: koyuTema ? "#0A1220" : "#F2F5FA" });
+        await S.setOverlaysWebView({ overlay: false });
+      }
+    } catch (e) { yut(e); }
+  }
+
+  async function splashGizle() {
+    if (!VAR) return;
+    try { await E().SplashScreen.hide(); } catch (e) { yut(e); }
+  }
+
+  /* ---- Android donanım geri tuşu ---- */
+  function geriTusu(isle) {
+    if (!VAR) return;
+    const A = E().App;
+    if (!A) return;
+    try {
+      A.addListener("backButton", ({ canGoBack }) => {
+        if (isle()) return;              // açık bir panel kapandı: çıkma
+        if (canGoBack) window.history.back();
+        else A.exitApp();
+      });
+    } catch (e) { yut(e); }
+  }
+
+  /* ---- Klavye: açılınca gövdeye sınıf ver, CSS kaydırmayı halletsin ---- */
+  function klavye() {
+    if (!VAR) return;
+    const K = E().Keyboard;
+    if (!K) return;
+    try {
+      K.addListener("keyboardWillShow", (bilgi) => {
+        document.body.classList.add("klavye-acik");
+        document.documentElement.style.setProperty("--klavye-y", (bilgi && bilgi.keyboardHeight ? bilgi.keyboardHeight : 0) + "px");
+      });
+      K.addListener("keyboardWillHide", () => {
+        document.body.classList.remove("klavye-acik");
+        document.documentElement.style.setProperty("--klavye-y", "0px");
+      });
+    } catch (e) { yut(e); }
+  }
+
+  /* ---- Yerel bildirimler ----
+     GİZLİLİK: başlık ve gövde her zaman NÖTRDÜR. Borç adı, tutar ya da
+     herhangi bir rakam kilit ekranına ASLA çıkmaz; detay uygulama içinde
+     kalır. Bu kural web sürümündeki zil motoruyla aynıdır. */
+  async function bildirimIzniDurumu() {
+    if (!VAR) return "unsupported";
+    const L = E().LocalNotifications;
+    if (!L) return "unsupported";
+    try { return (await L.checkPermissions()).display; } catch (e) { return "denied"; }
+  }
+  async function bildirimIzniIste() {
+    if (!VAR) return "unsupported";
+    const L = E().LocalNotifications;
+    if (!L) return "unsupported";
+    try { return (await L.requestPermissions()).display; } catch (e) { return "denied"; }
+  }
+  async function bildirimGonder(baslik, govde) {
+    if (!VAR) return;
+    const L = E().LocalNotifications;
+    if (!L) return;
+    try {
+      await L.schedule({ notifications: [{
+        id: Math.floor(Date.now() % 100000),
+        title: baslik, body: govde,
+        schedule: { at: new Date(Date.now() + 1000) }
+      }] });
+    } catch (e) { yut(e); }
+  }
+
+  /* Planlı hatırlatmalar: uygulama KAPALIYKEN de gelir — native sürümün
+     web'e göre asıl kazancı budur. Her planlamada eskiler iptal edilip
+     yeniden kurulur, böylece borç/ayar değişince takvim tazelenir. */
+  const PLAN_TABAN = 7100;   // çakışmayı önlemek için sabit id aralığı
+  async function hatirlatmalariIptal() {
+    if (!VAR) return;
+    const L = E().LocalNotifications;
+    if (!L) return;
+    try {
+      const { notifications } = await L.getPending();
+      const bizim = notifications.filter(n => n.id >= PLAN_TABAN && n.id < PLAN_TABAN + 100);
+      if (bizim.length) await L.cancel({ notifications: bizim.map(n => ({ id: n.id })) });
+    } catch (e) { yut(e); }
+  }
+  async function hatirlatmalariPlanla(kayitlar) {
+    if (!VAR) return 0;
+    const L = E().LocalNotifications;
+    if (!L) return 0;
+    if ((await bildirimIzniDurumu()) !== "granted") return 0;
+    await hatirlatmalariIptal();
+    const simdi = Date.now();
+    const liste = kayitlar
+      .filter(k => k.tarih instanceof Date && k.tarih.getTime() > simdi + 60000)
+      .slice(0, 60)
+      .map((k, i) => ({
+        id: PLAN_TABAN + i,
+        title: k.baslik,
+        body: k.govde,
+        schedule: { at: k.tarih, allowWhileIdle: true }
+      }));
+    if (!liste.length) return 0;
+    try { await L.schedule({ notifications: liste }); return liste.length; }
+    catch (e) { yut(e); return 0; }
+  }
+
+  return { VAR, platform, titresim, durumCubugu, splashGizle, geriTusu, klavye,
+           bildirimIzniDurumu, bildirimIzniIste, bildirimGonder,
+           hatirlatmalariPlanla, hatirlatmalariIptal };
+})();
+
+/* ============================================================
+   DEPOLAMA — DEPO üzerinden, try/catch ile güvenli.
    schemaVersion + migrate ile geleceğe dayanıklı: eski sürüm yeni
    şemaya taşınır, bilinmeyen sürümde veri SİLİNMEZ (bilinen alanlar
    okunur, bilinmeyen alanlar aynen korunur).
@@ -3600,6 +3884,11 @@ const PRO_KAYNAKLARI = ["yerel-test", "satinalma"];
    gibi benzeyen adlar yerel SAYILMAZ. Yayınlanan dosyada bu her zaman
    false döner, dolayısıyla ?pro=1 test kısayolu canlıda hiç var olmaz. */
 function yerelOrtamMi(host, protokol) {
+  // Native (iOS/Android) paket içinden "capacitor://localhost" ya da
+  // "http://localhost" ile yüklenir — hostname tam olarak "localhost"tur.
+  // Bu yüzden native, aşağıdaki listeye takılmadan ÖNCE elenir: mağazadan
+  // inen uygulamada ?pro=1 ve ?dev=1 diye bir kapı YOKTUR.
+  if (DEPO.NATIVE) return false;
   if (protokol === "file:") return true;
   return ["localhost", "127.0.0.1", "::1", "[::1]", ""].includes(host);
 }
@@ -3678,7 +3967,7 @@ const STORAGE = (() => {
     yukle.sonHata = false;
     yukle.gelecekSurum = false;
     try {
-      const ham = localStorage.getItem(ANAHTAR);
+      const ham = DEPO.getItem(ANAHTAR);
       if (!ham) return VARSAYILAN();
       const veri = migrate(JSON.parse(ham));
       // Gelecek sürümden veri (v > SEMA): SİLME — ham kopyayı bir kenara al,
@@ -3686,7 +3975,7 @@ const STORAGE = (() => {
       if (typeof veri.schemaVersion === "number" && veri.schemaVersion > SEMA) {
         yukle.gelecekSurum = true;
         try {
-          if (!localStorage.getItem(ANAHTAR + ".gelecek")) localStorage.setItem(ANAHTAR + ".gelecek", ham);
+          if (!DEPO.getItem(ANAHTAR + ".gelecek")) DEPO.setItem(ANAHTAR + ".gelecek", ham);
         } catch (e2) { /* yedeklenemese de veri kaybolmaz: ana kayıt duruyor */ }
       }
       // Bilinmeyen/gelecek alanları koru (…veri), bilinenleri doğrulayarak yaz
@@ -3718,9 +4007,9 @@ const STORAGE = (() => {
       console.warn("Depolama okunamadı:", e);
       yukle.sonHata = true;
       try {
-        const bozukHam = localStorage.getItem(ANAHTAR);
-        if (bozukHam && !localStorage.getItem(ANAHTAR + ".bozuk")) {
-          localStorage.setItem(ANAHTAR + ".bozuk", bozukHam);
+        const bozukHam = DEPO.getItem(ANAHTAR);
+        if (bozukHam && !DEPO.getItem(ANAHTAR + ".bozuk")) {
+          DEPO.setItem(ANAHTAR + ".bozuk", bozukHam);
         }
       } catch (e2) { /* kurtarma da yazılamıyorsa yapacak bir şey yok */ }
       return VARSAYILAN();
@@ -3729,7 +4018,7 @@ const STORAGE = (() => {
 
   function kaydet(veri) {
     try {
-      localStorage.setItem(ANAHTAR, JSON.stringify(Object.assign({}, veri, { schemaVersion: SEMA })));
+      DEPO.setItem(ANAHTAR, JSON.stringify(Object.assign({}, veri, { schemaVersion: SEMA })));
     } catch (e) {
       console.warn("Depolamaya yazılamadı:", e);
       if (typeof kaydet.hataBildir === "function") kaydet.hataBildir(e);
@@ -3741,8 +4030,10 @@ const STORAGE = (() => {
 
 /* ============================================================
    ARAYÜZ — DOM bağlama, biçimlendirme, olaylar
+   Not: IIFE değil, adlandırılmış fonksiyon. Native'de depolama katmanı
+   hazır olmadan çalıştırılmaz (dosyanın sonundaki açılış sırasına bak).
    ============================================================ */
-(() => {
+const ARAYUZ = () => {
   /* Mağaza IAP'si eklenince true olacak. Satın alma KAPALIYKEN ücretsiz borç
      sınırı uygulanmaz: açılamayan bir kilidin arkasına kullanıcıyı hapsetmeyiz
      (5. borcunu ekleyemeyen kullanıcının yapabileceği hiçbir şey olmazdı). */
@@ -3796,7 +4087,7 @@ const STORAGE = (() => {
   /* ---- İpucu balonları: tek cümle, kapatılabilir, kalıcı değil ---- */
   const IPUCU_ANAHTAR = "borcPlanlayici.ipuclari";
   let ipuclari = (() => {
-    try { return JSON.parse(localStorage.getItem(IPUCU_ANAHTAR) || "{}"); } catch (e) { return {}; }
+    try { return JSON.parse(DEPO.getItem(IPUCU_ANAHTAR) || "{}"); } catch (e) { return {}; }
   })();
   function ipucuHtml(id, metin) {
     if (ipuclari[id]) return "";
@@ -3811,7 +4102,7 @@ const STORAGE = (() => {
     if (!btn) return;
     const kutu = btn.closest(".ipucu");
     ipuclari[kutu.dataset.ipucu] = true; // kullanıcı anladı: bir daha gösterme
-    try { localStorage.setItem(IPUCU_ANAHTAR, JSON.stringify(ipuclari)); } catch (err) { /* yoksay */ }
+    try { DEPO.setItem(IPUCU_ANAHTAR, JSON.stringify(ipuclari)); } catch (err) { /* yoksay */ }
     kutu.remove();
   });
 
@@ -3850,6 +4141,7 @@ const STORAGE = (() => {
     zilUret(); // veri değişti: zil kuralları yeni bildirim üretebilir
     tutarlilikKontrol(); // özet ↔ liste asla çelişmesin (bekçi + öz-onarım)
     yedekHatirlatmaKontrol(); // 3. borç ya da ilk ödeme sonrası nazik yedek çağrısı
+    if (NATIF.VAR) hatirlatmalariTazele(); // borç/tarih değişti: planlı bildirimler yeniden kurulur
     // Başarı anı: bir borç kapandıysa kısa kutlama
     const kapali = durum.borclar.filter(b => b.balance <= 0.005).length;
     if (kapali > oncekiKapali) {
@@ -3865,8 +4157,17 @@ const STORAGE = (() => {
       (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     document.documentElement.dataset.theme = tercih;
     document.documentElement.dataset.palet = durum.palet || "teal";
+    if (NATIF.VAR) NATIF.durumCubugu(tercih === "dark"); // saat/pil rengi temayla uyumlu kalsın
     $("temaBtn").innerHTML = tercih === "dark" ? `<svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>` : `<svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg>`;
   }
+  /* Kullanıcı elle bir tema seçmediyse (durum.tema null) sistem temasını
+     izle: CSS zaten medya sorgusuyla değişiyor, ama native durum çubuğu
+     rengi temaUygula() içinde ayarlandığı için onu da tazelemek gerekiyor. */
+  try {
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", () => { if (!durum.tema) temaUygula(); });
+  } catch (e) { /* eski tarayıcı: yoksay */ }
+
   $("temaBtn").addEventListener("click", () => {
     durum.tema = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     STORAGE.kaydet(durum);
@@ -3876,6 +4177,12 @@ const STORAGE = (() => {
 
   /* ---- Dokunsal geri bildirim: önemli aksiyonlarda çok kısa titreşim ---- */
   function titret(desen) {
+    if (NATIF.VAR) {
+      // Native: işletim sisteminin kendi dokunsal motoru (daha doğru his)
+      const yogun = Array.isArray(desen) ? 40 : desen;
+      NATIF.titresim(yogun >= 35 ? "agir" : "hafif");
+      return;
+    }
     try { if (navigator.vibrate) navigator.vibrate(desen); } catch (e) { /* yoksay */ }
   }
 
@@ -5509,13 +5816,13 @@ const STORAGE = (() => {
 
   let rozetDurum = (() => {
     try {
-      const ham = JSON.parse(localStorage.getItem(ROZET_ANAHTAR) || "{}");
+      const ham = JSON.parse(DEPO.getItem(ROZET_ANAHTAR) || "{}");
       return { acilan: ham.acilan || {}, aylik: ham.aylik || {}, checkin: ham.checkin || {} };
     } catch (e) { return { acilan: {}, aylik: {}, checkin: {} }; }
   })();
 
   function rozetKaydet() {
-    try { localStorage.setItem(ROZET_ANAHTAR, JSON.stringify(rozetDurum)); }
+    try { DEPO.setItem(ROZET_ANAHTAR, JSON.stringify(rozetDurum)); }
     catch (e) { if (typeof depoYazHatasi === "function") depoYazHatasi(); }
   }
 
@@ -6168,7 +6475,7 @@ const STORAGE = (() => {
 
   function tumVeriyiTopla() {
     let log = {};
-    try { log = JSON.parse(localStorage.getItem(BILDIRIM_LOG_ANAHTAR) || "{}"); } catch (e) { /* yoksay */ }
+    try { log = JSON.parse(DEPO.getItem(BILDIRIM_LOG_ANAHTAR) || "{}"); } catch (e) { /* yoksay */ }
     return { ana: durum, rozet: rozetDurum, bildirimLog: log };
   }
 
@@ -6247,16 +6554,16 @@ const STORAGE = (() => {
       if (!yedekGecerliMi(veri)) { yedekDurumYaz("warning", s.yedekGecersizVeri); return; }
       if (!confirm(s.yedekOnay)) return;
       // İçe aktarmadan ÖNCE mevcut verinin otomatik yedeğini al (geri alınabilsin)
-      localStorage.setItem(ONCEKI_ANAHTAR, JSON.stringify({
+      DEPO.setItem(ONCEKI_ANAHTAR, JSON.stringify({
         tarih: new Date().toISOString(),
-        ana: localStorage.getItem(ANA_ANAHTAR),
-        rozet: localStorage.getItem(ROZET_ANAHTAR),
-        log: localStorage.getItem(BILDIRIM_LOG_ANAHTAR)
+        ana: DEPO.getItem(ANA_ANAHTAR),
+        rozet: DEPO.getItem(ROZET_ANAHTAR),
+        log: DEPO.getItem(BILDIRIM_LOG_ANAHTAR)
       }));
       // Ham olarak yaz; sayfa yenilenince STORAGE.yukle() doğrulayarak okur
-      localStorage.setItem(ANA_ANAHTAR, JSON.stringify(veri.ana));
-      localStorage.setItem(ROZET_ANAHTAR, JSON.stringify(veri.rozet || { acilan: {}, aylik: {} }));
-      localStorage.setItem(BILDIRIM_LOG_ANAHTAR, JSON.stringify(veri.bildirimLog || {}));
+      DEPO.setItem(ANA_ANAHTAR, JSON.stringify(veri.ana));
+      DEPO.setItem(ROZET_ANAHTAR, JSON.stringify(veri.rozet || { acilan: {}, aylik: {} }));
+      DEPO.setItem(BILDIRIM_LOG_ANAHTAR, JSON.stringify(veri.bildirimLog || {}));
       yedekDurumYaz("info", s.yedekYuklendi + " " + s.yedekOtoYedek);
       setTimeout(() => location.reload(), 900);
     } catch (e) {
@@ -6266,22 +6573,22 @@ const STORAGE = (() => {
 
   /* ---- Son içe aktarmayı geri al ---- */
   function geriAlGorunum() {
-    try { $("geriAlBtn").hidden = !localStorage.getItem(ONCEKI_ANAHTAR); }
+    try { $("geriAlBtn").hidden = !DEPO.getItem(ONCEKI_ANAHTAR); }
     catch (e) { $("geriAlBtn").hidden = true; }
   }
   $("geriAlBtn").addEventListener("click", () => {
     const s = sd();
     try {
-      const onceki = JSON.parse(localStorage.getItem(ONCEKI_ANAHTAR) || "null");
+      const onceki = JSON.parse(DEPO.getItem(ONCEKI_ANAHTAR) || "null");
       if (!onceki) { geriAlGorunum(); return; }
       const geriYukle = (anahtar, deger) => {
-        if (deger === null || deger === undefined) localStorage.removeItem(anahtar);
-        else localStorage.setItem(anahtar, deger);
+        if (deger === null || deger === undefined) DEPO.removeItem(anahtar);
+        else DEPO.setItem(anahtar, deger);
       };
       geriYukle(ANA_ANAHTAR, onceki.ana);
       geriYukle(ROZET_ANAHTAR, onceki.rozet);
       geriYukle(BILDIRIM_LOG_ANAHTAR, onceki.log);
-      localStorage.removeItem(ONCEKI_ANAHTAR);
+      DEPO.removeItem(ONCEKI_ANAHTAR);
       yedekDurumYaz("info", s.geriAlindi);
       setTimeout(() => location.reload(), 600);
     } catch (e) {
@@ -6301,9 +6608,9 @@ const STORAGE = (() => {
     // bozuk ve gelecek-sürüm kopyaları dahil — cihazdan temizlenir. Güvenlik
     // ağı geri alma değil, hemen üstteki "Önce yedek al" dışa aktarımıdır.
     try {
-      Object.keys(localStorage)
+      DEPO.anahtarlar()
         .filter(k => k.indexOf("borcPlanlayici.") === 0)
-        .forEach(k => localStorage.removeItem(k));
+        .forEach(k => DEPO.removeItem(k));
     } catch (e) { /* gizli modda bile yeniden yükleme temiz durumla açar */ }
     // Yeniden yükleme sonrası tek seferlik "silindi" onayı (kalıcı veri değil)
     try { sessionStorage.setItem("borcPlanlayici.silindiOnay", "1"); } catch (e) { /* yoksay */ }
@@ -6377,7 +6684,7 @@ const STORAGE = (() => {
 
   let zilVeri = (() => {
     try {
-      const h = JSON.parse(localStorage.getItem(ZIL_ANAHTAR) || "{}");
+      const h = JSON.parse(DEPO.getItem(ZIL_ANAHTAR) || "{}");
       return {
         liste: Array.isArray(h.liste) ? h.liste : [],
         uretim: h.uretim && typeof h.uretim === "object" ? h.uretim : {}
@@ -6385,7 +6692,7 @@ const STORAGE = (() => {
     } catch (e) { return { liste: [], uretim: {} }; }
   })();
   function zilKaydet() {
-    try { localStorage.setItem(ZIL_ANAHTAR, JSON.stringify(zilVeri)); } catch (e) { /* kota: zil kritik değil */ }
+    try { DEPO.setItem(ZIL_ANAHTAR, JSON.stringify(zilVeri)); } catch (e) { /* kota: zil kritik değil */ }
   }
 
   // Tür → hedef sekme ve panel ikonu (inline SVG path'leri, emoji yasak)
@@ -6539,9 +6846,15 @@ const STORAGE = (() => {
      tutar/borç adı asla geçmez. Varsayılan kapalı; kullanıcı ayardan açar. */
   async function yerelBildir(tur) {
     if (!durum.ayarlar.bildirimAcik) return;
-    if (!("Notification" in window) || Notification.permission !== "granted") return;
     const s = sd();
     const govde = tur === "ozet" ? s.zilYerelOzet : tur === "hatirlatma" ? s.zilYerelHatirlatma : s.zilYerelGenel;
+    if (NATIF.VAR) {
+      // Native: işletim sisteminin yerel bildirimi. Metin yine NÖTR —
+      // borç adı ya da tutar kilit ekranına çıkmaz.
+      NATIF.bildirimGonder(s.zilYerelBaslik, govde);
+      return;
+    }
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
     try {
       const kayit = "serviceWorker" in navigator ? await navigator.serviceWorker.getRegistration() : null;
       const tag = "zil-" + new Date().toISOString().slice(0, 10); // aynı gün tek kart
@@ -7010,10 +7323,23 @@ const STORAGE = (() => {
      kullanıcıya abartılı vaat verilmez, zil paneli her zaman çalışır. */
   const BILDIRIM_LOG_ANAHTAR = "borcPlanlayici.bildirimLog";
 
-  function bildirimDurumGoster() {
+  async function bildirimDurumGoster() {
     const btn = $("bildirimBtn"), yazi = $("bildirimDurum");
     const s = sd();
     $("zilIciAc").checked = durum.ayarlar.uygulamaIci !== false;
+    if (NATIF.VAR) {
+      const izin = await NATIF.bildirimIzniDurumu();
+      if (izin === "denied") { btn.hidden = true; yazi.textContent = s.bilRed; return; }
+      btn.hidden = false;
+      if (durum.ayarlar.bildirimAcik && izin === "granted") {
+        // Native'de "yalnızca uygulama açıkken güvenilir" DOĞRU DEĞİL:
+        // planlı bildirimler uygulama kapalıyken de gelir.
+        btn.textContent = s.bilKapat; yazi.textContent = s.bilAcikTxtNatif;
+      } else {
+        btn.textContent = s.bilDene; yazi.textContent = "";
+      }
+      return;
+    }
     if (!("Notification" in window)) {
       btn.hidden = true;
       yazi.textContent = s.bilYok;
@@ -7040,10 +7366,59 @@ const STORAGE = (() => {
     zilUret();
   }
 
+  /* Native planlı hatırlatmalar — uygulama KAPALIYKEN de gelir.
+     Her borcun bir sonraki son ödeme gününe göre iki bildirim kurulur:
+     kullanıcının seçtiği "kaç gün kala" eşiğinde ve 1 gün kala, sabah 10:00.
+     GİZLİLİK: metin nötrdür; borç adı/tutar kilit ekranına çıkmaz.
+     Her çağrıda eski plan iptal edilip yeniden kurulur. */
+  async function hatirlatmalariTazele() {
+    if (!NATIF.VAR) return 0;
+    if (!durum.ayarlar.bildirimAcik) { await NATIF.hatirlatmalariIptal(); return 0; }
+    const s = sd();
+    const esik = Number.isInteger(durum.ayarlar.hatirlatmaGun) ? durum.ayarlar.hatirlatmaGun : 7;
+    const kayitlar = [];
+    const ekle = (tarih) => {
+      const t = new Date(tarih);
+      t.setHours(10, 0, 0, 0);
+      kayitlar.push({ tarih: t, baslik: s.zilYerelBaslik, govde: s.zilYerelHatirlatma });
+    };
+    for (const b of durum.borclar) {
+      if (!b.dueDay || b.balance <= 0.005) continue;
+      const { tarih } = sonrakiSonOdeme(b.dueDay);
+      if (esik > 0) ekle(new Date(tarih.getTime() - esik * 86400000));
+      ekle(new Date(tarih.getTime() - 86400000));
+    }
+    // Aynı güne düşen tekrarları tek bildirime indir (borç adı geçmediği için
+    // iki ayrı kart kullanıcıya hiçbir şey anlatmaz, yalnızca rahatsız eder)
+    const benzersiz = [];
+    const gorulen = new Set();
+    for (const k of kayitlar.sort((a, c) => a.tarih - c.tarih)) {
+      const anahtar = k.tarih.toISOString().slice(0, 10);
+      if (gorulen.has(anahtar)) continue;
+      gorulen.add(anahtar);
+      benzersiz.push(k);
+    }
+    return NATIF.hatirlatmalariPlanla(benzersiz);
+  }
+
   $("bildirimBtn").addEventListener("click", async () => {
     if (durum.ayarlar.bildirimAcik) {
       durum.ayarlar.bildirimAcik = false;
       STORAGE.kaydet(durum);
+      if (NATIF.VAR) await NATIF.hatirlatmalariIptal();  // planlı bildirimler de silinsin
+      bildirimDurumGoster();
+      return;
+    }
+    if (NATIF.VAR) {
+      // Native: izin istemeden ÖNCE nedenini anlatan satır zaten ekranda
+      // (bildirim kartındaki açıklama). İzin verilirse hatırlatmalar kurulur.
+      const n = await NATIF.bildirimIzniIste();
+      if (n === "granted") {
+        durum.ayarlar.bildirimAcik = true;
+        STORAGE.kaydet(durum);
+        hatirlatmaKontrol();
+        await hatirlatmalariTazele();
+      }
       bildirimDurumGoster();
       return;
     }
@@ -7055,7 +7430,8 @@ const STORAGE = (() => {
       durum.ayarlar.bildirimAcik = true;
       STORAGE.kaydet(durum);
       // Service worker varsa kaydet (arka plan sekmede daha güvenilir); yoksa sessizce devam
-      if ("serviceWorker" in navigator) {
+      // Native'de gerek yok: varlıklar zaten uygulama paketinin içinde.
+      if (!NATIF.VAR && "serviceWorker" in navigator) {
         navigator.serviceWorker.register("sw.js").catch(() => { /* sessizce panoya düş */ });
       }
       hatirlatmaKontrol();
@@ -7178,6 +7554,21 @@ const STORAGE = (() => {
   }
 
   /* ---- Dil: statik metinleri bas, dinamikleri yeniden çiz ---- */
+  /* Native'de bildirim metinleri web'dekinden FARKLIDIR: orada "tarayıcı bir
+     kez izin ister / yalnızca uygulama açıkken çalışır" doğru, burada değil.
+     Native'de bildirimler uygulama kapalıyken de gelir — bunu gizlemek hem
+     yanlış hem de özelliği olduğundan zayıf gösterir. */
+  function natifMetinleri() {
+    if (!NATIF.VAR) return;
+    const s = sd();   // bu iki metin dinamik (d) bölümünde tanımlı
+    const yaz = (anahtar, metin) => {
+      const el = document.querySelector(`[data-i18n="${anahtar}"]`);
+      if (el && metin) el.innerHTML = metin;
+    };
+    yaz("bil_yerel_not", s.bil_yerel_not_natif);
+    yaz("hat_not", s.hat_not_natif);
+  }
+
   function dilUygula() {
     const s = st();
     document.documentElement.lang = durum.dil;
@@ -7190,6 +7581,7 @@ const STORAGE = (() => {
       const k = el.dataset.i18nPh;
       if (s[k] !== undefined) el.placeholder = s[k];
     });
+    natifMetinleri();  // native'de "tarayıcı" dili yerine gerçek davranışı anlatan metin
     fmtKur();
     faizBirimUygula(); // faiz etiketi + çevrim satırı seçili birim ve dille tazelenir
     if (sbVeri) sbBirimUygula();
@@ -7435,15 +7827,16 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   const ZIYARET_ANAHTAR = "borcPlanlayici.ziyaret";
   let ziyaretSayisi = 1;
   try {
-    ziyaretSayisi = (parseInt(localStorage.getItem(ZIYARET_ANAHTAR), 10) || 0) + 1;
-    localStorage.setItem(ZIYARET_ANAHTAR, String(ziyaretSayisi));
+    ziyaretSayisi = (parseInt(DEPO.getItem(ZIYARET_ANAHTAR), 10) || 0) + 1;
+    DEPO.setItem(ZIYARET_ANAHTAR, String(ziyaretSayisi));
   } catch (e) { /* yoksay */ }
   let kurulumOlayi = null;
   const iOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) &&
     !/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent);
   function kurulumIpucuGoster(metin, ekleVar) {
     let red = false;
-    try { red = localStorage.getItem(KURULUM_RED) === "1"; } catch (e) { /* yoksay */ }
+    try { red = DEPO.getItem(KURULUM_RED) === "1"; } catch (e) { /* yoksay */ }
+    if (NATIF.VAR) return;                              // uygulama zaten kurulu
     if (STANDALONE || red || ziyaretSayisi < 2) return; // ilk açılışta ve retten sonra asla
     if (!$("yedekIpucu").hidden) return; // yedek hatırlatması açıkken üstüne binme
     $("kurulumMetin").innerHTML = metin;
@@ -7468,7 +7861,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   });
   $("kurulumKapatBtn").addEventListener("click", () => {
     $("kurulumIpucu").hidden = true;
-    try { localStorage.setItem(KURULUM_RED, "1"); } catch (e) { /* yoksay */ }
+    try { DEPO.setItem(KURULUM_RED, "1"); } catch (e) { /* yoksay */ }
   });
 
   /* ---- Yedek hatırlatması ----
@@ -8155,7 +8548,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     obNoktaGuncelle();
   }
   function turKapat(basla) {
-    try { localStorage.setItem(TUR_ANAHTAR, "1"); } catch (e) { /* yoksay */ }
+    try { DEPO.setItem(TUR_ANAHTAR, "1"); } catch (e) { /* yoksay */ }
     // Ad zorunlu değil: doluysa kaydet, boşsa isimsiz ama sıcak dille devam
     const yeniAd = $("obAd").value.trim();
     if (yeniAd) {
@@ -8171,14 +8564,16 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   $("obBasla").addEventListener("click", () => turKapat(true));
   $("obAdGec").addEventListener("click", () => { $("obAd").value = ""; turKapat(true); });
   $("turBtn").addEventListener("click", () => {
-    try { localStorage.removeItem(TUR_ANAHTAR); } catch (e) { /* yoksay */ }
+    try { DEPO.removeItem(TUR_ANAHTAR); } catch (e) { /* yoksay */ }
     turGoster();
   });
 
   /* ---- PWA: service worker'ı her açılışta kaydet (çevrimdışı önbellek).
      Kayıt başarısız olursa uygulama ağdan çalışmaya devam eder; sw.js
      ağ-öncelikli olduğundan localhost canlı-yenilemeyle çakışmaz. */
-  if ("serviceWorker" in navigator) {
+  // Native'de service worker KAYDEDİLMEZ: dosyalar paketten gelir, araya
+  // bir önbellek katmanı girmesi yalnızca "eski sürüm" riski yaratır.
+  if (!NATIF.VAR && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => { /* sessizce devam */ });
   }
 
@@ -8246,11 +8641,72 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
       if (!widgetModu) bildirimSeridi(sd().silindiOnayMetni);
     }
   } catch (e) { /* yoksay */ }
+  /* ---- Android donanım geri tuşu ----
+     Önce AÇIK olan paneli kapatır (en içteki önce); kapatılacak bir şey
+     yoksa normal geri/çıkış davranışına bırakır. Mevcut kapatma
+     düğmelerini kullanır — böylece panellerin kendi temizlik kodu çalışır. */
+  /* Gerçekten görünür mü? Yalnızca offsetParent'a bakmak YETMEZ: bazı
+     paneller (ör. #zilPanel) "visibility:hidden + transform" ile gizleniyor
+     ve offsetParent'ları yine de doludur. checkVisibility() ata zincirindeki
+     visibility/opacity'yi de hesaba katar; desteklenmiyorsa elle bakarız. */
+  function gercektenGorunur(el) {
+    if (!el || el.hidden) return false;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return false;
+    if (typeof el.checkVisibility === "function") {
+      return el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+    }
+    for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (cs.display === "none" || cs.visibility === "hidden" || cs.opacity === "0") return false;
+    }
+    return true;
+  }
+
+  function natifGeriKapat() {
+    const sira = ["odemeKapat", "sbKapatBtn", "raporKapat", "detayKapat",
+                  "zilKapatBtn", "obAtla", "yedekIpucuKapatBtn", "kurulumKapatBtn"];
+    for (const id of sira) {
+      const el = $(id);
+      if (gercektenGorunur(el)) { el.click(); return true; }
+    }
+    // Panel yoksa: Genel sekmesinde değilsek önce oraya dön
+    const aktif = document.querySelector(".alt-nav button.aktif");
+    if (aktif && aktif.dataset.sekme !== "genel") { sekmeGoster("genel"); return true; }
+    return false;
+  }
+
+  if (NATIF.VAR) {
+    // durum çubuğu rengini temaUygula() yönetiyor (tema değişince de güncellenir)
+    NATIF.klavye();
+    NATIF.geriTusu(natifGeriKapat);
+    NATIF.splashGizle();
+    hatirlatmalariTazele();
+  }
+
   // İlk açılışta onboarding turu (widget modunda asla)
   let turGoruldu = true;
-  try { turGoruldu = localStorage.getItem(TUR_ANAHTAR) === "1"; } catch (e) { /* yoksay */ }
+  try { turGoruldu = DEPO.getItem(TUR_ANAHTAR) === "1"; } catch (e) { /* yoksay */ }
   if (!turGoruldu && !widgetModu) turGoster();
-})();
+};
+
+/* ============================================================
+   AÇILIŞ SIRASI
+   Native'de arayüz, depo hazır olmadan BAŞLAMAZ: önce Preferences
+   belleğe alınır, gerekirse localStorage'dan güvenle taşınır — ancak
+   ondan sonra STORAGE.yukle() çalışır ve durum okunur. Web'de
+   hazirla() anında döner; sifirla.app davranışı değişmez.
+   Depo hazırlanamasa bile arayüz AÇILIR (localStorage'a düşerek).
+   ============================================================ */
+DEPO.hazirla()
+  .catch((e) => { console.warn("Depo hazırlanamadı:", e); return null; })
+  .then((r) => {
+    if (r && r.native) {
+      console.info("Sıfırla depo — taşınan:", r.tasinan, "doğrulanan:", r.dogrulanan,
+        r.basarisiz && r.basarisiz.length ? "başarısız: " + r.basarisiz.join(", ") : "");
+    }
+    ARAYUZ();
+  });
 </script>
 </body>
 </html>
