@@ -1,3 +1,39 @@
+# Bağımlılıklar
 node_modules/
+
+# macOS
 .DS_Store
+._*
+
+# Yerel ayar ve sırlar — ASLA commit edilmez (depo herkese açık)
 .claude/settings.local.json
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.mobileprovision
+*.cer
+secrets.json
+
+# iOS (native proje commit'lenir, türetilmiş çıktılar edilmez)
+ios/App/Pods/
+ios/App/build/
+ios/App/output/
+ios/App/App/public/
+ios/DerivedData/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
+
+# Android
+android/build/
+android/app/build/
+android/.gradle/
+android/.kotlin/
+android/local.properties
+android/app/src/main/assets/public/
+*.apk
+*.aab
+*.keystore
+*.jks
