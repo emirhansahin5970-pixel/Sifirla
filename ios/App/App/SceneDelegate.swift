@@ -8,7 +8,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = CAPBridgeViewController()
+        // Uygulama hedefindeki eklentileri kaydeden alt sınıf (bkz.
+        // SifirlaViewController.capacitorDidLoad). Düz CAPBridgeViewController
+        // kullanılırsa SifirlaZeka eklentisi JS tarafına hiç açılmaz.
+        window?.rootViewController = SifirlaViewController()
         window?.makeKeyAndVisible()
 
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)

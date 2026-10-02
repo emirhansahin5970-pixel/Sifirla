@@ -466,6 +466,9 @@
   .ob-noktalar { display: flex; gap: 8px; }
   .ob-noktalar i { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
   .ob-noktalar i.aktif { background: var(--accent); }
+  /* Yapay zeka okuyamadı: alan sarıyla vurgulanır, kullanıcı doldursun */
+  .zeka-eksik { border-color: var(--sicak, #E3C88F) !important; box-shadow: 0 0 0 3px rgba(227, 200, 143, 0.18); }
+
   /* Kapatılabilir ipucu balonları */
   .ipucu { display: flex; gap: 8px; align-items: flex-start; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 8px; color: var(--text); }
   .ipucu .ikn { color: var(--accent-strong); width: 16px; height: 16px; margin-top: 1px; }
@@ -1105,6 +1108,25 @@
       <button class="borcEkleGit ghost" style="flex:1 1 220px" data-i18n="btn_borc_ekle">Borç ekle</button>
       <!-- Hızlı kullanıcı için gizli alternatif: klasik tek ekran form -->
       <button type="button" id="hizliFormBtn" class="link-btn" aria-expanded="false" data-i18n="sb_tek_ekran">hepsini tek ekranda gir</button>
+    </div>
+
+    <!-- Yazarak ekle — yalnızca Apple cihaz içi yapay zekası uygunsa görünür.
+         Uygun değilse bu blok hiç açılmaz; uygulama aynen çalışır. -->
+    <div id="zekaEkleKutu" hidden style="margin-top:14px; border-top:1px solid var(--border); padding-top:12px">
+      <label for="zekaMetin" style="display:block; font-size:13.5px; margin-bottom:6px">
+        <span data-i18n="zeka_lbl">Yazarak ekle</span>
+        <span class="badge accent" style="margin-left:6px" data-i18n="zeka_rozet">cihazda</span>
+      </label>
+      <textarea id="zekaMetin" rows="2" maxlength="400" style="width:100%; resize:vertical"
+        data-i18n-ph="zeka_ph" placeholder="Garanti kartımda 18 bin borç var, aylık faiz %4, asgari 1600, son ödeme ayın 26'sı"></textarea>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px">
+        <button type="button" id="zekaBtn" class="ghost small" data-i18n="zeka_btn">Alanları doldur</button>
+        <span id="zekaDurum" class="muted" style="font-size:12.5px"></span>
+      </div>
+      <p class="muted" style="margin-top:6px; font-size:12px" data-i18n="zeka_not">
+        Cümlen cihazdan çıkmaz; çözümleme telefonunda yapılır. Doldurulan alanları
+        kontrol et — kayıt her zaman senin onayınla olur.
+      </p>
     </div>
   </section>
 
@@ -1889,6 +1911,9 @@
       <button type="button" id="raporGeriAy" class="ghost small" aria-label="Önceki ay">‹</button>
       <button type="button" id="raporIleriAy" class="ghost small" aria-label="Sonraki ay">›</button>
     </div>
+    <!-- Yapay zeka anlatımı: motorun SAYILARINI cümleye döker, yeni rakam üretmez.
+         Model yoksa/uygunsuz çıktı verirse kural tabanlı şablona düşer. -->
+    <p id="zekaRaporMetin" class="muted" hidden style="margin:10px 0 0; font-size:14px; line-height:1.55"></p>
     <div id="raporKartlar"></div>
     <!-- Paylaşım gizliliği: TL tutarları görselde yüzdeye çevrilir; ad zaten hiç basılmaz -->
     <label class="check no-print" style="min-height:0; padding:8px 0 0; font-size:13px">
@@ -2007,6 +2032,9 @@ const SOZLUK = {
       paylas_gizle: "Kişisel rakamları gizle",
       btn_paylas: "Paylaş", btn_indir: "PNG indir",
       paylas_not: "Görsel tamamen cihazında üretilir; sen paylaşmadıkça hiçbir yere gönderilmez.",
+      zeka_lbl: "Yazarak ekle", zeka_rozet: "cihazda", zeka_btn: "Alanları doldur",
+      zeka_ph: "Garanti kartımda 18 bin borç var, aylık faiz %4, asgari 1600, son ödeme ayın 26'sı",
+      zeka_not: "Cümlen cihazdan çıkmaz; çözümleme telefonunda yapılır. Doldurulan alanları kontrol et — kayıt her zaman senin onayınla olur.",
       yedek_h: "Yedekleme",
       ayar_yedek_not: "Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong> bölümünden tek dosya olarak indirebilirsin.",
       yedek_ipucu_al: "Yedek al",
@@ -2315,6 +2343,17 @@ const SOZLUK = {
       /* Kilit ekranı (yerel) bildirimleri: ASLA tutar/borç adı içermez */
       bil_yerel_not_natif: "Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan iOS/Android bir kez izin ister; kilit ekranına düşen metinde <strong>asla tutar veya borç adı geçmez</strong> — yalnızca nötr bir hatırlatma görünür. Detayı uygulamayı açınca görürsün.",
       hat_not_natif: "Hatırlatmalar cihazında planlanır ve <strong>uygulama kapalıyken de gelir</strong>. Hiçbir sunucuya bağlanılmaz; planlama tamamen cihazında yapılır. İstediğin an yukarıdan kapatabilirsin.",
+      zekaSablonBos: "",
+      zekaSablonAna: (t) => `Bu ay ${t} ödedin.`,
+      zekaSablonAzalma: (t) => `Borcun ${t} azaldı.`,
+      zekaSablonKapanan: (n) => `${n} borç tamamen kapandı.`,
+      zekaCalisiyor: "okunuyor…",
+      zekaBos: "Önce borcunu bir cümleyle yaz.",
+      zekaBulunamadi: "Bu cümleden alan çıkaramadım — aşağıdan elle girebilirsin.",
+      zekaHata: "Şu an çözümleyemedim; alanları elle doldurabilirsin.",
+      zekaZamanAsimi: "Çözümleme uzun sürdü; alanları elle doldurabilirsin.",
+      zekaOk: (n) => `${n} alan dolduruldu — kontrol edip kaydet.`,
+      zekaEksikNot: "Sarı alanlar okunamadı, onları sen doldur.",
       zilYerelBaslik: "Sıfırla",
       zilYerelHatirlatma: "Bir hatırlatman var.",
       zilYerelOzet: "Yeni bir özetin var.",
@@ -2543,6 +2582,9 @@ const SOZLUK = {
       paylas_gizle: "Hide personal numbers",
       btn_paylas: "Share", btn_indir: "Download PNG",
       paylas_not: "The image is generated entirely on your device; nothing is sent anywhere unless you share it.",
+      zeka_lbl: "Add by typing", zeka_rozet: "on device", zeka_btn: "Fill the fields",
+      zeka_ph: "My card has 18 thousand debt, 4% monthly interest, minimum 1600, due on the 26th",
+      zeka_not: "Your sentence never leaves the device; parsing happens on your phone. Check the filled fields — saving is always your call.",
       yedek_h: "Backup",
       ayar_yedek_not: "Your data lives only on this device. If you lose the phone, the only way back is a backup you took yourself — download it as a single file from the <strong>Backup</strong> section just below.",
       yedek_ipucu_al: "Back up",
@@ -2844,6 +2886,17 @@ const SOZLUK = {
       /* Lock-screen (local) notifications: NEVER contain amounts/debt names */
       bil_yerel_not_natif: "Lock screen notifications are off by default. If you turn them on, iOS/Android will ask once; the lock screen text <strong>never contains an amount or a debt name</strong> — only a neutral reminder. You see the detail when you open the app.",
       hat_not_natif: "Reminders are scheduled on your device and <strong>arrive even when the app is closed</strong>. No server is contacted; all scheduling happens on your device. You can turn them off above at any time.",
+      zekaSablonBos: "",
+      zekaSablonAna: (t) => `You paid ${t} this month.`,
+      zekaSablonAzalma: (t) => `Your debt went down by ${t}.`,
+      zekaSablonKapanan: (n) => `${n} debt(s) fully closed.`,
+      zekaCalisiyor: "reading…",
+      zekaBos: "Write your debt in a sentence first.",
+      zekaBulunamadi: "I couldn't extract fields from that — you can enter them below.",
+      zekaHata: "Couldn't parse right now; you can fill the fields manually.",
+      zekaZamanAsimi: "Parsing took too long; you can fill the fields manually.",
+      zekaOk: (n) => `${n} field(s) filled — check and save.`,
+      zekaEksikNot: "The highlighted fields couldn't be read — please fill them in.",
       zilYerelBaslik: "Sıfırla",
       zilYerelHatirlatma: "You have a reminder.",
       zilYerelOzet: "You have a new summary.",
@@ -3868,6 +3921,67 @@ const NATIF = (() => {
 })();
 
 /* ============================================================
+   ZEKA — Apple cihaz içi yapay zeka köprüsü (yalnızca iOS 26+)
+
+   · Tamamen cihaz içi: ağ çağrısı YOK, veri cihazdan çıkmaz.
+   · HESAP YAPMAZ. Model yalnızca (a) kullanıcının yazdığı cümleden alan
+     çıkarır, (b) MOTORUN hesapladığı sayıları cümleye döker. Tüm finansal
+     hesap ENGINE'de kalır.
+   · Swift tarafı her sayısal çıktıyı girdiyle karşılaştırıp doğrular;
+     doğrulanamayan alan boş gelir. Burada ikinci bir kontrol daha var.
+   · Cihaz/Apple Intelligence/model/dil uygun değilse acik() false döner ve
+     arayüzdeki tüm yapay zeka alanları GİZLİ kalır — uygulama aynen çalışır.
+   ============================================================ */
+const ZEKA = (() => {
+  /* Pro hazırlığı: özellikler Pro bayrağına bağlı ama ŞİMDİLİK herkese açık.
+     Mağaza IAP'si gelince PRO_GEREKLI true yapılır. */
+  const PRO_GEREKLI = false;
+
+  let bilgi = { kullanilabilir: false, sebep: "baslatilmadi" };
+  /* Uygulama hedefi içinde yazılan eklentiler Capacitor.Plugins listesine
+     girmez (orada yalnızca npm paketleri olur) ve registerPlugin yalnızca
+     @capacitor/core JS paketiyle gelir — bu uygulama paketleyici kullanmıyor.
+     Bu yüzden native köprüye DOĞRUDAN nativePromise ile çağrı yapılır.
+     Native tarafta kayıt: SifirlaViewController.capacitorDidLoad. */
+  const EKLENTI_ADI = "SifirlaZeka";
+  const koprivar = () => {
+    try { return typeof window.Capacitor.nativePromise === "function"; }
+    catch (e) { return false; }
+  };
+  const cagir = (metot, veri) => window.Capacitor.nativePromise(EKLENTI_ADI, metot, veri || {});
+
+  async function hazirla(dil) {
+    if (!NATIF.VAR) { bilgi = { kullanilabilir: false, sebep: "webSurumu" }; return bilgi; }
+    if (!koprivar()) { bilgi = { kullanilabilir: false, sebep: "koprilYok" }; return bilgi; }
+    try {
+      bilgi = await cagir("durum", { dil: dil || "tr" });
+    } catch (e) {
+      bilgi = { kullanilabilir: false, sebep: "hata" };
+    }
+    return bilgi;
+  }
+
+  // Pro kilidi: PRO_GEREKLI açıldığında durum.pro şartı devreye girer
+  const acik = (proMu) => bilgi.kullanilabilir === true && (!PRO_GEREKLI || proMu === true);
+
+  async function borcAyristir(metin) {
+    if (!koprivar()) throw new Error("kopruYok");
+    return cagir("borcAyristir", { metin });
+  }
+
+  /* olgular: MOTORUN hesapladığı sayıların hazır metni. Model yalnızca anlatır.
+     Dönüş {tamam:true, metin} ya da {tamam:false, sebep} — false ise çağıran
+     kural tabanlı şablona düşer. */
+  async function raporAnlat(olgular) {
+    if (!koprivar()) return { tamam: false, sebep: "kopruYok" };
+    try { return await cagir("raporAnlat", { olgular }); }
+    catch (e) { return { tamam: false, sebep: "hata" }; }
+  }
+
+  return { hazirla, acik, borcAyristir, raporAnlat, get bilgi() { return bilgi; } };
+})();
+
+/* ============================================================
    DEPOLAMA — DEPO üzerinden, try/catch ile güvenli.
    schemaVersion + migrate ile geleceğe dayanıklı: eski sürüm yeni
    şemaya taşınır, bilinmeyen sürümde veri SİLİNMEZ (bilinen alanlar
@@ -4834,6 +4948,81 @@ const ARAYUZ = () => {
     titret(12); // önemli aksiyon: borç eklendi/güncellendi
     if (yeniEkleme) kayitOnayiGoster(); // kısa onay + "bir daha / bitti" yolları
   });
+
+  /* ---- Yazarak ekle (Apple cihaz içi yapay zekası) ----
+     Model yalnızca ALAN ÇIKARIR; hesap yapmaz, kayıt yapmaz.
+     Dönen değerler klasik formu ÖN-DOLDURUR, okunamayan alanlar
+     sarıyla vurgulanır ve kullanıcı kendisi kaydeder. Mevcut girdi
+     doğrulaması (borcFormuDogrula) kayıtta aynen çalışır. */
+  const ZEKA_ALAN_HARITA = [
+    ["ad", "ad"], ["bakiye", "bakiye"], ["faiz", "faiz"],
+    ["odeme", "odeme"], ["sonOdemeGunu", "sonGun"], ["taksitToplam", "taksitToplam"]
+  ];
+
+  function zekaVurgu(temizle, dolanlar) {
+    // Formdaki alanlar: doldurulamayanlar "eksik" sınıfıyla işaretlenir
+    for (const [, inputId] of ZEKA_ALAN_HARITA) {
+      const el = $(inputId);
+      if (!el) continue;
+      el.classList.remove("zeka-eksik");
+      if (!temizle && !dolanlar.has(inputId)) el.classList.add("zeka-eksik");
+    }
+  }
+
+  async function zekaBorcDoldur() {
+    const s = sd();
+    const metin = $("zekaMetin").value.trim();
+    const durumEl = $("zekaDurum");
+    if (metin.length < 3) { durumEl.textContent = s.zekaBos; return; }
+    $("zekaBtn").disabled = true;
+    durumEl.textContent = s.zekaCalisiyor;
+    let r = null;
+    try {
+      r = await ZEKA.borcAyristir(metin);
+    } catch (e) {
+      const kod = String((e && (e.message || e.code)) || "");
+      durumEl.textContent = kod.indexOf("zamanAsimi") >= 0 ? s.zekaZamanAsimi : s.zekaHata;
+      $("zekaBtn").disabled = false;
+      return;
+    }
+    $("zekaBtn").disabled = false;
+
+    // Klasik formu aç (ön-doldurma orada görünür)
+    $("klasikFormKart").hidden = false;
+    $("hizliFormBtn").setAttribute("aria-expanded", "true");
+
+    const dolanlar = new Set();
+    const yaz = (inputId, deger) => {
+      if (deger === undefined || deger === null || deger === "") return;
+      const el = $(inputId);
+      if (!el) return;
+      el.value = String(deger);
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      dolanlar.add(inputId);
+    };
+
+    if (r.tur) {
+      $("tur").value = r.tur === "taksitli" ? "installment" : "revolving";
+      $("tur").dispatchEvent(new Event("change", { bubbles: true }));
+      taksitAlanlariniGoster();
+    }
+    yaz("ad", r.ad);
+    yaz("bakiye", r.bakiye);
+    yaz("faiz", r.faiz);
+    yaz("odeme", r.odeme);
+    yaz("sonGun", r.sonOdemeGunu);
+    yaz("taksitToplam", r.taksitToplam);
+    if (r.faizBirimi) faizBirimSec(r.faizBirimi === "yillik" ? "yillik" : "aylik");
+
+    zekaVurgu(false, dolanlar);
+    durumEl.textContent = dolanlar.size > 0
+      ? s.zekaOk(dolanlar.size) + " " + (dolanlar.size < ZEKA_ALAN_HARITA.length ? s.zekaEksikNot : "")
+      : s.zekaBulunamadi;
+    // İlk boş alana odaklan: kullanıcı doğrudan oradan devam etsin
+    const ilkBos = ZEKA_ALAN_HARITA.map(([, id]) => $(id)).find(el => el && !el.value && el.offsetParent !== null);
+    if (ilkBos) ilkBos.focus();
+    else $("ad").focus();
+  }
 
   /* ---- Faiz & vergi ayarları ---- */
   function ayarlariOku() {
@@ -7150,6 +7339,49 @@ const ARAYUZ = () => {
     if (kEl && odenen > 0.005) { kEl._son = 0; sayacTween(kEl, odenen, (v) => paraFmt.format(v)); }
     const odeBtn = $("raporKartlar").querySelector("[data-rapor-ode]");
     if (odeBtn) odeBtn.addEventListener("click", () => { $("raporOverlay").hidden = true; odemeAc(Number(odeBtn.dataset.raporOde)); });
+    zekaRaporAnlat(R);   // insan diliyle özet (uygun değilse şablona düşer)
+  }
+
+  /* ---- Rapor anlatımı ----
+     Modele yalnızca MOTORUN hesapladığı sayılar HAZIR METİN olarak verilir.
+     Model hesap yapmaz, yeni rakam üretemez: Swift tarafı çıktıdaki her sayıyı
+     girdiyle karşılaştırır, uymayan olursa {tamam:false} döner ve burada
+     kural tabanlı şablona düşülür. Şablon her zaman çalışır. */
+  function zekaRaporSablon(R) {
+    const s = sd();
+    const p = (v) => paraFmt.format(v);
+    if (!(R.odenen > 0.005)) return s.zekaSablonBos;
+    const parcalar = [s.zekaSablonAna(p(R.odenen))];
+    if (R.azalma > 0.005) parcalar.push(s.zekaSablonAzalma(p(R.azalma)));
+    if (R.kapananlar && R.kapananlar.length) parcalar.push(s.zekaSablonKapanan(R.kapananlar.length));
+    return parcalar.join(" ");
+  }
+
+  function zekaRaporAnlat(R) {
+    const el = $("zekaRaporMetin");
+    if (!el) return;
+    const sablon = zekaRaporSablon(R);
+    el.textContent = sablon;
+    el.hidden = !sablon;
+    if (!NATIF.VAR || !ZEKA.acik(durum.pro) || !(R.odenen > 0.005)) return;
+
+    // Motorun sayıları — model yalnızca bunları anlatır
+    const sayi = (v) => String(Math.round(v));
+    const olgu = [
+      `Ay: ${R.ayAdi}`,
+      `Bu ay ödenen tutar: ${sayi(R.odenen)} TL`,
+      R.azalma > 0.005 ? `Borcun azalma miktarı: ${sayi(R.azalma)} TL` : null,
+      R.anapara !== null ? `Anaparaya giden: ${sayi(R.anapara)} TL` : null,
+      R.faiz !== null && R.faiz > 0.005 ? `Faize giden: ${sayi(R.faiz)} TL` : null,
+      R.kapananlar && R.kapananlar.length ? `Bu ay kapanan borç sayısı: ${R.kapananlar.length}` : null
+    ].filter(Boolean).join(". ") + ".";
+
+    ZEKA.raporAnlat(olgu).then((r) => {
+      // Rapor kapandıysa ya da başka aya geçildiyse yazma
+      if ($("raporOverlay").hidden) return;
+      if (r && r.tamam && r.metin) { el.textContent = r.metin; el.hidden = false; }
+      // tamam:false -> şablon zaten yazılı, dokunma
+    }).catch(() => { /* şablon kalır */ });
   }
 
   function raporAc() {
@@ -8674,6 +8906,22 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     const aktif = document.querySelector(".alt-nav button.aktif");
     if (aktif && aktif.dataset.sekme !== "genel") { sekmeGoster("genel"); return true; }
     return false;
+  }
+
+  /* ---- Yapay zeka: kullanılabilirliği sor, uygunsa alanları aç ----
+     Uygun DEĞİLSE hiçbir şey gösterilmez; uygulama aynen çalışır. */
+  try {
+    $("zekaBtn").addEventListener("click", zekaBorcDoldur);
+    $("zekaMetin").addEventListener("input", () => { $("zekaDurum").textContent = ""; });
+    if (NATIF.VAR) {
+      ZEKA.hazirla(durum.dil).then((b) => {
+        const ac = ZEKA.acik(durum.pro);
+        $("zekaEkleKutu").hidden = !ac;
+      }).catch(() => { $("zekaEkleKutu").hidden = true; });
+    }
+  } catch (e) {
+    // Zeka alanları kurulamadıysa sessizce kapalı kalır; uygulama etkilenmez
+    try { $("zekaEkleKutu").hidden = true; } catch (e2) { /* yoksay */ }
   }
 
   if (NATIF.VAR) {
