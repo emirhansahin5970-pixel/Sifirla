@@ -1088,6 +1088,7 @@
       </p>
       <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap">
         <button id="bildirimBtn" class="ghost">Kilit ekranı bildirimlerini aç</button>
+        <button type="button" id="bildirimTestBtn" class="ghost small" hidden data-i18n="bil_test">Test bildirimi gönder</button>
         <span id="bildirimDurum" class="muted"></span>
       </div>
     </div>
@@ -2035,6 +2036,7 @@ const SOZLUK = {
       zeka_lbl: "Yazarak ekle", zeka_rozet: "cihazda", zeka_btn: "Alanları doldur",
       zeka_ph: "Garanti kartımda 18 bin borç var, aylık faiz %4, asgari 1600, son ödeme ayın 26'sı",
       zeka_not: "Cümlen cihazdan çıkmaz; çözümleme telefonunda yapılır. Doldurulan alanları kontrol et — kayıt her zaman senin onayınla olur.",
+      bil_test: "Test bildirimi gönder",
       yedek_h: "Yedekleme",
       ayar_yedek_not: "Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong> bölümünden tek dosya olarak indirebilirsin.",
       yedek_ipucu_al: "Yedek al",
@@ -2176,6 +2178,9 @@ const SOZLUK = {
       bilRed: "Bildirim izni tarayıcıda reddedilmiş; hatırlatmalar yalnızca bu panoda görünecek.",
       bilAcikTxt: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir ve uygulama açıkken güvenilirdir.",
       bilAcikTxtNatif: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir.",
+      bilTestGovde: "Test bildirimi — her şey çalışıyor.",
+      bilTestKuruldu: "2 dakika sonrasına test bildirimi kuruldu. Uygulamayı kapatabilirsin.",
+      bilTestOlmadi: "Test bildirimi kurulamadı.",
       bilDene: "Kilit ekranı bildirimlerini aç", bilKapat: "Kilit ekranı bildirimlerini kapat",
       bilKala: (ad, g, t) => `${ad} son ödeme gününe ${g} gün kaldı (en az ${t}).`,
       /* Zil paneli metinleri (uygulama İÇİ: detay serbest) */
@@ -2585,6 +2590,7 @@ const SOZLUK = {
       zeka_lbl: "Add by typing", zeka_rozet: "on device", zeka_btn: "Fill the fields",
       zeka_ph: "My card has 18 thousand debt, 4% monthly interest, minimum 1600, due on the 26th",
       zeka_not: "Your sentence never leaves the device; parsing happens on your phone. Check the filled fields — saving is always your call.",
+      bil_test: "Send a test notification",
       yedek_h: "Backup",
       ayar_yedek_not: "Your data lives only on this device. If you lose the phone, the only way back is a backup you took yourself — download it as a single file from the <strong>Backup</strong> section just below.",
       yedek_ipucu_al: "Back up",
@@ -2726,6 +2732,9 @@ const SOZLUK = {
       bilRed: "Notification permission is denied in the browser; reminders will appear only on this board.",
       bilAcikTxt: "Lock-screen notifications are on — only neutral text is sent, and they are reliable only while the app is open.",
       bilAcikTxtNatif: "Lock-screen notifications are on — only neutral text is sent.",
+      bilTestGovde: "Test notification — everything works.",
+      bilTestKuruldu: "A test notification is set for 2 minutes from now. You can close the app.",
+      bilTestOlmadi: "Couldn't schedule the test notification.",
       bilDene: "Turn on lock-screen notifications", bilKapat: "Turn off lock-screen notifications",
       bilKala: (ad, g, t) => `${ad} is due in ${g} days (at least ${t}).`,
       /* Bell panel texts (IN-app: detail is allowed) */
@@ -3880,6 +3889,25 @@ const NATIF = (() => {
     } catch (e) { yut(e); }
   }
 
+  /* Test bildirimi: kullanıcı bildirimlerin gerçekten geldiğini görebilsin.
+     Planlı hatırlatma id aralığının (PLAN_TABAN) DIŞINDA sabit bir id kullanır,
+     böylece hatırlatma takvimini bozmaz. Metin yine nötrdür. */
+  const TEST_ID = 7099;
+  async function testBildirimi(dakika, baslik, govde) {
+    if (!VAR) return false;
+    const L = E().LocalNotifications;
+    if (!L) return false;
+    if ((await bildirimIzniDurumu()) !== "granted") return false;
+    try {
+      try { await L.cancel({ notifications: [{ id: TEST_ID }] }); } catch (e) { /* yoktu */ }
+      await L.schedule({ notifications: [{
+        id: TEST_ID, title: baslik, body: govde,
+        schedule: { at: new Date(Date.now() + dakika * 60000), allowWhileIdle: true }
+      }] });
+      return true;
+    } catch (e) { yut(e); return false; }
+  }
+
   /* Planlı hatırlatmalar: uygulama KAPALIYKEN de gelir — native sürümün
      web'e göre asıl kazancı budur. Her planlamada eskiler iptal edilip
      yeniden kurulur, böylece borç/ayar değişince takvim tazelenir. */
@@ -3916,7 +3944,7 @@ const NATIF = (() => {
   }
 
   return { VAR, platform, titresim, durumCubugu, splashGizle, geriTusu, klavye,
-           bildirimIzniDurumu, bildirimIzniIste, bildirimGonder,
+           bildirimIzniDurumu, bildirimIzniIste, bildirimGonder, testBildirimi,
            hatirlatmalariPlanla, hatirlatmalariIptal };
 })();
 
@@ -3933,6 +3961,13 @@ const NATIF = (() => {
      arayüzdeki tüm yapay zeka alanları GİZLİ kalır — uygulama aynen çalışır.
    ============================================================ */
 const ZEKA = (() => {
+  /* 1.0 KİLİDİ — yapay zeka özellikleri ilk sürümde GÖRÜNMEZ.
+     Köprü (JS<->native) henüz tamamlanmadı; kod tamamlandığında bu bayrak
+     false yapılacak. Bayrak true iken acik() her koşulda false döner, yani
+     "Yazarak ekle" alanı ve rapor anlatımı hiçbir cihazda açılmaz.
+     NOT: bu, köprünün çalışmamasına BEL BAĞLAMAZ — kasıtlı kapatmadır. */
+  const SURUM_1_0_KAPALI = true;
+
   /* Pro hazırlığı: özellikler Pro bayrağına bağlı ama ŞİMDİLİK herkese açık.
      Mağaza IAP'si gelince PRO_GEREKLI true yapılır. */
   const PRO_GEREKLI = false;
@@ -3962,7 +3997,8 @@ const ZEKA = (() => {
   }
 
   // Pro kilidi: PRO_GEREKLI açıldığında durum.pro şartı devreye girer
-  const acik = (proMu) => bilgi.kullanilabilir === true && (!PRO_GEREKLI || proMu === true);
+  const acik = (proMu) => !SURUM_1_0_KAPALI &&
+    bilgi.kullanilabilir === true && (!PRO_GEREKLI || proMu === true);
 
   async function borcAyristir(metin) {
     if (!koprivar()) throw new Error("kopruYok");
@@ -3978,7 +4014,8 @@ const ZEKA = (() => {
     catch (e) { return { tamam: false, sebep: "hata" }; }
   }
 
-  return { hazirla, acik, borcAyristir, raporAnlat, get bilgi() { return bilgi; } };
+  return { hazirla, acik, borcAyristir, raporAnlat,
+           SURUM_KAPALI: SURUM_1_0_KAPALI, get bilgi() { return bilgi; } };
 })();
 
 /* ============================================================
@@ -7563,6 +7600,8 @@ const ARAYUZ = () => {
       const izin = await NATIF.bildirimIzniDurumu();
       if (izin === "denied") { btn.hidden = true; yazi.textContent = s.bilRed; return; }
       btn.hidden = false;
+      // Test düğmesi yalnızca bildirimler gerçekten açıkken anlamlı
+      $("bildirimTestBtn").hidden = !(durum.ayarlar.bildirimAcik && izin === "granted");
       if (durum.ayarlar.bildirimAcik && izin === "granted") {
         // Native'de "yalnızca uygulama açıkken güvenilir" DOĞRU DEĞİL:
         // planlı bildirimler uygulama kapalıyken de gelir.
@@ -7669,6 +7708,18 @@ const ARAYUZ = () => {
       hatirlatmaKontrol();
     }
     bildirimDurumGoster();
+  });
+
+  /* Test bildirimi: 2 dakika sonrasına kurulur. Kullanıcı uygulamayı
+     kapatıp bildirimin gerçekten geldiğini görebilir — bildirimlerin
+     çalıştığının tek dürüst kanıtı budur. */
+  $("bildirimTestBtn").addEventListener("click", async () => {
+    const s = sd();
+    const btn = $("bildirimTestBtn");
+    btn.disabled = true;
+    const ok = await NATIF.testBildirimi(2, s.zilYerelBaslik, s.bilTestGovde);
+    $("bildirimDurum").textContent = ok ? s.bilTestKuruldu : s.bilTestOlmadi;
+    btn.disabled = false;
   });
 
   // Sayfa açıkken saatte bir kontrol; kapalıyken hatırlatma vaat edilmez
@@ -8913,7 +8964,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   try {
     $("zekaBtn").addEventListener("click", zekaBorcDoldur);
     $("zekaMetin").addEventListener("input", () => { $("zekaDurum").textContent = ""; });
-    if (NATIF.VAR) {
+    if (NATIF.VAR && !ZEKA.SURUM_KAPALI) {
       ZEKA.hazirla(durum.dil).then((b) => {
         const ac = ZEKA.acik(durum.pro);
         $("zekaEkleKutu").hidden = !ac;
