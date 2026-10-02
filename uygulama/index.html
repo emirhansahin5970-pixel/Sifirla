@@ -8896,7 +8896,9 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     setPro(true, "yerel-test");
   }
   // Geliştirici modu (?dev=1): bilinen-cevap doğrulama tablosunu aç
-  if (new URLSearchParams(location.search).get("dev") === "1") {
+  // Geliştirici modu da YEREL ortamla sınırlı: canlı adreste ve native
+  // pakette ?dev=1 diye bir kapı yoktur (bkz. CLAUDE.md değişmez kurallar).
+  if (YEREL_ORTAM && new URLSearchParams(location.search).get("dev") === "1") {
     $("dogrulamaKart").hidden = false;
     dogrulamaTablosu();
     // Saf, salt-okunur yardımcılar: guard'ı konsoldan doğrulayabilmek için
