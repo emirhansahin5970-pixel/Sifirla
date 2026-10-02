@@ -130,6 +130,7 @@ public class SifirlaZekaPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "SifirlaZekaPlugin"
     public let jsName = "SifirlaZeka"
     public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "kopruTesti", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "durum", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "borcAyristir", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "raporAnlat", returnType: CAPPluginReturnPromise)
@@ -142,6 +143,28 @@ public class SifirlaZekaPlugin: CAPPlugin, CAPBridgedPlugin {
     /// (JS console'u Capacitor native loga köprülemiyor; teşhis için gerekli.)
     override public func load() {
         NSLog("[SifirlaZeka] eklenti yuklendi")
+    }
+
+    // MARK: Köprü teşhisi
+
+    /// Modelden BAĞIMSIZ yankı çağrısı: JS ↔ native köprüsünün çalıştığını
+    /// her cihazda (simülatör, eski iOS, Apple Intelligence kapalı) kanıtlar.
+    /// Hiçbir veri işlemez; yalnızca gelen "yanki" dizesini geri döndürür.
+    @objc func kopruTesti(_ call: CAPPluginCall) {
+        #if canImport(FoundationModels)
+        let frameworkVar = true
+        #else
+        let frameworkVar = false
+        #endif
+        let yanki = String((call.getString("yanki") ?? "").prefix(64))
+        NSLog("[SifirlaZeka] kopruTesti yanki=\(yanki)")
+        call.resolve([
+            "tamam": true,
+            "eklenti": jsName,
+            "yanki": yanki,
+            "ios": ProcessInfo.processInfo.operatingSystemVersionString,
+            "frameworkVar": frameworkVar
+        ])
     }
 
     // MARK: Kullanılabilirlik

@@ -81,7 +81,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v6`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v7`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -125,13 +125,17 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 
 ## Yarım kalanlar
 
-- **Apple yapay zeka köprüsü** (`aba2ba3`). Swift eklentisi, guided generation
-  şeması ve uydurma-rakam doğrulama katmanı yazıldı ve ölçüldü (5 Türkçe
-  cümlede uydurma rakam 0). **JS ↔ native köprüsü bağlanmadı:** eklenti
-  `Capacitor.Plugins`'te görünmüyor, `registerPlugin` paketleyicisiz uygulamada
-  tanımsız. Muhtemel çözüm: eklentiyi yerel npm Capacitor paketine çevirmek.
-  **1.1'e kadar gizli kalmalı** — `ZEKA` modülündeki `SURUM_1_0_KAPALI = true`
-  bayrağı bunu kasıtlı olarak garanti eder.
+- **Apple yapay zeka köprüsü — 1.1 Faz 0'da düzeltildi, Mac'te doğrulanmayı
+  bekliyor.** Kök neden: Capacitor 8'de `bridge.registerPluginType(...)`,
+  `autoRegisterPlugins` true iken (varsayılan) **hiçbir şey yapmadan döner**;
+  eklenti hiç kaydedilmiyordu. Çözüm: `SifirlaViewController.capacitorDidLoad`
+  içinde `registerPluginInstance(SifirlaZekaPlugin())`. Capacitor böylece
+  `Capacitor.Plugins.SifirlaZeka` vekilini kendisi enjekte eder — npm paketi
+  ya da `registerPlugin` gerekmez. JS tarafı (`ZEKA`) bu vekili kullanır.
+  Teşhis: Web Inspector konsolunda `await ZEKA.kopruTesti()` (modelden
+  bağımsız yankı). Test listesi: `ios/KOPRU-TEST.md`.
+  Özellikler hâlâ **gizli** — `SURUM_1_0_KAPALI = true` 1.1'in güvenlik ve
+  gizlilik fazları bitene kadar kalır.
 - **Gerçek iPhone testi yapılmadı.** Titreşim ve planlı bildirimin gerçekten
   gelmesi hiç doğrulanmadı (simülatörde mümkün değil). Uygulamada bunun için
   "Test bildirimi gönder" düğmesi var (2 dakika sonrasına kurar).
@@ -143,6 +147,8 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 ---
 
 ## Sıradaki işler
+
+> 1.1 çalışmaları `surum-1-1` dalında; `main`'e dokunulmaz.
 
 1. **Gerçek iPhone testi** — titreşim, bildirim izni, planlı bildirimin
    gelişi, çevrimdışı açılış, veri kalıcılığı, klavye, Dynamic Island.

@@ -3962,9 +3962,10 @@ const NATIF = (() => {
    ============================================================ */
 const ZEKA = (() => {
   /* 1.0 KİLİDİ — yapay zeka özellikleri ilk sürümde GÖRÜNMEZ.
-     Köprü (JS<->native) henüz tamamlanmadı; kod tamamlandığında bu bayrak
-     false yapılacak. Bayrak true iken acik() her koşulda false döner, yani
-     "Yazarak ekle" alanı ve rapor anlatımı hiçbir cihazda açılmaz.
+     Köprü (JS<->native) 1.1 Faz 0'da bağlandı; özellikler 1.1'in güvenlik ve
+     gizlilik fazları bitince bu bayrak false yapılacak. Bayrak true iken
+     acik() her koşulda false döner, yani "Yazarak ekle" alanı ve rapor
+     anlatımı hiçbir cihazda açılmaz.
      NOT: bu, köprünün çalışmamasına BEL BAĞLAMAZ — kasıtlı kapatmadır. */
   const SURUM_1_0_KAPALI = true;
 
@@ -3973,21 +3974,44 @@ const ZEKA = (() => {
   const PRO_GEREKLI = false;
 
   let bilgi = { kullanilabilir: false, sebep: "baslatilmadi" };
-  /* Uygulama hedefi içinde yazılan eklentiler Capacitor.Plugins listesine
-     girmez (orada yalnızca npm paketleri olur) ve registerPlugin yalnızca
-     @capacitor/core JS paketiyle gelir — bu uygulama paketleyici kullanmıyor.
-     Bu yüzden native köprüye DOĞRUDAN nativePromise ile çağrı yapılır.
-     Native tarafta kayıt: SifirlaViewController.capacitorDidLoad. */
+  /* KÖPRÜ — paketleyici ve registerPlugin GEREKMEZ.
+     Native taraf eklentiyi registerPluginInstance ile kaydeder
+     (SifirlaViewController.capacitorDidLoad); Capacitor da belge başında
+     window.Capacitor.Plugins.SifirlaZeka vekilini kendisi enjekte eder.
+     Vekil yoksa (web, Android, eski derleme) köprü yok sayılır ve tüm
+     yapay zeka yüzeyleri gizli kalır. */
   const EKLENTI_ADI = "SifirlaZeka";
-  const koprivar = () => {
-    try { return typeof window.Capacitor.nativePromise === "function"; }
-    catch (e) { return false; }
+  const eklenti = () => {
+    try {
+      const p = window.Capacitor && window.Capacitor.Plugins &&
+        window.Capacitor.Plugins[EKLENTI_ADI];
+      return p && typeof p.durum === "function" ? p : null;
+    } catch (e) { return null; }
   };
-  const cagir = (metot, veri) => window.Capacitor.nativePromise(EKLENTI_ADI, metot, veri || {});
+  const koprivar = () => NATIF.VAR && eklenti() !== null;
+  const cagir = (metot, veri) => {
+    const p = eklenti();
+    if (!p || typeof p[metot] !== "function") return Promise.reject(new Error("kopruYok"));
+    return p[metot](veri || {});
+  };
+
+  /* Teşhis: modelden bağımsız yankı. Mac'te Safari Web Inspector konsolunda
+     `await ZEKA.kopruTesti()` ile köprünün uçtan uca çalıştığı doğrulanır.
+     Arayüzde hiçbir yere bağlı değildir. */
+  async function kopruTesti() {
+    if (!koprivar()) return { tamam: false, sebep: NATIF.VAR ? "kopruYok" : "webSurumu" };
+    const yanki = "sifirla-" + Date.now();
+    try {
+      const r = await cagir("kopruTesti", { yanki });
+      return Object.assign({}, r, { tamam: !!(r && r.tamam && r.yanki === yanki) });
+    } catch (e) {
+      return { tamam: false, sebep: "hata", hata: String((e && e.message) || e) };
+    }
+  }
 
   async function hazirla(dil) {
     if (!NATIF.VAR) { bilgi = { kullanilabilir: false, sebep: "webSurumu" }; return bilgi; }
-    if (!koprivar()) { bilgi = { kullanilabilir: false, sebep: "koprilYok" }; return bilgi; }
+    if (!koprivar()) { bilgi = { kullanilabilir: false, sebep: "kopruYok" }; return bilgi; }
     try {
       bilgi = await cagir("durum", { dil: dil || "tr" });
     } catch (e) {
@@ -4014,7 +4038,7 @@ const ZEKA = (() => {
     catch (e) { return { tamam: false, sebep: "hata" }; }
   }
 
-  return { hazirla, acik, borcAyristir, raporAnlat,
+  return { hazirla, acik, borcAyristir, raporAnlat, kopruTesti,
            SURUM_KAPALI: SURUM_1_0_KAPALI, get bilgi() { return bilgi; } };
 })();
 
