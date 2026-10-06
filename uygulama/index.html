@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/ikon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
-<meta name="theme-color" content="#F2F5FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A1220" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,72 +33,68 @@
 </script>
 <style>
   /* ============================================================
-     TEMA — yeşil-teal, açık/koyu mod
+     TEMA — iki tema: Gece Mavisi (koyu, varsayılan) · Gümüş (açık)
      ============================================================ */
-  /* Gece Mavisi + Gümüş paleti — açık mod: gümüş kırık beyaz zemin,
-     derin lacivert vurgular (WCAG AA gözetilerek seçildi) */
+  /* GÜMÜŞ — açık tema: kağıt beyazı zemin, inci/gümüş tonlu kartlar,
+     şampanya vurgu. Kartlar düz beyaz değil: üstten inci ışığı alan,
+     alt kenarı gümüş bir yüzey (1px gradyan kenar + yumuşak gölge).
+     Dokular (aura/gren/mesh) çok kısık. Tüm metin çiftleri WCAG AA. */
   :root {
-    /* Açık mod ilkesi: "temiz ve net" — zemin kırık beyaz (kağıt), kartlar
-       SAF beyaz (koyu modun tersi), marka renkleri koyu, derinlik gölgeden */
-    --bg: #F4F6F8;         /* hafif sıcak/nötr kırık beyaz — saf beyaz değil */
-    --surface: #ffffff;    /* kartlar saf beyaz: zeminden ayrışır */
-    --surface-2: #EDF0F4;
-    --text: #131A22;       /* neredeyse siyah */
-    --text-muted: #5A6672;
-    --accent: #24406B;     /* beyaz üstünde açık ton görünmez: 2-3 ton koyu */
-    --accent-strong: #142E52;
-    --accent-soft: #E2E9F2;
-    --border: #E3E7EC;     /* 1px çok kısık kenarlık */
-    --amber: #24406B;      /* aksiyon rengi: açık modda derin lacivert */
-    --amber-ink: #F4F6F9;  /* aksiyon üzerindeki mürekkep */
-    --danger: #B04A3A;     /* kısık terracotta — yalnızca gerçek uyarı */
-    --danger-bg: #F6E7E3;
-    --ok: #276A4A;
-    --ok-bg: #E3F0E9;
-    --grad-a: #24406B;     /* imzalı gradyan: derin lacivert → çelik */
-    --grad-b: #3A5C8C;
+    --bg: #F7F6F2;         /* kağıt beyazı: sıcak, ferah — saf beyaz değil */
+    --surface: #EEF1F4;    /* inci gümüşü kart yüzeyi */
+    --surface-2: #E4E8ED;  /* bir ton koyu gümüş: iç bloklar */
+    --text: #141A22;
+    --text-muted: #4B5663; /* surface-2 üzerinde bile ≥ 4.5:1 */
+    --accent: #2B4466;     /* grafit-lacivert: gümüşün üstünde net */
+    --accent-strong: #16294A;
+    --accent-soft: #DCE3EC;
+    --border: #D3D9E0;
+    --amber: #2B4466;      /* aksiyon rengi */
+    --amber-ink: #F7F6F2;
+    --danger: #A3412E;
+    --danger-bg: #F5E5E0;
+    --ok: #24603F;
+    --ok-bg: #E1EEE6;
+    --grad-a: #2B4466;
+    --grad-b: #4F6A8C;
     --gradyan: linear-gradient(100deg, var(--grad-a), var(--grad-b));
-    --shadow: 0 1px 2px rgba(19, 26, 34, 0.04), 0 2px 8px rgba(19, 26, 34, 0.05);
-    /* Hero doku katmanları — açık modda koyunun ~1/3'ü: temiz kağıt hissi,
-       bulanık beyazlık değil */
-    --doku-aura: rgba(36, 64, 107, 0.025);
-    --doku-mesh-1: #24406B;  /* gece mavisi */
-    --doku-mesh-2: #4C3F8C;  /* derin indigo */
-    --doku-mesh-3: #5E8D92;  /* kısık gümüş-teal */
-    --doku-mesh-op: 0.015;
-    --doku-gren-op: 0.02;
-    --doku-vinyet: rgba(19, 26, 34, 0.02);
-    /* Sıcak kıvılcım (~%10): şampanya — açık modda kısık bronz */
-    --sicak: #8A7442;
-    --halka-a: var(--grad-a);          /* halka gradyanı: soğuk uç (doygun/koyu) */
-    --halka-b: #A68E58;                /* halka gradyanı: gümüş-şampanya, koyu */
-    --halka-iz: #C7D2E0;               /* ray: zeminden NET ayrışan gri-mavi */
-    --halka-spek: rgba(255, 255, 255, 0.6);
-    --doku-aura-sicak: rgba(138, 116, 66, 0.02);
-    /* Işık yönü: sol-üst aydınlık → sağ-alt gölge (açıkta çok hafif) */
-    --doku-isik: rgba(255, 255, 255, 0.25);
-    --doku-golge: rgba(19, 26, 34, 0.03);
-    /* Cam disk (yüzdenin arkası) */
-    --cam-ust: rgba(255, 255, 255, 0.7);
-    --cam-alt: rgba(255, 255, 255, 0.2);
-    --cam-kenar: rgba(36, 64, 107, 0.12);
-    --cam-golge: rgba(36, 64, 107, 0.1);
-    --yuzde-isik: #44536A;             /* yüzde rakamı üst highlight */
-    --hero-alt-op: 1;                  /* hero alt metin: açıkta kısmadan (AA) */
-    /* Görsel kimlik: yüzey derinliği + kahraman rakam gradyanı (yeni renk yok,
-       hepsi mevcut gece mavisi / gümüş / şampanya ailesinden) */
-    --kart-ust: #FFFFFF;               /* kart üst aydınlanması */
-    --kart-isik: rgba(255, 255, 255, 0.85);
-    --kenar-ust: #EDF1F6;              /* 1px gradyan kenarlık: üst açık */
-    --kenar-alt: #D9DFE7;              /*                       alt koyu  */
-    --shadow-yukselti: 0 1px 2px rgba(19, 26, 34, 0.05), 0 12px 30px rgba(19, 26, 34, 0.09);
-    --rakam-a: #6E5A2E;                /* kahraman rakam: koyu şampanya → derin lacivert */
-    --rakam-b: #142E52;
-    --rakam-glow: rgba(138, 116, 66, 0);
-    --zemin-mesh-op: 0.05;             /* sayfa arka planı: mesh lekeleri */
-    --zemin-gren-op: 0.02;             /* sayfa greni */
+    --shadow: 0 1px 2px rgba(20, 26, 34, 0.05), 0 3px 10px rgba(20, 26, 34, 0.06);
+    /* Hero dokuları — çok kısık: gümüş parıltı, bulanık beyazlık değil */
+    --doku-aura: rgba(43, 68, 102, 0.03);
+    --doku-mesh-1: #8C9BB0;  /* gümüş-mavi */
+    --doku-mesh-2: #B3A27A;  /* şampanya */
+    --doku-mesh-3: #9FB0B4;  /* gümüş-teal */
+    --doku-mesh-op: 0.05;
+    --doku-gren-op: 0.018;
+    --doku-vinyet: rgba(20, 26, 34, 0.025);
+    /* Şampanya (~%10): açık zeminde AA için bronz ton */
+    --sicak: #765F2E;
+    --halka-a: var(--grad-a);
+    --halka-b: #9C8550;
+    --halka-iz: #CDD4DD;
+    --halka-spek: rgba(255, 255, 255, 0.75);
+    --doku-aura-sicak: rgba(156, 133, 80, 0.035);
+    --doku-isik: rgba(255, 255, 255, 0.4);
+    --doku-golge: rgba(20, 26, 34, 0.035);
+    --cam-ust: rgba(255, 255, 255, 0.8);
+    --cam-alt: rgba(255, 255, 255, 0.25);
+    --cam-kenar: rgba(43, 68, 102, 0.12);
+    --cam-golge: rgba(43, 68, 102, 0.1);
+    --yuzde-isik: #46556B;
+    --hero-alt-op: 1;
+    /* Gümüş yüzey derinliği: üstte inci ışığı, altta gümüş kenar */
+    --kart-ust: #FAFBFC;
+    --kart-isik: rgba(255, 255, 255, 0.95);
+    --kenar-ust: #FFFFFF;
+    --kenar-alt: #C6CED8;
+    --shadow-yukselti: 0 1px 2px rgba(20, 26, 34, 0.06), 0 12px 30px rgba(43, 68, 102, 0.10);
+    --rakam-a: #66522A;      /* kahraman rakam: koyu şampanya → grafit-lacivert */
+    --rakam-b: #16294A;
+    --rakam-glow: rgba(156, 133, 80, 0);
+    --zemin-mesh-op: 0.07;
+    --zemin-gren-op: 0.018;
   }
-  /* Gece Mavisi + Gümüş — koyu mod: derin lacivert zemin, gümüş vurgular */
+  /* GECE MAVİSİ — koyu tema (varsayılan): derin lacivert zemin, gümüş vurgular */
   :root[data-theme="dark"] {
     --bg: #0A1220;
     --surface: #111C2E;
@@ -151,11 +147,6 @@
     --zemin-mesh-op: 0.11;
     --zemin-gren-op: 0.045;
   }
-  /* Alternatif paletler (Pro): aynı değişken setini override eder */
-  :root[data-palet="orman"] { --accent: #256B39; --accent-strong: #17492A; --accent-soft: #E3F1E5; --border: #CDE3D2; --grad-a: #256B39; --grad-b: #3D824C; --doku-aura: rgba(37, 107, 57, 0.03); --doku-mesh-1: #256B39; --doku-mesh-2: #2F6E5E; --doku-mesh-3: #7C9A55; }
-  :root[data-theme="dark"][data-palet="orman"] { --accent: #52A96B; --accent-strong: #86CE9E; --accent-soft: #17301D; --border: #24402A; --grad-a: #52A96B; --grad-b: #7CBD6B; --doku-aura: rgba(82, 169, 107, 0.12); --doku-mesh-1: #52A96B; --doku-mesh-2: #3E8AA0; --doku-mesh-3: #7CBD6B; }
-  :root[data-palet="bakir"] { --accent: #8F5A30; --accent-strong: #663E1E; --accent-soft: #F2E8DD; --border: #E2D5C4; --grad-a: #8F5A30; --grad-b: #0C6650; --doku-aura: rgba(143, 90, 48, 0.03); --doku-mesh-1: #8F5A30; --doku-mesh-2: #0C6650; --doku-mesh-3: #8C5E3F; }
-  :root[data-theme="dark"][data-palet="bakir"] { --accent: #C08552; --accent-strong: #DDA97B; --accent-soft: #2E241A; --border: #3D3122; --grad-a: #C08552; --grad-b: #2FB283; --doku-aura: rgba(192, 133, 82, 0.12); --doku-mesh-1: #C08552; --doku-mesh-2: #2FB283; --doku-mesh-3: #8A6450; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   /* hidden özniteliği HER ZAMAN kazanır: display:flex/grid atayan sınıflar
      (örn. .statlar) tarayıcının [hidden]→none varsayılanını ezemesin.
@@ -437,6 +428,9 @@
   .zil-ust { display: flex; align-items: center; gap: 6px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
   .zil-ust h2 { margin: 0; flex: 1; }
   .zil-ust button { flex: none; }
+  /* Dar ekranda (360px) uzun "tümünü okundu" metni kapat düğmesini panel
+     dışına itmesin: metin düğmesi küçülüp iki satıra kırılabilir */
+  .zil-ust #zilTumOkundu { flex: 0 1 auto; min-width: 0; white-space: normal; line-height: 1.2; font-size: 13px; padding: 6px 10px; }
   #zilListe { flex: 1; overflow-y: auto; padding: 4px 12px 20px; }
   .zil-grup { margin: 14px 4px 2px; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
   .zil-oge { position: relative; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; margin-top: 6px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); border-left: 2px solid transparent; cursor: pointer; touch-action: pan-y; transition: transform 0.2s ease, opacity 0.2s ease; }
@@ -445,7 +439,7 @@
   .zil-oge > .ikn { flex: none; margin-top: 2px; color: var(--accent); }
   .zil-oge strong { display: block; font-size: 14px; }
   .zil-oge p { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
-  .zil-zaman { display: block; margin-top: 3px; font-size: 11px; color: var(--text-muted); opacity: 0.8; }
+  .zil-zaman { display: block; margin-top: 3px; font-size: 11px; color: var(--text-muted); } /* opaklık yok: Gümüş'te AA */
   .zil-sil { flex: none; background: none !important; border: none; color: var(--text-muted); font-size: 16px; line-height: 1; padding: 2px 4px; cursor: pointer; }
   .zil-bos { text-align: center; padding: 48px 16px; color: var(--text-muted); }
   .zil-bos .ikn { width: 44px; height: 44px; opacity: 0.6; }
@@ -462,6 +456,15 @@
   .ob-kart .buyuk { width: 140px; height: 140px; color: var(--accent); }
   .ob-kart h2 { font-size: 22px; justify-content: center; margin: 0; }
   .ob-kart p { color: var(--text-muted); max-width: 300px; }
+  /* Onboarding seçim ekranları (dil · para birimi): büyük, dokunması kolay */
+  .ob-secenekler { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 340px; }
+  #onboard .ob-secim { min-width: 132px; padding: 14px 18px; border-radius: 14px; font-size: 17px; font-weight: 600;
+    background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: var(--shadow); }
+  #onboard .ob-secim[aria-checked="true"] { color: var(--accent-strong); border-color: var(--sicak);
+    background: color-mix(in srgb, var(--halka-b) 24%, var(--surface)); box-shadow: inset 0 0 0 1px var(--sicak), var(--shadow); }
+  :root[data-theme="dark"] #onboard .ob-secim[aria-checked="true"] { background: color-mix(in srgb, var(--sicak) 16%, var(--surface)); }
+  #onboard .ob-para .ob-secim { min-width: 0; flex: 1 1 120px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .ob-para .ob-secim b { font-family: var(--font-baslik); font-size: 26px; line-height: 1.1; }
   .ob-alt { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 24px calc(24px + env(safe-area-inset-bottom)); }
   .ob-noktalar { display: flex; gap: 8px; }
   .ob-noktalar i { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
@@ -544,7 +547,7 @@
      beyaz yüzey, net kenarlık. Koyu moda dokunulmaz. */
   :root[data-theme="light"] header .kontroller button.ghost {
     background: var(--surface);
-    border: 1px solid #C9D2DD;
+    border: 1px solid var(--kenar-alt);
     color: var(--accent-strong);
     box-shadow: 0 1px 2px rgba(19, 26, 34, 0.05);
   }
@@ -756,6 +759,8 @@
   @media (min-width: 720px) { .borc-kartlar { grid-template-columns: 1fr 1fr; } }
   .borc-kart { border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; background: var(--surface); box-shadow: var(--shadow); }
   .borc-kart.kapali { opacity: 0.72; }
+  /* Gümüş: açık zeminde soluklaştırma metni AA altına iter — daha hafif soluklaştır */
+  :root:not([data-theme="dark"]) .borc-kart.kapali { opacity: 0.9; filter: saturate(0.7); }
   .bk-ust { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
   .bk-ust h3 { margin: 0; font-size: 16.5px; }
   .bk-meta { margin: 2px 0 0; font-size: 12.5px; color: var(--text-muted); }
@@ -951,7 +956,7 @@
   <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M12 8v6M9 11h6"/></svg>
   <span id="kurulumMetin" style="flex:1"></span>
   <button type="button" id="kurulumEkleBtn" class="small" hidden data-i18n="kurulum_ekle">Ekle</button>
-  <button type="button" id="kurulumKapatBtn" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:13px;height:13px;color:inherit"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <button type="button" id="kurulumKapatBtn" class="ghost small" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:13px;height:13px;color:inherit"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 </div>
 
 <!-- Yedek hatırlatması: nazik, kapatılabilir, ısrarcı değil. Bir kez yedek
@@ -961,7 +966,7 @@
   <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v5h7"/><path d="M8 21v-6h8v6"/></svg>
   <span id="yedekIpucuMetin" style="flex:1"></span>
   <button type="button" id="yedekIpucuAlBtn" class="small" data-i18n="yedek_ipucu_al">Yedek al</button>
-  <button type="button" id="yedekIpucuKapatBtn" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:13px;height:13px;color:inherit"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <button type="button" id="yedekIpucuKapatBtn" class="ghost small" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:13px;height:13px;color:inherit"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 </div>
 
 <div class="container">
@@ -973,8 +978,8 @@
       <p class="slogan" data-i18n="slogan">Borcunu sıfırla.</p>
     </div>
     <div class="kontroller no-print">
-      <button id="zilBtn" class="ghost" title="Bildirimler" aria-label="Bildirimler"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span id="zilRozet" hidden>0</span></button>
-      <button id="temaBtn" class="ghost" title="Açık/koyu mod"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg></button>
+      <button id="zilBtn" class="ghost" title="Bildirimler" aria-label="Bildirimler" data-i18n-title="zil_h" data-i18n-aria="zil_h"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span id="zilRozet" hidden>0</span></button>
+      <button id="temaBtn" class="ghost" title="Tema: Gece Mavisi / Gümüş" aria-label="Tema: Gece Mavisi / Gümüş" data-i18n-title="title_tema" data-i18n-aria="title_tema"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg></button>
     </div>
   </header>
 
@@ -1225,7 +1230,7 @@
                motor için tek iç birime (yıllık nominal) çevrilir, motor değişmez -->
           <div class="birim-satir">
             <label for="faiz" id="faizEtiket">Aylık faiz (%)</label>
-            <div class="birim-secim" role="group" aria-label="Faiz birimi">
+            <div class="birim-secim" role="group" aria-label="Faiz birimi" data-i18n-aria="aria_faiz_birimi">
               <button type="button" id="birimAylik" class="birim-btn secili" data-i18n="birim_aylik">Aylık</button>
               <button type="button" id="birimYillik" class="birim-btn" data-i18n="birim_yillik">Yıllık</button>
             </div>
@@ -1393,7 +1398,7 @@
     <div class="sizinti">
       <svg width="64" height="100" viewBox="0 0 64 100" aria-hidden="true">
         <circle cx="32" cy="20" r="16" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
-        <text x="32" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-strong)">₺</text>
+        <text class="para-sembol" x="32" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-strong)">₺</text>
         <circle class="damla" cx="32" cy="44" r="3.6" fill="var(--danger)"/>
         <circle class="damla d2" cx="32" cy="56" r="3.2" fill="var(--danger)"/>
         <circle class="damla d3" cx="32" cy="68" r="2.8" fill="var(--danger)"/>
@@ -1434,7 +1439,7 @@
 
   <!-- Faiz & vergi ayarları: hiçbir oran koda gömülü değil -->
   <section class="card no-print">
-    <h2 data-i18n="vergi_h">Faiz &amp; Vergi Ayarları</h2>
+    <h2><span data-i18n="vergi_h">Faiz &amp; Vergi Ayarları</span> <span class="badge accent" id="vergiTrEtiket" data-i18n="vergi_tr" hidden>Türkiye'ye özel</span></h2>
     <label class="check">
       <input type="checkbox" id="vergiUygula">
       <span data-i18n="vergi_chk">Faize KKDF + BSMV ekle (kredi kartı / KMH faizlerine uygulanır)</span>
@@ -1614,17 +1619,17 @@
   <!-- SEKME: Daha — senaryolar, Pro, testler -->
   <div class="sekme" id="sekme-daha">
 
-  <!-- Ayarlar: tema paleti + dil (üst bardan buraya taşındı; id'ler aynı,
-       dinleyiciler ve dilUygula değişmeden çalışır) -->
+  <!-- Ayarlar: tema + dil + para birimi (üst bardaki güneş/ay düğmesi
+       iki tema arasında hızlı geçiş yapar) -->
   <section class="card">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg><span data-i18n="ayar_h">Ayarlar</span></h2>
     <div class="form-grid" style="max-width:420px">
       <div>
-        <label for="palet" data-i18n="ayar_palet">Tema paleti</label>
-        <select id="palet">
-          <option value="teal" data-i18n="opt_teal">Gece Mavisi &amp; Gümüş (varsayılan)</option>
-          <option value="orman" data-i18n="opt_orman">Orman (Pro)</option>
-          <option value="bakir" data-i18n="opt_bakir">Bakır-Yeşil (Pro)</option>
+        <label for="temaSec" data-i18n="ayar_tema">Tema</label>
+        <select id="temaSec">
+          <option value="dark" data-i18n="opt_gece">Gece Mavisi</option>
+          <option value="light" data-i18n="opt_gumus">Gümüş</option>
+          <option value="oto" data-i18n="opt_oto">Otomatik (cihaz ayarı)</option>
         </select>
       </div>
       <div>
@@ -1634,7 +1639,17 @@
           <option value="en">English</option>
         </select>
       </div>
+      <div>
+        <label for="paraBirimi" data-i18n="ayar_para">Para birimi</label>
+        <select id="paraBirimi">
+          <option value="TRY">₺ TRY</option>
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+        </select>
+      </div>
     </div>
+    <p class="mini-ipucu" data-i18n="ayar_para_not">Para birimini değiştirmek tutarları dönüştürmez; yalnızca sembol değişir.</p>
     <p class="muted" style="margin-top:0.7rem" data-i18n="ayar_yedek_not">
       Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin
       tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong>
@@ -1769,7 +1784,7 @@
       <li>Sınırsız borç (ücretsizde en fazla 4)</li>
       <li>"Ya şöyle yaparsam" senaryoları</li>
       <li>PDF / rapor dışa aktarma</li>
-      <li>Ekstra yeşil temalar</li>
+      
       <li>Reklamsız görünüm</li>
     </ul>
     <div style="display:flex; gap:0.6rem; flex-wrap:wrap">
@@ -1793,9 +1808,9 @@
   <!-- Bilinen-cevap doğrulaması: yalnızca geliştirici modunda (?dev=1) görünür.
        Beklenen değerler ELLE hesaplanmıştır; motor çıktısıyla karşılaştırılır. -->
   <section class="card no-print" id="dogrulamaKart" hidden>
-    <h2>Bilinen-Cevap Doğrulaması <span class="badge accent">dev</span></h2>
+    <h2><span data-i18n="dogrula_h">Bilinen-Cevap Doğrulaması</span> <span class="badge accent">dev</span></h2>
     <div id="dogrulamaTablo" class="table-wrap"></div>
-    <p class="muted" style="margin-top:8px">Bu bölüm ?dev=1 ile açılır; "beklenen" sütunundaki değerler elle/kapalı formülle hesaplanmıştır.</p>
+    <p class="muted" style="margin-top:8px" data-i18n="dogrula_not">Bu bölüm ?dev=1 ile açılır; "beklenen" sütunundaki değerler elle/kapalı formülle hesaplanmıştır.</p>
   </section>
 
   </div>
@@ -1831,7 +1846,7 @@
   <div class="sb-ust">
     <button type="button" id="sbGeriBtn" class="ghost small" hidden><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
     <div class="sb-ilerleme" aria-hidden="true"><i id="sbIlerleme"></i></div>
-    <button type="button" id="sbKapatBtn" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <button type="button" id="sbKapatBtn" class="ghost small" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="sb-govde">
 
@@ -1855,7 +1870,7 @@
       <p class="sb-soru" data-i18n="sb_tutar_soru">Ne kadar?</p>
       <div class="sb-buyuk-alan">
         <input id="sbTutarInp" type="text" inputmode="numeric" autocomplete="off" placeholder="25.000">
-        <span class="sb-birim">₺</span>
+        <span class="sb-birim para-sembol">₺</span>
       </div>
       <p class="sb-hata" id="sbTutarHata"></p>
       <button type="button" class="sb-devam" data-i18n="sb_devam">Devam</button>
@@ -1863,7 +1878,7 @@
 
     <div class="sb-adim" id="sbFaiz">
       <p class="sb-soru" id="sbFaizSoru" data-i18n="sb_faiz_soru_aylik">Aylık faizi?</p>
-      <div class="birim-secim sb-birim-secim" role="group" aria-label="Faiz birimi">
+      <div class="birim-secim sb-birim-secim" role="group" aria-label="Faiz birimi" data-i18n-aria="aria_faiz_birimi">
         <button type="button" id="sbBirimAylik" class="birim-btn secili" data-i18n="birim_aylik">Aylık</button>
         <button type="button" id="sbBirimYillik" class="birim-btn" data-i18n="birim_yillik">Yıllık</button>
       </div>
@@ -1881,7 +1896,7 @@
       <p class="sb-soru" data-i18n="sb_odeme_soru">Aylık asgari / taksit?</p>
       <div class="sb-buyuk-alan">
         <input id="sbOdemeInp" type="text" inputmode="numeric" autocomplete="off" placeholder="1.200">
-        <span class="sb-birim">₺</span>
+        <span class="sb-birim para-sembol">₺</span>
       </div>
       <p class="sb-ipucu" data-i18n="sb_odeme_ipucu">kredi kartında ekstredeki "asgari ödeme" tutarı</p>
       <p class="sb-hata" id="sbOdemeHata"></p>
@@ -1945,7 +1960,7 @@
   <div class="detay-ic">
     <div class="detay-ust">
       <h2 id="detayBaslik">—</h2>
-      <button type="button" id="detayKapat" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <button type="button" id="detayKapat" class="ghost small" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <div id="detayOzet"></div>
     <div class="kayit-sonrasi odeme-onay" id="odemeOnay" role="status" hidden>
@@ -1966,13 +1981,13 @@
     <div class="odeme-tutamak" aria-hidden="true"></div>
     <div class="detay-ust">
       <h2 id="odemeBaslik">—</h2>
-      <button type="button" id="odemeKapat" class="ghost small" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <button type="button" id="odemeKapat" class="ghost small" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" style="width:15px;height:15px"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <!-- Birden fazla açık borç varsa: "hangi borç?" — tek borçta gizli kalır -->
     <div class="odeme-borc-secim" id="odemeBorcSecim" hidden></div>
     <div class="sb-buyuk-alan" style="margin:18px 0 4px">
       <input id="odemeTutarInp" type="text" inputmode="numeric" autocomplete="off" placeholder="1.500">
-      <span class="sb-birim">₺</span>
+      <span class="sb-birim para-sembol">₺</span>
     </div>
     <p class="sb-hata" id="odemeHata"></p>
     <!-- Hızlı doldurma: o borç için hesaplanan tutarlar tek dokunuşla -->
@@ -2028,13 +2043,13 @@
 <!-- Aylık rapor anı: tam genişlik, sırayla açılan kartlar (Opal ilkesi) -->
 <div id="raporOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="raporBaslik" hidden>
   <div class="rapor-ic" style="position:relative">
-    <button id="raporKapat" class="ghost rapor-kapat" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <button id="raporKapat" class="ghost rapor-kapat" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <p class="rapor-ust" id="raporUst"></p>
     <h2 id="raporBaslik"></h2>
     <!-- Ay seçici: geçmiş aylara bakılabilir; gelecek aya gidilmez -->
     <div class="rapor-secici no-print">
-      <button type="button" id="raporGeriAy" class="ghost small" aria-label="Önceki ay">‹</button>
-      <button type="button" id="raporIleriAy" class="ghost small" aria-label="Sonraki ay">›</button>
+      <button type="button" id="raporGeriAy" class="ghost small" aria-label="Önceki ay" data-i18n-aria="aria_onceki_ay">‹</button>
+      <button type="button" id="raporIleriAy" class="ghost small" aria-label="Sonraki ay" data-i18n-aria="aria_sonraki_ay">›</button>
     </div>
     <!-- Yapay zeka anlatımı: motorun SAYILARINI cümleye döker, yeni rakam üretmez.
          Model yoksa/uygunsuz çıktı verirse kural tabanlı şablona düşer. -->
@@ -2055,17 +2070,39 @@
 
 <!-- Zil paneli: tüm bildirimler cihazda üretilir; sunucu/dış çağrı yok -->
 <div id="zilPerde" class="no-print" aria-hidden="true"></div>
-<aside id="zilPanel" class="no-print" role="dialog" aria-label="Bildirimler">
+<aside id="zilPanel" class="no-print" role="dialog" aria-label="Bildirimler" data-i18n-aria="zil_h">
   <div class="zil-ust">
     <h2 data-i18n="zil_h">Bildirimler</h2>
     <button id="zilTumOkundu" class="ghost" data-i18n="zil_okundu">Tümünü okundu işaretle</button>
-    <button id="zilKapatBtn" class="ghost" aria-label="Kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <button id="zilKapatBtn" class="ghost" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div id="zilListe"></div>
 </aside>
 
 <div id="onboard" class="no-print" hidden>
   <div class="ob-serit" id="obSerit">
+    <!-- 1) Dil: cihaz diline göre önceden seçili; başlık bilerek iki dilde -->
+    <section class="ob-kart" id="obDilKart">
+      <svg class="buyuk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c5 5 7 11 7 17s-2 12-7 17c-5-5-7-11-7-17s2-12 7-17z"/></svg>
+      <h2 id="obDilBaslik" lang="tr">Dil seç · <span lang="en">Choose language</span></h2>
+      <div class="ob-secenekler" role="radiogroup" aria-labelledby="obDilBaslik">
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-dil="tr" lang="tr">Türkçe</button>
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-dil="en" lang="en">English</button>
+      </div>
+      <p data-i18n="ob_dil_not">İstediğin zaman Ayarlar'dan değiştirebilirsin.</p>
+    </section>
+    <!-- 2) Para birimi: Türkçe → TRY, English → cihaz bölgesine göre -->
+    <section class="ob-kart" id="obParaKart">
+      <svg class="buyuk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="20" cy="14" rx="12" ry="5"/><path d="M8 14v8c0 2.8 5.4 5 12 5s12-2.2 12-5v-8"/><path d="M8 22v8c0 2.8 5.4 5 12 5 1.4 0 2.7-.1 4-.3"/><circle cx="34" cy="32" r="9"/><circle cx="34" cy="32" r="4.5"/></svg>
+      <h2 id="obParaBaslik" data-i18n="ob_para_b">Hangi para birimiyle?</h2>
+      <div class="ob-secenekler ob-para" role="radiogroup" aria-labelledby="obParaBaslik">
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="TRY"><b>₺</b>TRY</button>
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="USD"><b>$</b>USD</button>
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="EUR"><b>€</b>EUR</button>
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="GBP"><b>£</b>GBP</button>
+      </div>
+      <p data-i18n="ob_para_m">Tüm tutarlar bu birimle gösterilir. Sonra Ayarlar'dan değiştirebilirsin; tutarlar dönüştürülmez, yalnızca sembol değişir.</p>
+    </section>
     <section class="ob-kart">
       <svg class="buyuk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8 6 12v28l12-4 12 4 12-4V8l-12 4-12-4z"/><path d="M18 8v28M30 12v28"/><path d="M36 4v10M36 4h7l-2 3 2 3h-7"/></svg>
       <h2 data-i18n="ob1b">Sıfırla: borcunu sıfırla.</h2>
@@ -2095,7 +2132,7 @@
     </section>
   </div>
   <div class="ob-alt">
-    <div class="ob-noktalar" id="obNoktalar"><i class="aktif"></i><i></i><i></i><i></i><i></i></div>
+    <div class="ob-noktalar" id="obNoktalar"><i class="aktif"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div style="display:flex; gap:8px">
       <button id="obAtla" class="ghost" data-i18n="ob_atla">Atla</button>
       <button id="obBasla" data-i18n="ob_basla">Başla</button>
@@ -2116,7 +2153,7 @@ const SOZLUK = {
       docTitle: "Sıfırla",
       baslik: "Sıfırla",
       slogan: "Borcunu sıfırla.",
-      opt_teal: "Gece Mavisi & Gümüş (varsayılan)", opt_orman: "Orman (Pro)", opt_bakir: "Bakır-Yeşil (Pro)",
+      opt_gece: "Gece Mavisi", opt_gumus: "Gümüş", opt_oto: "Otomatik (cihaz ayarı)",
       ozet_bakiye: "Toplam bakiye", hero_buay: "Bu ay ödenecek",
       hayat_h: "Önlenen Faizin Karşılığı",
       iy_h: "İki Yol", iy_a: "Sadece asgari", iy_b: "Planınla",
@@ -2209,15 +2246,23 @@ const SOZLUK = {
       lbl_sen_ekstra: "Aylık ekstraya ekle (₺)", lbl_sen_tek: "Bugün tek seferlik öde (₺)", btn_sen: "Senaryoyu hesapla",
       reklam: "Reklam alanı — Pro geldiğinde kaldırılabilecek. (Şu an gerçek reklam gösterilmiyor; bu yalnızca yer tutucudur.)",
       pro_h: 'Pro <span class="badge accent">Yakında</span>',
-      pro_avantaj: '<li>"Ya şöyle yaparsam" senaryoları</li><li>PDF / rapor dışa aktarma</li><li>Ekstra yeşil temalar</li><li>Reklamsız görünüm</li><li>Sınırsız borç — satın alma açılana kadar zaten herkeste açık</li>',
+      pro_avantaj: '<li>"Ya şöyle yaparsam" senaryoları</li><li>PDF / rapor dışa aktarma</li><li>Reklamsız görünüm</li><li>Sınırsız borç — satın alma açılana kadar zaten herkeste açık</li>',
       btn_pro: "Yakında — satın alma henüz açık değil",
       pro_not: "Pro henüz satışta değil; hazır olduğunda tek seferlik bir yükseltme olacak, abonelik olmayacak. O güne kadar borç sayısı sınırsız ve uygulama tam sürümüyle ücretsiz.",
       btn_yazdir: "PDF için yazdır", btn_rapor: "HTML raporu indir",
       ob5b: "Sana nasıl hitap edelim?",
       ob5m: "Bu bilgi yalnızca cihazında kalır — istersen boş bırak.",
       ob_gec: "Şimdilik geç",
+      ob_dil_not: "İstediğin zaman Ayarlar'dan değiştirebilirsin.",
+      ob_para_b: "Hangi para birimiyle?",
+      ob_para_m: "Tüm tutarlar bu birimle gösterilir. Sonra Ayarlar'dan değiştirebilirsin; tutarlar dönüştürülmez, yalnızca sembol değişir.",
       ayar_h: "Ayarlar",
-      ayar_palet: "Tema paleti",
+      ayar_tema: "Tema", ayar_para: "Para birimi", vergi_tr: "Türkiye'ye özel",
+      aria_kapat: "Kapat", aria_faiz_birimi: "Faiz birimi", title_tema: "Tema: Gece Mavisi / Gümüş",
+      aria_onceki_ay: "Önceki ay", aria_sonraki_ay: "Sonraki ay",
+      dogrula_h: "Bilinen-Cevap Doğrulaması",
+      dogrula_not: 'Bu bölüm ?dev=1 ile açılır; "beklenen" sütunundaki değerler elle/kapalı formülle hesaplanmıştır.',
+      ayar_para_not: "Para birimini değiştirmek tutarları dönüştürmez; yalnızca sembol değişir.",
       btn_rapor: "Aylık raporu gör",
       devam_btn: "Devam et",
       btn_borc_ekle: "Borç ekle",
@@ -2616,7 +2661,7 @@ const SOZLUK = {
       hamleYok: "Şu an en akıllı plandasın: denenen senaryolar (yöntem değişikliği, +₺250/500/1000) anlamlı bir kazanç sağlamıyor.",
       sizKalan: (v) => v ? "Kalan toplam faiz + vergi" : "Kalan toplam faiz",
       sizAylik: (v) => v ? "Şu an her ay faize + vergiye giden" : "Şu an her ay faize giden",
-      sizOnle: (n) => `Bu faizin <strong>${n} ₺</strong>'sini planla önleyebilirsin.`,
+      sizOnle: (n) => `Bu faizin <strong>${n}</strong> kadarını planla önleyebilirsin.`,
       sizDurdur: "Sadece asgarilerle bu sızıntı asla durmazdı — planın onu tamamen durduruyor.",
       sizEkstra: "Aylık ekstra bütçe ekleyerek bu sızıntının büyük kısmını önleyebilirsin.",
       seriEnUzun: (n) => `En uzun seri: <strong>${n} ay</strong>`,
@@ -2719,7 +2764,7 @@ const SOZLUK = {
       docTitle: "Sıfırla",
       baslik: "Sıfırla",
       slogan: "Debt payoff planner",
-      opt_teal: "Midnight Blue & Silver (default)", opt_orman: "Forest (Pro)", opt_bakir: "Copper-Green (Pro)",
+      opt_gece: "Midnight Blue", opt_gumus: "Silver", opt_oto: "Automatic (device setting)",
       ozet_bakiye: "Total balance", hero_buay: "Due this month",
       hayat_h: "What Your Saved Interest Buys",
       iy_h: "Two Paths", iy_a: "Minimum only", iy_b: "With your plan",
@@ -2812,15 +2857,23 @@ const SOZLUK = {
       lbl_sen_ekstra: "Add to monthly extra (₺)", lbl_sen_tek: "One-off payment today (₺)", btn_sen: "Run scenario",
       reklam: "Ad space — removable once Pro arrives. (No real ads are shown; this is just a placeholder.)",
       pro_h: 'Pro <span class="badge accent">Soon</span>',
-      pro_avantaj: '<li>"What if" scenarios</li><li>PDF / report export</li><li>Extra green themes</li><li>Ad-free view</li><li>Unlimited debts — already open to everyone until purchasing opens</li>',
+      pro_avantaj: '<li>"What if" scenarios</li><li>PDF / report export</li><li>Ad-free view</li><li>Unlimited debts — already open to everyone until purchasing opens</li>',
       btn_pro: "Coming soon — purchasing isn't open yet",
       pro_not: "Pro isn't on sale yet; when it's ready it will be a one-time upgrade, never a subscription. Until then the debt count is unlimited and the app is free in full.",
       btn_yazdir: "Print to PDF", btn_rapor: "Download HTML report",
       ob5b: "What should we call you?",
       ob5m: "This stays only on your device — leave it blank if you like.",
       ob_gec: "Skip for now",
+      ob_dil_not: "You can change this anytime in Settings.",
+      ob_para_b: "Which currency?",
+      ob_para_m: "All amounts are shown in this currency. You can change it later in Settings; amounts aren't converted, only the symbol changes.",
       ayar_h: "Settings",
-      ayar_palet: "Theme palette",
+      ayar_tema: "Theme", ayar_para: "Currency", vergi_tr: "Turkey only",
+      aria_kapat: "Close", aria_faiz_birimi: "Interest unit", title_tema: "Theme: Midnight Blue / Silver",
+      aria_onceki_ay: "Previous month", aria_sonraki_ay: "Next month",
+      dogrula_h: "Known-Answer Verification",
+      dogrula_not: 'This section opens with ?dev=1; values in the "expected" column were computed by hand / closed-form formula.',
+      ayar_para_not: "Changing the currency doesn't convert your amounts; only the symbol changes.",
       btn_rapor: "See monthly report",
       devam_btn: "Continue",
       btn_borc_ekle: "Add a debt",
@@ -3208,7 +3261,7 @@ const SOZLUK = {
       hamleYok: "You're already on the smartest plan: the scenarios tried (method switch, +₺250/500/1000) don't yield a meaningful gain.",
       sizKalan: (v) => v ? "Remaining total interest + tax" : "Remaining total interest",
       sizAylik: (v) => v ? "Currently leaking to interest + tax per month" : "Currently leaking to interest per month",
-      sizOnle: (n) => `You can prevent <strong>${n} ₺</strong> of this interest with your plan.`,
+      sizOnle: (n) => `You can prevent <strong>${n}</strong> of this interest with your plan.`,
       sizDurdur: "On minimums alone this leak would never stop — your plan shuts it down completely.",
       sizEkstra: "Adding a monthly extra budget would prevent most of this leak.",
       seriEnUzun: (n) => `Longest streak: <strong>${n} months</strong>`,
@@ -3946,7 +3999,7 @@ const ONERI = (() => {
   // Metinler SOZLUK'tan gelir; burada yalnızca kurallar ve sayılar vardır.
   function uret({ borclar, ekstra, yontem, ayarlar, dil }) {
     const s = SOZLUK[dil].d;
-    const para = new Intl.NumberFormat(s.yerel, { style: "currency", currency: "TRY", maximumFractionDigits: 0, currencyDisplay: "narrowSymbol" });
+    const para = new Intl.NumberFormat(s.yerel, { style: "currency", currency: PARA.kod, maximumFractionDigits: 0, currencyDisplay: "narrowSymbol" });
     const tarih = new Intl.DateTimeFormat(s.yerel, { month: "long", year: "numeric" });
     const m = [];
     const acik = borclar.filter(b => b.balance > 0.005);
@@ -4043,7 +4096,7 @@ const ONERI = (() => {
    */
   function enIyiHamle({ borclar, ekstra, yontem, ayarlar, dil }) {
     const s = SOZLUK[dil].d;
-    const para = new Intl.NumberFormat(s.yerel, { style: "currency", currency: "TRY", maximumFractionDigits: 0, currencyDisplay: "narrowSymbol" });
+    const para = new Intl.NumberFormat(s.yerel, { style: "currency", currency: PARA.kod, maximumFractionDigits: 0, currencyDisplay: "narrowSymbol" });
     const acik = borclar.filter(b => b.balance > 0.005);
     if (acik.length === 0) return null;
 
@@ -4261,7 +4314,7 @@ const NATIF = (() => {
     try {
       await S.setStyle({ style: koyuTema ? "DARK" : "LIGHT" });
       if (platform() === "android") {
-        await S.setBackgroundColor({ color: koyuTema ? "#0A1220" : "#F2F5FA" });
+        await S.setBackgroundColor({ color: koyuTema ? "#0A1220" : "#F7F6F2" });
         await S.setOverlaysWebView({ overlay: false });
       }
     } catch (e) { yut(e); }
@@ -4487,15 +4540,59 @@ function yerelOrtamMi(host, protokol) {
   return ["localhost", "127.0.0.1", "::1", "[::1]", ""].includes(host);
 }
 
+/* ============================================================
+   CİHAZ DİLİ + PARA BİRİMİ — yalnızca ilk kurulum varsayılanı için.
+   Hiçbir dış çağrı yok: tarayıcının/cihazın kendi dil listesine bakılır.
+   ============================================================ */
+const PARA_BIRIMLERI = ["TRY", "USD", "EUR", "GBP"];
+const EURO_BOLGE = ["AT", "BE", "HR", "CY", "EE", "FI", "FR", "DE", "GR", "IE", "IT", "LV", "LT", "LU",
+  "MT", "NL", "PT", "SK", "SI", "ES", "AD", "MC", "SM", "VA", "ME", "XK"];
+const CIHAZ = (() => {
+  let diller = [];
+  try { diller = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""]).map(String); }
+  catch (e) { diller = []; }
+  const dil = /^tr(-|$)/i.test(diller[0] || "") ? "tr" : "en";
+  // İngilizce seçilirse: cihaz bölgesinden (en-GB → GBP, de-DE → EUR …); bilinmiyorsa USD
+  function paraOner(secilenDil) {
+    if (secilenDil === "tr") return "TRY";
+    for (const d of diller) {
+      let bolge = "";
+      try { bolge = (typeof Intl.Locale === "function" ? new Intl.Locale(d).maximize().region : (d.split("-")[1] || "")) || ""; }
+      catch (e) { bolge = (d.split("-")[1] || ""); }
+      bolge = bolge.toUpperCase();
+      if (!bolge) continue;
+      if (bolge === "TR") return "TRY";
+      if (bolge === "US") return "USD";
+      if (bolge === "GB") return "GBP";
+      if (EURO_BOLGE.includes(bolge)) return "EUR";
+      return "USD";
+    }
+    return "USD";
+  }
+  return { dil, paraOner };
+})();
+// Etkin para birimi: ARAYÜZ ayarlar, biçimleyiciler (ARAYÜZ + ONERI) buradan okur
+const PARA = { kod: "TRY" };
+function paraSembol(kod) {
+  try {
+    const p = new Intl.NumberFormat("en-US", { style: "currency", currency: kod, currencyDisplay: "narrowSymbol" })
+      .formatToParts(0).find(x => x.type === "currency");
+    return p ? p.value : kod;
+  } catch (e) { return kod; }
+}
+
 const YEDEK_VARSAYILAN = () => ({ alindiMs: 0, kartKapatildi: false, acilisHatirlatildi: false });
 
 const STORAGE = (() => {
   const ANAHTAR = "borcPlanlayici.v1";
-  const SEMA = 5; // güncel şema sürümü (v5: Pro kaynağı + yedek hatırlatma durumu)
+  const SEMA = 6; // güncel şema sürümü (v6: tema sadeleşti — palet kalktı; para birimi eklendi)
 
   const VARSAYILAN = () => ({
-    borclar: [], ekstra: 0, tema: null, ayarlar: null, yontem: "avalanche",
-    dil: "tr", pro: false, proKaynak: null, palet: "teal", sekme: "genel",
+    // Yeni kurulum: Gece Mavisi varsayılan; dil ve para birimi cihazdan tahmin
+    // edilir ve onboarding'in ilk iki ekranında kullanıcıya onaylatılır
+    borclar: [], ekstra: 0, tema: "dark", ayarlar: null, yontem: "avalanche",
+    dil: CIHAZ.dil, paraBirimi: CIHAZ.paraOner(CIHAZ.dil),
+    pro: false, proKaynak: null, sekme: "genel",
     ad: "", selamIlk: null, // kişiselleştirme: ad yalnızca cihazda
     referanslar: null, ilkPlan: null,
     yedek: YEDEK_VARSAYILAN(), ilkKullanimMs: Date.now(),
@@ -4554,6 +4651,14 @@ const STORAGE = (() => {
         veri.ilkKullanimMs = Number.isFinite(enEski) ? enEski : Date.now();
       }
     }
+    if (v < 6) {
+      // v5 → v6: Orman / Bakır-Yeşil paletleri kaldırıldı. Onları seçmiş
+      // kullanıcı sessizce Gece Mavisi'ne düşer (hata yok, soru yok).
+      if (veri.palet === "orman" || veri.palet === "bakir") veri.tema = "dark";
+      delete veri.palet;
+      // Mevcut kullanıcıların tamamı TL ile başladı: rakamlar olduğu gibi kalır
+      if (!PARA_BIRIMLERI.includes(veri.paraBirimi)) veri.paraBirimi = "TRY";
+    }
     return veri;
   }
 
@@ -4576,10 +4681,11 @@ const STORAGE = (() => {
       return Object.assign({}, veri, {
         borclar: Array.isArray(veri.borclar) ? veri.borclar : [],
         ekstra: typeof veri.ekstra === "number" ? veri.ekstra : 0,
-        tema: veri.tema || null,
+        tema: veri.tema === "dark" || veri.tema === "light" ? veri.tema : null, // null = Otomatik
         ayarlar: (veri.ayarlar && typeof veri.ayarlar === "object") ? veri.ayarlar : null,
         yontem: veri.yontem === "snowball" ? "snowball" : "avalanche",
         dil: veri.dil === "en" ? "en" : "tr",
+        paraBirimi: PARA_BIRIMLERI.includes(veri.paraBirimi) ? veri.paraBirimi : "TRY",
         // Pro yalnızca meşru bir kaynakla işaretlenmişse açık sayılır
         pro: veri.pro === true && PRO_KAYNAKLARI.includes(veri.proKaynak),
         proKaynak: PRO_KAYNAKLARI.includes(veri.proKaynak) ? veri.proKaynak : null,
@@ -4589,7 +4695,6 @@ const STORAGE = (() => {
           acilisHatirlatildi: veri.yedek.acilisHatirlatildi === true
         } : {}),
         ilkKullanimMs: typeof veri.ilkKullanimMs === "number" && veri.ilkKullanimMs > 0 ? veri.ilkKullanimMs : Date.now(),
-        palet: ["teal", "orman", "bakir"].includes(veri.palet) ? veri.palet : "teal",
         sekme: typeof veri.sekme === "string" ? veri.sekme : "genel",
         referanslar: (veri.referanslar && typeof veri.referanslar === "object") ? veri.referanslar : null,
         ilkPlan: (veri.ilkPlan && typeof veri.ilkPlan === "object") ? veri.ilkPlan : null,
@@ -4641,10 +4746,33 @@ const ARAYUZ = () => {
   const sd = () => SOZLUK[durum.dil].d;
   const st = () => SOZLUK[durum.dil].statik;
 
+  // Sözlükteki sabit "₺" geçen metinler (etiketler, uyarılar) etkin sembole
+  // çevrilir. Orijinaller saklanır: birim yeniden TRY olursa aynen geri gelir.
+  // Motor test adları TL'li sabit senaryolardır; onlara dokunulmaz.
+  const sozlukParaOrijinal = new WeakMap();
+  function sozlukParaUygula() {
+    const sembol = paraSembol(PARA.kod);
+    const gez = (o) => {
+      for (const k of Object.keys(o)) {
+        if (k === "testAdlari") continue;
+        const v = o[k];
+        if (v && typeof v === "object") { gez(v); continue; }
+        let kayit = sozlukParaOrijinal.get(o);
+        const orijinal = kayit && kayit.has(k) ? kayit.get(k) : v;
+        if (typeof orijinal !== "string" || orijinal.indexOf("₺") < 0) continue;
+        if (!kayit) { kayit = new Map(); sozlukParaOrijinal.set(o, kayit); }
+        kayit.set(k, orijinal);
+        o[k] = orijinal.replace(/₺/g, sembol);
+      }
+    };
+    gez(SOZLUK);
+  }
   // Dil değişince biçimleyicileri yeniden kur
   function fmtKur() {
     const yerel = sd().yerel;
-    paraFmt = new Intl.NumberFormat(yerel, { style: "currency", currency: "TRY", maximumFractionDigits: 0, currencyDisplay: "narrowSymbol" });
+    PARA.kod = durum.paraBirimi;
+    sozlukParaUygula();
+    paraFmt = new Intl.NumberFormat(yerel, { style: "currency", currency: PARA.kod, maximumFractionDigits: 0, currencyDisplay: "narrowSymbol" });
     tarihFmt = new Intl.DateTimeFormat(yerel, { month: "long", year: "numeric" });
     gunAyFmt = new Intl.DateTimeFormat(yerel, { day: "numeric", month: "long", weekday: "long" });
   }
@@ -4688,7 +4816,7 @@ const ARAYUZ = () => {
     return `<div class="ipucu" data-ipucu="${id}">
       <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.8.7-1 1.5-1 2.5h-6c0-1-.2-1.8-1-2.5A6 6 0 0 1 12 3z"/></svg>
       <span style="flex:1">${metin}</span>
-      <button class="ipucu-kapat" aria-label="Kapat">×</button>
+      <button class="ipucu-kapat" aria-label="${st().aria_kapat}">×</button>
     </div>`;
   }
   document.addEventListener("click", (e) => {
@@ -4750,7 +4878,7 @@ const ARAYUZ = () => {
     const tercih = durum.tema ||
       (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     document.documentElement.dataset.theme = tercih;
-    document.documentElement.dataset.palet = durum.palet || "teal";
+    $("temaSec").value = durum.tema || "oto";
     if (NATIF.VAR) NATIF.durumCubugu(tercih === "dark"); // saat/pil rengi temayla uyumlu kalsın
     $("temaBtn").innerHTML = tercih === "dark" ? `<svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>` : `<svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg>`;
   }
@@ -5120,7 +5248,7 @@ const ARAYUZ = () => {
   }
 
   function sayiOku(ham) {
-    let t = String(ham).trim().replace(/[₺\s]/g, "");
+    let t = String(ham).trim().replace(/[₺$€£\s]/g, "");
     if (t === "") return NaN;
     if (t.includes(".") && t.includes(",")) {
       t = t.replace(/\./g, "").replace(",", "."); // 1.234,56 → 1234.56
@@ -6720,7 +6848,7 @@ const ARAYUZ = () => {
     } else {
       const onlenen = iyK.faizFark || 0;
       cumle.innerHTML = onlenen >= 1
-        ? s.sizOnle(new Intl.NumberFormat(s.yerel, { maximumFractionDigits: 0 }).format(onlenen))
+        ? s.sizOnle(paraFmt.format(onlenen))
         : s.sizEkstra;
     }
 
@@ -7446,7 +7574,7 @@ const ARAYUZ = () => {
     if (eski) eski.remove();
     const kutu = document.createElement("div");
     kutu.className = "serit";
-    kutu.innerHTML = `<span style="flex:1">${metin}</span><button aria-label="Kapat">×</button>`;
+    kutu.innerHTML = `<span style="flex:1">${metin}</span><button aria-label="${st().aria_kapat}">×</button>`;
     kutu.querySelector("button").addEventListener("click", () => kutu.remove());
     document.body.appendChild(kutu);
     if (!kalici) setTimeout(() => kutu.remove(), 12000); // kritik mesajlar elle kapatılır
@@ -8368,6 +8496,7 @@ const ARAYUZ = () => {
   async function bildirimDurumGoster() {
     const btn = $("bildirimBtn"), yazi = $("bildirimDurum");
     const s = sd();
+    btn.textContent = s.bilDene; // gizli kalsa da doğru dilde dursun
     $("zilIciAc").checked = durum.ayarlar.uygulamaIci !== false;
     if (NATIF.VAR) {
       const izin = await NATIF.bildirimIzniDurumu();
@@ -8630,6 +8759,7 @@ const ARAYUZ = () => {
   }
 
   function dilUygula() {
+    fmtKur(); // önce: sözlükteki para sembolü etkin birime çevrilsin, sonra basılsın
     const s = st();
     document.documentElement.lang = durum.dil;
     document.title = s.docTitle;
@@ -8641,8 +8771,17 @@ const ARAYUZ = () => {
       const k = el.dataset.i18nPh;
       if (s[k] !== undefined) el.placeholder = s[k];
     });
+    document.querySelectorAll("[data-i18n-title]").forEach(el => {
+      const k = el.dataset.i18nTitle;
+      if (s[k] !== undefined) el.title = s[k];
+    });
+    document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+      const k = el.dataset.i18nAria;
+      if (s[k] !== undefined) el.setAttribute("aria-label", s[k]);
+    });
     natifMetinleri();  // native'de "tarayıcı" dili yerine gerçek davranışı anlatan metin
-    fmtKur();
+    document.querySelectorAll(".para-sembol").forEach(el => { el.textContent = paraSembol(PARA.kod); });
+    $("vergiTrEtiket").hidden = PARA.kod === "TRY"; // KKDF/BSMV yalnızca Türkiye'de geçerli
     faizBirimUygula(); // faiz etiketi + çevrim satırı seçili birim ve dille tazelenir
     if (sbVeri) sbBirimUygula();
     $("ekleBtn").textContent = duzenlenen !== null ? sd().btnGuncelle : sd().btnEkle;
@@ -8667,6 +8806,7 @@ const ARAYUZ = () => {
     durum.dil = $("dil").value === "en" ? "en" : "tr";
     STORAGE.kaydet(durum);
     dilUygula();
+    if (NATIF.VAR) hatirlatmalariTazele(); // planlı kilit ekranı metinleri yeni dilde kurulsun
   });
 
   /* ---- Pro: tek seferlik yerel kilit ---- */
@@ -8697,19 +8837,32 @@ const ARAYUZ = () => {
     proUygula();
   }
 
-  /* ---- Tema paleti (ek paletler Pro) ---- */
-  $("palet").addEventListener("change", () => {
-    const secim = $("palet").value;
-    if (secim !== "teal" && !durum.pro) {
-      $("palet").value = durum.palet; // kilitli palet: seçim geri alınır, Pro kartına götür
-      $("proDurum").scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-    durum.palet = secim;
+  /* ---- Tema: Gece Mavisi · Gümüş · Otomatik (ikisi de ücretsiz) ---- */
+  $("temaSec").addEventListener("change", () => {
+    const v = $("temaSec").value;
+    durum.tema = v === "dark" || v === "light" ? v : null; // null = cihaz ayarını izle
     STORAGE.kaydet(durum);
     temaUygula();
-    paylasKartiCiz(); // kart renkleri paletten okunur
+    paylasKartiCiz(); // kart renkleri temadan okunur
   });
+
+  /* ---- Para birimi: tutarlar DÖNÜŞTÜRÜLMEZ, yalnızca sembol değişir ---- */
+  function paraBirimiAta(kod) { // true: değişti (kaydetme/çizim çağırana kalır)
+    if (!PARA_BIRIMLERI.includes(kod) || kod === durum.paraBirimi) return false;
+    durum.paraBirimi = kod;
+    $("paraBirimi").value = kod;
+    // KKDF + BSMV Türkiye'ye özel: TL dışı birimde varsayılan kapalı
+    if (kod !== "TRY") durum.ayarlar.vergiUygula = false;
+    return true;
+  }
+  function paraBirimiSec(kod, sessiz) {
+    if (!paraBirimiAta(kod)) return;
+    STORAGE.kaydet(durum);
+    ayarlariGoster();
+    dilUygula();
+    if (!sessiz && durum.borclar.length > 0) bildirimSeridi(st().ayar_para_not);
+  }
+  $("paraBirimi").addEventListener("change", () => paraBirimiSec($("paraBirimi").value));
 
   /* ---- "Ya şöyle yaparsam" senaryoları (Pro) ---- */
   $("senBtn").addEventListener("click", () => {
@@ -9603,9 +9756,44 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   }
   $("obSerit").addEventListener("scroll", obNoktaGuncelle, { passive: true });
 
+  /* Onboarding'in ilk iki ekranı: dil + para birimi. Seçim anında
+     uygulanır (sonraki kartlar seçilen dilde görünür) ve cihazda saklanır. */
+  let obParaElle = false; // kullanıcı para birimini kendisi seçtiyse dil değişimi onu ezmez
+  function obSecimCiz() {
+    document.querySelectorAll("[data-ob-dil]").forEach(b =>
+      b.setAttribute("aria-checked", String(b.dataset.obDil === durum.dil)));
+    document.querySelectorAll("[data-ob-para]").forEach(b =>
+      b.setAttribute("aria-checked", String(b.dataset.obPara === durum.paraBirimi)));
+  }
+  function obSonrakiKart(kart) {
+    const serit = $("obSerit");
+    const i = [...serit.children].indexOf(kart);
+    serit.scrollTo({ left: (i + 1) * serit.clientWidth, behavior: azHareket.matches ? "auto" : "smooth" });
+  }
+  document.querySelectorAll("[data-ob-dil]").forEach(b => b.addEventListener("click", () => {
+    const dil = b.dataset.obDil === "en" ? "en" : "tr";
+    if (dil !== durum.dil) {
+      durum.dil = dil;
+      $("dil").value = dil;
+      if (!obParaElle && paraBirimiAta(CIHAZ.paraOner(dil))) ayarlariGoster();
+      STORAGE.kaydet(durum);
+      dilUygula();
+      if (NATIF.VAR) hatirlatmalariTazele();
+    }
+    obSecimCiz();
+    obSonrakiKart($("obDilKart"));
+  }));
+  document.querySelectorAll("[data-ob-para]").forEach(b => b.addEventListener("click", () => {
+    obParaElle = true;
+    paraBirimiSec(b.dataset.obPara, true);
+    obSecimCiz();
+    obSonrakiKart($("obParaKart"));
+  }));
+
   function turGoster() {
     $("onboard").hidden = false;
     $("obSerit").scrollLeft = 0;
+    obSecimCiz();
     obNoktaGuncelle();
   }
   function turKapat(basla) {
@@ -9661,7 +9849,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   if (yontemRadyo) yontemRadyo.checked = true;
   $("hatirlatmaGun").value = durum.ayarlar.hatirlatmaGun;
   $("dil").value = durum.dil;
-  $("palet").value = durum.palet;
+  $("paraBirimi").value = durum.paraBirimi;
   $("kisiAd").value = durum.ad || "";
   $("refMarket").value = durum.referanslar.market || "";
   $("refKira").value = durum.referanslar.kira || "";
