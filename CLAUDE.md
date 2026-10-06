@@ -51,7 +51,8 @@ karşılaştıran saf katman (DOM yok, kendi 15 testi).
   okumalar senkron döner, yazmalar hem belleğe hem Preferences'a gider.
   Böylece 34 çağrı yerinin hiçbiri değişmedi.
 - `STORAGE`: `borcPlanlayici.v1` anahtarı, **`schemaVersion` + `migrate()`**.
-  Güncel şema **v5**. Eski sürüm yeni şemaya taşınır; bilinmeyen/gelecek
+  Güncel şema **v6** (palet kalktı, `paraBirimi` eklendi; Orman/Bakır
+  seçmiş eski kullanıcı sessizce Gece Mavisi'ne düşer). Eski sürüm yeni şemaya taşınır; bilinmeyen/gelecek
   sürümde veri **SİLİNMEZ** (`.gelecek` / `.bozuk` kopyaları alınır).
 
 **3. ARAYÜZ (`ARAYUZ`)** — DOM, biçimlendirme, olaylar. IIFE değil: native'de
@@ -78,12 +79,14 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   `yerelOrtamMi()` önce `DEPO.NATIVE`'i eler (Capacitor "localhost" hostname'i
   kullandığı için bu şart), sonra tam eşleşen yerel adlara bakar.
 - **`prefers-reduced-motion`** her animasyonda gözetilir.
-- **`Intl` ile `tr-TR`** biçimlendirme; para/tarih elle formatlanmaz.
+- **`Intl` ile `tr-TR`** (EN'de `en-US`) biçimlendirme; para/tarih elle
+  formatlanmaz. Para birimi sabit "TRY" yazılmaz: `PARA.kod` kullanılır.
+- **Erişilebilir etiketler** de çevrilir: `data-i18n-title`, `data-i18n-aria`.
 - **360px** dar ekranda test edilmeden değişiklik bitmez.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v8`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v9`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -101,6 +104,13 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   Hesap `IKIYOL` katmanında (motorun üstünde, saf): A = borç başına
   `minimumOnlyProjection`, B = `simulatePlan`. Kapanmayan borçta tarih/faiz
   uydurulmaz. 15 birim testi (`IKIYOL.selfTest`, konsolda `İki Yol testleri`).
+- **Tema + dil + para birimi** (`ozellik/tema-dil`): iki ücretsiz tema —
+  **Gece Mavisi** (koyu, varsayılan) ve **Gümüş** (açık, inci/gümüş kartlar) +
+  Otomatik; Orman/Bakır kaldırıldı. Onboarding'in başında dil (cihaz diline
+  göre önseçili) ve para birimi (TRY/USD/EUR/GBP; EN'de cihaz bölgesine göre)
+  ekranı. Para birimi değişince rakam DÖNÜŞTÜRÜLMEZ, yalnızca sembol değişir;
+  TL dışında KKDF/BSMV varsayılan kapalı ve "Türkiye'ye özel" etiketli.
+  Sözlükteki sabit "₺" etkin sembole çevrilir (`sozlukParaUygula`).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
