@@ -833,6 +833,67 @@
   @keyframes anHalka { to { stroke-dashoffset: 0; } }
   @media (prefers-reduced-motion: reduce) { .an-ic { animation: none; } .an-ic .an-halka { animation: none; stroke-dashoffset: 0; } }
 
+  /* ============================================================
+     İKİ YOL — sadece asgari vs planla. Tek kahraman öğe (dev rakam),
+     A soluk/uyarı tonunda, B şampanya vurgulu. Yeni renk yok: mevcut
+     gece mavisi / gümüş / şampanya ailesi.
+     ============================================================ */
+  .iy-kart { text-align: center; }
+  .iy-ust { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .iy-kahraman { margin: 4px 0 20px; }
+  .iy-dev { font-family: var(--font-baslik); font-size: clamp(40px, 12.5vw, 60px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; color: var(--accent-strong); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .iy-dev { background: linear-gradient(168deg, var(--rakam-a) 6%, var(--rakam-b) 80%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 28px var(--rakam-glow); }
+  }
+  .iy-dev-alt { margin-top: 6px; font-size: 14px; color: var(--text-muted); }
+  .iy-tablo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px 10px; max-width: 460px; margin: 0 auto; }
+  .iy-kolon { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding-bottom: 2px; }
+  .iy-kolon.iy-a { color: var(--text-muted); }
+  .iy-kolon.iy-b { color: var(--sicak); }
+  .iy-etiket { grid-column: 1 / -1; margin-top: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); }
+  .iy-deger { min-width: 0; overflow-wrap: anywhere; border-radius: 12px; padding: 10px 8px; font-size: 17px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .iy-deger.iy-a { background: var(--surface-2); color: color-mix(in srgb, var(--danger) 45%, var(--text-muted)); font-weight: 600; }
+  .iy-deger.iy-b { background: color-mix(in srgb, var(--sicak) 13%, transparent); border: 1px solid color-mix(in srgb, var(--sicak) 35%, transparent); color: var(--accent-strong); }
+  .iy-cumle { max-width: 34em; margin: 20px auto 0; font-size: 16px; line-height: 1.5; }
+  .iy-cumle strong, .iy-hayat strong, .iy-genel strong { color: var(--accent-strong); }
+  .iy-hayat { max-width: 34em; margin: 10px auto 0; font-size: 15px; color: var(--sicak); font-weight: 600; }
+  .iy-hayat button { margin-left: 6px; vertical-align: baseline; }
+  .iy-kay { max-width: 460px; margin: 22px auto 0; text-align: left; }
+  .iy-kay-lbl { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; }
+  .iy-kay-lbl strong { font-size: 18px; color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+  #iySlider { width: 100%; accent-color: var(--sicak); margin-top: 6px; }
+  .iy-grafik { max-width: 520px; margin: 18px auto 0; }
+  .iy-grafik svg { width: 100%; height: auto; display: block; }
+  .iy-lejant { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+  .iy-lejant i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  .iy-not-satir { max-width: 34em; margin: 12px auto 0; }
+  .iy-detay { max-width: 460px; margin: 16px auto 0; text-align: left; }
+  .iy-detay summary { cursor: pointer; font-size: 14px; color: var(--text-muted); }
+  .iy-detay p { margin-top: 8px; }
+  .iy-alt { margin-top: 14px; }
+  /* Genel: halkanın altında tek satır, sakin */
+  .iy-genel { max-width: 32em; margin: 12px auto 4px; font-size: 14px; line-height: 1.5; color: var(--text-muted); text-align: center; position: relative; }
+
+  /* "Gerçek an": tam ekran, önce A, sonra B yumuşakça */
+  #iyAnOverlay { position: fixed; inset: 0; z-index: 196; background: var(--bg); overflow-y: auto; display: flex; align-items: center; justify-content: center; text-align: center; }
+  #iyAnOverlay[hidden] { display: none; }
+  .iy-an-ic { max-width: 440px; padding: 40px 22px; }
+  .iy-an-ust { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+  .iy-an-cumle { font-size: 18px; line-height: 1.45; color: var(--text); }
+  .iy-an-cumle strong { color: var(--accent-strong); }
+  .iy-an-rakam { font-family: var(--font-baslik); font-size: clamp(46px, 15vw, 72px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; margin: 10px 0 6px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .iy-an-rakam-a { color: color-mix(in srgb, var(--danger) 55%, var(--text-muted)); }
+  .iy-an-rakam-b { color: var(--accent-strong); }
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .iy-an-rakam-b { background: linear-gradient(168deg, var(--rakam-a) 6%, var(--rakam-b) 80%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 28px var(--rakam-glow); }
+  }
+  .iy-an-alt { font-size: 16px; color: var(--text-muted); }
+  .iy-an-b { margin-top: 34px; padding-top: 28px; border-top: 1px solid var(--border); opacity: 0; transform: translateY(12px); visibility: hidden; transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s 0.9s; }
+  .iy-an-b.goster { opacity: 1; transform: none; visibility: visible; transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s; }
+  .iy-an-b button { margin-top: 26px; min-width: 200px; }
+  .iy-an-not { margin-top: 28px; }
+  @media (prefers-reduced-motion: reduce) { .iy-an-b, .iy-an-b.goster { transition: none; transform: none; } }
+
   /* Aylık rapor anı: tam genişlik, büyük başlık, sırayla açılan kartlar */
   .rapor-ic { max-width: 560px; margin: 0 auto; padding: 40px 20px 56px; }
   .rapor-ust { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
@@ -980,6 +1041,8 @@
         <p class="muted" id="heroTarih">—</p>
       </div>
     </div>
+    <!-- İki Yol hatırlatması: plana uyarak kurtarılan faiz (her açılışta, ödemeyle güncellenir) -->
+    <p class="iy-genel" id="iyGenelSatir" hidden></p>
     <div class="hero-statlar">
       <div>
         <p class="muted" data-i18n="ozet_bakiye">Toplam bakiye</p>
@@ -1244,6 +1307,49 @@
 
   <!-- SEKME: Plan — faiz/vergi ayarları + ödeme planı -->
   <div class="sekme" id="sekme-plan">
+
+  <!-- İki Yol: sadece asgari vs planla — Plan sekmesinin kahraman kartı.
+       Tüm sayılar motordan (IKIYOL katmanı); kaydırıcı aylık ekstrayı canlı değiştirir. -->
+  <section class="card yukselti iy-kart" id="ikiYolKart" hidden aria-labelledby="iyBaslik">
+    <p class="iy-ust" id="iyBaslik" data-i18n="iy_h">İki Yol</p>
+    <div class="iy-kahraman" aria-live="polite">
+      <p class="iy-dev" id="iyDev">—</p>
+      <p class="iy-dev-alt" id="iyDevAlt"></p>
+    </div>
+    <div class="iy-tablo">
+      <p class="iy-kolon iy-a" data-i18n="iy_a">Sadece asgari</p>
+      <p class="iy-kolon iy-b" data-i18n="iy_b">Planınla</p>
+      <p class="iy-etiket" data-i18n="iy_bitis">Borçsuz tarih</p>
+      <p class="iy-deger iy-a" id="iyABitis">—</p>
+      <p class="iy-deger iy-b" id="iyBBitis">—</p>
+      <p class="iy-etiket" id="iyFaizEt">Toplam faiz</p>
+      <p class="iy-deger iy-a" id="iyAFaiz">—</p>
+      <p class="iy-deger iy-b" id="iyBFaiz">—</p>
+      <p class="iy-etiket" data-i18n="iy_odeme">Toplam ödeme</p>
+      <p class="iy-deger iy-a" id="iyAOdeme">—</p>
+      <p class="iy-deger iy-b" id="iyBOdeme">—</p>
+    </div>
+    <p class="iy-cumle" id="iyCumle"></p>
+    <p class="iy-hayat" id="iyHayat" hidden></p>
+    <div class="iy-kay no-print">
+      <label for="iySlider" class="iy-kay-lbl">
+        <span data-i18n="iy_kay">Ayda fazladan ödersem</span>
+        <strong id="iyKayDeger">₺0</strong>
+      </label>
+      <input type="range" id="iySlider" min="0" max="5000" step="50" value="0">
+      <p class="mini-ipucu" id="iyKayNot" hidden></p>
+    </div>
+    <div class="iy-grafik" id="iyGrafik"></div>
+    <p class="mini-ipucu iy-not-satir" id="iyNotlar" hidden></p>
+    <details class="iy-detay">
+      <summary data-i18n="iy_detay">Borç borç: sadece asgariyle</summary>
+      <div id="iyDetayListe"></div>
+    </details>
+    <div class="iy-alt no-print">
+      <button type="button" class="ghost small" id="iyAnTekrar" data-i18n="iy_an_tekrar">O anı yeniden göster</button>
+    </div>
+    <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
+  </section>
 
   <!-- Baş rakam: borçsuz tarih — planın tek kahraman verisi (Opal ilkesi) -->
   <section class="card yukselti" id="planHeroKart" hidden>
@@ -1901,6 +2007,24 @@
   </div>
 </div>
 
+<!-- İki Yol "gerçek an": ilk plan hesabında bir kez, tam ekran. Önce A, sonra B. -->
+<div id="iyAnOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="iyAnUst" tabindex="-1" hidden>
+  <div class="iy-an-ic">
+    <p class="iy-an-ust" id="iyAnUst" data-i18n="iy_an_ust">Sadece asgari ödersen</p>
+    <p class="iy-an-cumle" id="iyAnA"></p>
+    <p class="iy-an-rakam iy-an-rakam-a" id="iyAnARakam">—</p>
+    <p class="iy-an-alt" id="iyAnAAlt"></p>
+    <div class="iy-an-b" id="iyAnB">
+      <p class="iy-an-cumle" id="iyAnBCumle"></p>
+      <p class="iy-an-rakam iy-an-rakam-b" id="iyAnBRakam">—</p>
+      <p class="iy-an-alt" id="iyAnBAlt"></p>
+      <p class="mini-ipucu" id="iyAnOneri" hidden></p>
+      <button type="button" id="iyAnBtn" data-i18n="iy_an_btn">Planımı göster</button>
+    </div>
+    <p class="mini-ipucu iy-an-not" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
+  </div>
+</div>
+
 <!-- Aylık rapor anı: tam genişlik, sırayla açılan kartlar (Opal ilkesi) -->
 <div id="raporOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="raporBaslik" hidden>
   <div class="rapor-ic" style="position:relative">
@@ -1995,6 +2119,12 @@ const SOZLUK = {
       opt_teal: "Gece Mavisi & Gümüş (varsayılan)", opt_orman: "Orman (Pro)", opt_bakir: "Bakır-Yeşil (Pro)",
       ozet_bakiye: "Toplam bakiye", hero_buay: "Bu ay ödenecek",
       hayat_h: "Önlenen Faizin Karşılığı",
+      iy_h: "İki Yol", iy_a: "Sadece asgari", iy_b: "Planınla",
+      iy_bitis: "Borçsuz tarih", iy_odeme: "Toplam ödeme",
+      iy_kay: "Ayda fazladan ödersem", iy_detay: "Borç borç: sadece asgariyle",
+      iy_an_tekrar: "O anı yeniden göster", iy_an_btn: "Planımı göster",
+      iy_an_ust: "Sadece asgari ödersen",
+      iy_not: "Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.",
       lbl_market: "Aylık market (₺)", lbl_kira: "Aylık kira (₺)", lbl_bilet: "Bir bilet / keyif (₺)",
       geri_h: "Geri Sayım",
       geri_not: 'Bunu widget gibi kullanmak için: <a href="?widget=1">?widget=1</a> adresini Safari\'de açıp Paylaş → "Ana Ekrana Ekle" de. Gerçek kilit ekranı widget\'ı saf HTML ile yapılamaz; bunun için uygulamanın native bir sarmalayıcıya (ör. iOS WidgetKit) taşınması gerekir.',
@@ -2137,6 +2267,49 @@ const SOZLUK = {
     },
     d: {
       yerel: "tr-TR",
+      /* İki Yol — "şunu yaparsan şu kadar kazanırsın" tonu; suçlama yok */
+      iy: {
+        sonuYok: "Sonu yok", hicKapanmaz: "Hiç kapanmıyor", kolonKapanmaz: "Kapanmıyor",
+        devTasarruf: (sure) => "faizden tasarruf" + (sure ? ` · ${sure} erken` : ""),
+        devErken: "erken biter",
+        devKurtarir: "borçsuz tarihin — sadece asgariyle hiç kapanmayacaktı",
+        devAyni: "borçsuz tarih — şu an iki yol aynı",
+        devKapanmaz: "Bu tutarla plan kapanmıyor",
+        tam: (x, sure, f) => `Ayda <strong>${x}</strong> fazla ödeyerek <strong>${sure}</strong> erken bitirir, <strong>${f}</strong> faizden kurtulursun.`,
+        sadeceSure: (x, sure) => `Ayda <strong>${x}</strong> fazla ödeyerek <strong>${sure}</strong> erken bitirirsin.`,
+        sadeceFaiz: (x, f) => `Ayda <strong>${x}</strong> fazla ödeyerek aynı sürede <strong>${f}</strong> faizden kurtulursun.`,
+        aktarim: (sure, f) => "Ekstra ödemeden, yalnızca kapanan borcun ödemesini sıradakine aktararak " +
+          [sure ? `<strong>${sure}</strong> erken bitirir` : "", f ? `<strong>${f}</strong> faizden kurtulursun` : ""].filter(Boolean).join(", ") +
+          (f ? "." : "sin."),
+        kurtarir: (x, t) => (x ? `Ayda <strong>${x}</strong> fazla ödeyerek` : "Kapanan borcun ödemesini sıradakine aktararak") +
+          `, sadece asgariyle hiç kapanmayacak borcunu <strong>${t}</strong> tarihinde kapatırsın.`,
+        kapanmaz: "Bu tutarla plan da kapanmıyor: faiz, ödemeden hızlı büyüyor. Kaydırıcıyı artırıp planın kapandığı noktayı bul.",
+        ayni: "Şu an iki yol aynı. Ayda biraz ekstra eklersen neler değiştiğini kaydırıcıyla gör.",
+        kayYonlendir: "Ayda biraz ekstra eklersen neler değiştiğini kaydırıcıyla gör.",
+        taksitNot: "Taksitli borçlarda faiz baştan sabittir; erken ödemek süreyi kısaltır ama motor faiz tutarını değiştirmez — fark bu yüzden küçük görünür.",
+        bitmeyenNot: (adlar) => `Sadece asgariyle hiç kapanmayan: <strong>${adlar}</strong> — asgari ödeme aylık faizi karşılamıyor.`,
+        hayatOn: "Bu fark kabaca:",
+        hayatBos: "Kira ya da market tutarını girersen bu farkı hayata çeviririm.",
+        hayatGir: "Tutar gir",
+        lejA: "Sadece asgari", lejB: "Planınla", lejAlan: "Kurtarılan",
+        kayKaydedildi: "Planına kaydedildi.",
+        /* Tam ekran "gerçek an" */
+        anA: (t) => `borçların <strong>${t}</strong> tarihine kadar sürer ve toplam`,
+        anAAlt: "faiz ödersin.",
+        anABitmez: (ad) => `<strong>${ad}</strong> hiç kapanmıyor:`,
+        anABitmezAlt: "faiz, ödediğinden hızlı büyüyor.",
+        anB: (x, t) => `Ama ayda <strong>${x}</strong> fazla ödersen <strong>${t}</strong> tarihinde bitiyor ve`,
+        anBAlt: "cebinde kalıyor.",
+        anBKurtar: (x) => `Ama ayda <strong>${x}</strong> fazla ödersen tamamen kapanıyor:`,
+        anBKurtarAlt: "borçsuz tarihin.",
+        anOneri: "Bu tutar bir öneri; kendi tutarını planda kaydırıcıyla seçebilirsin.",
+        /* Genel ekranı kalıcı hatırlatma */
+        genelTam: (y, z) => `Planına uyarak şu ana kadar <strong>~${y}</strong> faizden kurtuldun · toplamda <strong>${z}</strong> kurtaracaksın.`,
+        genelGelecek: (z) => `Planına uyarsan toplamda <strong>${z}</strong> faizden kurtulacaksın.`,
+        genelGecmis: (y) => `Planına uyarak şu ana kadar <strong>~${y}</strong> faizden kurtuldun.`,
+        genelKurtarir: (y) => (y ? `Planına uyarak şu ana kadar <strong>~${y}</strong> faizden kurtuldun · ` : "") +
+          "planın, sadece asgariyle hiç kapanmayacak borcunu kapatıyor."
+      },
       tur: { revolving: "Kredi kartı / KMH", installment: "Taksitli kredi" },
       yontemAd: { snowball: "kartopu", avalanche: "çığ" },
       listeBos: "Henüz borç eklenmedi.",
@@ -2549,6 +2722,12 @@ const SOZLUK = {
       opt_teal: "Midnight Blue & Silver (default)", opt_orman: "Forest (Pro)", opt_bakir: "Copper-Green (Pro)",
       ozet_bakiye: "Total balance", hero_buay: "Due this month",
       hayat_h: "What Your Saved Interest Buys",
+      iy_h: "Two Paths", iy_a: "Minimum only", iy_b: "With your plan",
+      iy_bitis: "Debt-free date", iy_odeme: "Total paid",
+      iy_kay: "If I pay extra each month", iy_detay: "Debt by debt: minimum only",
+      iy_an_tekrar: "Replay the moment", iy_an_btn: "Show my plan",
+      iy_an_ust: "If you pay only the minimum",
+      iy_not: "An estimate, not financial advice. Calculated entirely on your device by the plan engine.",
       lbl_market: "Monthly groceries (₺)", lbl_kira: "Monthly rent (₺)", lbl_bilet: "A ticket / treat (₺)",
       geri_h: "Countdown",
       geri_not: 'To use this like a widget: open <a href="?widget=1">?widget=1</a> in Safari and tap Share → "Add to Home Screen". A real lock-screen widget cannot be built in pure HTML; the app would need a native wrapper (e.g. iOS WidgetKit).',
@@ -2691,6 +2870,46 @@ const SOZLUK = {
     },
     d: {
       yerel: "en-US",
+      /* Two Paths — "do this and you gain this" tone; never blaming */
+      iy: {
+        sonuYok: "No end", hicKapanmaz: "Never paid off", kolonKapanmaz: "Doesn't close",
+        devTasarruf: (sure) => "saved in interest" + (sure ? ` · ${sure} sooner` : ""),
+        devErken: "sooner",
+        devKurtarir: "your debt-free date — minimums alone would never get there",
+        devAyni: "debt-free date — both paths are the same right now",
+        devKapanmaz: "At this amount the plan doesn't close",
+        tam: (x, sure, f) => `Paying <strong>${x}</strong> extra a month, you finish <strong>${sure}</strong> sooner and keep <strong>${f}</strong> out of interest.`,
+        sadeceSure: (x, sure) => `Paying <strong>${x}</strong> extra a month, you finish <strong>${sure}</strong> sooner.`,
+        sadeceFaiz: (x, f) => `Paying <strong>${x}</strong> extra a month, you keep <strong>${f}</strong> out of interest in the same time.`,
+        aktarim: (sure, f) => "With no extra at all — just rolling each finished debt's payment into the next — you " +
+          [sure ? `finish <strong>${sure}</strong> sooner` : "", f ? `keep <strong>${f}</strong> out of interest` : ""].filter(Boolean).join(" and ") + ".",
+        kurtarir: (x, t) => (x ? `Paying <strong>${x}</strong> extra a month` : "Rolling each finished debt's payment into the next") +
+          `, you clear a debt that minimums alone would never close — by <strong>${t}</strong>.`,
+        kapanmaz: "At this amount the plan doesn't close either: interest grows faster than the payments. Raise the slider to find where it does.",
+        ayni: "Right now both paths are the same. Add a little extra each month and watch what changes with the slider.",
+        kayYonlendir: "Add a little extra each month and watch what changes with the slider.",
+        taksitNot: "Installment loans have fixed interest from the start; paying early shortens the term, but the engine doesn't change the interest amount — so the difference looks small.",
+        bitmeyenNot: (adlar) => `Never paid off on minimums alone: <strong>${adlar}</strong> — the minimum doesn't cover the monthly interest.`,
+        hayatOn: "That difference is roughly:",
+        hayatBos: "Enter your rent or grocery amount and I'll translate this into real life.",
+        hayatGir: "Enter amounts",
+        lejA: "Minimum only", lejB: "With your plan", lejAlan: "Saved",
+        kayKaydedildi: "Saved to your plan.",
+        anA: (t) => `your debts last until <strong>${t}</strong> and you pay`,
+        anAAlt: "in interest.",
+        anABitmez: (ad) => `<strong>${ad}</strong> is never paid off:`,
+        anABitmezAlt: "interest grows faster than you pay.",
+        anB: (x, t) => `But pay <strong>${x}</strong> extra a month and you're done by <strong>${t}</strong> —`,
+        anBAlt: "stays in your pocket.",
+        anBKurtar: (x) => `But pay <strong>${x}</strong> extra a month and it all closes:`,
+        anBKurtarAlt: "your debt-free date.",
+        anOneri: "This amount is a suggestion; pick your own with the slider in your plan.",
+        genelTam: (y, z) => `By sticking to your plan you've kept <strong>~${y}</strong> out of interest so far · <strong>${z}</strong> in total.`,
+        genelGelecek: (z) => `Stick to your plan and you'll keep <strong>${z}</strong> out of interest in total.`,
+        genelGecmis: (y) => `By sticking to your plan you've kept <strong>~${y}</strong> out of interest so far.`,
+        genelKurtarir: (y) => (y ? `You've kept <strong>~${y}</strong> out of interest so far · ` : "") +
+          "your plan clears a debt that minimums alone never would."
+      },
       tur: { revolving: "Credit card / Overdraft", installment: "Installment loan" },
       yontemAd: { snowball: "snowball", avalanche: "avalanche" },
       listeBos: "No debts added yet.",
@@ -3487,6 +3706,230 @@ const ENGINE = (() => {
   }
 
   return { monthlyRate, efektifAylikOran, simulatePlan, minimumOnlyProjection, selfTest, MAX_AY };
+})();
+
+/* ============================================================
+   İKİ YOL — "sadece asgari" ile "planla" karşılaştırması.
+   Motorun ÜSTÜNDE ince, saf bir katman: hesap yapan tek yer yine
+   ENGINE'dir (minimumOnlyProjection + simulatePlan). Burada yalnızca
+   bu çıktılar toplanır ve karşılaştırılır. DOM'a ve depoya dokunmaz.
+   ============================================================ */
+const IKIYOL = (() => {
+  const EPS = 0.005;
+  const acikBorclar = (borclar) => borclar.filter(b => b.balance > EPS);
+
+  // Seriler farklı uzunlukta: biten borç son değerinde (0) kalır
+  function seriTopla(seriler) {
+    const N = seriler.reduce((m, s) => Math.max(m, s.length), 0);
+    const toplam = new Array(N).fill(0);
+    for (const s of seriler) {
+      for (let i = 0; i < N; i++) toplam[i] += s[Math.min(i, s.length - 1)];
+    }
+    return toplam;
+  }
+
+  /**
+   * A — sadeceAsgari(borclar, ayarlar)
+   * Her borç YALNIZCA kendi asgari/taksitiyle ödenir (biten borcun ödemesi
+   * başka borca aktarılmaz). Sayılar minimumOnlyProjection'dan, eğri tek
+   * borçlu simulatePlan'dan (ekstra 0) gelir — ikisi aynı kuralı işletir.
+   * Bir borç bile kapanmıyorsa toplam süre/faiz/ödeme UYDURULMAZ: null döner.
+   * Dönüş: { hicBitmez, bitmeyenler[], aySayisi, toplamFaiz, toplamOdeme,
+   *          baslangic, seri, detay[] }
+   */
+  function sadeceAsgari(borclar, ayarlar) {
+    const acik = acikBorclar(borclar);
+    let ay = 0, faiz = 0, baslangic = 0;
+    const bitmeyenler = [], detay = [], seriler = [];
+    for (const b of acik) {
+      baslangic += b.balance;
+      const p = ENGINE.minimumOnlyProjection(b, ayarlar);
+      const bitmez = p.hicBitmez || !Number.isFinite(p.aySayisi);
+      detay.push({ ad: b.ad, type: b.type, hicBitmez: bitmez,
+        aySayisi: bitmez ? null : p.aySayisi, toplamFaiz: bitmez ? null : p.toplamFaiz });
+      if (bitmez) bitmeyenler.push(b.ad);
+      else { ay = Math.max(ay, p.aySayisi); faiz += p.toplamFaiz; }
+      seriler.push(ENGINE.simulatePlan([b], 0, "avalanche", ayarlar).bakiyeSerisi);
+    }
+    const hicBitmez = bitmeyenler.length > 0;
+    return {
+      hicBitmez, bitmeyenler,
+      aySayisi: hicBitmez ? null : ay,
+      toplamFaiz: hicBitmez ? null : faiz,
+      toplamOdeme: hicBitmez ? null : baslangic + faiz,
+      baslangic, seri: seriTopla(seriler), detay
+    };
+  }
+
+  /**
+   * B — planla(borclar, ekstra, yontem, ayarlar)
+   * Seçili yöntem + aylık ekstra; biten borcun ödemesi sıradakine yığılır.
+   * Toplam ödeme = bugünkü bakiye + plan boyunca işleyen faiz.
+   */
+  function planla(borclar, ekstra, yontem, ayarlar) {
+    const acik = acikBorclar(borclar);
+    const baslangic = acik.reduce((t, b) => t + b.balance, 0);
+    const sim = ENGINE.simulatePlan(acik, Math.max(0, ekstra || 0), yontem, ayarlar);
+    return {
+      uygulanabilir: sim.uygulanabilir,
+      aySayisi: sim.uygulanabilir ? sim.aySayisi : null,
+      toplamFaiz: sim.uygulanabilir ? sim.toplamFaiz : null,
+      toplamOdeme: sim.uygulanabilir ? baslangic + sim.toplamFaiz : null,
+      borcsuzTarih: sim.borcsuzTarih,
+      baslangic, seri: sim.bakiyeSerisi
+    };
+  }
+
+  /**
+   * karsilastir(A, B) → fark özeti
+   * durum: "kurtarir"  — A hiç kapanmıyor, B kapanıyor
+   *        "kapanmaz"  — B kapanmıyor (A ne olursa olsun belirleyici B'dir)
+   *        "fark"      — ikisi de kapanıyor; ay/faiz farkı hesaplanır
+   * Negatif fark asla gösterilmez (B ≤ A motor kuralı gereği; yine de 0'a kırpılır).
+   */
+  function karsilastir(A, B) {
+    if (!B.uygulanabilir) return { durum: "kapanmaz", ayFark: null, faizFark: null };
+    if (A.hicBitmez) return { durum: "kurtarir", ayFark: null, faizFark: null };
+    return {
+      durum: "fark",
+      ayFark: Math.max(0, A.aySayisi - B.aySayisi),
+      faizFark: Math.max(0, A.toplamFaiz - B.toplamFaiz)
+    };
+  }
+
+  /**
+   * kazanilanSimdiyeKadar(borclar, ayarlar, bugun)
+   * Kayıtlı ödemelerden "şu ana kadar önlenen faiz" için TEMKİNLİ tahmin:
+   * faizli bir borca bir ayda asgariden fazla ödenen tutar, o aydan bugüne
+   * kadar faiz işletmemiş sayılır — basit faizle (bileşik değil), yani
+   * gerçek kazancın altında kalır. Süre, borcun ilk bakiyesinin sadece
+   * asgariyle kapanacağı ay sayısını aşamaz. Taksitlilerde faiz sabit: 0.
+   */
+  function kazanilanSimdiyeKadar(borclar, ayarlar, bugun) {
+    const simdi = bugun || new Date();
+    const simdiAy = simdi.getFullYear() * 12 + simdi.getMonth();
+    let toplam = 0;
+    for (const b of borclar) {
+      if (b.type !== "revolving" || !Array.isArray(b.payments) || b.payments.length === 0) continue;
+      const oran = ENGINE.efektifAylikOran(b.annualRate, ayarlar);
+      if (!(oran > 0)) continue;
+      const ilk = b.initialBalance > 0 ? b.initialBalance : b.balance;
+      const p = ENGINE.minimumOnlyProjection({ type: "revolving", balance: ilk, annualRate: b.annualRate, payment: b.payment }, ayarlar);
+      const tavan = p.hicBitmez ? ENGINE.MAX_AY : p.aySayisi;
+      const aylar = new Map();
+      for (const od of b.payments) {
+        const k = String(od.tarih).slice(0, 7);
+        if (!/^\d{4}-\d{2}$/.test(k)) continue;
+        aylar.set(k, (aylar.get(k) || 0) + (+od.tutar || 0));
+      }
+      for (const [k, odenen] of aylar) {
+        const fazla = odenen - b.payment;
+        if (fazla <= EPS) continue;
+        const gecen = Math.min(tavan, simdiAy - (parseInt(k.slice(0, 4), 10) * 12 + parseInt(k.slice(5, 7), 10) - 1));
+        if (gecen > 0) toplam += fazla * oran * gecen;
+      }
+    }
+    return toplam;
+  }
+
+  /* ---- Birim testleri: karşılaştırmanın değişmezleri ---- */
+  function selfTest() {
+    const sonuclar = [];
+    const kaydet = (ad, gecti, detay) => sonuclar.push({ ad, gecti: !!gecti, detay: gecti ? "" : detay });
+    const yak = (a, b, tol) => Math.abs(a - b) <= (tol === undefined ? 0.01 : tol);
+    const vergi = { vergiUygula: true, kkdf: 15, bsmv: 15 };
+
+    // 1) Asgari < aylık faiz: A dürüstçe "hiç bitmez", sahte tarih/faiz yok
+    const tuzak = [{ ad: "Kart", type: "revolving", balance: 50000, annualRate: 60, payment: 1000 }];
+    const A1 = sadeceAsgari(tuzak);
+    kaydet("Asgari < faiz → A hiç bitmez, tarih/faiz uydurulmaz",
+      A1.hicBitmez && A1.aySayisi === null && A1.toplamFaiz === null && A1.toplamOdeme === null &&
+      A1.bitmeyenler[0] === "Kart",
+      JSON.stringify({ h: A1.hicBitmez, ay: A1.aySayisi, f: A1.toplamFaiz }));
+    const B1 = planla(tuzak, 3000, "avalanche");
+    const K1 = karsilastir(A1, B1);
+    kaydet("Tuzak borç + yeterli ekstra → plan kurtarır", B1.uygulanabilir && K1.durum === "kurtarir",
+      `${B1.uygulanabilir} ${K1.durum}`);
+    kaydet("Tuzak borç + ekstra 0 → plan da kapanmaz (dürüst)",
+      karsilastir(A1, planla(tuzak, 0, "avalanche")).durum === "kapanmaz", "kapanmaz bekleniyordu");
+
+    // 2) Tek borç, ekstra 0: iki yol birebir aynı (aktarılacak ödeme yok)
+    const tek = [{ ad: "Kart", type: "revolving", balance: 10000, annualRate: 60, payment: 1000 }];
+    const A2 = sadeceAsgari(tek), B2 = planla(tek, 0, "snowball"), K2 = karsilastir(A2, B2);
+    kaydet("Tek borç + ekstra 0 → A = B (fark 0)",
+      K2.durum === "fark" && K2.ayFark === 0 && yak(K2.faizFark, 0) && A2.aySayisi === B2.aySayisi,
+      `ay ${A2.aySayisi}/${B2.aySayisi}, faiz farkı ${K2.faizFark}`);
+    // A sayıları ile A eğrisi aynı kuralı işletir
+    kaydet("A eğrisi projeksiyonla tutarlı (uzunluk = ay + 1, son = 0)",
+      A2.seri.length === A2.aySayisi + 1 && A2.seri[A2.seri.length - 1] < EPS && yak(A2.seri[0], 10000),
+      `uzunluk ${A2.seri.length}, ay ${A2.aySayisi}`);
+    kaydet("A toplam ödeme = bakiye + faiz", yak(A2.toplamOdeme, 10000 + A2.toplamFaiz), String(A2.toplamOdeme));
+
+    // 3) Tek borç + ekstra: B daha kısa ve daha ucuz
+    const B3 = planla(tek, 1000, "avalanche"), K3 = karsilastir(A2, B3);
+    kaydet("Tek borç + ekstra → B daha kısa ve daha az faiz",
+      K3.ayFark >= 1 && K3.faizFark > 1, JSON.stringify(K3));
+
+    // 4) Çok borç: değişmez B.faiz ≤ A.faiz ve B.ay ≤ A.ay — yöntem, ekstra ve vergi taraması
+    const cok = [
+      { ad: "K1", type: "revolving", balance: 12000, annualRate: 72, payment: 1000 },
+      { ad: "K2", type: "revolving", balance: 5000, annualRate: 36, payment: 250 },
+      { ad: "T1", type: "installment", balance: 9000, annualRate: 0, payment: 750 },
+      { ad: "K3", type: "revolving", balance: 800, annualRate: 30, payment: 100 }
+    ];
+    let ihlal = null;
+    for (const ay of [undefined, vergi]) {
+      const A = sadeceAsgari(cok, ay);
+      if (A.hicBitmez) { ihlal = "senaryo A'da kapanmalıydı"; break; }
+      for (const y of ["snowball", "avalanche"]) {
+        for (const e of [0, 100, 500, 2500, 10000]) {
+          const B = planla(cok, e, y, ay);
+          if (!B.uygulanabilir) { ihlal = `${y}/${e}: plan kapanmadı`; break; }
+          if (B.toplamFaiz > A.toplamFaiz + 0.01) ihlal = `${y}/${e}: faiz B ${B.toplamFaiz.toFixed(2)} > A ${A.toplamFaiz.toFixed(2)}`;
+          if (B.aySayisi > A.aySayisi) ihlal = `${y}/${e}: ay B ${B.aySayisi} > A ${A.aySayisi}`;
+          if (ihlal) break;
+        }
+        if (ihlal) break;
+      }
+      if (ihlal) break;
+    }
+    kaydet("Çok borç taraması: B faizi ≤ A faizi, B süresi ≤ A süresi", ihlal === null, ihlal || "");
+
+    // 5) Çok borç, ekstra 0: biten borcun ödemesini aktarmak tek başına kazandırır
+    const A5 = sadeceAsgari(cok), B5 = planla(cok, 0, "avalanche"), K5 = karsilastir(A5, B5);
+    kaydet("Çok borç + ekstra 0 → aktarma yine de B ≤ A", K5.durum === "fark" && K5.faizFark >= 0 && K5.ayFark >= 0,
+      JSON.stringify(K5));
+    kaydet("A eğrisi B eğrisinin her ay üstünde ya da eşit",
+      B5.seri.every((v, i) => v <= A5.seri[Math.min(i, A5.seri.length - 1)] + 0.01), "eğri kesişti");
+
+    // 6) Yalnızca taksitli borç: faiz farkı 0, fark yalnızca süre (abartı yok)
+    const taksit = [{ ad: "T", type: "installment", balance: 12000, annualRate: 0, payment: 1000 }];
+    const K6 = karsilastir(sadeceAsgari(taksit), planla(taksit, 1000, "snowball"));
+    kaydet("Yalnız taksitli → faiz farkı 0, süre 12 → 6 ay", K6.faizFark === 0 && K6.ayFark === 6, JSON.stringify(K6));
+
+    // 7) Karışık: bir borç bitmez + diğeri biter → A toplamı uydurulmaz
+    const karisik = [tuzak[0], tek[0]];
+    const A7 = sadeceAsgari(karisik);
+    kaydet("Bir borç bitmezse A toplamı null, bitenin detayı korunur",
+      A7.hicBitmez && A7.toplamFaiz === null && A7.detay[1].aySayisi === A2.aySayisi, JSON.stringify(A7.detay));
+
+    // 8) Şu ana kadar önlenen faiz: 2 ay önce asgariden 1.000₺ fazla, %60 → 1.000×0,05×2 = 100₺
+    const bugun = new Date(2026, 9, 15);
+    const odemeli = [{ ad: "K", type: "revolving", balance: 8000, initialBalance: 10000, annualRate: 60, payment: 1000,
+      payments: [{ tutar: 2000, tarih: "2026-08-03" }, { tutar: 1000, tarih: "2026-09-03" }, { tutar: 1500, tarih: "2026-10-01" }] }];
+    const kaz = kazanilanSimdiyeKadar(odemeli, undefined, bugun);
+    kaydet("Şu ana kadar önlenen faiz: temkinli basit faiz (100₺)", yak(kaz, 100), kaz.toFixed(2));
+    kaydet("Taksitli ödemede önlenen faiz 0",
+      kazanilanSimdiyeKadar([{ type: "installment", balance: 1, annualRate: 0, payment: 100, payments: [{ tutar: 900, tarih: "2026-01-01" }] }], undefined, bugun) === 0, "0 değil");
+
+    // 9) Boş liste: özellik gizli kalır (A ve B boş, hata yok)
+    const A9 = sadeceAsgari([]), B9 = planla([], 500, "snowball");
+    kaydet("Borç yoksa A/B boş ve hatasız", A9.baslangic === 0 && !A9.hicBitmez && B9.baslangic === 0, "boş liste");
+
+    return sonuclar;
+  }
+
+  return { sadeceAsgari, planla, karsilastir, kazanilanSimdiyeKadar, selfTest };
 })();
 
 /* ============================================================
@@ -4459,6 +4902,7 @@ const ARAYUZ = () => {
     // İlk kullanım: hiç borç yoksa akış "başla" gibi davranır (birincil çağrı görünür)
     $("heroEkleBtn").hidden = durum.borclar.length !== 0;
     selamCiz(); // selamlama + bağlam cümlesi hero ile birlikte tazelenir
+    iyGenelCiz(); // İki Yol hatırlatması: ödeme yaptıkça güncellenir
   }
 
   /* ---- Borç grafikleri: dağılım çubuğu + sparkline (inline SVG) ---- */
@@ -5117,7 +5561,9 @@ const ARAYUZ = () => {
     const kart = $("planHeroKart");
     const s = sd();
     const acik = durum.borclar.filter(b => b.balance > 0.005);
-    if (acik.length === 0) { kart.hidden = true; return; }
+    ikiYolCiz(); // İki Yol kahraman kartı aynı zincirde tazelenir
+    // İki Yol görünürken bu kart gizli: borçsuz tarih/faiz zaten B sütununda
+    if (acik.length === 0 || !$("ikiYolKart").hidden) { kart.hidden = true; return; }
     const sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
     if (!sim.uygulanabilir) { kart.hidden = true; return; }
     kart.hidden = false;
@@ -5131,6 +5577,348 @@ const ARAYUZ = () => {
     const tahminiVar = acik.some(b => b.faizTahmini);
     $("phTahminiNot").hidden = !tahminiVar;
     if (tahminiVar) $("phTahminiNot").textContent = s.faizTahminiNot;
+  }
+
+  /* ============================================================
+     İKİ YOL — "sadece asgari" ile "planla"yı tek, kaçırılamaz bir
+     deneyimde toplar: Plan'da kahraman kart, ilk hesapta tam ekran an,
+     Genel'de kalıcı tek satır. Sayılar IKIYOL'dan (yani motordan) gelir;
+     burada hesap yok, yalnızca biçimlendirme ve çizim.
+     A ekstraya bağlı değildir: önbelleğe alınır, kaydırıcı sürüklenirken
+     yalnızca B yeniden hesaplanır.
+     ============================================================ */
+  const IY_AN_ANAHTAR = "borcPlanlayici.ikiYolAn"; // "1" = an bir kez otomatik gösterildi
+  let iyAOnbellek = { anahtar: null, A: null };
+  const iyAcik = () => durum.borclar.filter(b => b.balance > 0.005);
+  function iyA(acik) {
+    const ay = durum.ayarlar;
+    const anahtar = JSON.stringify([acik.map(b => [b.ad, b.type, b.balance, b.annualRate, b.payment]), ay.vergiUygula, ay.kkdf, ay.bsmv]);
+    if (iyAOnbellek.anahtar !== anahtar) iyAOnbellek = { anahtar, A: IKIYOL.sadeceAsgari(acik, ay) };
+    return iyAOnbellek.A;
+  }
+  // Ay sayısını motorun borçsuz tarih kuralıyla aynı biçimde tarihe çevirir
+  const iyTarih = (ay) => { const n = new Date(); return tarihFmt.format(new Date(n.getFullYear(), n.getMonth() + ay, 1)); };
+  const iySure = (ay) => sd().sure(Math.floor(ay / 12), ay % 12);
+  // Kaydırıcı üst sınırı: asgarilerin ~2 katı, en az ₺2.000; kayıtlı ekstra her zaman sığar
+  function iyKayMaks(acik, kayitli) {
+    const asg = acik.reduce((t, b) => t + (+b.payment || 0), 0);
+    const m = Math.min(100000, Math.ceil(Math.max(2000, asg * 2) / 500) * 500);
+    return Math.max(m, Math.ceil(kayitli / 500) * 500);
+  }
+  // Aynı öğede para ↔ tarih ↔ metin geçişinde sayaç eski türden akmasın
+  function iyYaz(el, tur, deger, bicimle) {
+    if (el._iyTur !== tur) { el._son = undefined; el._iyTur = tur; }
+    if (bicimle) sayacTween(el, deger, bicimle);
+    else { cancelAnimationFrame(el._raf); clearTimeout(el._garanti); el._son = undefined; el.textContent = deger; }
+  }
+
+  /* Bakiye eğrileri: A (yavaş inen) ve B (hızlı inen) üst üste; aradaki
+     alan "kurtarılan" hissi verir. Pencere en çok 30 yıl. A hiç kapanmıyorsa
+     pencere B'nin süresine göre daralır ve dikey ölçek başlangıç bakiyesinin
+     1,6 katında kırpılır — büyüyen eğri B'yi ezmesin. */
+  function iyGrafikCiz(A, B) {
+    const s = sd(), t = s.iy;
+    const W = 360, H = 150, SOL = 4, SAG = 4, UST = 16, ALT = 20;
+    const KISIT = 361;
+    const nA = A.seri.length, nB = B.seri.length;
+    const N = Math.max(2, A.hicBitmez
+      ? Math.min(KISIT, Math.max(25, Math.ceil(nB * 1.5)))
+      : Math.min(Math.max(nA, nB), KISIT));
+    const deger = (seri, i) => seri[Math.min(i, seri.length - 1)];
+    let maks = 1;
+    for (let i = 0; i < N; i++) maks = Math.max(maks, deger(A.seri, i), deger(B.seri, i));
+    maks = Math.min(maks, Math.max(1, A.baslangic) * 1.6);
+    const gx = (i) => SOL + (i * (W - SOL - SAG)) / (N - 1);
+    const gy = (v) => UST + (1 - Math.min(v, maks) / maks) * (H - UST - ALT);
+    const adim = Math.max(1, Math.ceil(N / 120)); // ≤120 nokta yeter
+    const idx = [];
+    for (let i = 0; i < N; i += adim) idx.push(i);
+    if (idx[idx.length - 1] !== N - 1) idx.push(N - 1);
+    const nokta = (seri, i) => `${gx(i).toFixed(1)} ${gy(deger(seri, i)).toFixed(1)}`;
+    const aYol = idx.map(i => nokta(A.seri, i));
+    const bYol = idx.map(i => nokta(B.seri, i));
+    const alan = `M ${aYol.join(" L ")} L ${bYol.slice().reverse().join(" L ")} Z`;
+    const taban = H - ALT;
+    const bBitti = B.uygulanabilir && nB - 1 < N;
+    const aEtiket = A.hicBitmez || nA > KISIT ? s.eksenAy(N - 1) + " →" : s.eksenAy(nA - 1);
+    const bx = bBitti ? Math.max(44, Math.min(W - 44, gx(nB - 1))) : 0;
+    $("iyGrafik").innerHTML = `
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${kacis(t.lejA + " / " + t.lejB)}">
+        <line x1="${SOL}" y1="${taban}" x2="${W - SAG}" y2="${taban}" stroke="var(--border)" stroke-width="1"/>
+        <path d="${alan}" fill="var(--sicak)" fill-opacity="0.2"/>
+        <path d="M ${aYol.join(" L ")}" fill="none" stroke="var(--danger)" stroke-opacity="0.6" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <path d="M ${bYol.join(" L ")}" fill="none" stroke="var(--sicak)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        ${bBitti ? `<circle cx="${gx(nB - 1).toFixed(1)}" cy="${taban}" r="4.5" fill="var(--sicak)"/>
+          <text x="${bx.toFixed(1)}" y="${taban - 10}" font-size="12" font-weight="700" text-anchor="middle" fill="var(--sicak)">${kacis(iyTarih(B.aySayisi))}</text>` : ""}
+        ${A.hicBitmez ? `<text x="${W - SAG}" y="${UST - 4}" font-size="12" font-weight="700" text-anchor="end" fill="var(--danger)">↑ ∞</text>` : ""}
+        <text x="${SOL}" y="${UST - 4}" font-size="12" fill="var(--text-muted)">${paraFmt.format(A.baslangic)}</text>
+        <text x="${SOL}" y="${H - 4}" font-size="12" fill="var(--text-muted)">${s.eksenBugun}</text>
+        <text x="${W - SAG}" y="${H - 4}" font-size="12" text-anchor="end" fill="var(--text-muted)">${kacis(aEtiket)}</text>
+      </svg>
+      <p class="iy-lejant">
+        <span><i style="background:var(--danger); opacity:0.6"></i>${t.lejA}</span>
+        <span><i style="background:var(--sicak)"></i>${t.lejB}</span>
+        <span><i style="background:var(--sicak); opacity:0.3; height:10px"></i>${t.lejAlan}</span>
+      </p>`;
+  }
+
+  /* Kahraman kart. ekstraOnizleme verilirse (kaydırıcı sürükleniyor) yalnızca
+     B'ye bağlı kısımlar tazelenir ve hiçbir şey kaydedilmez. */
+  function ikiYolCiz(ekstraOnizleme) {
+    const kart = $("ikiYolKart");
+    const acik = iyAcik();
+    if (acik.length === 0) { kart.hidden = true; return; }
+    kart.hidden = false;
+    const s = sd(), t = s.iy;
+    const onizleme = ekstraOnizleme !== undefined;
+    const kayitli = parseFloat($("ekstra").value) || 0;
+    const ekstra = onizleme ? ekstraOnizleme : kayitli;
+    const A = iyA(acik);
+    const B = IKIYOL.planla(acik, ekstra, durum.yontem, durum.ayarlar);
+    const K = IKIYOL.karsilastir(A, B);
+
+    const sl = $("iySlider");
+    if (!onizleme) {
+      const maks = iyKayMaks(acik, kayitli);
+      sl.max = maks;
+      sl.step = maks > 10000 ? 250 : 50;
+      sl.value = kayitli;
+    }
+    $("iyKayDeger").textContent = "+" + paraFmt.format(ekstra);
+
+    // 1) Dev rakam: göz önce buna gitsin
+    const dev = $("iyDev");
+    let devAlt;
+    if (K.durum === "kapanmaz") { iyYaz(dev, "metin", "—"); devAlt = t.devKapanmaz; }
+    else if (K.durum === "kurtarir") { iyYaz(dev, "ay", B.aySayisi, (v) => iyTarih(Math.round(v))); devAlt = t.devKurtarir; }
+    else if (K.faizFark >= 1) {
+      iyYaz(dev, "para", K.faizFark, (v) => paraFmt.format(v));
+      devAlt = t.devTasarruf(K.ayFark >= 1 ? iySure(K.ayFark) : "");
+    } else if (K.ayFark >= 1) { iyYaz(dev, "sure", K.ayFark, (v) => iySure(Math.round(v))); devAlt = t.devErken; }
+    else { iyYaz(dev, "ay", B.aySayisi, (v) => iyTarih(Math.round(v))); devAlt = t.devAyni; }
+    $("iyDevAlt").textContent = devAlt;
+
+    // 2) İki sütun, hizalı satırlar
+    $("iyFaizEt").textContent = faizEtiketi();
+    if (!onizleme) {
+      $("iyABitis").textContent = A.hicBitmez ? t.hicKapanmaz : iyTarih(A.aySayisi);
+      $("iyAFaiz").textContent = A.hicBitmez ? t.sonuYok : paraFmt.format(A.toplamFaiz);
+      $("iyAOdeme").textContent = A.hicBitmez ? t.sonuYok : paraFmt.format(A.toplamOdeme);
+    }
+    if (B.uygulanabilir) {
+      iyYaz($("iyBBitis"), "ay", B.aySayisi, (v) => iyTarih(Math.round(v)));
+      iyYaz($("iyBFaiz"), "para", B.toplamFaiz, (v) => paraFmt.format(v));
+      iyYaz($("iyBOdeme"), "para", B.toplamOdeme, (v) => paraFmt.format(v));
+    } else {
+      iyYaz($("iyBBitis"), "metin", t.kolonKapanmaz);
+      iyYaz($("iyBFaiz"), "metin", t.sonuYok);
+      iyYaz($("iyBOdeme"), "metin", t.sonuYok);
+    }
+
+    // 3) Tek net cümle
+    const x = paraFmt.format(ekstra);
+    let cumle;
+    if (K.durum === "kapanmaz") cumle = t.kapanmaz;
+    else if (K.durum === "kurtarir") cumle = t.kurtarir(ekstra >= 0.5 ? x : "", iyTarih(B.aySayisi));
+    else {
+      const sure = K.ayFark >= 1 ? iySure(K.ayFark) : "";
+      const f = K.faizFark >= 1 ? paraFmt.format(K.faizFark) : "";
+      if (!sure && !f) cumle = t.ayni;
+      else if (ekstra < 0.5) cumle = t.aktarim(sure, f);
+      else if (sure && f) cumle = t.tam(x, sure, f);
+      else if (sure) cumle = t.sadeceSure(x, sure);
+      else cumle = t.sadeceFaiz(x, f);
+    }
+    $("iyCumle").innerHTML = cumle;
+    const kayNot = $("iyKayNot");
+    kayNot.hidden = !(ekstra < 0.5 && cumle !== t.ayni);
+    kayNot.textContent = t.kayYonlendir;
+
+    // 4) Somutlaştır: farkı kullanıcının kendi referanslarıyla hayata çevir
+    const hayat = $("iyHayat");
+    if (K.durum === "fark" && K.faizFark >= 1) {
+      const r = durum.referanslar;
+      const sayi = (v) => (Math.round(v * 10) / 10).toLocaleString(s.yerel);
+      const kalemler = [];
+      if (r.kira > 0) kalemler.push(s.hayatKira(sayi(K.faizFark / r.kira)));
+      if (r.market > 0) kalemler.push(s.hayatMarket(sayi(K.faizFark / r.market)));
+      if (r.bilet > 0) kalemler.push(s.hayatBilet(Math.floor(K.faizFark / r.bilet).toLocaleString(s.yerel)));
+      hayat.hidden = false;
+      hayat.innerHTML = kalemler.length
+        ? `${t.hayatOn} <strong>${kalemler.join(" · ")}</strong>`
+        : `${t.hayatBos}<button type="button" class="ghost small" data-iy-hayat>${t.hayatGir}</button>`;
+    } else {
+      hayat.hidden = true;
+      hayat.innerHTML = "";
+    }
+
+    // 5) Görsel: iki bakiye eğrisi
+    iyGrafikCiz(A, B);
+
+    if (onizleme) return;
+    // 6) Dürüst notlar (kapanmayan borç, yalnız taksit, tahmini faiz) + borç borç döküm
+    const notlar = [];
+    if (A.hicBitmez) notlar.push(t.bitmeyenNot(A.bitmeyenler.map(kacis).join(", ")));
+    if (acik.every(b => b.type === "installment")) notlar.push(t.taksitNot);
+    if (acik.some(b => b.faizTahmini)) notlar.push(s.faizTahminiNot);
+    $("iyNotlar").hidden = notlar.length === 0;
+    $("iyNotlar").innerHTML = notlar.join("<br>");
+    $("iyDetayListe").innerHTML = A.detay.map(d => d.hicBitmez
+      ? `<p class="warning">${s.asgariBitmez(kacis(d.ad), ENGINE.MAX_AY / 12)}</p>`
+      : `<p class="info">${s.asgariBiter(kacis(d.ad), d.aySayisi, paraFmt.format(d.toplamFaiz), durum.ayarlar.vergiUygula)}</p>`).join("");
+    iyGenelCiz();
+  }
+  // Sürüklerken canlı önizleme; bırakınca planın aylık ekstrası olarak kaydedilir
+  $("iySlider").addEventListener("input", () => ikiYolCiz(parseFloat($("iySlider").value) || 0));
+  $("iySlider").addEventListener("change", () => {
+    const yeni = parseFloat($("iySlider").value) || 0;
+    if (yeni === (parseFloat($("ekstra").value) || 0)) return;
+    $("ekstra").value = yeni;
+    $("ekstra").dispatchEvent(new Event("change")); // ekstra'nın tek kayıt yolu
+  });
+  $("ikiYolKart").addEventListener("click", (e) => {
+    if (!e.target.closest("[data-iy-hayat]")) return;
+    sekmeGoster("genel");
+    $("hayatKart").scrollIntoView({ behavior: azHareket.matches ? "auto" : "smooth", block: "center" });
+    $("refKira").focus({ preventScroll: true });
+  });
+
+  /* Genel: halkanın altında tek satır. Şu ana kadar kurtarılan (kayıtlı
+     ödemelerden, temkinli tahmin) + plan boyunca kurtarılacak toplam. */
+  function iyOzetToplam() {
+    const acik = iyAcik();
+    const y = IKIYOL.kazanilanSimdiyeKadar(durum.borclar, durum.ayarlar);
+    if (acik.length === 0) return { y, gelecek: 0, kurtarir: false };
+    const A = iyA(acik);
+    const K = IKIYOL.karsilastir(A, IKIYOL.planla(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar));
+    return { y, gelecek: K.durum === "fark" ? K.faizFark : 0, kurtarir: K.durum === "kurtarir" };
+  }
+  function iyGenelCiz() {
+    const el = $("iyGenelSatir");
+    const t = sd().iy;
+    if (durum.borclar.length === 0) { el.hidden = true; return; }
+    const o = iyOzetToplam();
+    const y = o.y >= 1 ? paraFmt.format(o.y) : "";
+    let html = "";
+    if (o.kurtarir) html = t.genelKurtarir(y);
+    else if (o.gelecek >= 1) html = y ? t.genelTam(y, paraFmt.format(o.y + o.gelecek)) : t.genelGelecek(paraFmt.format(o.gelecek));
+    else if (y) html = t.genelGecmis(y);
+    el.hidden = !html;
+    el.innerHTML = html;
+  }
+
+  /* ---- Tam ekran "gerçek an": önce yalnız A, sonra B yumuşakça ----
+     X: kullanıcının ekstrası; anlamlı bir fark yaratmıyorsa (ya da 0 ise)
+     senaryolarla aynı kuralla seçilen öneri (₺ başına en çok faiz). */
+  let iyAnZaman = [];
+  function iyAnAday() {
+    const acik = iyAcik();
+    if (acik.length === 0) return null;
+    const A = iyA(acik);
+    if (!A.hicBitmez && !(A.toplamFaiz >= 1)) return null; // anlatacak faiz yok: an gösterilmez
+    const kayitli = parseFloat($("ekstra").value) || 0;
+    const dene = (e) => {
+      const B = IKIYOL.planla(acik, e, durum.yontem, durum.ayarlar);
+      return { e, B, K: IKIYOL.karsilastir(A, B) };
+    };
+    const anlamli = (r) => r.K.durum === "kurtarir" || (r.K.durum === "fark" && r.K.faizFark >= 1);
+    if (kayitli >= 0.5) {
+      const r = dene(kayitli);
+      if (anlamli(r)) return { A, B: r.B, K: r.K, x: kayitli, oneri: false };
+    }
+    let enIyi = null;
+    for (const art of [250, 500, 1000, 2000]) {
+      const r = dene(kayitli + art);
+      if (!anlamli(r)) continue;
+      if (r.K.durum === "kurtarir") { if (!enIyi) enIyi = r; break; } // en küçük kurtaran
+      const verim = r.K.faizFark / art;
+      if (!enIyi || verim > enIyi.verim) enIyi = Object.assign(r, { verim });
+    }
+    return enIyi ? { A, B: enIyi.B, K: enIyi.K, x: enIyi.e, oneri: true } : null;
+  }
+  function iySay(el, hedef, sure) { // sayarak dolan rakam; azaltılmış harekette anında
+    cancelAnimationFrame(el._raf);
+    if (azHareket.matches) { el.textContent = paraFmt.format(hedef); return; }
+    const t0 = performance.now();
+    const adim = (zaman) => {
+      const k = Math.min(1, (zaman - t0) / sure);
+      el.textContent = paraFmt.format(hedef * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) el._raf = requestAnimationFrame(adim);
+    };
+    el._raf = requestAnimationFrame(adim);
+    iyAnZaman.push(setTimeout(() => { cancelAnimationFrame(el._raf); el.textContent = paraFmt.format(hedef); }, sure + 80));
+  }
+  function iyAnGoster() {
+    if (document.body.classList.contains("widget-modu")) return false;
+    const aday = iyAnAday();
+    if (!aday) return false;
+    const t = sd().iy;
+    const { A, B, K } = aday;
+    iyAnZaman.forEach(clearTimeout);
+    iyAnZaman = [];
+    const x = paraFmt.format(aday.x);
+    const aRakam = $("iyAnARakam"), bRakam = $("iyAnBRakam");
+    if (A.hicBitmez) {
+      $("iyAnA").innerHTML = t.anABitmez(kacis(A.bitmeyenler[0]));
+      aRakam.textContent = t.sonuYok;
+      $("iyAnAAlt").textContent = t.anABitmezAlt;
+    } else {
+      $("iyAnA").innerHTML = t.anA(iyTarih(A.aySayisi));
+      aRakam.textContent = paraFmt.format(0);
+      $("iyAnAAlt").textContent = t.anAAlt;
+    }
+    const kurtar = K.durum === "kurtarir";
+    $("iyAnBCumle").innerHTML = kurtar ? t.anBKurtar(x) : t.anB(x, iyTarih(B.aySayisi));
+    bRakam.textContent = kurtar ? iyTarih(B.aySayisi) : paraFmt.format(0);
+    $("iyAnBAlt").textContent = kurtar ? t.anBKurtarAlt : t.anBAlt;
+    $("iyAnOneri").hidden = !aday.oneri;
+    $("iyAnOneri").textContent = t.anOneri;
+    const bKap = $("iyAnB");
+    bKap.classList.remove("goster");
+    $("iyAnOverlay").hidden = false;
+    $("iyAnOverlay").scrollTop = 0;
+    $("iyAnOverlay").focus({ preventScroll: true }); // ekran okuyucu diyaloğa girsin
+    const bGoster = () => {
+      bKap.classList.add("goster");
+      if (!kurtar) iySay(bRakam, K.faizFark, 1200);
+      $("iyAnBtn").focus({ preventScroll: true });
+    };
+    if (azHareket.matches) {
+      if (!A.hicBitmez) aRakam.textContent = paraFmt.format(A.toplamFaiz);
+      bGoster();
+    } else {
+      if (!A.hicBitmez) iySay(aRakam, A.toplamFaiz, 1400);
+      iyAnZaman.push(setTimeout(bGoster, A.hicBitmez ? 1500 : 2900)); // sayım + 1,5 sn nefes
+    }
+    if (NATIF.VAR) titret(15); // web'de dokunuşsuz titreşim tarayıcıca engellenir
+    return true;
+  }
+  function iyAnKapat() {
+    iyAnZaman.forEach(clearTimeout);
+    iyAnZaman = [];
+    $("iyAnOverlay").hidden = true;
+    sekmeGoster("plan");
+    requestAnimationFrame(() => $("ikiYolKart").scrollIntoView({ behavior: "auto", block: "start" }));
+  }
+  $("iyAnBtn").addEventListener("click", iyAnKapat);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("iyAnOverlay").hidden) iyAnKapat();
+  });
+  $("iyAnTekrar").addEventListener("click", () => iyAnGoster());
+  // Otomatik: yalnızca BİR KEZ, başka bir pencere açık değilken
+  function iyAnOtomatik() {
+    let goruldu = false;
+    try { goruldu = DEPO.getItem(IY_AN_ANAHTAR) === "1"; } catch (e) { /* yoksay */ }
+    if (goruldu) return;
+    setTimeout(() => {
+      try { if (DEPO.getItem(IY_AN_ANAHTAR) === "1") return; } catch (e) { /* yoksay */ }
+      const acikPencere = !$("onboard").hidden || !$("iyAnOverlay").hidden ||
+        document.querySelector('[aria-modal="true"]:not([hidden])');
+      if (acikPencere || !$("sekme-plan").classList.contains("aktif")) return;
+      if (iyAnGoster()) {
+        try { DEPO.setItem(IY_AN_ANAHTAR, "1"); } catch (e) { /* yoksay */ }
+      }
+    }, 450);
   }
 
   function planKarti(baslik, sonuc, enIyi) {
@@ -5197,20 +5985,9 @@ const ARAYUZ = () => {
       }
     }
 
-    // "Sadece asgari ödersem" tuzağı — her faizli borç için ayrı ayrı
-    const faizliler = durum.borclar.filter(b => b.type === "revolving");
-    if (faizliler.length > 0) {
-      html += `<h3 class="alt-baslik">${s.asgariH}</h3>`;
-      for (const b of faizliler) {
-        const proj = ENGINE.minimumOnlyProjection(b, durum.ayarlar);
-        if (proj.hicBitmez) {
-          html += `<p class="warning">${s.asgariBitmez(kacis(b.ad), ENGINE.MAX_AY / 12)}</p>`;
-        } else {
-          html += `<p class="info">${s.asgariBiter(kacis(b.ad), proj.aySayisi, paraFmt.format(proj.toplamFaiz), durum.ayarlar.vergiUygula)}</p>`;
-        }
-      }
-    }
+    // "Sadece asgari ödersem" borç borç dökümü İki Yol kartına taşındı (tek yerde)
     kap.innerHTML = html;
+    iyAnOtomatik(); // ilk plan hesabında bir kez: "gerçek an"
   });
 
   /* ---- "Ya şöyle yaparsam" kaydırıcısı ----
@@ -5934,13 +6711,14 @@ const ARAYUZ = () => {
 
     // Tek cümle: planın, "hiç ekstra ödemeseydim" senaryosuna göre önlediği faiz
     const cumle = $("sizCumle");
-    const sifir = ekstra > 0 ? ENGINE.simulatePlan(acik, 0, durum.yontem, durum.ayarlar) : sim;
+    // Kıyas tabanı İki Yol ile aynı: "sadece asgari" (kahraman kartla çelişmesin)
+    const iyK = IKIYOL.karsilastir(iyA(acik), IKIYOL.planla(acik, ekstra, durum.yontem, durum.ayarlar));
     if (!sim.uygulanabilir) {
       cumle.innerHTML = s.sizEkstra;
-    } else if (!sifir.uygulanabilir) {
+    } else if (iyK.durum === "kurtarir") {
       cumle.innerHTML = s.sizDurdur;
     } else {
-      const onlenen = Math.max(0, sifir.toplamFaiz - sim.toplamFaiz);
+      const onlenen = iyK.faizFark || 0;
       cumle.innerHTML = onlenen >= 1
         ? s.sizOnle(new Intl.NumberFormat(s.yerel, { maximumFractionDigits: 0 }).format(onlenen))
         : s.sizEkstra;
@@ -6250,16 +7028,10 @@ const ARAYUZ = () => {
   function hayatCiz() {
     const s = sd();
     const kap = $("hayatSonuc");
-    const acik = durum.borclar.filter(b => b.balance > 0.005);
-    let onlenen = 0;
-    if (acik.length > 0) {
-      const ekstra = parseFloat($("ekstra").value) || 0;
-      const sim = ENGINE.simulatePlan(acik, ekstra, durum.yontem, durum.ayarlar);
-      const sifir = ekstra > 0 ? ENGINE.simulatePlan(acik, 0, durum.yontem, durum.ayarlar) : sim;
-      if (sim.uygulanabilir && sifir.uygulanabilir) onlenen = Math.max(0, sifir.toplamFaiz - sim.toplamFaiz);
-      else if (sim.uygulanabilir && !sifir.uygulanabilir) onlenen = Infinity;
-    }
-    if (onlenen <= 0) { kap.innerHTML = `<p class="muted">${s.hayatYok}</p>`; return; }
+    // Tek kaynak: İki Yol (sadece asgari → plan) — Genel satırı ve Plan kartıyla aynı rakam
+    const o = iyOzetToplam();
+    const onlenen = o.kurtarir ? Infinity : o.y + o.gelecek;
+    if (!(onlenen >= 1)) { kap.innerHTML = `<p class="muted">${s.hayatYok}</p>`; return; }
     const r = durum.referanslar;
     const sayi = (x) => (Math.round(x * 10) / 10).toLocaleString(s.yerel);
     const kalemler = [];
@@ -6282,6 +7054,7 @@ const ARAYUZ = () => {
       };
       STORAGE.kaydet(durum);
       hayatCiz();
+      ikiYolCiz(); // kahraman karttaki "hayata çevir" satırı aynı referansları kullanır
     });
   });
 
@@ -7743,6 +8516,10 @@ const ARAYUZ = () => {
       const ozet = `Sıfırla motor öz-testleri: ${sonuclar.length - kalanlar.length}/${sonuclar.length} geçti`;
       if (kalanlar.length === 0) console.info(ozet);
       else console.warn(ozet + "\nKALANLAR:\n" + kalanlar.map(t => `✗ ${t.ad}${t.detay ? " — " + t.detay : ""}`).join("\n"));
+      const iyT = IKIYOL.selfTest(), iyK = iyT.filter(t => !t.gecti);
+      const iyOzet = `Sıfırla İki Yol testleri: ${iyT.length - iyK.length}/${iyT.length} geçti`;
+      if (iyK.length === 0) console.info(iyOzet);
+      else console.warn(iyOzet + "\nKALANLAR:\n" + iyK.map(t => `✗ ${t.ad}${t.detay ? " — " + t.detay : ""}`).join("\n"));
     }
   }
 
@@ -8053,6 +8830,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     // Gizliyken çizilen SVG'nin uzunluk ölçümü bazı tarayıcılarda 0 dönebilir;
     // sekme görünür olunca haritayı tazele
     if (ad === "genel") yolculukCiz();
+    if (ad === "plan") iyAnOtomatik(); // Plan açılınca plan hesaplanır: "gerçek an" bir kez
   }
   document.querySelectorAll(".alt-nav button").forEach(b =>
     b.addEventListener("click", () => sekmeGoster(b.dataset.sekme)));

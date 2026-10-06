@@ -41,6 +41,8 @@ native pakete girer. Bu kasıtlıdır; bozmayın.
 faiz (revolving), taksitli sabit ödeme, KKDF/BSMV, `MAX_AY = 600`. İç faiz
 birimi **yıllık nominal %**. DOM'a dokunmaz, depoya dokunmaz.
 24 öz-test + `?dev=1` altında 6 senaryoluk elle hesaplanmış bilinen-cevap tablosu.
+Hemen ardından `IKIYOL`: motor çıktılarını "sadece asgari / planla" diye
+karşılaştıran saf katman (DOM yok, kendi 15 testi).
 
 **2. DEPOLAMA (`DEPO` → `STORAGE`)** — iki katman:
 - `DEPO`: senkron yüzlü soyutlama. **Native'de** `@capacitor/preferences`
@@ -81,7 +83,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v6`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v8`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -92,6 +94,13 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Sağlamlık:** girdi doğrulama (yumuşak onaylar, ilk hatalı alana odak),
   bozuk/gelecek-sürüm veri yedeklemesi, içe aktarma doğrulaması + geri alma,
   iki adımlı kalıcı sıfırlama, `tutarlilikKontrol()` bekçisi.
+- **İki Yol** (`ozellik/iki-yol`): "sadece asgari" vs "planla" tek deneyimde —
+  Plan'da kahraman kart (dev tasarruf rakamı, hizalı iki sütun, canlı kaydırıcı,
+  iki bakiye eğrisi, hayat karşılığı), ilk plan hesabında bir kez tam ekran
+  "gerçek an" (`borcPlanlayici.ikiYolAn`), Genel'de halkanın altında kalıcı satır.
+  Hesap `IKIYOL` katmanında (motorun üstünde, saf): A = borç başına
+  `minimumOnlyProjection`, B = `simulatePlan`. Kapanmayan borçta tarih/faiz
+  uydurulmaz. 15 birim testi (`IKIYOL.selfTest`, konsolda `İki Yol testleri`).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
