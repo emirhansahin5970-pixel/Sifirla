@@ -42,7 +42,9 @@ faiz (revolving), taksitli sabit ödeme, KKDF/BSMV, `MAX_AY = 600`. İç faiz
 birimi **yıllık nominal %**. DOM'a dokunmaz, depoya dokunmaz.
 24 öz-test + `?dev=1` altında 6 senaryoluk elle hesaplanmış bilinen-cevap tablosu.
 Hemen ardından `IKIYOL`: motor çıktılarını "sadece asgari / planla" diye
-karşılaştıran saf katman (DOM yok, kendi 15 testi).
+karşılaştıran saf katman (DOM yok, kendi 15 testi). Ardından `HEDEF`:
+"şu ayda borçsuz olmak istiyorum" için ters çözüm — `simulatePlan` ile
+ikili arama + yukarı yuvarlama + doğrulama (DOM yok, kendi 11 testi).
 
 **2. DEPOLAMA (`DEPO` → `STORAGE`)** — iki katman:
 - `DEPO`: senkron yüzlü soyutlama. **Native'de** `@capacitor/preferences`
@@ -86,7 +88,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v9`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v10`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -111,6 +113,12 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   ekranı. Para birimi değişince rakam DÖNÜŞTÜRÜLMEZ, yalnızca sembol değişir;
   TL dışında KKDF/BSMV varsayılan kapalı ve "Türkiye'ye özel" etiketli.
   Sözlükteki sabit "₺" etkin sembole çevrilir (`sozlukParaUygula`).
+- **Hedef** (`ozellik/hedef`): Plan'da İki Yol'un altında "Hedef koy" kartı
+  (ay/yıl seçici; gereken aylık ekstra, toplam aylık ödeme, kurtarılan faiz,
+  "şu anki plan → hedef" karşılaştırması, "Bu planı uygula" → `#ekstra`).
+  Hedef cihazda (`durum.hedef = {yil, ay}`). Genel'de takip satırı,
+  zilde ayda bir durum, ulaşınca kutlama anı. Gerçekçi olmayan hedefte tutar
+  yine gösterilir + "asgariler kadar ekstra" ile en erken tarih önerilir.
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
