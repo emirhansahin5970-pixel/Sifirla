@@ -1,0 +1,377 @@
+<meta charset="utf-8">
+<title>Sıfırla Logo Önizleme</title>
+<style>
+  /* Yerleşim: tek sütun inceleme sayfası; her bölüm bir karar (eski ↔ yeni) ve
+     altında kanıt (boyut, mod, maske, animasyon). Marka yüzeyleri temadan
+     bağımsız sabit renk; sayfa çerçevesi temaya uyar. */
+  :root {
+    --zemin: #F4F5F7;          /* sayfa: soğuk kırık beyaz */
+    --yuzey: #FFFFFF;
+    --cizgi: #DDE2E9;
+    --yazi: #141A22;
+    --soluk: #535F6D;
+    --vurgu: #8A7442;          /* şampanya, açık zeminde AA */
+    --font-govde: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    --font-marka: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    --font-veri: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    /* Marka yüzeyleri — temadan bağımsız */
+    --gece: #0A1220;
+    --gumus: #F7F6F2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --zemin: #0D1524; --yuzey: #131E31; --cizgi: #24344F; --yazi: #EEF3FA; --soluk: #A9BBD2; --vurgu: #E3C88F; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --zemin: #0D1524; --yuzey: #131E31; --cizgi: #24344F; --yazi: #EEF3FA; --soluk: #A9BBD2; --vurgu: #E3C88F; color-scheme: dark; }
+
+  body { background: var(--zemin); color: var(--yazi); font: 15px/1.55 var(--font-govde); }
+  .sayfa { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 40px; }
+  header.ust h1 { font: 700 clamp(24px, 5vw, 34px)/1.15 var(--font-marka); letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  header.ust p { margin: 8px 0 0; color: var(--soluk); max-width: 62ch; }
+  section { display: grid; gap: 14px; }
+  h2 { font: 700 19px/1.3 var(--font-marka); letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  .not { color: var(--soluk); max-width: 66ch; margin: 0; }
+  .etiket { font: 600 11px/1.3 var(--font-govde); letter-spacing: 0.09em; text-transform: uppercase; color: var(--soluk); }
+  .veri { font-family: var(--font-veri); font-size: 12px; color: var(--soluk); font-variant-numeric: tabular-nums; }
+  .kart { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px; padding: 18px; min-width: 0; }
+
+  /* Eski ↔ yeni */
+  .karsilastir { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .yuzey-gece, .yuzey-gumus { border-radius: 12px; display: grid; place-items: center; padding: 22px; }
+  .yuzey-gece { background: var(--gece); }
+  .yuzey-gumus { background: var(--gumus); border: 1px solid #E2E4E2; }
+  .ikili { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ikili svg, .ikili img { width: min(150px, 100%); height: auto; }
+  .baslik-satir { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+
+  /* Boyut tablosu */
+  .tablo-kap { overflow-x: auto; }
+  table.boyut { border-collapse: separate; border-spacing: 0; min-width: 560px; width: 100%; }
+  table.boyut th { text-align: left; font-weight: 600; font-size: 12px; color: var(--soluk); padding: 6px 10px; }
+  table.boyut td { padding: 10px; vertical-align: middle; }
+  table.boyut td.gece { background: var(--gece); }
+  table.boyut td.gumus { background: var(--gumus); }
+  table.boyut tr:first-of-type td:first-of-type { border-top-left-radius: 10px; }
+  .boyut-hucre { display: flex; align-items: center; gap: 14px; }
+
+  /* iOS ana ekran */
+  .ekranlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .ana-ekran { border-radius: 22px; padding: 18px 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 10px; justify-items: center; }
+  .ana-ekran.acik { background: linear-gradient(160deg, #DCE6F2, #F3EEE4); }
+  .ana-ekran.koyu { background: linear-gradient(160deg, #10182A, #241D33); }
+  .ana-ekran.renkli { background: linear-gradient(160deg, #1C1A16, #2A2418); }
+  .uygulama { display: grid; gap: 6px; justify-items: center; font-size: 11px; }
+  .ana-ekran.acik .uygulama { color: #1A2230; }
+  .ana-ekran.koyu .uygulama, .ana-ekran.renkli .uygulama { color: #E8ECF2; }
+  .ikon { width: 64px; height: 64px; border-radius: 15px; overflow: hidden; display: block; }
+  .ikon svg { width: 100%; height: 100%; display: block; }
+
+  /* Android */
+  .android { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .maske { width: 120px; height: 120px; margin: 0 auto; overflow: hidden; display: block; }
+  .maske svg { width: 100%; height: 100%; display: block; }
+  .m-daire { border-radius: 50%; } .m-yuvarlak { border-radius: 26px; } .m-damla { border-radius: 50% 50% 50% 12%; }
+
+  /* Wordmark */
+  .kilit { display: inline-flex; align-items: center; gap: 0.3em; font: 700 var(--b, 28px)/1 var(--font-marka); letter-spacing: -0.02em; }
+  .kilit svg { width: 1.32em; height: 1.32em; flex: none; transform: translateY(-0.03em); }
+  .kilit .i { position: relative; }
+  .kilit .i::after { content: ""; position: absolute; top: -0.02em; left: 50%; transform: translateX(-50%); width: 0.11em; height: 0.11em; border-radius: 50%; background: var(--nokta); }
+  .kilitler { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .kilitler .yuzey-gece, .kilitler .yuzey-gumus { justify-items: start; gap: 18px; }
+  .yuzey-gece .kilit { color: #DCE7F4; --nokta: #E3C88F; }
+  .yuzey-gumus .kilit { color: #16294A; --nokta: #8A7442; }
+  .kilavuz { position: relative; }
+  .kilavuz::before, .kilavuz::after { content: ""; position: absolute; left: -6px; right: -6px; height: 1px; background: rgba(227, 200, 143, 0.55); }
+  .kilavuz::before { top: 0.29em; } .kilavuz::after { top: 0.99em; }
+
+  /* Animasyon prototipi */
+  .proto { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 680px) { .proto { grid-template-columns: 1fr; justify-items: center; } }
+  .telefon { width: 100%; max-width: 300px; aspect-ratio: 9 / 19.5; border-radius: 38px; padding: 9px; background: #05080F; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+  .ekran { position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: var(--uyg-zemin); --uyg-zemin: #0A1220; --uyg-yazi: #DCE7F4; --uyg-kart: #111C2E; --uyg-nokta: #E3C88F; }
+  .ekran.gumus { --uyg-zemin: #F7F6F2; --uyg-yazi: #16294A; --uyg-kart: #EEF1F4; --uyg-nokta: #8A7442; }
+  .uyg { position: absolute; inset: 0; padding: 44px 14px 0; display: grid; align-content: start; gap: 12px; }
+  .uyg .bar { display: flex; align-items: center; gap: 7px; color: var(--uyg-yazi); font: 700 19px/1 var(--font-marka); letter-spacing: -0.02em; }
+  .uyg .bar svg { width: 24px; height: 24px; }
+  .uyg .bar .i { position: relative; } .uyg .bar .i::after { content: ""; position: absolute; top: -0.02em; left: 50%; transform: translateX(-50%); width: 0.11em; height: 0.11em; border-radius: 50%; background: var(--uyg-nokta); }
+  .uyg .kutu { height: 120px; border-radius: 14px; background: var(--uyg-kart); }
+  .uyg .kutu.k { height: 64px; }
+  .giris { position: absolute; inset: 0; background: #0A1220; cursor: pointer; }
+  .giris svg { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; }
+  .denetim { display: grid; gap: 14px; min-width: 0; }
+  .dugmeler { display: flex; flex-wrap: wrap; gap: 8px; }
+  button.d { font: 600 14px var(--font-govde); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--cizgi); background: var(--yuzey); color: var(--yazi); cursor: pointer; }
+  button.d[aria-pressed="true"] { border-color: var(--vurgu); box-shadow: inset 0 0 0 1px var(--vurgu); }
+  button.d:focus-visible { outline: 2px solid var(--vurgu); outline-offset: 2px; }
+  ol.zaman { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 62ch; }
+  ol.zaman b { font-variant-numeric: tabular-nums; }
+  .kareler { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .kare { display: grid; gap: 6px; }
+  .kare .yuzey-gece { aspect-ratio: 9 / 16; padding: 0; position: relative; overflow: hidden; }
+  .kare svg { width: 40%; height: auto; }
+  ul.kararlar { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 70ch; }
+  .onay { border: 1px solid var(--vurgu); }
+</style>
+
+<div class="sayfa">
+  <header class="ust">
+    <h1>Sıfırla logo ve giriş önizlemesi</h1>
+    <p>Kırık halka ve açılan kilit fikri aynen duruyor. Değişen: optik denge, çizgi kalınlıkları, köşe yuvarlaklıkları, küçük boyut varyantı, ikon modları ve açılış animasyonu. Her bölümde solda eski, sağda yeni.</p>
+  </header>
+
+  <section aria-labelledby="b1">
+    <h2 id="b1">Eski ve yeni işaret</h2>
+    <div class="karsilastir">
+      <div class="kart">
+        <div class="baslik-satir"><span class="etiket">Gece Mavisi zemin</span><span class="veri">eski · yeni</span></div>
+        <div class="yuzey-gece ikili" style="margin-top:10px"><div id="eskiGece"></div><div id="yeniGece"></div></div>
+      </div>
+      <div class="kart">
+        <div class="baslik-satir"><span class="etiket">Gümüş zemin</span><span class="veri">eski · yeni</span></div>
+        <div class="yuzey-gumus ikili" style="margin-top:10px"><div id="eskiGumus"></div><div id="yeniGumus"></div></div>
+      </div>
+    </div>
+    <ul class="kararlar">
+      <li><b>Optik merkez:</b> kilit grubunun sınır kutusu geometrik merkezin 4 birim üstünde. Gövde ağır olduğu için tam merkezde aşağıda duruyordu.</li>
+      <li><b>Kalınlık oranı:</b> halka 44, kilit kancası 28 (oran 0,64). Eskide kanca 22 ile 26 arasında iki farklı kalınlıktaydı.</li>
+      <li><b>Köşeler:</b> gövde köşe yarıçapı 24, anahtar deliği tek parça yol. Eskideki ayrı çizilmiş kırık kanca parçası ve kancadaki küçük elmas kaldırıldı.</li>
+      <li><b>Işık:</b> halkanın ucundaki bulanık nokta yerine boşluğun ortasında net, dört köşeli tek bir parıltı.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="b2">
+    <h2 id="b2">Küçük boyutlar</h2>
+    <p class="not">48 pikselin altında küçük varyant devreye giriyor: anahtar deliği ve parıltı kalkıyor, halka ve kanca kalınlaşıyor, gövde büyüyor. Görseller gerçek CSS piksel boyutunda; ekranının yoğunluğunda (2x/3x) çiziliyor.</p>
+    <div class="tablo-kap kart" style="padding:10px">
+      <table class="boyut" id="boyutTablo"></table>
+    </div>
+  </section>
+
+  <section aria-labelledby="b3">
+    <h2 id="b3">iOS ana ekran modları</h2>
+    <p class="not">Varsayılan, koyu ve renklendirilmiş (tinted) mod. Koyu varyantın zemini şeffaf, sistem kendi koyu degradesini koyuyor. Renklendirilmiş varyant gri tonlu; sistem ana ekran rengini üstüne uyguluyor (burada şampanya tonuyla örneklendi).</p>
+    <div class="ekranlar" id="iosEkranlar"></div>
+  </section>
+
+  <section aria-labelledby="b4">
+    <h2 id="b4">Android uyarlanabilir ikon</h2>
+    <p class="not">Ön plan 108 birimlik tuvalde. Kesikli daire 66 birimlik güvenli alan: parıltı dahil tüm işaret bunun içinde, hiçbir maskede kesilmiyor.</p>
+    <div class="android kart" id="android"></div>
+  </section>
+
+  <section aria-labelledby="b5">
+    <h2 id="b5">İşaret ve yazı kilidi</h2>
+    <p class="not">İşaret yüksekliği yazı boyutunun 1,32 katı, aralık 0,30 em. İşaretin dikey merkezi büyük harf yüksekliğinin ortasına hizalı (şampanya kılavuz çizgileri). Noktasız ı'nın üstündeki şampanya nokta korunuyor.</p>
+    <div class="kilitler" id="kilitler"></div>
+  </section>
+
+  <section aria-labelledby="b6">
+    <h2 id="b6">Açılış animasyonu</h2>
+    <div class="proto">
+      <div class="telefon"><div class="ekran" id="ekran">
+        <div class="uyg" id="uyg">
+          <div class="bar"><span id="barIsaret"></span><span>S<span class="i">ı</span>fırla</span></div>
+          <div class="kutu"></div><div class="kutu k"></div><div class="kutu k"></div>
+        </div>
+        <div class="giris" id="giris" role="button" aria-label="Animasyonu atla" tabindex="0"></div>
+      </div></div>
+      <div class="denetim">
+        <div class="dugmeler" role="group" aria-label="Tema">
+          <button type="button" class="d" id="tGece" aria-pressed="true">Gece Mavisi</button>
+          <button type="button" class="d" id="tGumus" aria-pressed="false">Gümüş</button>
+        </div>
+        <div class="dugmeler">
+          <button type="button" class="d" id="hareket" aria-pressed="false">Hareketi Azalt</button>
+          <button type="button" class="d" id="oynat">Yeniden oynat</button>
+        </div>
+        <ol class="zaman">
+          <li><b>0 ms</b> Native açılış ekranının aynısı: gece mavisi zemin, soluk halka, kapalı kilit.</li>
+          <li><b>0–620 ms</b> Halka gümüşten şampanyaya çizilerek doluyor.</li>
+          <li><b>560–780 ms</b> Boşlukta net parıltı; kanca 24 birim yukarı kalkıp açılıyor. Bu anda tek hafif titreşim.</li>
+          <li><b>780–1300 ms</b> İşaret küçülüp üst bardaki yerine akıyor, zemin seçili temaya karışıyor, arayüz beliriyor.</li>
+          <li>Dokununca atlanıyor. Hareketi Azalt açıkken yalnızca 200 ms'lik geçiş.</li>
+        </ol>
+        <p class="not">Gümüş temada da açılış gece mavisiyle başlıyor; iOS açılış ekranı uygulamanın seçili temasını önceden bilemediği için, flaşsız tek güvenli yol bu. Sonda zemin gümüşe yumuşakça dönüyor.</p>
+      </div>
+    </div>
+    <div class="kareler" id="kareler"></div>
+  </section>
+
+  <section class="kart onay" aria-labelledby="b7">
+    <h2 id="b7">Onayından sonra</h2>
+    <p class="not">Bu sayfadaki çizimler tek bir üreticiden geliyor. Onaylarsan aynı kaynaktan şunlar üretilecek: iOS uygulama ikonu (varsayılan, koyu, renklendirilmiş), Android uyarlanabilir ikon, PWA ikonları ve favicon, ilk kareyle birebir aynı açılış görselleri (iOS, Android, PWA), uygulama içindeki işaret ve giriş animasyonu. Değiştirmek istediğin bir şey varsa bölüm adıyla yazman yeterli.</p>
+  </section>
+</div>
+
+<script>
+/* ============================================================
+   İŞARET ÜRETİCİSİ — 512 birimlik ızgara, merkez (256,256).
+   Tüm varyantlar buradan; ikon/splash PNG'leri de aynı fonksiyonla üretilecek.
+   ============================================================ */
+const P = (r, a) => [256 + r * Math.cos(a * Math.PI / 180), 256 + r * Math.sin(a * Math.PI / 180)].map(v => +v.toFixed(2));
+const RENK = {
+  gece:   { halka: ["#9DB3D1", "#D6DFEA", "#E6D3A8"], kilitUst: "#F4F8FD", kilitAlt: "#C9D6E6", parilti: "#F0D9A4" },
+  gumus:  { halka: ["#2B4466", "#4F6A8C", "#9C8550"], kilitUst: "#2B4466", kilitAlt: "#16294A", parilti: "#9C8550" },
+  tinted: { halka: ["#9A9A9A", "#CFCFCF", "#F2F2F2"], kilitUst: "#FFFFFF", kilitAlt: "#D9D9D9", parilti: "#FFFFFF" },
+  koyuIkon: { halka: ["#A9BEDB", "#DCE4EE", "#EDD9AE"], kilitUst: "#F7FAFE", kilitAlt: "#CFDBEA", parilti: "#F3DCA8" }
+};
+let sayac = 0;
+/* ops: { tema, kucuk, kapali, soluk (ilk kare), parilti, olcek, zemin, cizilecek } */
+function isaret(ops = {}) {
+  const id = "s" + (++sayac);
+  const r = RENK[ops.tema || "gece"];
+  const k = !!ops.kucuk;
+  const R = k ? 176 : 180, SW = k ? 56 : 44;
+  const a1 = -14, a2 = -58;                       // halka boşluğu sağ üstte
+  const [x1, y1] = P(R, a1), [x2, y2] = P(R, a2);
+  const halka = `M${x1} ${y1} A${R} ${R} 0 1 1 ${x2} ${y2}`;
+  const uzunluk = (2 * Math.PI * R * (316 / 360)).toFixed(1);
+  // Kilit (açık hâl). Küçük varyantta daha iri ve anahtar deliksiz.
+  const g = k ? { x0: 178, x1: 334, y0: 244, y1: 370, rx: 26, bac: 46, kSW: 36, ust: 196, sag: 214 }
+              : { x0: 186, x1: 326, y0: 252, y1: 368, rx: 24, bac: 44, kSW: 28, ust: 204, sag: 222 };
+  const govde = `M${g.x0 + g.rx} ${g.y0} H${g.x1 - g.rx} A${g.rx} ${g.rx} 0 0 1 ${g.x1} ${g.y0 + g.rx} V${g.y1 - g.rx} A${g.rx} ${g.rx} 0 0 1 ${g.x1 - g.rx} ${g.y1} H${g.x0 + g.rx} A${g.rx} ${g.rx} 0 0 1 ${g.x0} ${g.y1 - g.rx} V${g.y0 + g.rx} A${g.rx} ${g.rx} 0 0 1 ${g.x0 + g.rx} ${g.y0} Z`;
+  const delik = k ? "" : " M249.6 311.56 A15 15 0 1 1 262.4 311.56 L266 336 Q266.3 338 264 338 L248 338 Q245.7 338 246 336 Z";
+  const kanca = `M${256 - g.bac} ${g.y0 + 16} V${g.ust} A${g.bac} ${g.bac} 0 0 1 ${256 + g.bac} ${g.ust} V${g.sag}`;
+  const kapaliKay = ops.kapali ? 24 : 0;
+  const [px, py] = P(R, -36);
+  const parilti = (ops.parilti !== false && !k)
+    ? `<path class="parilti" d="M${px} ${py - 26} L${px + 6} ${py - 6} L${px + 26} ${py} L${px + 6} ${py + 6} L${px} ${py + 26} L${px - 6} ${py + 6} L${px - 26} ${py} L${px - 6} ${py - 6} Z" fill="${r.parilti}"${ops.soluk ? ' opacity="0"' : ""} style="transform-box:fill-box;transform-origin:center"/>` : "";
+  const zemin = ops.zemin ? `<rect width="512" height="512" fill="${ops.zemin}"/>` : "";
+  const olc = ops.olcek && ops.olcek !== 1 ? ` transform="translate(256 256) scale(${ops.olcek}) translate(-256 -256)"` : "";
+  return `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="${id}h" x1="0.1" y1="0.9" x2="0.9" y2="0.1"><stop offset="0" stop-color="${r.halka[0]}"/><stop offset="0.55" stop-color="${r.halka[1]}"/><stop offset="1" stop-color="${r.halka[2]}"/></linearGradient>
+      <linearGradient id="${id}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${r.kilitUst}"/><stop offset="1" stop-color="${r.kilitAlt}"/></linearGradient>
+    </defs>${zemin}
+    <g${olc}>
+      ${ops.soluk ? `<path d="${halka}" fill="none" stroke="${r.halka[1]}" stroke-opacity="0.16" stroke-width="${SW}" stroke-linecap="round"/>` : ""}
+      <path class="halka" d="${halka}" fill="none" stroke="url(#${id}h)" stroke-width="${SW}" stroke-linecap="round"${ops.soluk ? ` stroke-dasharray="${uzunluk}" stroke-dashoffset="${uzunluk}"` : ""}/>
+      ${parilti}
+      <path class="kanca" d="${kanca}" fill="none" stroke="url(#${id}k)" stroke-width="${g.kSW}" stroke-linecap="round" transform="translate(0 ${kapaliKay})"/>
+      <path d="${govde}${delik}" fill="url(#${id}k)" fill-rule="evenodd"/>
+    </g>
+  </svg>`;
+}
+/* Eski işaret — uygulamadaki mevcut çizimin birebir kopyası */
+function eski(renk, nokta) {
+  return `<svg viewBox="0 0 512 512" aria-hidden="true"><path d="M435.2 224.4 A182 182 0 1 1 341.4 95.3" fill="none" stroke="${renk}" stroke-width="42" stroke-linecap="round"/><circle cx="341.4" cy="95.3" r="9" fill="${nokta}"/><path fill-rule="evenodd" fill="${renk}" d="M214 290 L298 290 A18 18 0 0 1 316 308 L316 376 A18 18 0 0 1 298 394 L214 394 A18 18 0 0 1 196 376 L196 308 A18 18 0 0 1 214 290 Z M245 334 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M251 345 L261 345 L265 373 L247 373 Z"/><path d="M222 290 L222 258 A34 34 0 0 1 282 236" fill="none" stroke="${renk}" stroke-width="22" stroke-linecap="round"/><path d="M292 250 L290 290" fill="none" stroke="${renk}" stroke-width="22" stroke-linecap="round"/><path d="M288 232 l6 10 -6 10 -6 -10 Z" fill="${nokta}"/></svg>`;
+}
+const eskiGece = () => eski("#C6D2E2", "#E3C88F"), eskiGumus = () => eski("#142E52", "#8A7442");
+const ikonZemin = (boyutKucuk) => `<radialGradient id="iz" cx="0.3" cy="0.22" r="0.95"><stop offset="0" stop-color="#16243C"/><stop offset="1" stop-color="#0A1220"/></radialGradient>`;
+function ikon(tur, kucuk) { // 512 kare; iOS maskesini CSS köşeleri veriyor
+  if (tur === "eski") return `<svg viewBox="0 0 512 512"><rect width="512" height="512" fill="#0A1220"/><g transform="translate(256 256) scale(0.82) translate(-256 -256)">${eski("#C6D2E2", "#E3C88F").replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g></svg>`;
+  const zemin = tur === "varsayilan" ? "url(#iz)" : tur === "tinted" ? "#000" : null;
+  const ic = isaret({ tema: tur === "varsayilan" ? "gece" : tur === "koyu" ? "koyuIkon" : "tinted", kucuk, olcek: 0.84 });
+  return `<svg viewBox="0 0 512 512"><defs>${ikonZemin()}</defs>${zemin ? `<rect width="512" height="512" fill="${zemin}"/>` : ""}${ic.replace(/^<svg[^>]*>|<\/svg>$/g, "")}</svg>`;
+}
+
+/* 1) Eski ve yeni */
+document.getElementById("eskiGece").innerHTML = eskiGece();
+document.getElementById("yeniGece").innerHTML = isaret({ tema: "gece" });
+document.getElementById("eskiGumus").innerHTML = eskiGumus();
+document.getElementById("yeniGumus").innerHTML = isaret({ tema: "gumus" });
+
+/* 2) Küçük boyutlar */
+(() => {
+  const boyutlar = [29, 40, 60];
+  const satir = (ad, f) => `<tr><th scope="row">${ad}</th>${["gece", "gumus"].map(z => `<td class="${z}"><div class="boyut-hucre">${boyutlar.map(b => `<span style="display:inline-block;width:${b}px;height:${b}px">${f(z, b)}</span>`).join("")}</div></td>`).join("")}</tr>`;
+  document.getElementById("boyutTablo").innerHTML =
+    `<tr><th></th><th>Gece Mavisi · 29 / 40 / 60 px</th><th>Gümüş · 29 / 40 / 60 px</th></tr>` +
+    satir("Eski", (z) => z === "gece" ? eskiGece() : eskiGumus()) +
+    satir("Yeni", (z, b) => isaret({ tema: z, kucuk: b < 48 })) +
+    satir("İkon", (z, b) => `<span class="ikon" style="width:${b}px;height:${b}px;border-radius:${Math.round(b * 0.225)}px">${ikon("varsayilan", b < 48)}</span>`);
+  document.querySelectorAll("#boyutTablo svg").forEach(s => { s.style.width = "100%"; s.style.height = "100%"; });
+})();
+
+/* 3) iOS ana ekran */
+(() => {
+  const tint = (svg) => `<span class="ikon" style="position:relative">${svg}<span style="position:absolute;inset:0;background:#D9B56E;mix-blend-mode:multiply"></span></span>`;
+  const ekran = (sinif, baslik, eskiIkon, yeniIkon) => `<div class="kart"><div class="etiket" style="margin-bottom:10px">${baslik}</div>
+    <div class="ana-ekran ${sinif}"><div class="uygulama">${eskiIkon}<span>Eski</span></div><div class="uygulama">${yeniIkon}<span>Yeni</span></div></div></div>`;
+  const koyuArka = (svg) => `<span class="ikon" style="background:linear-gradient(180deg,#2A2F38,#111318)">${svg}</span>`;
+  document.getElementById("iosEkranlar").innerHTML =
+    ekran("acik", "Varsayılan", `<span class="ikon">${ikon("eski")}</span>`, `<span class="ikon">${ikon("varsayilan")}</span>`) +
+    ekran("koyu", "Koyu (Dark)", `<span class="ikon">${ikon("eski")}</span>`, koyuArka(ikon("koyu"))) +
+    ekran("renkli", "Renklendirilmiş (Tinted)", tint(ikon("eski").replace(/#C6D2E2|#E3C88F/g, "#CCCCCC").replace("#0A1220", "#000")), tint(ikon("tinted")));
+})();
+
+/* 4) Android */
+(() => {
+  const on = (ops) => `<svg viewBox="0 0 108 108"><rect width="108" height="108" fill="url(#az)"/><defs><radialGradient id="az" cx="0.3" cy="0.22" r="0.95"><stop offset="0" stop-color="#16243C"/><stop offset="1" stop-color="#0A1220"/></radialGradient></defs>
+    <g transform="translate(54 54) scale(${0.74 * 108 / 512}) translate(-256 -256)">${isaret({ tema: "gece" }).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g>
+    ${ops.guvenli ? `<circle cx="54" cy="54" r="33" fill="none" stroke="#E3C88F" stroke-width="0.6" stroke-dasharray="2 1.5"/><rect x="0.3" y="0.3" width="107.4" height="107.4" fill="none" stroke="#5E7290" stroke-width="0.6"/>` : ""}</svg>`;
+  const parca = (sinif, ad, g) => `<div style="display:grid;gap:8px;justify-items:center"><span class="maske ${sinif}">${on({ guvenli: g })}</span><span class="etiket">${ad}</span></div>`;
+  document.getElementById("android").innerHTML = parca("", "Tuval + güvenli alan", true) + parca("m-daire", "Daire", false) + parca("m-yuvarlak", "Yuvarlak kare", false) + parca("m-damla", "Damla", false);
+})();
+
+/* 5) Kilit (işaret + yazı) */
+(() => {
+  const kilit = (tema, b, kilavuz) => `<span class="kilit" style="--b:${b}px">${isaret({ tema, kucuk: b * 1.32 < 48 })}<span class="${kilavuz ? "kilavuz" : ""}">S<span class="i">ı</span>fırla</span></span>`;
+  const blok = (sinif, tema, baslik) => `<div class="kart"><div class="etiket" style="margin-bottom:10px">${baslik}</div><div class="${sinif}">${kilit(tema, 44, true)}${kilit(tema, 27)}${kilit(tema, 17)}</div></div>`;
+  document.getElementById("kilitler").innerHTML = blok("yuzey-gece", "gece", "Gece Mavisi") + blok("yuzey-gumus", "gumus", "Gümüş");
+})();
+
+/* 6) Animasyon prototipi */
+(() => {
+  const ekran = document.getElementById("ekran"), giris = document.getElementById("giris"), uyg = document.getElementById("uyg");
+  let tema = "gece", azHareket = matchMedia("(prefers-reduced-motion: reduce)").matches, animler = [];
+  const hareketBtn = document.getElementById("hareket");
+  hareketBtn.setAttribute("aria-pressed", String(azHareket));
+  const barIsaret = () => { document.getElementById("barIsaret").innerHTML = isaret({ tema: tema === "gece" ? "gece" : "gumus", kucuk: true }); };
+
+  function oynat() {
+    animler.forEach(a => a.cancel()); animler = [];
+    ekran.classList.toggle("gumus", tema === "gumus");
+    barIsaret();
+    // İlk kare = native açılış görseli: soluk halka + kapalı kilit, ekranın kısa kenarına göre değil
+    // iOS'un aspectFill kuralına göre: boyut = 0.16 × uzun kenar
+    const W = ekran.clientWidth, H = ekran.clientHeight, L = 0.16 * Math.max(W, H);
+    giris.innerHTML = isaret({ tema: "gece", soluk: true, kapali: true });
+    giris.hidden = false; giris.style.opacity = 1; giris.style.background = "#0A1220";
+    const svg = giris.querySelector("svg");
+    svg.style.width = L + "px"; svg.style.height = L + "px";
+    svg.style.transform = `translate(${-L / 2}px, ${-L / 2}px)`;
+    const halka = svg.querySelector(".halka"), kanca = svg.querySelector(".kanca"), parilti = svg.querySelector(".parilti");
+    uyg.style.opacity = 0;
+    const bitir = () => { giris.hidden = true; uyg.style.opacity = 1; };
+    if (azHareket) {
+      halka.style.strokeDashoffset = 0; kanca.setAttribute("transform", "translate(0 0)");
+      const a = giris.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: 120, fill: "forwards" });
+      animler.push(a, uyg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: 120, fill: "forwards" }));
+      a.onfinish = bitir; return;
+    }
+    const uz = halka.getAttribute("stroke-dasharray");
+    animler.push(halka.animate([{ strokeDashoffset: uz }, { strokeDashoffset: 0 }], { duration: 620, easing: "cubic-bezier(.55,0,.25,1)", fill: "forwards" }));
+    animler.push(kanca.animate([{ transform: "translateY(24px)" }, { transform: "translateY(0px)" }], { duration: 220, delay: 560, easing: "cubic-bezier(.2,.9,.3,1.25)", fill: "forwards" }));
+    if (parilti) animler.push(parilti.animate([{ opacity: 0, transform: "scale(0.2) rotate(-20deg)" }, { opacity: 1, transform: "scale(1.15) rotate(0deg)", offset: 0.45 }, { opacity: 1, transform: "scale(1) rotate(0deg)" }], { duration: 320, delay: 540, easing: "ease-out", fill: "forwards" }));
+    // Üst bardaki yerine akış (FLIP)
+    const hedef = document.getElementById("barIsaret").getBoundingClientRect(), kok = ekran.getBoundingClientRect();
+    const hx = hedef.left - kok.left, hy = hedef.top - kok.top, s = hedef.width / L;
+    const bas = `translate(${-L / 2}px, ${-L / 2}px)`;
+    const son = `translate(${hx - W / 2}px, ${hy - H / 2}px) scale(${s})`;
+    animler.push(svg.animate([{ transform: bas }, { transform: bas, offset: 0.0 }, { transform: son }], { duration: 480, delay: 800, easing: "cubic-bezier(.6,0,.2,1)", fill: "forwards" }));
+    animler.push(giris.animate([{ backgroundColor: "#0A1220" }, { backgroundColor: getComputedStyle(ekran).getPropertyValue("--uyg-zemin").trim() }], { duration: 420, delay: 820, fill: "forwards" }));
+    animler.push(uyg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 1000, fill: "forwards" }));
+    const son2 = giris.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, delay: 1180, fill: "forwards" });
+    animler.push(son2); son2.onfinish = bitir;
+  }
+  const atla = () => { animler.forEach(a => a.finish()); };
+  giris.addEventListener("click", atla);
+  giris.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); atla(); } });
+  document.getElementById("oynat").addEventListener("click", oynat);
+  const temaSec = (t) => { tema = t; document.getElementById("tGece").setAttribute("aria-pressed", String(t === "gece")); document.getElementById("tGumus").setAttribute("aria-pressed", String(t === "gumus")); oynat(); };
+  document.getElementById("tGece").addEventListener("click", () => temaSec("gece"));
+  document.getElementById("tGumus").addEventListener("click", () => temaSec("gumus"));
+  hareketBtn.addEventListener("click", () => { azHareket = !azHareket; hareketBtn.setAttribute("aria-pressed", String(azHareket)); oynat(); });
+  // Sayfa açılışında son kareyi göster (durağan önizleme); oynatma düğmeyle
+  barIsaret(); giris.hidden = true;
+
+  /* Kare kare: açılış görseli = ilk kare (piksel eşleşmesi için aynı çizim) */
+  const kare = (ad, ops) => `<div class="kare"><div class="yuzey-gece">${isaret(Object.assign({ tema: "gece" }, ops))}</div><span class="veri">${ad}</span></div>`;
+  document.getElementById("kareler").innerHTML =
+    kare("Açılış görseli = 0 ms", { soluk: true, kapali: true }) +
+    kare("~400 ms · halka doluyor", { soluk: true, kapali: true }).replace(/stroke-dashoffset="[\d.]+"/, (m) => `stroke-dashoffset="${(parseFloat(m.split('"')[1]) * 0.35).toFixed(1)}"`) +
+    kare("~780 ms · kilit açık, parıltı", {}) +
+    kare("Son hâl (logo)", {});
+})();
+</script>
