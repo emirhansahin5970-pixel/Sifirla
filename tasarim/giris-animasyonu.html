@@ -52,6 +52,8 @@
   /* Native splash ile piksel aynı: iOS aspectFill / Android centerCrop → genişlik = oran × uzun kenar */
   .giris .giris-logo svg { display: block; width: calc(var(--splash-oran, 0.26) * var(--uzun-kenar, 760px)); height: auto; overflow: visible; }
   .giris .logo-tus, .giris .logo-sifir { transform-box: fill-box; transform-origin: 50% 50%; will-change: transform, opacity; }
+  .giris .giris-dolgu { transform-box: fill-box; transform-origin: 0% 50%; transform: scaleX(0); will-change: transform; }
+  .giris .giris-uzan, .giris .giris-ic { will-change: transform; }
   .giris .iz { transform-box: fill-box; transform-origin: 0% 50%; opacity: 0; will-change: transform, opacity; }
   .giris .giris-flas { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; will-change: transform, opacity;
     background: radial-gradient(circle, #FFFFFF 0, rgba(255,248,232,.95) 12%, rgba(251,228,191,.7) 26%, rgba(227,200,143,.28) 46%, rgba(227,200,143,0) 70%); }
@@ -84,11 +86,11 @@
     <p>Titreşim anı: <span id="titresimIsaret">● hafif dokunuş</span> <span class="zaman" id="sure"></span></p>
     <ol>
       <li><b>0–150 ms</b> — durağan logo (splash ile aynı kare).</li>
-      <li><b>150–450 ms</b> — gümüş tuş geldiği yuvaya geri çekilir, yay gibi kurulur.</li>
-      <li><b>450–950 ms</b> — yuvadan çıkıp "0"a kadar uzun yol boyunca hızlanarak kayar (ease-in), arkasında gümüş ışık izi uzar.</li>
-      <li><b>950 ms</b> — tuş "0"a değer: kısa bir ışık flaşı çakar (≈50 ms'de tepe, 330 ms'de söner), "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
-      <li><b>950–1550 ms</b> — halka büyüyüp ekranı doldurur; arayüz halkanın içinden belirir (%98,5 → %100, saydam → net).</li>
-      <li><b>≈1,6 s</b> — katman kalkar. Veri hazırlığı bu sırada arka planda sürer.</li>
+      <li><b>150–600 ms</b> — ray sağa doğru uzar (yaklaşık üçte bir); gümüş tuş uzayan yuvanın en sonuna çekilir, yay gibi kurulur. Logo ortada kalır.</li>
+      <li><b>600–1150 ms</b> — tuş yuvadan çıkıp "0"a kadar uzun yol boyunca hızlanarak kayar (ease-in), arkasında gümüş ışık izi uzar.</li>
+      <li><b>1150 ms</b> — tuş "0"a değer: kısa bir ışık flaşı çakar, "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
+      <li><b>1150–1750 ms</b> — halka büyüyüp ekranı doldurur; arayüz halkanın içinden belirir (%98,5 → %100, saydam → net).</li>
+      <li><b>≈1,8 s</b> — katman kalkar. Veri hazırlığı bu sırada arka planda sürer.</li>
     </ol>
     <p style="margin-top:12px">Hareketi Azalt açıkken: patlama, kayma ve titreşim yok; 150 ms bekleyip 300 ms'lik yumuşak geçiş. Yalnızca <code>transform</code>, <code>opacity</code>, SVG ve tek bir canvas kullanılıyor.</p>
   </div>
@@ -142,7 +144,36 @@ var GIRIS = (function () {
     iz.setAttribute("x", "150"); iz.setAttribute("y", "-70"); iz.setAttribute("width", "240"); iz.setAttribute("height", "140");
     iz.setAttribute("rx", "70"); iz.setAttribute("fill", "url(#girisIz)");
     tus.insertBefore(iz, tus.firstChild);
-    svg.appendChild(tus);                               // kayarken yuvanın üstünden geçsin
+    // Ray uzaması için logo animasyon katmanlarına ayrılır (durağan kare birebir aynı kalır):
+    // hap ve yuva ortadan ikiye kesilir; sağ yarılar sağa kayar, aradaki boşluğu düz bant doldurur.
+    var UZA = 520;                                      // rayın uzama miktarı (logo birimi)
+    var YUVA_KES = 300;                                 // yuvanın düz kısmında kesim noktası
+    var hapP = svg.querySelector(".logo-hap"), cizP = svg.querySelector(".logo-hap-cizgi"), yuvaP = svg.querySelector(".logo-yuva");
+    function el(ad, at) { var e = document.createElementNS(NS, ad); for (var k in at) e.setAttribute(k, at[k]); return e; }
+    defs.appendChild(el("clipPath", { id: "gSolH" })).appendChild(el("rect", { x: -2000, y: -1000, width: 2000, height: 2000 }));
+    defs.appendChild(el("clipPath", { id: "gSagH" })).appendChild(el("rect", { x: 0, y: -1000, width: 2000, height: 2000 }));
+    defs.appendChild(el("clipPath", { id: "gSolY" })).appendChild(el("rect", { x: -2000, y: -1000, width: 2000 + YUVA_KES, height: 2000 }));
+    defs.appendChild(el("clipPath", { id: "gSagY" })).appendChild(el("rect", { x: YUVA_KES, y: -1000, width: 2000, height: 2000 }));
+    var G = window.SifirlaLogo.G, hh = G.hap.h / 2, hb = G.hap.bant, hi = G.hap.ic, yu = G.yuva.ust, yb = G.yuva.bant;
+    var ic = el("g", { "class": "giris-ic" });
+    function yarim(parcalar, klip) { var g = el("g", { "clip-path": "url(#" + klip + ")" }); parcalar.forEach(function (p) { g.appendChild(p.cloneNode(true)); }); return g; }
+    var sagHap = el("g", { "class": "giris-uzan" }), sagYuva = el("g", { "class": "giris-uzan" });
+    sagHap.appendChild(yarim([hapP, cizP], "gSagH"));
+    sagYuva.appendChild(yarim([yuvaP], "gSagY"));
+    // dolgu bantları: kesim noktasındaki renkle düz, 1 birim bindirmeli (ek yeri görünmesin)
+    var dolguH = el("g", { "class": "giris-dolgu" }), dolguY = el("g", { "class": "giris-dolgu" });
+    [[-hh, hb, "#E5E6E8"], [hh - hb, hb, "#E5E6E8"], [-hh + hb, hi, "#6B6C70"], [hh - hb - hi, hi, "#6B6C70"]].forEach(function (b) {
+      dolguH.appendChild(el("rect", { x: -1, y: b[0], width: UZA + 2, height: b[1], fill: b[2] }));
+    });
+    [[-yu, yb], [yu - yb, yb]].forEach(function (b) {
+      dolguY.appendChild(el("rect", { x: YUVA_KES - 1, y: b[0], width: UZA + 2, height: b[1], fill: "#C3C4C6" }));
+    });
+    ic.appendChild(yarim([hapP, cizP], "gSolH")); ic.appendChild(dolguH); ic.appendChild(sagHap);
+    ic.appendChild(sifir);
+    ic.appendChild(yarim([yuvaP], "gSolY")); ic.appendChild(dolguY); ic.appendChild(sagYuva);
+    ic.appendChild(tus);                                // kayarken yuvanın üstünden geçsin
+    [hapP, cizP, yuvaP].forEach(function (p) { p.remove(); });
+    svg.appendChild(ic);
 
     uyg.classList.add("giris-bekliyor");
     uyg.style.transition = "none";
@@ -187,13 +218,19 @@ var GIRIS = (function () {
     }
 
     // ---- Tam animasyon ----
-    var T = { bas: 150, kur: 450, temas: 950, son: 1550 };
+    var T = { bas: 150, kur: 600, temas: 1150, son: 1750 };
     var ADIM = 88;                                      // tuşun sol kenarı ile "0" arasındaki boşluk (logo birimi)
-    // 1) tuş geldiği yuvaya geri çekilir (kurulur), 2) yuvadan "0"a uzun yol boyunca hızlanarak kayar,
-    // 3) değince hafifçe geri seker. Tek animasyon, segment başına yumuşatma.
-    var GERI = 200;                                     // yuvanın içine çekilme (logo birimi)
+    // 1) ray sağa uzar, tuş uzayan yuvanın sonuna çekilir (kurulur); logo ortada kalsın diye bütün
+    //    işaret yarım uzama kadar sola kayar. 2) tuş yuvadan "0"a uzun yol boyunca hızlanarak kayar,
+    // 3) değince hafifçe geri seker. Ray, logo sönerken uzun kalır.
+    var GERI = 200 + UZA;                               // yuvanın uzamış ucuna çekilme (logo birimi)
     var kurSure = T.kur - T.bas, kaySure = T.temas - T.kur, SEK = 60;
     var top = kurSure + kaySure + SEK;
+    var RAY = "cubic-bezier(.45,0,.2,1)";
+    var dolgular = svg.querySelectorAll(".giris-dolgu"), uzanlar = svg.querySelectorAll(".giris-uzan");
+    for (var di = 0; di < dolgular.length; di++) anim(dolgular[di], [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { delay: T.bas * hiz, duration: kurSure * hiz, easing: RAY });
+    for (var ui = 0; ui < uzanlar.length; ui++) anim(uzanlar[ui], [{ transform: "translateX(0)" }, { transform: "translateX(" + UZA + "px)" }], { delay: T.bas * hiz, duration: kurSure * hiz, easing: RAY });
+    anim(ic, [{ transform: "translateX(0)" }, { transform: "translateX(-" + UZA / 2 + "px)" }], { delay: T.bas * hiz, duration: kurSure * hiz, easing: RAY });
     anim(tus, [
       { transform: "translateX(0)", easing: "cubic-bezier(.45,0,.25,1)" },
       { transform: "translateX(" + GERI + "px)", offset: kurSure / top, easing: "cubic-bezier(.5,0,1,.5)" },

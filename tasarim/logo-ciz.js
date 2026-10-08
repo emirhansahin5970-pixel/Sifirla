@@ -181,8 +181,8 @@
     var govde = "";
     if (kare && o.mod !== "koyu" && !o.seffaf) govde += '<rect x="-2000" y="-2000" width="4000" height="4000" style="fill:' + c.zemin + '"/>';
     if (o.zemin === "hap") govde += '<path d="' + p.hapDis + '" style="fill:' + c.zemin + '"/>';
-    govde += '<path d="' + p.hapBant + '" fill="url(#' + id + 'h)"/>';
-    if (!o.kucuk) govde += '<path d="' + p.hapCizgi + '" style="fill:' + c.gi + '"/>';
+    govde += '<path class="logo-hap" d="' + p.hapBant + '" fill="url(#' + id + 'h)"/>';
+    if (!o.kucuk) govde += '<path class="logo-hap-cizgi" d="' + p.hapCizgi + '" style="fill:' + c.gi + '"/>';
     govde += '<path class="logo-sifir" d="' + p.sifir + '" fill="url(#' + id + 's)"/>';
     govde += '<g class="logo-tus">';
     if (o.kucuk) {
