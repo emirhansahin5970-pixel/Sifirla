@@ -86,11 +86,12 @@
     <p>Titreşim anı: <span id="titresimIsaret">● hafif dokunuş</span> <span class="zaman" id="sure"></span></p>
     <ol>
       <li><b>0–150 ms</b> — durağan logo (splash ile aynı kare).</li>
-      <li><b>150–600 ms</b> — ray sağa doğru uzar (yaklaşık üçte bir); gümüş tuş uzayan yuvanın en sonuna çekilir, yay gibi kurulur. Logo ortada kalır.</li>
-      <li><b>600–1150 ms</b> — tuş yuvadan çıkıp "0"a kadar uzun yol boyunca hızlanarak kayar (ease-in), arkasında gümüş ışık izi uzar.</li>
-      <li><b>1150 ms</b> — tuş "0"a değer: kısa bir ışık flaşı çakar, "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
-      <li><b>1150–1750 ms</b> — halka büyüyüp ekranı doldurur; arayüz halkanın içinden belirir (%98,5 → %100, saydam → net).</li>
-      <li><b>≈1,8 s</b> — katman kalkar. Veri hazırlığı bu sırada arka planda sürer.</li>
+      <li><b>150–800 ms</b> — yan yatık hap (ray) sağa doğru, gözle izlenebilecek hızda uzar (yaklaşık üçte bir); gümüş tuş uzayan yuvanın en sonuna çekilir. Logo ortada kalır.</li>
+      <li><b>800–1000 ms</b> — uzamış ray ve kurulmuş tuş bir an durur.</li>
+      <li><b>1000–1550 ms</b> — tuş yuvadan çıkıp "0"a kadar uzun yol boyunca hızlanarak kayar (ease-in), arkasında gümüş ışık izi uzar.</li>
+      <li><b>1550 ms</b> — tuş "0"a değer: kısa bir ışık flaşı çakar, "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
+      <li><b>1550–2300 ms</b> — halka büyüyüp ekranı doldurur; ray ve tuş ilk 280 ms görünür kalır, sonra yumuşakça söner; arayüz halkanın içinden belirir.</li>
+      <li><b>≈2,3 s</b> — katman kalkar. Veri hazırlığı bu sırada arka planda sürer.</li>
     </ol>
     <p style="margin-top:12px">Hareketi Azalt açıkken: patlama, kayma ve titreşim yok; 150 ms bekleyip 300 ms'lik yumuşak geçiş. Yalnızca <code>transform</code>, <code>opacity</code>, SVG ve tek bir canvas kullanılıyor.</p>
   </div>
@@ -218,28 +219,29 @@ var GIRIS = (function () {
     }
 
     // ---- Tam animasyon ----
-    var T = { bas: 150, kur: 600, temas: 1150, son: 1750 };
+    var T = { bas: 150, kur: 800, bekle: 1000, temas: 1550, son: 2300 };
     var ADIM = 88;                                      // tuşun sol kenarı ile "0" arasındaki boşluk (logo birimi)
     // 1) ray sağa uzar, tuş uzayan yuvanın sonuna çekilir (kurulur); logo ortada kalsın diye bütün
     //    işaret yarım uzama kadar sola kayar. 2) tuş yuvadan "0"a uzun yol boyunca hızlanarak kayar,
     // 3) değince hafifçe geri seker. Ray, logo sönerken uzun kalır.
     var GERI = 200 + UZA;                               // yuvanın uzamış ucuna çekilme (logo birimi)
-    var kurSure = T.kur - T.bas, kaySure = T.temas - T.kur, SEK = 60;
-    var top = kurSure + kaySure + SEK;
-    var RAY = "cubic-bezier(.45,0,.2,1)";
+    var kurSure = T.kur - T.bas, bekSure = T.bekle - T.kur, kaySure = T.temas - T.bekle, SEK = 60;
+    var top = kurSure + bekSure + kaySure + SEK;
+    var RAY = "cubic-bezier(.4,0,.2,1)";
     var dolgular = svg.querySelectorAll(".giris-dolgu"), uzanlar = svg.querySelectorAll(".giris-uzan");
     for (var di = 0; di < dolgular.length; di++) anim(dolgular[di], [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { delay: T.bas * hiz, duration: kurSure * hiz, easing: RAY });
     for (var ui = 0; ui < uzanlar.length; ui++) anim(uzanlar[ui], [{ transform: "translateX(0)" }, { transform: "translateX(" + UZA + "px)" }], { delay: T.bas * hiz, duration: kurSure * hiz, easing: RAY });
     anim(ic, [{ transform: "translateX(0)" }, { transform: "translateX(-" + UZA / 2 + "px)" }], { delay: T.bas * hiz, duration: kurSure * hiz, easing: RAY });
     anim(tus, [
       { transform: "translateX(0)", easing: "cubic-bezier(.45,0,.25,1)" },
-      { transform: "translateX(" + GERI + "px)", offset: kurSure / top, easing: "cubic-bezier(.5,0,1,.5)" },
-      { transform: "translateX(-" + ADIM + "px)", offset: (kurSure + kaySure) / top, easing: "ease-out" },
+      { transform: "translateX(" + GERI + "px)", offset: kurSure / top },
+      { transform: "translateX(" + GERI + "px)", offset: (kurSure + bekSure) / top, easing: "cubic-bezier(.5,0,1,.5)" },
+      { transform: "translateX(-" + ADIM + "px)", offset: (kurSure + bekSure + kaySure) / top, easing: "ease-out" },
       { transform: "translateX(-" + (ADIM - 10) + "px)" }
     ], { delay: T.bas * hiz, duration: top * hiz });
     // ışık izi yalnızca sola kayarken: hız arttıkça uzar
     anim(iz, [{ opacity: 0, transform: "scaleX(.2)" }, { opacity: 1, transform: "scaleX(1)", offset: .85 }, { opacity: 0, transform: "scaleX(1.3)" }],
-      { delay: T.kur * hiz, duration: (kaySure + 160) * hiz, easing: "cubic-bezier(.5,0,1,.5)" });
+      { delay: T.bekle * hiz, duration: (kaySure + 160) * hiz, easing: "cubic-bezier(.5,0,1,.5)" });
 
     // 3) temas: "0" dağılır + titreşim + halka
     var sifirKutu, merkez;
@@ -252,9 +254,9 @@ var GIRIS = (function () {
       if (o.titret) o.titret();
       flasPatlat(merkez, sk.height / 2);
       zerreleriBaslat();
-      anim(logoKap, [{ opacity: 1, transform: "translate(-50%,-50%) scale(1)" }, { opacity: 0, transform: "translate(-50%,-50%) scale(1.06)" }],
-        { delay: 90 * hiz, duration: 220 * hiz, easing: "ease-in" });
-      uygulamayiGoster(520, 60);
+      anim(logoKap, [{ opacity: 1, transform: "translate(-50%,-50%) scale(1)" }, { opacity: 0, transform: "translate(-50%,-50%) scale(1.04)" }],
+        { delay: 280 * hiz, duration: 460 * hiz, easing: "ease-in-out" });
+      uygulamayiGoster(620, 160);
     });
 
     // Flaş: logonun da üstünde, tek seferlik kısa ışık patlaması (yalnızca transform/opacity).
