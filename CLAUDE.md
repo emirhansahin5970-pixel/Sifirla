@@ -45,6 +45,10 @@ Hemen ardından `IKIYOL`: motor çıktılarını "sadece asgari / planla" diye
 karşılaştıran saf katman (DOM yok, kendi 15 testi). Ardından `HEDEF`:
 "şu ayda borçsuz olmak istiyorum" için ters çözüm — `simulatePlan` ile
 ikili arama + yukarı yuvarlama + doğrulama (DOM yok, kendi 11 testi).
+Sonra üç saf katman daha: `FAIZ` (TCMB tavan tablosu `FAIZ_TABLOSU_VARSAYILAN`,
+dilim seçimi, ekstreden oran; 10 test), `HATIRLATMA` (vade, "o dönem
+ödendi mi", zil + yerel bildirim planı; 8 test), `BUTCE` (Tasarruf Modu:
+serbest para, önerilen ekstra, gider senaryoları; 8 test).
 
 **2. DEPOLAMA (`DEPO` → `STORAGE`)** — iki katman:
 - `DEPO`: senkron yüzlü soyutlama. **Native'de** `@capacitor/preferences`
@@ -81,6 +85,8 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   `yerelOrtamMi()` önce `DEPO.NATIVE`'i eler (Capacitor "localhost" hostname'i
   kullandığı için bu şart), sonra tam eşleşen yerel adlara bakar.
 - **`prefers-reduced-motion`** her animasyonda gözetilir.
+- **Sayı okuma dile göre:** `sayiOku` EN'de "20,000"ü 20000 okur (virgül
+  binlik); TR'de "20.000" ve "3,75". Biçimlendirme ile okuma aynı dili izler.
 - **`Intl` ile `tr-TR`** (EN'de `en-US`) biçimlendirme; para/tarih elle
   formatlanmaz. Para birimi sabit "TRY" yazılmaz: `PARA.kod` kullanılır.
 - **Erişilebilir etiketler** de çevrilir: `data-i18n-title`, `data-i18n-aria`.
@@ -88,7 +94,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v10`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v11`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -119,6 +125,16 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   Hedef cihazda (`durum.hedef = {yil, ay}`). Genel'de takip satırı,
   zilde ayda bir durum, ulaşınca kutlama anı. Gerçekçi olmayan hedefte tutar
   yine gösterilir + "asgariler kadar ekstra" ile en erken tarih önerilir.
+- **Faiz + bildirim + Tasarruf** (`ozellik/faiz-bildirim-tasarruf`):
+  çok adımlı akışlarda (borç ekle, Tasarruf Modu, onboarding) geri tuşu altta
+  `.akis-alt` çubuğunda, üstte yalnızca ✕; sol kenardan kaydırma ve Android
+  geri tuşu adım geri götürür. Sihirbaza ödeme günü adımı (1–31 / bilmiyorum)
+  ve gerekçeli hatırlatma teklifi. Hatırlatmalar 3/1/0 gün + saat ayarlı,
+  ödenen dönem iptal; kilit ekranı varsayılan NÖTR (`bildirimAyrinti`).
+  Faiz bilinmiyorsa TL'de TCMB dilim tahmini (`faizKaynak: "tcmb"`, tutar
+  dilim değiştirince oran güncellenir), ekstreden oran (`"ekstre"`), elle
+  (`"elle"`). Alt tür: `altTur: "kart" | "kmh"`. Tasarruf Modu: `durum.butce`,
+  `TASARRUF_PRO_GEREKLI = false`.
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
