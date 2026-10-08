@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sıfırla Logo Önizleme</title>
+<style>
+  :root {
+    --bg: #F4F3EF; --yuzey: #FFFFFF; --metin: #1A2230; --soluk: #5B6573; --cizgi: #DCDFE4;
+    --vurgu: #0C1F3D;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #070D18; --yuzey: #0F1828; --metin: #E6ECF4; --soluk: #9AA7B8; --cizgi: #1F2B3D; --vurgu: #C6D2E2; }
+  }
+  :root[data-theme="dark"] { --bg: #070D18; --yuzey: #0F1828; --metin: #E6ECF4; --soluk: #9AA7B8; --cizgi: #1F2B3D; --vurgu: #C6D2E2; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--metin); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1080px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  h2 { font-size: 18px; margin: 44px 0 6px; letter-spacing: -0.01em; }
+  h2 b { display: inline-block; min-width: 26px; color: var(--soluk); font-weight: 600; }
+  p.not { color: var(--soluk); margin: 0 0 16px; max-width: 70ch; }
+  .kart { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px; padding: 20px; }
+  .sira { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-end; }
+  .hucre { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .hucre small { color: var(--soluk); font-size: 12px; text-align: center; }
+  .etk { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--soluk); margin: 0 0 10px; }
+  .ikiye { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .ikiye { grid-template-columns: 1fr; } }
+  img, svg { display: block; }
+  /* iOS ikon maskesi (sürekli köşe ~%22.37). Sistem uygular; dosya köşesiz kare. */
+  .ios { overflow: hidden; border-radius: 22.37%; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .kare-ham { outline: 1px dashed var(--soluk); outline-offset: 3px; }
+  .duvar { border-radius: 18px; padding: 22px; display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-end; }
+  .duvar.acik { background: linear-gradient(160deg, #B9C6D8, #E9E3D6); }
+  .duvar.koyu { background: linear-gradient(160deg, #10131A, #000); }
+  .duvar.renk { background: linear-gradient(160deg, #1B2333, #050608); }
+  .duvar .hucre small { color: rgba(255,255,255,.75); }
+  .duvar.acik .hucre small { color: #2B3442; }
+  .koyu-ios { background: linear-gradient(180deg, #2A2C31, #121316); }
+  .renk-ios { position: relative; background: linear-gradient(180deg, #23262C, #0E0F12); }
+  .renk-ios .ton { position: absolute; inset: 0; background: var(--ton, #6FA8DC); mix-blend-mode: multiply; }
+  /* Android */
+  .and { position: relative; width: 160px; height: 160px; }
+  .and > div { position: absolute; inset: 0; overflow: hidden; }
+  .and .daire { border-radius: 50%; }
+  .and .sq { border-radius: 30%; }
+  .and .ic { position: absolute; inset: -25%; }  /* 108dp katmanın 72dp görünen kısmı */
+  .and .ic svg { width: 100%; height: 100%; }
+  .and .guvenli { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+  .katman { position: relative; width: 216px; height: 216px; max-width: 100%; background-image: repeating-conic-gradient(#8883 0 25%, transparent 0 50%); background-size: 16px 16px; border: 1px solid var(--cizgi); }
+  .katman .halka66 { position: absolute; left: 50%; top: 50%; width: 61.1%; height: 61.1%; transform: translate(-50%,-50%); border: 1.5px dashed #E35D5D; border-radius: 50%; }
+  .katman .halka72 { position: absolute; left: 50%; top: 50%; width: 66.7%; height: 66.7%; transform: translate(-50%,-50%); border: 1px dashed #5DA0E3; }
+  .durum { background: #111; border-radius: 10px; padding: 8px 14px; display: flex; gap: 10px; align-items: center; color: #fff; font: 600 13px system-ui; }
+  .durum .bil { color: #fff; }
+  /* Uygulama üst barı ön izlemesi — gerçek tema belirteçleri */
+  .tel { width: 100%; max-width: 360px; border-radius: 22px; padding: 18px 16px 22px; border: 1px solid var(--cizgi); }
+  .tel.gece { background: #0A1220; color: #E6ECF4; --sicak: #E3C88F; --accent-strong: #E6ECF4; --brd: #1A2638; }
+  .tel.gumus { background: #F7F6F2; color: #1A2230; --sicak: #765F2E; --accent-strong: #14233C; --brd: #E1E3E6; }
+  .ust { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--brd); padding-bottom: 12px; }
+  .marka { display: flex; align-items: center; gap: 9px; font: 700 27px/1.1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.02em; color: var(--accent-strong); }
+  .marka svg { height: 22px; width: auto; transform: translateY(1px); } /* optik: harf gövdesinin ortası, matematik orta değil */
+  .marka-i { position: relative; }
+  .marka-i::after { content: ""; position: absolute; top: -0.02em; left: 50%; transform: translateX(-50%); width: 0.11em; height: 0.11em; border-radius: 50%; background: var(--sicak); }
+  .ust .zil { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--brd); }
+  .gumus-logo { --logo-gumus-kenar: #8E949C; --logo-gumus-orta: #DCDFE3; }
+  .gumus-koyu-metal { --logo-gumus-kenar: #6F7782; --logo-gumus-orta: #B3BAC3; --logo-gumus-ic: #4D545E;
+    --logo-sampanya-kenar: #9C7A45; --logo-sampanya-orta: #CFAE74; --logo-ok: #F7F6F2; }
+  .rapor { width: 300px; border-radius: 18px; padding: 22px; background: #0A1220; color: #E6ECF4; font: 14px system-ui; }
+  .rapor .bas { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; }
+  .rapor .bas svg { height: 16px; width: auto; }
+  .rapor .rakam { font-size: 34px; font-weight: 700; margin: 18px 0 2px; letter-spacing: -0.02em; }
+  .rapor .alt { color: #9AA7B8; font-size: 12px; }
+  .sekme { display: flex; gap: 10px; align-items: center; background: #DEE1E6; border-radius: 10px 10px 0 0; padding: 8px 14px; width: max-content; color: #222; font: 13px system-ui; }
+  .sekme.k { background: #202124; color: #E8EAED; }
+  .tablo { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tablo td, .tablo th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--cizgi); vertical-align: top; }
+  .tablo th { color: var(--soluk); font-weight: 600; }
+  code { font: 12.5px ui-monospace, Menlo, monospace; }
+  .rozet { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: #E3C88F33; color: inherit; }
+  .uyari { border-left: 3px solid #E3C88F; padding: 6px 12px; margin: 10px 0; color: var(--soluk); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sıfırla — yeni logo önizlemesi</h1>
+  <p class="not">Onay bekliyor. Bu sayfadaki her şey tek bir SVG üreticisinden (<code>tasarim/logo-ciz.js</code>) çiziliyor; renkler CSS değişkenine bağlı. Onaydan sonra ikonlar, splash, uygulama ve site aynı üreticiden üretilecek. Boyutlar gerçek: 29 px yazan 29 CSS pikseli.</p>
+
+  <h2><b>1</b> Eski ↔ yeni, uygulama ikonu</h2>
+  <p class="not">Yeni ikon dosyası <strong>köşesiz tam kare</strong>, lacivert kenara kadar taşar (görseldeki beyaz köşeler yok). Köşeyi iOS/Android kendisi yuvarlar — sağdaki kesik çizgili kare ham dosya, yanındaki sistemin gösterdiği hâl.</p>
+  <div class="kart sira">
+    <div class="hucre"><img class="ios" src="../uygulama/icons/ikon-512.png" width="180" height="180" alt="Eski ikon"><small>Eski (kilit + halka)</small></div>
+    <div class="hucre"><div class="kare-ham" data-logo='{"zemin":"kare","boyut":180}'></div><small>Yeni — ham dosya (köşesiz)</small></div>
+    <div class="hucre"><div class="ios" data-logo='{"zemin":"kare","boyut":180}'></div><small>Yeni — iOS'ta görünüşü</small></div>
+    <div class="hucre"><img src="kaynak-logo.jpg" width="180" height="180" alt="Onaylanan görsel" onerror="this.parentNode.remove()"><small>Kaynak görsel</small></div>
+  </div>
+
+  <h2><b>2</b> Gerçek boyutlar</h2>
+  <p class="not">Üst satır eski, alt satır yeni. 48 px ve altında <strong>küçük varyant (c)</strong> devrede: hap içindeki ince koyu çizgi ve tuşun kabartma çerçevesi kalkar, çizgiler %25 kalınlaşır, "0"ın içi biraz açılır, ok kalınlaşır.</p>
+  <div class="kart">
+    <div class="etk">Eski</div>
+    <div class="sira" id="eskiBoy"></div>
+    <div class="etk" style="margin-top:18px">Yeni</div>
+    <div class="sira" id="yeniBoy"></div>
+  </div>
+
+  <h2><b>c</b> Küçük varyant ne kazandırıyor</h2>
+  <div class="kart sira" id="kucukKars"></div>
+
+  <h2><b>d</b> iOS: varsayılan · koyu · renklendirilmiş</h2>
+  <p class="not">Koyu modda zemin saydam bırakılır (sistem koyu degrade çizer), ok tuşun üstünde siyaha yakın kalır. Renklendirilmiş modda Apple gri tonlu görseli alır, rengi kendisi basar; burada mavi ve sıcak tonla simüle edildi.</p>
+  <div class="duvar acik" id="iosVars"></div>
+  <div style="height:10px"></div>
+  <div class="ikiye">
+    <div class="duvar koyu" id="iosKoyu"></div>
+    <div class="duvar renk" id="iosRenk"></div>
+  </div>
+
+  <h2><b>e</b> Android: uyarlanabilir ikon + bildirim ikonu</h2>
+  <p class="not">Ön katman 108 dp; işaret, kırmızı kesikli <strong>66 dp güvenli daire</strong>nin içinde (hapın uçları dahil — hiçbir maske kesmez). Arka katman düz lacivert. Bildirim ikonu tek renk, saydam; sistem beyaza/renge boyar.</p>
+  <div class="kart">
+    <div class="sira">
+      <div class="hucre"><div class="katman" data-logo='{"tek":false,"zemin":"seffaf-kare","olcek":0.56}'><div class="halka72"></div><div class="halka66"></div></div><small>Ön katman (108 dp)<br>kırmızı: 66 dp güvenli · mavi: 72 dp görünen</small></div>
+      <div class="hucre"><div class="katman" style="background:#0C1F3D"></div><small>Arka katman</small></div>
+    </div>
+    <div class="sira" style="margin-top:20px" id="andMaske"></div>
+    <div class="sira" style="margin-top:22px;align-items:center">
+      <div class="durum"><span>9:41</span><span class="bil" id="bil24"></span><span style="opacity:.7;font-weight:500">bildirim çubuğu, 24 dp</span></div>
+      <div class="hucre"><div id="bilBuyuk" style="background:#111;padding:10px;border-radius:10px;color:#fff"></div><small>Bildirim ikonu ×4 (96 px)</small></div>
+    </div>
+  </div>
+
+  <h2><b>b · f</b> Zeminsiz sembol: üst bar, Gece Mavisi ve Gümüş</h2>
+  <p class="not">Üst barda işaret, "Sıfırla" yazısının harf gövdesine optik hizalı (1 px aşağı; matematik ortası yükseltiyor). Gümüş temada iki seçenek var: <strong>f1</strong> hap içi lacivert dolu (marka renkleri aynen korunur — önerim), <strong>f2</strong> dolgusuz, açık zeminde okunsun diye koyulaştırılmış metal.</p>
+  <div class="ikiye">
+    <div class="tel gece"><div class="ust"><div class="marka" data-logo-marka='{"etiket":false}'><span>S<span class="marka-i">ı</span>fırla</span></div><div class="zil"></div></div><p style="font-size:13px;opacity:.7;margin:14px 0 0">Gece Mavisi — zeminsiz sembol (b)</p></div>
+    <div class="tel gumus"><div class="ust"><div class="marka gumus-logo" data-logo-marka='{"zemin":"hap","etiket":false}'><span>S<span class="marka-i">ı</span>fırla</span></div><div class="zil"></div></div><p style="font-size:13px;opacity:.7;margin:14px 0 0">Gümüş — f1: lacivert dolgulu hap <span class="rozet">önerilen</span></p></div>
+    <div class="tel gumus"><div class="ust"><div class="marka gumus-koyu-metal" data-logo-marka='{"etiket":false}'><span>S<span class="marka-i">ı</span>fırla</span></div><div class="zil"></div></div><p style="font-size:13px;opacity:.7;margin:14px 0 0">Gümüş — f2: dolgusuz, koyu metal</p></div>
+    <div class="tel gece"><div class="ust"><div class="marka" id="eskiUstBar"></div><div class="zil"></div></div>
+      <p style="font-size:13px;opacity:.7;margin:10px 0 0">Eski üst bar (karşılaştırma)</p></div>
+  </div>
+
+  <h2><b>b</b> Aylık rapor / paylaşım kartı başlığı</h2>
+  <div class="kart sira">
+    <div class="rapor"><div class="bas" data-logo-marka='{"etiket":false}'><span>Sıfırla</span></div><div class="rakam">₺18.420</div><div class="alt">Bu ay kapattığın borç · örnek veri</div></div>
+    <div class="rapor" style="background:#F7F6F2;color:#1A2230"><div class="bas gumus-logo" data-logo-marka='{"zemin":"hap","etiket":false}'><span>Sıfırla</span></div><div class="rakam">₺18.420</div><div class="alt" style="color:#5B6573">Gümüş tema · örnek veri</div></div>
+  </div>
+
+  <h2>Favicon (site + PWA)</h2>
+  <p class="not">16/32 px'de geniş hap çok inceliyor; favicon'da kare zeminli küçük varyant kullanılacak (zemin işareti taşır).</p>
+  <div class="kart sira" style="align-items:center">
+    <div class="sekme"><img src="../uygulama/icons/favicon.svg" width="16" height="16" alt=""> Sıfırla — eski</div>
+    <div class="sekme"><span data-logo='{"zemin":"kare","kucuk":true,"boyut":16,"olcek":0.92}'></span> Sıfırla — yeni</div>
+    <div class="sekme k"><span data-logo='{"zemin":"kare","kucuk":true,"boyut":16,"olcek":0.92}'></span> Sıfırla — koyu sekme</div>
+    <div class="hucre"><span data-logo='{"zemin":"kare","kucuk":true,"boyut":32,"olcek":0.92}'></span><small>32 px</small></div>
+  </div>
+
+  <h2>Neyi düzelttim (kaynak görsele göre)</h2>
+  <div class="kart">
+    <table class="tablo">
+      <tr><th>Öğe</th><th>Kaynak görselde</th><th>Vektörde</th></tr>
+      <tr><td>Köşeler</td><td>Beyaz, yuvarlatılmış</td><td>Yok; tam kare lacivert, köşeyi sistem keser</td></tr>
+      <tr><td>Dikey hiza</td><td>"0" ortadan 8 px (2048'de) aşağıda, tuş/yuva 2–3 px</td><td>Hepsi aynı yatay eksende</td></tr>
+      <tr><td>Yatay denge</td><td>"0" ile yuva iç kenara ~43 px</td><td>Tam eşit: ikisi de hap iç kenarına 43 birim</td></tr>
+      <tr><td>Yuvanın sol ucu</td><td>Elle çizilmiş eğri</td><td>Tuşun köşesiyle eş merkezli yay (33 birim sabit boşluk)</td></tr>
+      <tr><td>Ok</td><td>Tuşta 2 px sola kaymış</td><td>Tuşa tam ortalı, 45° kollar, sivri uç, düz bitiş</td></tr>
+      <tr><td>Kalınlıklar</td><td>Hap 52 · yuva 44 · ok 44 (±2 dalgalı)</td><td>Sabit 52 / 44 / 44; hap içinde 8 birim koyu çizgi</td></tr>
+      <tr><td>Renk</td><td>JPEG gürültüsü</td><td>Zemin <code>#0C1F3D</code>; gümüş <code>#9C9DA0 → #E6E7E9</code>; şampanya <code>#D3B48E → #FBE4BF</code> — hepsi <code>--logo-*</code> değişkeni</td></tr>
+    </table>
+    <p class="uyari">Not: Uygulamanın kendi koyu zemini <code>#0A1220</code>, logonun laciverti <code>#0C1F3D</code> (görselden ölçüldü). İkon ve native splash logonun lacivertini kullanır; giriş animasyonu bu renkten başlayıp uygulama zeminine geçer — böylece splash → animasyon arasında renk sıçraması olmaz.</p>
+  </div>
+</main>
+<script src="logo-ciz.js"></script>
+<script>
+(function () {
+  var L = window.SifirlaLogo;
+  function ciz(o) {
+    if (o.zemin === "seffaf-kare") { o = Object.assign({}, o, { zemin: "kare", seffaf: true }); }
+    return L.svg(o);
+  }
+  document.querySelectorAll("[data-logo]").forEach(function (el) {
+    var o = JSON.parse(el.getAttribute("data-logo"));
+    if (el.classList.contains("katman")) { o.boyut = 216; el.insertAdjacentHTML("afterbegin", ciz(o)); return; }
+    el.innerHTML = ciz(o);
+  });
+  document.querySelectorAll("[data-logo-marka]").forEach(function (el) {
+    var o = JSON.parse(el.getAttribute("data-logo-marka"));
+    el.insertAdjacentHTML("afterbegin", L.svg(o));
+  });
+
+  var boylar = [29, 40, 48, 60, 76, 120];
+  var eski = document.getElementById("eskiBoy"), yeni = document.getElementById("yeniBoy");
+  boylar.forEach(function (b) {
+    eski.insertAdjacentHTML("beforeend", '<div class="hucre"><img class="ios" src="../uygulama/icons/ikon-512.png" width="' + b + '" height="' + b + '" alt=""><small>' + b + '</small></div>');
+    var kucuk = b <= 48;
+    yeni.insertAdjacentHTML("beforeend", '<div class="hucre"><div class="ios" style="width:' + b + 'px;height:' + b + 'px">' +
+      L.svg({ zemin: "kare", kucuk: kucuk, olcek: kucuk ? 0.84 : undefined, boyut: b, etiket: false }) + '</div><small>' + b + (kucuk ? " · c" : "") + '</small></div>');
+  });
+
+  var kk = document.getElementById("kucukKars");
+  [29, 40, 48].forEach(function (b) {
+    kk.insertAdjacentHTML("beforeend",
+      '<div class="hucre"><div class="ios">' + L.svg({ zemin: "kare", boyut: b, etiket: false }) + '</div><small>' + b + ' tam</small></div>' +
+      '<div class="hucre"><div class="ios">' + L.svg({ zemin: "kare", kucuk: true, olcek: 0.84, boyut: b, etiket: false }) + '</div><small>' + b + ' küçük (c)</small></div>');
+  });
+
+  // iOS varyantları
+  var iv = document.getElementById("iosVars");
+  [60, 76, 120].forEach(function (b) {
+    iv.insertAdjacentHTML("beforeend", '<div class="hucre"><div class="ios">' + L.svg({ zemin: "kare", boyut: b, kucuk: b < 50, etiket: false }) + '</div><small>Varsayılan ' + b + '</small></div>');
+  });
+  var ik = document.getElementById("iosKoyu");
+  [60, 120].forEach(function (b) {
+    ik.insertAdjacentHTML("beforeend", '<div class="hucre"><div class="ios koyu-ios" style="width:' + b + 'px;height:' + b + 'px">' + L.svg({ zemin: "kare", mod: "koyu", boyut: b, etiket: false }) + '</div><small>Koyu ' + b + '</small></div>');
+  });
+  var ir = document.getElementById("iosRenk");
+  [["#6FA8DC", "mavi"], ["#E0B46A", "sıcak"]].forEach(function (t) {
+    ir.insertAdjacentHTML("beforeend", '<div class="hucre"><div class="ios renk-ios" style="--ton:' + t[0] + ';width:120px;height:120px">' + L.svg({ zemin: "kare", mod: "renkli", boyut: 120, etiket: false }) + '<div class="ton"></div></div><small>Renklendirilmiş · ' + t[1] + '</small></div>');
+  });
+  ir.insertAdjacentHTML("beforeend", '<div class="hucre"><div class="ios" style="width:120px;height:120px">' + L.svg({ zemin: "kare", mod: "renkli", boyut: 120, etiket: false }) + '</div><small>Apple\'a giden gri görsel</small></div>');
+
+  // Android maskeleri
+  var am = document.getElementById("andMaske");
+  [["daire", "Daire"], ["sq", "Yuvarlak kare"], ["", "Kare (kesilmeden)"]].forEach(function (m) {
+    am.insertAdjacentHTML("beforeend", '<div class="hucre"><div class="and"><div class="' + m[0] + '" style="background:#0C1F3D"><div class="ic">' +
+      L.svg({ zemin: "kare", seffaf: true, olcek: 0.56, etiket: false }) + '</div></div></div><small>' + m[1] + '</small></div>');
+  });
+  document.getElementById("bil24").innerHTML = L.svg({ tek: true, zemin: "kare", olcek: 0.92, boyut: 24, etiket: false });
+  document.getElementById("bilBuyuk").innerHTML = L.svg({ tek: true, zemin: "kare", olcek: 0.92, boyut: 96, etiket: false });
+
+  // Eski üst bar
+  document.getElementById("eskiUstBar").innerHTML = '<img src="../uygulama/icons/favicon.svg" width="24" height="24" alt=""><span>S<span class="marka-i">ı</span>fırla</span>';
+})();
+</script>
+</body>
+</html>

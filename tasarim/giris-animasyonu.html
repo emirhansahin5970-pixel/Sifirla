@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sıfırla Giriş Animasyonu</title>
+<style>
+  :root { --bg: #F4F3EF; --metin: #1A2230; --soluk: #5B6573; --cizgi: #DCDFE4; --yuzey: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #070D18; --metin: #E6ECF4; --soluk: #9AA7B8; --cizgi: #1F2B3D; --yuzey: #0F1828; }
+  }
+  :root[data-theme="dark"] { --bg: #070D18; --metin: #E6ECF4; --soluk: #9AA7B8; --cizgi: #1F2B3D; --yuzey: #0F1828; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--metin); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 28px 16px 60px; display: grid; grid-template-columns: 360px 1fr; gap: 32px; align-items: start; }
+  main > div { min-width: 0; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  h1 { font-size: 24px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  p { color: var(--soluk); margin: 0 0 12px; }
+  .dugmeler { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+  button { font: 600 14px system-ui; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--cizgi); background: var(--yuzey); color: var(--metin); cursor: pointer; min-height: 44px; }
+  button[aria-pressed="true"] { background: #0C1F3D; color: #F1F3F6; border-color: #0C1F3D; }
+  button.ana { background: #0C1F3D; color: #F1F3F6; border-color: #0C1F3D; }
+  ol { padding-left: 20px; color: var(--soluk); margin: 0; }
+  ol li { margin: 4px 0; }
+  ol b { color: var(--metin); }
+  .zaman { font: 12px ui-monospace, Menlo, monospace; color: var(--soluk); }
+  #titresimIsaret { display: inline-block; font: 600 12px system-ui; padding: 3px 9px; border-radius: 99px; background: #E3C88F; color: #2B2212; opacity: 0; transition: opacity .15s; }
+  #titresimIsaret.yanik { opacity: 1; transition: none; }
+
+  /* ===== Telefon çerçevesi + sahte uygulama ===== */
+  .tel { position: relative; width: 360px; max-width: 100%; aspect-ratio: 360 / 760; border-radius: 34px; overflow: hidden; border: 1px solid var(--cizgi); box-shadow: 0 20px 50px rgba(0,0,0,.25); isolation: isolate; }
+  .tel.gece { background: #0A1220; } .tel.gumus { background: #F7F6F2; }
+  .uyg { position: absolute; inset: 0; padding: 54px 16px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .uyg.gece { background: #0A1220; color: #E6ECF4; --kart: #111C2E; --brd: #1A2638; --soluk: #9AA7B8; --sicak: #E3C88F; --vurgu: #E6ECF4; }
+  .uyg.gumus { background: #F7F6F2; color: #1A2230; --kart: #EEF1F4; --brd: #E1E3E6; --soluk: #5B6573; --sicak: #765F2E; --vurgu: #14233C; }
+  .uyg .ust { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--brd); padding-bottom: 12px; margin-bottom: 18px; }
+  .uyg .marka { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 25px; letter-spacing: -0.02em; color: var(--vurgu); }
+  .uyg .marka svg { height: 20px; width: auto; transform: translateY(1px); }
+  .marka-i { position: relative; }
+  .marka-i::after { content: ""; position: absolute; top: -0.02em; left: 50%; transform: translateX(-50%); width: 0.11em; height: 0.11em; border-radius: 50%; background: var(--sicak); }
+  .uyg .zil { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--brd); }
+  .uyg .halka { width: 168px; height: 168px; margin: 8px auto 18px; border-radius: 50%; border: 12px solid var(--brd); border-top-color: var(--sicak); border-right-color: var(--sicak); display: grid; place-items: center; font-weight: 700; font-size: 26px; }
+  .uyg .kart { background: var(--kart); border: 1px solid var(--brd); border-radius: 16px; padding: 14px; margin-bottom: 10px; font-size: 14px; }
+  .uyg .kart small { display: block; color: var(--soluk); font-size: 12px; }
+  .uyg .feragat { color: var(--soluk); font-size: 11px; text-align: center; margin-top: 12px; }
+
+  /* ===== Giriş katmanı (uygulamaya aynen taşınacak) ===== */
+  .giris { position: absolute; inset: 0; z-index: 10; contain: strict; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .giris canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .giris .giris-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); will-change: opacity, transform; }
+  /* Native splash ile piksel aynı: iOS aspectFill / Android centerCrop → genişlik = oran × uzun kenar */
+  .giris .giris-logo svg { display: block; width: calc(var(--splash-oran, 0.26) * var(--uzun-kenar, 760px)); height: auto; overflow: visible; }
+  .giris .logo-tus, .giris .logo-sifir { transform-box: fill-box; transform-origin: 50% 50%; will-change: transform, opacity; }
+  .giris .iz { transform-box: fill-box; transform-origin: 0% 50%; opacity: 0; will-change: transform, opacity; }
+  .uyg.giris-bekliyor { opacity: 0; transform: scale(.985); }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <div class="tel gece" id="tel">
+      <div class="uyg gece" id="uyg">
+        <div class="ust"><div class="marka" id="marka"><span>S<span class="marka-i">ı</span>fırla</span></div><div class="zil"></div></div>
+        <div class="halka">%38</div>
+        <div class="kart">Borçsuz tarih<small>Mart 2028 · örnek veri</small></div>
+        <div class="kart">Bu ay ödenecek<small>₺6.250 · 3 borç</small></div>
+        <div class="feragat">Finansal tavsiye değildir.</div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h1>Giriş animasyonu</h1>
+    <p>Telefon çerçevesi soğuk açılışı canlandırıyor. İlk kare native splash ile aynı: lacivert zemin, logo aynı oranda ve aynı yerde. Ekrana dokunmak animasyonu atlatır.</p>
+    <div class="dugmeler">
+      <button class="ana" id="tekrar">▶ Tekrar oynat</button>
+      <button id="temaBtn" aria-pressed="false">Tema: Gece Mavisi</button>
+      <button id="azaltBtn" aria-pressed="false">Hareketi Azalt</button>
+      <button id="yavasBtn" aria-pressed="false">Yavaş (×4)</button>
+    </div>
+    <p>Titreşim anı: <span id="titresimIsaret">● hafif dokunuş</span> <span class="zaman" id="sure"></span></p>
+    <ol>
+      <li><b>0–180 ms</b> — durağan logo (splash ile aynı kare).</li>
+      <li><b>180–270 ms</b> — gümüş tuşa "basılır" (%95'e iner, geri gelir).</li>
+      <li><b>270–560 ms</b> — tuş sola kayar (ease-in), arkasında kısa gümüş ışık izi.</li>
+      <li><b>560 ms</b> — tuş "0"a değer: "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
+      <li><b>560–1350 ms</b> — halka büyüyüp ekranı doldurur; arayüz halkanın içinden belirir (%98,5 → %100, saydam → net).</li>
+      <li><b>≈1,4 s</b> — katman kalkar. Veri hazırlığı bu sırada arka planda sürer.</li>
+    </ol>
+    <p style="margin-top:12px">Hareketi Azalt açıkken: patlama, kayma ve titreşim yok; 150 ms bekleyip 300 ms'lik yumuşak geçiş. Yalnızca <code>transform</code>, <code>opacity</code>, SVG ve tek bir canvas kullanılıyor.</p>
+  </div>
+</main>
+
+<script src="logo-ciz.js"></script>
+<script>
+/*
+ * GIRIS — soğuk açılış animasyonu. Uygulamaya bu haliyle taşınacak:
+ *   GIRIS.oynat({ kap, uygulama, azalt, titret, hiz, bitince })
+ * kap: animasyonun kaplayacağı eleman (uygulamada body), uygulama: belirecek kök.
+ */
+var GIRIS = (function () {
+  "use strict";
+  var ZEMIN = "#0C1F3D";                 // logo/splash laciverti
+  var SAMPANYA = ["#FBE4BF", "#E3C88F", "#D3B48E", "#F6D9A6"];
+  var aktif = null;
+
+  function kolayGiris(t) { return t * t * t; }                            // ease-in
+  function kolayCikis(t) { return 1 - Math.pow(1 - t, 3); }
+  function kolayIkili(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+  function oynat(o) {
+    if (aktif) aktif.bitir(true);
+    var kap = o.kap, uyg = o.uygulama, hiz = o.hiz || 1;
+    var w = kap.clientWidth, h = kap.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 3);
+
+    var kat = document.createElement("div");
+    kat.className = "giris";
+    kat.setAttribute("aria-hidden", "true");
+    kat.style.setProperty("--uzun-kenar", Math.max(w, h) + "px");
+    var tuval = document.createElement("canvas");
+    tuval.width = Math.round(w * dpr); tuval.height = Math.round(h * dpr);
+    var c = tuval.getContext("2d");
+    c.scale(dpr, dpr);
+    var logoKap = document.createElement("div");
+    logoKap.className = "giris-logo";
+    logoKap.innerHTML = window.SifirlaLogo.svg({ etiket: false, id: "giris" });
+    kat.appendChild(tuval); kat.appendChild(logoKap);
+    kap.appendChild(kat);
+
+    var svg = logoKap.querySelector("svg");
+    var tus = svg.querySelector(".logo-tus"), sifir = svg.querySelector(".logo-sifir");
+    // Işık izi: tuşun sağ kenarından geriye uzanan gümüş degrade, tuşla birlikte kayar
+    var NS = "http://www.w3.org/2000/svg";
+    var defs = svg.querySelector("defs");
+    defs.insertAdjacentHTML("beforeend", '<linearGradient id="girisIz" x1="0" x2="1" y1="0" y2="0">' +
+      '<stop offset="0" stop-color="#F7F9FC" stop-opacity=".9"/><stop offset="1" stop-color="#C6D2E2" stop-opacity="0"/></linearGradient>');
+    var iz = document.createElementNS(NS, "rect");
+    iz.setAttribute("class", "iz");
+    iz.setAttribute("x", "150"); iz.setAttribute("y", "-70"); iz.setAttribute("width", "240"); iz.setAttribute("height", "140");
+    iz.setAttribute("rx", "70"); iz.setAttribute("fill", "url(#girisIz)");
+    tus.insertBefore(iz, tus.firstChild);
+
+    uyg.classList.add("giris-bekliyor");
+    uyg.style.transition = "none";
+    c.fillStyle = ZEMIN; c.fillRect(0, 0, w, h);
+
+    var bitti = false, rafId = 0, animler = [], zamanlar = [];
+    function anim(el, kf, op) { var a = el.animate(kf, Object.assign({ fill: "forwards" }, op)); animler.push(a); return a; }
+    function sonra(ms, f) { zamanlar.push(setTimeout(f, ms * hiz)); }
+
+    function uygulamayiGoster(sure, gecikme) {
+      uyg.style.transition = "opacity " + sure * hiz + "ms ease-out " + (gecikme || 0) * hiz + "ms, transform " + sure * hiz + "ms cubic-bezier(.2,.7,.2,1) " + (gecikme || 0) * hiz + "ms";
+      requestAnimationFrame(function () { uyg.classList.remove("giris-bekliyor"); });
+    }
+
+    function bitir(hemen) {
+      if (bitti) return; bitti = true;
+      cancelAnimationFrame(rafId);
+      zamanlar.forEach(clearTimeout);
+      if (hemen) {
+        animler.forEach(function (a) { a.cancel(); });
+        uyg.style.transition = "none"; uyg.classList.remove("giris-bekliyor");
+        kat.remove();
+      } else {
+        // dokunarak atlama: 150 ms'de söner
+        uygulamayiGoster(150, 0);
+        kat.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: "forwards" }).onfinish = function () { kat.remove(); };
+      }
+      aktif = null;
+      if (o.bitince) o.bitince();
+    }
+    aktif = { bitir: bitir };
+    kat.addEventListener("pointerdown", function () { bitir(false); }, { once: true });
+
+    // ---- Hareketi Azalt: patlama yok, kısa geçiş ----
+    if (o.azalt) {
+      sonra(150, function () {
+        uygulamayiGoster(300, 0);
+        anim(kat, [{ opacity: 1 }, { opacity: 0 }], { duration: 300 * hiz, easing: "ease-out" })
+          .onfinish = function () { bitti = true; kat.remove(); aktif = null; if (o.bitince) o.bitince(); };
+      });
+      return;
+    }
+
+    // ---- Tam animasyon ----
+    var T = { bas: 180, basis: 90, temas: 560, son: 1350 };
+    var ADIM = 88;                                      // tuşun sol kenarı ile "0" arasındaki boşluk (logo birimi)
+    // 1) tuşa basılır
+    anim(tus, [{ transform: "scale(1)" }, { transform: "scale(.95)" }, { transform: "scale(1)" }],
+      { delay: T.bas * hiz, duration: T.basis * hiz, easing: "ease-in-out" });
+    // 2) sola kayar (ease-in) — "0"a değince durur, hafifçe geri seker
+    var kaySure = T.temas - (T.bas + T.basis);
+    anim(tus, [{ transform: "translateX(0)" }, { transform: "translateX(-" + ADIM + "px)", offset: .82, easing: "ease-out" }, { transform: "translateX(-" + (ADIM - 10) + "px)" }],
+      { delay: (T.bas + T.basis) * hiz, duration: (kaySure + 70) * hiz, easing: "cubic-bezier(.55,0,1,.45)", composite: "add" });
+    anim(iz, [{ opacity: 0, transform: "scaleX(.2)" }, { opacity: 1, transform: "scaleX(1)", offset: .8 }, { opacity: 0, transform: "scaleX(1.25)" }],
+      { delay: (T.bas + T.basis) * hiz, duration: (kaySure + 160) * hiz, easing: "linear" });
+
+    // 3) temas: "0" dağılır + titreşim + halka
+    var sifirKutu, merkez;
+    sonra(T.temas, function () {
+      var kk = kap.getBoundingClientRect(), sk = sifir.getBoundingClientRect();
+      merkez = { x: sk.left + sk.width / 2 - kk.left, y: sk.top + sk.height / 2 - kk.top };
+      sifirKutu = sk;
+      anim(sifir, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(1.18)", opacity: 0 }],
+        { duration: 170 * hiz, easing: "cubic-bezier(.2,.8,.2,1)" });
+      if (o.titret) o.titret();
+      zerreleriBaslat();
+      anim(logoKap, [{ opacity: 1, transform: "translate(-50%,-50%) scale(1)" }, { opacity: 0, transform: "translate(-50%,-50%) scale(1.06)" }],
+        { delay: 90 * hiz, duration: 220 * hiz, easing: "ease-in" });
+      uygulamayiGoster(520, 60);
+    });
+
+    // Canvas: zerrecikler + büyüyen halka (halkanın içi delik → arayüz görünür)
+    var zerre = [], t0 = 0;
+    function zerreleriBaslat() {
+      var r0 = sifirKutu.height / 2;
+      for (var i = 0; i < 46; i++) {
+        var a = (i / 46) * Math.PI * 2 + Math.random() * .25;
+        var hz = (0.9 + Math.random() * 1.1) * r0 * 2.6;           // px/sn ölçeği
+        zerre.push({
+          x: merkez.x + Math.cos(a) * r0 * .55, y: merkez.y + Math.sin(a) * r0 * .7,
+          vx: Math.cos(a) * hz, vy: Math.sin(a) * hz,
+          r: (0.7 + Math.random() * 1.5) * Math.max(1, r0 / 16),
+          renk: SAMPANYA[i % SAMPANYA.length], omur: 380 + Math.random() * 260
+        });
+      }
+      t0 = performance.now();
+      rafId = requestAnimationFrame(kare);
+    }
+    var maxR = 0;
+    function kare(simdi) {
+      if (bitti) return;
+      var gecen = (simdi - t0) / hiz;
+      if (!maxR) maxR = Math.hypot(Math.max(merkez.x, w - merkez.x), Math.max(merkez.y, h - merkez.y)) + 4;
+      var r0 = sifirKutu.height / 2;
+      var p = Math.min(1, gecen / (T.son - T.temas));
+      var r = maxR * kolayIkili(p);
+
+      c.globalCompositeOperation = "source-over";
+      c.clearRect(0, 0, w, h);
+      c.fillStyle = ZEMIN; c.fillRect(0, 0, w, h);
+      // delik
+      c.globalCompositeOperation = "destination-out";
+      if (r > 0) { c.beginPath(); c.arc(merkez.x, merkez.y, r, 0, Math.PI * 2); c.fill(); }
+      c.globalCompositeOperation = "source-over";
+      // ışık halkası: ince, kenarda yumuşak; büyüdükçe söner
+      var halkaOp = 1 - kolayGiris(p);
+      if (halkaOp > 0.01 && r > 0) {
+        c.lineWidth = Math.max(1.5, r0 * .09) * (1 - p * .5);
+        c.strokeStyle = "rgba(243,222,180," + (0.85 * halkaOp) + ")";
+        c.shadowColor = "rgba(227,200,143," + (0.9 * halkaOp) + ")";
+        c.shadowBlur = r0 * .35;
+        c.beginPath(); c.arc(merkez.x, merkez.y, r, 0, Math.PI * 2); c.stroke();
+        c.shadowBlur = 0;
+      }
+      // zerrecikler (sürtünmeli, sönerek)
+      var dt = 1 / 60;
+      for (var i = 0; i < zerre.length; i++) {
+        var z = zerre[i], yas = gecen / z.omur;
+        if (yas >= 1) continue;
+        var s = Math.exp(-gecen / 260);
+        var x = z.x + z.vx * (1 - s) * .5, y = z.y + z.vy * (1 - s) * .5;
+        c.globalAlpha = (1 - yas) * (1 - yas);
+        c.fillStyle = z.renk;
+        c.beginPath(); c.arc(x, y, z.r * (1 - yas * .4), 0, Math.PI * 2); c.fill();
+      }
+      c.globalAlpha = 1;
+      if (p < 1) rafId = requestAnimationFrame(kare);
+      else { bitti = true; kat.remove(); aktif = null; if (o.bitince) o.bitince(); }
+    }
+  }
+
+  return { oynat: oynat };
+})();
+
+// ===== Önizleme denetimleri =====
+(function () {
+  var tel = document.getElementById("tel"), uyg = document.getElementById("uyg");
+  var marka = document.getElementById("marka");
+  var tema = "gece", azalt = matchMedia("(prefers-reduced-motion: reduce)").matches, yavas = false;
+  var temaBtn = document.getElementById("temaBtn"), azaltBtn = document.getElementById("azaltBtn"), yavasBtn = document.getElementById("yavasBtn");
+  var isaret = document.getElementById("titresimIsaret"), sure = document.getElementById("sure");
+
+  function markaCiz() {
+    var eski = marka.querySelector("svg"); if (eski) eski.remove();
+    marka.insertAdjacentHTML("afterbegin", SifirlaLogo.svg({ etiket: false, zemin: tema === "gumus" ? "hap" : undefined, id: "mk" + tema }));
+  }
+  function durumYaz() {
+    temaBtn.textContent = "Tema: " + (tema === "gece" ? "Gece Mavisi" : "Gümüş");
+    temaBtn.setAttribute("aria-pressed", String(tema === "gumus"));
+    azaltBtn.setAttribute("aria-pressed", String(azalt));
+    yavasBtn.setAttribute("aria-pressed", String(yavas));
+  }
+  function oynat() {
+    var bas = performance.now();
+    GIRIS.oynat({
+      kap: tel, uygulama: uyg, azalt: azalt, hiz: yavas ? 4 : 1,
+      titret: function () {
+        isaret.classList.add("yanik"); setTimeout(function () { isaret.classList.remove("yanik"); }, 220);
+        if (navigator.vibrate) { try { navigator.vibrate(8); } catch (e) {} }
+      },
+      bitince: function () { sure.textContent = "toplam " + Math.round(performance.now() - bas) + " ms"; }
+    });
+  }
+  document.getElementById("tekrar").onclick = oynat;
+  temaBtn.onclick = function () { tema = tema === "gece" ? "gumus" : "gece"; uyg.className = "uyg " + tema; tel.className = "tel " + tema; markaCiz(); durumYaz(); oynat(); };
+  azaltBtn.onclick = function () { azalt = !azalt; durumYaz(); oynat(); };
+  yavasBtn.onclick = function () { yavas = !yavas; durumYaz(); oynat(); };
+  markaCiz(); durumYaz();
+  setTimeout(oynat, 300);
+})();
+</script>
+</body>
+</html>
