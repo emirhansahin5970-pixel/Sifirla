@@ -53,6 +53,9 @@
   .giris .giris-logo svg { display: block; width: calc(var(--splash-oran, 0.26) * var(--uzun-kenar, 760px)); height: auto; overflow: visible; }
   .giris .logo-tus, .giris .logo-sifir { transform-box: fill-box; transform-origin: 50% 50%; will-change: transform, opacity; }
   .giris .iz { transform-box: fill-box; transform-origin: 0% 50%; opacity: 0; will-change: transform, opacity; }
+  .giris .giris-flas { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; will-change: transform, opacity;
+    background: radial-gradient(circle, #FFFFFF 0, rgba(255,248,232,.95) 12%, rgba(251,228,191,.7) 26%, rgba(227,200,143,.28) 46%, rgba(227,200,143,0) 70%); }
+  .giris .giris-perde { position: absolute; inset: 0; background: #FFF1D6; opacity: 0; pointer-events: none; will-change: opacity; }
   .uyg.giris-bekliyor { opacity: 0; transform: scale(.985); }
 </style>
 </head>
@@ -83,7 +86,7 @@
       <li><b>0–150 ms</b> — durağan logo (splash ile aynı kare).</li>
       <li><b>150–450 ms</b> — gümüş tuş geldiği yuvaya geri çekilir, yay gibi kurulur.</li>
       <li><b>450–950 ms</b> — yuvadan çıkıp "0"a kadar uzun yol boyunca hızlanarak kayar (ease-in), arkasında gümüş ışık izi uzar.</li>
-      <li><b>950 ms</b> — tuş "0"a değer: "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
+      <li><b>950 ms</b> — tuş "0"a değer: kısa bir ışık flaşı çakar (≈50 ms'de tepe, 330 ms'de söner), "0" şampanya ışık zerreciklerine dağılır, ince bir ışık halkası doğar; aynı anda tek, çok hafif titreşim.</li>
       <li><b>950–1550 ms</b> — halka büyüyüp ekranı doldurur; arayüz halkanın içinden belirir (%98,5 → %100, saydam → net).</li>
       <li><b>≈1,6 s</b> — katman kalkar. Veri hazırlığı bu sırada arka planda sürer.</li>
     </ol>
@@ -101,7 +104,7 @@
 var GIRIS = (function () {
   "use strict";
   var ZEMIN = "#0C1F3D";                 // logo/splash laciverti
-  var SAMPANYA = ["#FBE4BF", "#E3C88F", "#D3B48E", "#F6D9A6"];
+  var SAMPANYA = ["#FFF8EA", "#FBE4BF", "#E3C88F", "#F6D9A6", "#FFFFFF"];
   var aktif = null;
 
   function kolayGiris(t) { return t * t * t; }                            // ease-in
@@ -207,22 +210,41 @@ var GIRIS = (function () {
       var kk = kap.getBoundingClientRect(), sk = sifir.getBoundingClientRect();
       merkez = { x: sk.left + sk.width / 2 - kk.left, y: sk.top + sk.height / 2 - kk.top };
       sifirKutu = sk;
-      anim(sifir, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(1.18)", opacity: 0 }],
-        { duration: 170 * hiz, easing: "cubic-bezier(.2,.8,.2,1)" });
+      anim(sifir, [{ transform: "scale(1)", opacity: 1 }, { transform: "scale(1.3)", opacity: 0 }],
+        { duration: 140 * hiz, easing: "cubic-bezier(.2,.8,.2,1)" });
       if (o.titret) o.titret();
+      flasPatlat(merkez, sk.height / 2);
       zerreleriBaslat();
       anim(logoKap, [{ opacity: 1, transform: "translate(-50%,-50%) scale(1)" }, { opacity: 0, transform: "translate(-50%,-50%) scale(1.06)" }],
         { delay: 90 * hiz, duration: 220 * hiz, easing: "ease-in" });
       uygulamayiGoster(520, 60);
     });
 
+    // Flaş: logonun da üstünde, tek seferlik kısa ışık patlaması (yalnızca transform/opacity).
+    // Tek parlama, tekrar yok — ışığa duyarlılık için güvenli; Hareketi Azalt'ta hiç çalışmaz.
+    function flasPatlat(m, r0) {
+      var cap = r0 * 9;
+      var flas = document.createElement("div");
+      flas.className = "giris-flas";
+      flas.style.cssText = "left:" + (m.x - cap / 2) + "px;top:" + (m.y - cap / 2) + "px;width:" + cap + "px;height:" + cap + "px";
+      var perde = document.createElement("div");
+      perde.className = "giris-perde";
+      kat.appendChild(perde); kat.appendChild(flas);
+      anim(flas, [
+        { opacity: 0, transform: "scale(.25)" },
+        { opacity: 1, transform: "scale(.7)", offset: .14, easing: "cubic-bezier(.2,.7,.3,1)" },
+        { opacity: 0, transform: "scale(1.5)" }
+      ], { duration: 380 * hiz });
+      anim(perde, [{ opacity: 0 }, { opacity: .2, offset: .15 }, { opacity: 0 }], { duration: 260 * hiz, easing: "ease-out" });
+    }
+
     // Canvas: zerrecikler + büyüyen halka (halkanın içi delik → arayüz görünür)
     var zerre = [], t0 = 0;
     function zerreleriBaslat() {
       var r0 = sifirKutu.height / 2;
-      for (var i = 0; i < 46; i++) {
-        var a = (i / 46) * Math.PI * 2 + Math.random() * .25;
-        var hz = (0.9 + Math.random() * 1.1) * r0 * 2.6;           // px/sn ölçeği
+      for (var i = 0; i < 64; i++) {
+        var a = (i / 64) * Math.PI * 2 + Math.random() * .25;
+        var hz = (0.9 + Math.random() * 1.4) * r0 * 3.4;           // px/sn ölçeği
         zerre.push({
           x: merkez.x + Math.cos(a) * r0 * .55, y: merkez.y + Math.sin(a) * r0 * .7,
           vx: Math.cos(a) * hz, vy: Math.sin(a) * hz,
@@ -259,8 +281,8 @@ var GIRIS = (function () {
         c.beginPath(); c.arc(merkez.x, merkez.y, r, 0, Math.PI * 2); c.stroke();
         c.shadowBlur = 0;
       }
-      // zerrecikler (sürtünmeli, sönerek)
-      var dt = 1 / 60;
+      // zerrecikler (sürtünmeli, sönerek) — toplamalı karışım: üst üste binen yerler parlar
+      c.globalCompositeOperation = "lighter";
       for (var i = 0; i < zerre.length; i++) {
         var z = zerre[i], yas = gecen / z.omur;
         if (yas >= 1) continue;
@@ -271,6 +293,7 @@ var GIRIS = (function () {
         c.beginPath(); c.arc(x, y, z.r * (1 - yas * .4), 0, Math.PI * 2); c.fill();
       }
       c.globalAlpha = 1;
+      c.globalCompositeOperation = "source-over";
       if (p < 1) rafId = requestAnimationFrame(kare);
       else { bitti = true; kat.remove(); aktif = null; if (o.bitince) o.bitince(); }
     }
