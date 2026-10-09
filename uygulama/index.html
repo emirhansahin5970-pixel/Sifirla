@@ -876,6 +876,24 @@
   tr.buay-odendi td { color: var(--text-muted); }
   /* Dar ekranda tablo yatay kaysa da [Öde] hep görünür: son sütun yapışkan */
   .buay-tablo td:last-child, .buay-tablo th:last-child { position: sticky; right: 0; background: var(--surface); padding-left: 8px; }
+  /* Telefonda tablo yerine satır kartı: ad üstte, üç tutar etiketli yan yana,
+     [Öde] tam genişlikte altta — yatay kaydırma ve kesilen rakam yok */
+  @media (max-width: 600px) {
+    .buay-tablo, .buay-tablo tbody, .buay-tablo tfoot { display: block; }
+    .buay-tablo thead { display: none; }
+    .buay-tablo tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .buay-tablo tbody td { display: block; padding: 0; border: 0; position: static; background: none; min-width: 0; }
+    .buay-tablo tbody td:first-child { grid-column: 1 / -1; font-weight: 600; font-size: 1rem; line-height: 1.35; }
+    .buay-tablo tbody td.num { text-align: left; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .buay-tablo tbody td.num::before { content: attr(data-et); display: block; font-size: 11.5px; font-weight: 500; color: var(--text-muted); margin-bottom: 2px; }
+    .buay-tablo tbody td:last-child { grid-column: 1 / -1; padding: 4px 0 0; }
+    .buay-tablo tbody td:last-child:empty { display: none; }
+    .buay-tablo tbody td:last-child .ode-btn { width: 100%; justify-content: center; }
+    .buay-tablo tfoot tr { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0 2px; }
+    .buay-tablo tfoot th { border: 0; padding: 0; position: static; background: none; }
+    .buay-tablo tfoot th:empty { display: none; }
+    .buay-tablo tfoot th.num { font-size: 1.05rem; }
+  }
   .detay-ust { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
   .detay-ust h2 { margin: 0; font-size: 22px; }
   /* Büyük ilerleme çubuğu: % ödendi */
@@ -8123,9 +8141,9 @@ const ARAYUZ = () => {
         return `
         <tr${odendi ? ' class="buay-odendi"' : ""}>
           <td>${kacis(o.ad)}${taksitEtiketi} ${o.kapaniyor ? `<span class="badge ok">${s.kapaniyor}</span>` : ""}${odendi ? ` <span class="badge ok">✓ ${s.odendiEtiket}</span>` : ""}</td>
-          <td class="num">${paraFmt.format(o.asgari)}</td>
-          <td class="num">${o.ekstra > 0.005 ? paraFmt.format(o.ekstra) : "—"}</td>
-          <td class="num"><strong>${paraFmt.format(hedefT)}</strong></td>
+          <td class="num" data-et="${s.thAsgari}">${paraFmt.format(o.asgari)}</td>
+          <td class="num" data-et="${s.thEkstra}">${o.ekstra > 0.005 ? paraFmt.format(o.ekstra) : "—"}</td>
+          <td class="num" data-et="${s.thBuAy}"><strong>${paraFmt.format(hedefT)}</strong></td>
           <td>${bi >= 0 ? `<button type="button" class="ode-btn mini${odendi ? " ghost" : ""}" data-buay-ode="${bi}">${ODE_IKON}${s.btnOde}</button>` : ""}</td>
         </tr>`;
       }).join("");
