@@ -84,6 +84,9 @@ açılır; GitHub'ın otomatik Let's Encrypt sertifikası bunu karşılar.
 2. Yerel test: `python3 -m http.server 8642` → `http://localhost:8642/uygulama/`
    Konsolda "motor öz-testleri: N/N geçti" satırını gör.
 3. `git add -A && git commit && git push` → Pages 1–2 dakikada yayına alır.
+4. **App Store paketi öncesi:** `uygulama/test-ayar.js` (test telefonu Pro anahtarı)
+   SİLİNMİŞ olmalı, sonra `npx cap sync ios`. Uygulamada kırmızı "TEST · Pro"
+   etiketi görünüyorsa paket GÖNDERİLMEZ.
 
 ## Yerel geliştirme
 ```bash

@@ -11,14 +11,14 @@
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 2000,
-      "launchAutoHide": true,
-      "backgroundColor": "#0A1220",
+      "launchAutoHide": false,
+      "backgroundColor": "#0C1F3D",
       "showSpinner": false,
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",
       "splashFullScreen": true,
-      "splashImmersive": false
+      "splashImmersive": false,
+      "launchFadeOutDuration": 0
     },
     "LocalNotifications": {
       "smallIcon": "ic_stat_sifirla",

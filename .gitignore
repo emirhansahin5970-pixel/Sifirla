@@ -37,3 +37,6 @@ android/app/src/main/assets/public/
 *.aab
 *.keystore
 *.jks
+
+# Test telefonu ayarı (Pro anahtarı) — ASLA commit edilmez, mağaza paketine girmemeli
+uygulama/test-ayar.js

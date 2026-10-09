@@ -94,7 +94,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v11`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v12`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -148,6 +148,15 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Capacitor:** iOS (simülatörde çalıştı, veri UserDefaults'ta doğrulandı) +
   Android (APK derlendi). Yerel bildirimler, haptics, durum çubuğu, Android
   geri tuşu, klavye.
+- **Yeni logo** (`ozellik/logo-uygula`): şampanya "0" + ← tuşlu gümüş hap.
+  Tek kaynak `tasarim/logo-ciz.js` (uygulamada satır içi kopyası var);
+  tüm ikon/splash PNG'leri `node tasarim/ikon-uret.js` ile üretilir (iOS açık/
+  koyu/renkli ikon, iOS+Android splash, PWA, favicon, Android uyarlanır ikon).
+  Native ve ana ekran PWA'sında soğuk açılışta giriş animasyonu (`GIRIS`):
+  splash (`launchAutoHide: false`, zemin `#0C1F3D`, logo = 0.26 × uzun kenar)
+  ile piksel aynı ilk kareden başlar; splash ilk kare çizilince kaldırılır.
+  Dokunmak atlatır, Hareketi Azalt'ta yalnızca kısa geçiş. Tanıtım sitesi de
+  yeni logoya geçti.
 
 ---
 
@@ -222,6 +231,20 @@ npx cap open android
   Inspector gerekir.
 
 ---
+
+## Test telefonu: Pro anahtarı
+
+Gerçek iPhone'da Pro'yu denemek için `uygulama/test-ayar.js` dosyası
+oluşturulur (`.gitignore`'da, depoya ASLA girmez):
+
+```js
+window.SIFIRLA_TEST = { pro: true };
+```
+
+Yalnızca native pakette okunur; açıkken ekranın üstünde kırmızı
+**TEST · Pro** etiketi durur. **App Store'a göndermeden önce bu dosya
+silinir** ve `npx cap sync ios` çalıştırılır — silinince Pro bir sonraki
+açılışta kendiliğinden kapanır.
 
 ## Depo kuralları
 

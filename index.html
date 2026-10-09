@@ -8,7 +8,9 @@
 <link rel="canonical" href="https://sifirla.app/">
 <meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0A1220" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='108' fill='%230A1220'/%3E%3Cpath d='M435.2 224.4 A182 182 0 1 1 341.4 95.3' fill='none' stroke='%23C6D2E2' stroke-width='46' stroke-linecap='round'/%3E%3Crect x='194' y='288' width='124' height='112' rx='20' fill='%23C6D2E2'/%3E%3Cpath d='M222 288 L222 256 A34 34 0 0 1 282 234' fill='none' stroke='%23C6D2E2' stroke-width='26' stroke-linecap='round'/%3E%3Cpath d='M293 248 L290 288' fill='none' stroke='%23C6D2E2' stroke-width='26' stroke-linecap='round'/%3E%3Ccircle cx='341' cy='95' r='16' fill='%23E3C88F'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="uygulama/icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="uygulama/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="uygulama/icons/apple-touch-icon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sifirla.app/">
 <meta property="og:title" content="Sıfırla — Borcunu sıfırla.">
@@ -100,7 +102,7 @@
   header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.5) blur(10px);border-bottom:1px solid var(--border)}
   .ust{display:flex;align-items:center;justify-content:space-between;height:60px}
   .marka{display:flex;align-items:center;gap:9px;font-family:var(--font-baslik);font-weight:700;font-size:20px;letter-spacing:-0.02em;color:var(--accent-strong)}
-  .marka svg{width:26px;height:26px;color:var(--accent);flex:none}
+  .marka svg{height:22px;width:auto;flex:none;display:block;overflow:visible;transform:translateY(1px)}
   .marka .mi{position:relative}
   .marka .mi::after{content:"";position:absolute;top:-.02em;left:50%;transform:translateX(-50%);width:.12em;height:.12em;border-radius:50%;background:var(--sicak)}
   .araclar{display:flex;align-items:center;gap:8px}
@@ -139,16 +141,16 @@
 
   /* ---- Hero ---- */
   .hero{overflow:visible;text-align:center;padding:76px 0 40px}
-  .hero-logo{position:relative;width:96px;height:96px;margin:0 auto 22px;color:var(--accent)}
+  .hero-logo{position:relative;width:200px;margin:0 auto 26px}
   .hero-logo::before{content:"";position:absolute;inset:-55%;z-index:-1;border-radius:50%;
     background:radial-gradient(circle closest-side,var(--aura),transparent 72%)}
   @media (prefers-reduced-motion:no-preference){.hero-logo::before{animation:nefes 8s ease-in-out infinite}}
   @keyframes nefes{0%,100%{opacity:.6;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
-  .hero-logo svg{width:100%;height:100%;display:block}
-  .hero-ring{stroke-dasharray:1000}
-  .js .hero-ring{stroke-dashoffset:1000}
-  .js.yuklendi .hero-ring,.yuklendi .hero-ring{animation:ringCiz 1.5s .25s cubic-bezier(.6,0,.2,1) forwards}
-  @keyframes ringCiz{to{stroke-dashoffset:0}}
+  .hero-logo svg{width:100%;height:auto;display:block;overflow:visible}
+  .hero-logo .logo-tus{transform-box:fill-box}
+  .js .hero-logo .logo-tus{transform:translateX(160%)}
+  .js.yuklendi .hero-logo .logo-tus,.yuklendi .hero-logo .logo-tus{animation:tusKay 1s .3s cubic-bezier(.5,0,.2,1) forwards}
+  @keyframes tusKay{to{transform:translateX(0)}}
   .hero h1{font-size:clamp(42px,9vw,70px);font-weight:700}
   .hero .slogan{font-size:clamp(20px,4.5vw,28px);font-weight:600;color:var(--text);margin-top:6px}
   .hero p.aciklama{max-width:560px;margin:18px auto 0;color:var(--text-muted);font-size:17px}
@@ -258,7 +260,7 @@
     *{animation:none !important;transition-duration:.001ms !important}
     .reveal{opacity:1;transform:none}
     .hero .anim{opacity:1;transform:none}
-    .hero-ring{stroke-dashoffset:0}
+    .hero-logo .logo-tus{transform:none !important}
     .blob{animation:none !important}
     .imlec{display:none}
   }
@@ -274,7 +276,7 @@
 <header>
   <div class="wrap ust">
     <a class="marka" href="#" aria-label="Sıfırla">
-      <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M435.2 224.4 A182 182 0 1 1 341.4 95.3" fill="none" stroke="currentColor" stroke-width="42" stroke-linecap="round"/><circle cx="341.4" cy="95.3" r="9" fill="var(--sicak,#E3C88F)"/><path fill-rule="evenodd" fill="currentColor" d="M214 290 L298 290 A18 18 0 0 1 316 308 L316 376 A18 18 0 0 1 298 394 L214 394 A18 18 0 0 1 196 376 L196 308 A18 18 0 0 1 214 290 Z M245 334 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M251 345 L261 345 L265 373 L247 373 Z"/><path d="M222 290 L222 258 A34 34 0 0 1 282 236" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"/><path d="M292 250 L290 290" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"/><path d="M288 232 l6 10 -6 10 -6 -10 Z" fill="var(--sicak,#E3C88F)"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-798 -346 1596 692" aria-hidden="true"><defs><linearGradient id="suh" gradientUnits="userSpaceOnUse" x1="-792" y1="0" x2="792" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.52" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="sus" gradientUnits="userSpaceOnUse" x1="-697" y1="0" x2="-295" y2="0"><stop offset="0" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/><stop offset="0.47" style="stop-color:var(--logo-sampanya-orta,#FBE4BF)"/><stop offset="1" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/></linearGradient><linearGradient id="sut" gradientUnits="userSpaceOnUse" x1="-178" y1="0" x2="178" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="suy" gradientUnits="userSpaceOnUse" x1="129" y1="0" x2="697" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.6" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="sur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--logo-gumus-ust,#DEDFE1)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-alt,#97989A)"/></linearGradient></defs><path d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z" style="fill:var(--logo-zemin,#0C1F3D)"/><path class="logo-hap" d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z M-452,-288A288,288 0 0 0 -740,0V0A288,288 0 0 0 -452,288H452A288,288 0 0 0 740,0V0A288,288 0 0 0 452,-288Z" fill="url(#suh)"/><path class="logo-hap-cizgi" d="M-452,-288H452A288,288 0 0 1 740,0V0A288,288 0 0 1 452,288H-452A288,288 0 0 1 -740,0V0A288,288 0 0 1 -452,-288Z M-452,-280A280,280 0 0 0 -732,0V0A280,280 0 0 0 -452,280H452A280,280 0 0 0 732,0V0A280,280 0 0 0 452,-280Z" style="fill:var(--logo-gumus-ic,#6B6C70)"/><path class="logo-sifir" d="M-496,-240C-375.4,-240 -295,-144 -295,0C-295,144 -375.4,240 -496,240C-616.6,240 -697,144 -697,0C-697,-144 -616.6,-240 -496,-240Z M-496,-156C-554.8,-156 -594,-93.6 -594,0C-594,93.6 -554.8,156 -496,156C-437.2,156 -398,93.6 -398,0C-398,-93.6 -437.2,-156 -496,-156Z" fill="url(#sus)"/><g class="logo-tus"><path d="M-129,-207H129A78,78 0 0 1 207,-129V129A78,78 0 0 1 129,207H-129A78,78 0 0 1 -207,129V-129A78,78 0 0 1 -129,-207Z" fill="url(#sur)"/><path d="M-128,-178H128A50,50 0 0 1 178,-128V128A50,50 0 0 1 128,178H-128A50,50 0 0 1 -178,128V-128A50,50 0 0 1 -128,-178Z" fill="url(#sut)"/><path class="logo-ok" d="M-12.387301627791913,-80L-92.38730162779191,0L-12.387301627791913,80M-92.38730162779191,0H123.5" fill="none" style="stroke:var(--logo-ok,#0C1F3D)" stroke-width="44" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path class="logo-yuva" d="M129,-240H457A240,240 0 0 1 457,240H129A111,111 0 0 0 217.5,196H457A196,196 0 0 0 457,-196H217.5A111,111 0 0 0 129,-240Z" fill="url(#suy)"/></svg>
       <span>S<span class="mi">ı</span>fırla</span>
     </a>
     <div class="araclar">
@@ -290,7 +292,7 @@
   <section class="hero">
     <div class="wrap">
       <div class="hero-logo anim" style="--d:0ms" aria-hidden="true">
-        <svg viewBox="0 0 512 512"><path class="hero-ring" d="M435.2 224.4 A182 182 0 1 1 341.4 95.3" fill="none" stroke="currentColor" stroke-width="42" stroke-linecap="round"/><circle cx="341.4" cy="95.3" r="9" fill="var(--sicak,#E3C88F)"/><path fill-rule="evenodd" fill="currentColor" d="M214 290 L298 290 A18 18 0 0 1 316 308 L316 376 A18 18 0 0 1 298 394 L214 394 A18 18 0 0 1 196 376 L196 308 A18 18 0 0 1 214 290 Z M245 334 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M251 345 L261 345 L265 373 L247 373 Z"/><path d="M222 290 L222 258 A34 34 0 0 1 282 236" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"/><path d="M292 250 L290 290" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"/><path d="M288 232 l6 10 -6 10 -6 -10 Z" fill="var(--sicak,#E3C88F)"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-798 -346 1596 692" aria-hidden="true"><defs><linearGradient id="shh" gradientUnits="userSpaceOnUse" x1="-792" y1="0" x2="792" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.52" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shs" gradientUnits="userSpaceOnUse" x1="-697" y1="0" x2="-295" y2="0"><stop offset="0" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/><stop offset="0.47" style="stop-color:var(--logo-sampanya-orta,#FBE4BF)"/><stop offset="1" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/></linearGradient><linearGradient id="sht" gradientUnits="userSpaceOnUse" x1="-178" y1="0" x2="178" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shy" gradientUnits="userSpaceOnUse" x1="129" y1="0" x2="697" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.6" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--logo-gumus-ust,#DEDFE1)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-alt,#97989A)"/></linearGradient></defs><path d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z" style="fill:var(--logo-zemin,#0C1F3D)"/><path class="logo-hap" d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z M-452,-288A288,288 0 0 0 -740,0V0A288,288 0 0 0 -452,288H452A288,288 0 0 0 740,0V0A288,288 0 0 0 452,-288Z" fill="url(#shh)"/><path class="logo-hap-cizgi" d="M-452,-288H452A288,288 0 0 1 740,0V0A288,288 0 0 1 452,288H-452A288,288 0 0 1 -740,0V0A288,288 0 0 1 -452,-288Z M-452,-280A280,280 0 0 0 -732,0V0A280,280 0 0 0 -452,280H452A280,280 0 0 0 732,0V0A280,280 0 0 0 452,-280Z" style="fill:var(--logo-gumus-ic,#6B6C70)"/><path class="logo-sifir" d="M-496,-240C-375.4,-240 -295,-144 -295,0C-295,144 -375.4,240 -496,240C-616.6,240 -697,144 -697,0C-697,-144 -616.6,-240 -496,-240Z M-496,-156C-554.8,-156 -594,-93.6 -594,0C-594,93.6 -554.8,156 -496,156C-437.2,156 -398,93.6 -398,0C-398,-93.6 -437.2,-156 -496,-156Z" fill="url(#shs)"/><g class="logo-tus"><path d="M-129,-207H129A78,78 0 0 1 207,-129V129A78,78 0 0 1 129,207H-129A78,78 0 0 1 -207,129V-129A78,78 0 0 1 -129,-207Z" fill="url(#shr)"/><path d="M-128,-178H128A50,50 0 0 1 178,-128V128A50,50 0 0 1 128,178H-128A50,50 0 0 1 -178,128V-128A50,50 0 0 1 -128,-178Z" fill="url(#sht)"/><path class="logo-ok" d="M-12.387301627791913,-80L-92.38730162779191,0L-12.387301627791913,80M-92.38730162779191,0H123.5" fill="none" style="stroke:var(--logo-ok,#0C1F3D)" stroke-width="44" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path class="logo-yuva" d="M129,-240H457A240,240 0 0 1 457,240H129A111,111 0 0 0 217.5,196H457A196,196 0 0 0 457,-196H217.5A111,111 0 0 0 129,-240Z" fill="url(#shy)"/></svg>
       </div>
       <h1 class="grad anim" style="--d:80ms">Sıfırla</h1>
       <p class="slogan anim" style="--d:160ms" data-en="Zero out your debt.">Borcunu sıfırla.</p>

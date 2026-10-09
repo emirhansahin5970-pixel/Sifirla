@@ -7,7 +7,7 @@
     "sync": "npx cap sync",
     "ios": "npx cap open ios",
     "android": "npx cap open android",
-    "assets": "npx @capacitor/assets generate --iconBackgroundColor '#0A1220' --iconBackgroundColorDark '#0A1220' --splashBackgroundColor '#0A1220' --splashBackgroundColorDark '#0A1220'"
+    "ikonlar": "node tasarim/ikon-uret.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.2",
