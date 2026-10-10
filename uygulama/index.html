@@ -1021,14 +1021,24 @@
     .iy-dev { background: linear-gradient(168deg, var(--rakam-a) 6%, var(--rakam-b) 80%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 28px var(--rakam-glow); }
   }
   .iy-dev-alt { margin-top: 6px; font-size: 14px; color: var(--text-muted); }
-  .iy-tablo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px 10px; max-width: 460px; margin: 0 auto; }
-  .iy-kolon { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding-bottom: 2px; }
-  .iy-kolon.iy-a { color: var(--text-muted); }
-  .iy-kolon.iy-b { color: var(--sicak); }
-  .iy-etiket { grid-column: 1 / -1; margin-top: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); }
-  .iy-deger { min-width: 0; overflow-wrap: anywhere; border-radius: 12px; padding: 10px 8px; font-size: 17px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
-  .iy-deger.iy-a { background: var(--surface-2); color: color-mix(in srgb, var(--danger) 45%, var(--text-muted)); font-weight: 600; }
-  .iy-deger.iy-b { background: color-mix(in srgb, var(--sicak) 13%, transparent); border: 1px solid color-mix(in srgb, var(--sicak) 35%, transparent); color: var(--accent-strong); }
+  /* İki yol: iki kendi kendine yeten kart — başlık + 3 satır (etiket üstte, rakam altta) */
+  .iy-ikili { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; max-width: 460px; margin: 0 auto; text-align: left; }
+  .iy-yol { border-radius: 16px; padding: 14px 12px 6px; min-width: 0; }
+  .iy-yol-a { background: var(--surface-2); border: 1px solid var(--border); }
+  .iy-yol-b { background: color-mix(in srgb, var(--sicak) 12%, transparent); border: 1px solid color-mix(in srgb, var(--sicak) 40%, transparent); }
+  .iy-yol-bas { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; line-height: 1.25; margin-bottom: 10px; }
+  .iy-yol-a .iy-yol-bas { color: var(--text-muted); }
+  .iy-yol-b .iy-yol-bas { color: var(--sicak); }
+  .iy-yol-ikon { flex: none; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800; }
+  .iy-yol-a .iy-yol-ikon { color: var(--danger); background: color-mix(in srgb, var(--danger) 15%, transparent); }
+  .iy-yol-b .iy-yol-ikon { color: var(--surface); background: var(--sicak); }
+  .iy-yol dl { margin: 0; }
+  .iy-yol dt { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .iy-yol dd { margin: 1px 0 10px; font-size: 17px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .iy-yol-a dd { color: color-mix(in srgb, var(--danger) 45%, var(--text-muted)); font-weight: 600; }
+  .iy-yol-b dd { color: var(--accent-strong); }
+  .iy-kay-ipucu { margin-top: 6px; }
+  .iy-grafik-bas { max-width: 520px; margin: 22px auto 0; text-align: left; font-size: 14px; font-weight: 600; color: var(--text); }
   .iy-cumle { max-width: 34em; margin: 20px auto 0; font-size: 16px; line-height: 1.5; }
   .iy-cumle strong, .iy-hayat strong, .iy-genel strong { color: var(--accent-strong); }
   .iy-hayat { max-width: 34em; margin: 10px auto 0; font-size: 15px; color: var(--sicak); font-weight: 600; }
@@ -1037,7 +1047,7 @@
   .iy-kay-lbl { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; }
   .iy-kay-lbl strong { font-size: 18px; color: var(--accent-strong); font-variant-numeric: tabular-nums; }
   #iySlider { width: 100%; accent-color: var(--sicak); margin-top: 6px; }
-  .iy-grafik { max-width: 520px; margin: 18px auto 0; }
+  .iy-grafik { max-width: 520px; margin: 8px auto 0; }
   .iy-grafik svg { width: 100%; height: auto; display: block; }
   .iy-lejant { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
   .iy-lejant i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
@@ -2039,18 +2049,24 @@ var GIRIS = (function () {
       <p class="iy-dev" id="iyDev">—</p>
       <p class="iy-dev-alt" id="iyDevAlt"></p>
     </div>
-    <div class="iy-tablo">
-      <p class="iy-kolon iy-a" data-i18n="iy_a">Sadece asgari</p>
-      <p class="iy-kolon iy-b" data-i18n="iy_b">Planınla</p>
-      <p class="iy-etiket" data-i18n="iy_bitis">Borçsuz tarih</p>
-      <p class="iy-deger iy-a" id="iyABitis">—</p>
-      <p class="iy-deger iy-b" id="iyBBitis">—</p>
-      <p class="iy-etiket" id="iyFaizEt">Toplam faiz</p>
-      <p class="iy-deger iy-a" id="iyAFaiz">—</p>
-      <p class="iy-deger iy-b" id="iyBFaiz">—</p>
-      <p class="iy-etiket" data-i18n="iy_odeme">Toplam ödeme</p>
-      <p class="iy-deger iy-a" id="iyAOdeme">—</p>
-      <p class="iy-deger iy-b" id="iyBOdeme">—</p>
+    <!-- İki yol yan yana: her kart kendi başlığını taşır, kaydırınca anlam kaybolmaz -->
+    <div class="iy-ikili">
+      <div class="iy-yol iy-yol-a">
+        <p class="iy-yol-bas"><span class="iy-yol-ikon" aria-hidden="true">✕</span><span data-i18n="iy_a">Sadece asgari ödersen</span></p>
+        <dl>
+          <dt data-i18n="iy_bitis">Borç biter</dt><dd id="iyABitis">—</dd>
+          <dt class="iy-faiz-et">Ödenecek faiz</dt><dd id="iyAFaiz">—</dd>
+          <dt data-i18n="iy_odeme">Bankaya toplam</dt><dd id="iyAOdeme">—</dd>
+        </dl>
+      </div>
+      <div class="iy-yol iy-yol-b">
+        <p class="iy-yol-bas"><span class="iy-yol-ikon" aria-hidden="true">✓</span><span data-i18n="iy_b">Planınla ödersen</span></p>
+        <dl>
+          <dt data-i18n="iy_bitis">Borç biter</dt><dd id="iyBBitis">—</dd>
+          <dt class="iy-faiz-et">Ödenecek faiz</dt><dd id="iyBFaiz">—</dd>
+          <dt data-i18n="iy_odeme">Bankaya toplam</dt><dd id="iyBOdeme">—</dd>
+        </dl>
+      </div>
     </div>
     <p class="iy-cumle" id="iyCumle"></p>
     <p class="iy-hayat" id="iyHayat" hidden></p>
@@ -2060,8 +2076,10 @@ var GIRIS = (function () {
         <strong id="iyKayDeger">₺0</strong>
       </label>
       <input type="range" id="iySlider" min="0" max="5000" step="50" value="0">
+      <p class="mini-ipucu iy-kay-ipucu" data-i18n="iy_kay_ipucu">Asgari ödemelerin üstüne her ay eklediğin tutar. Kaydır, sonuç anında değişsin.</p>
       <p class="mini-ipucu" id="iyKayNot" hidden></p>
     </div>
+    <p class="iy-grafik-bas" data-i18n="iy_grafik_bas">Kalan borcun ay ay nasıl azalır?</p>
     <div class="iy-grafik" id="iyGrafik"></div>
     <p class="mini-ipucu iy-not-satir" id="iyNotlar" hidden></p>
     <details class="iy-detay">
@@ -3039,9 +3057,10 @@ const SOZLUK = {
       hayat_h: "Önlenen Faizin Karşılığı",
       hd_h: "Hedef koy", hd_alt: "Borçsuz olmak istediğin ayı seç; ayda ne kadar ödemen gerektiğini hesaplayayım.",
       hd_ay: "Ay", hd_yil: "Yıl", hd_uygula: "Bu planı uygula", hd_kaldir: "Hedefi kaldır",
-      iy_h: "İki Yol", iy_a: "Sadece asgari", iy_b: "Planınla",
-      iy_bitis: "Borçsuz tarih", iy_odeme: "Toplam ödeme",
-      iy_kay: "Ayda fazladan ödersem", iy_detay: "Borç borç: sadece asgariyle",
+      iy_h: "İki Yol", iy_a: "Sadece asgari ödersen", iy_b: "Planınla ödersen",
+      iy_bitis: "Borç biter", iy_odeme: "Bankaya toplam",
+      iy_kay: "Her ay fazladan ödersem", iy_kay_ipucu: "Asgari ödemelerin üstüne her ay eklediğin tutar. Kaydır, sonuç anında değişsin.",
+      iy_grafik_bas: "Kalan borcun ay ay nasıl azalır?", iy_detay: "Borç borç: sadece asgariyle",
       iy_an_tekrar: "O anı yeniden göster", iy_an_btn: "Planımı göster",
       iy_an_ust: "Sadece asgari ödersen",
       iy_not: "Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.",
@@ -3253,7 +3272,7 @@ const SOZLUK = {
       /* İki Yol — "şunu yaparsan şu kadar kazanırsın" tonu; suçlama yok */
       iy: {
         sonuYok: "Sonu yok", hicKapanmaz: "Hiç kapanmıyor", kolonKapanmaz: "Kapanmıyor",
-        devTasarruf: (sure) => "faizden tasarruf" + (sure ? ` · ${sure} erken` : ""),
+        devTasarruf: (sure) => "planınla faize daha az ödersin" + (sure ? ` · ${sure} erken bitirirsin` : ""),
         devErken: "erken biter",
         devKurtarir: "borçsuz tarihin — sadece asgariyle hiç kapanmayacaktı",
         devAyni: "borçsuz tarih — şu an iki yol aynı",
@@ -3274,7 +3293,8 @@ const SOZLUK = {
         hayatOn: "Bu fark kabaca:",
         hayatBos: "Kira ya da market tutarını girersen bu farkı hayata çeviririm.",
         hayatGir: "Tutar gir",
-        lejA: "Sadece asgari", lejB: "Planınla", lejAlan: "Kurtarılan",
+        lejA: "Sadece asgari ödersen", lejB: "Planınla", lejAlan: "Aradaki fark",
+        bitisEtiket: (t) => `${t} · borçsuz`,
         kayKaydedildi: "Planına kaydedildi.",
         /* Tam ekran "gerçek an" */
         anA: (t) => `borçların <strong>${t}</strong> tarihine kadar sürer ve toplam`,
@@ -3583,6 +3603,8 @@ const SOZLUK = {
       hayatMarket: (n) => `${n} ay market`,
       hayatKira: (n) => `${n} ay kira`,
       hayatBilet: (n) => `${n} bilet`,
+      hayatMarketGun: (n) => `${n} günlük market`,
+      hayatKiraGun: (n) => `${n} günlük kira`,
       hayatBos: "Aşağıya kendi referans tutarlarını gir; tasarrufunun hayattaki karşılığını burada gör.",
       hayatYok: "Plan tasarrufu oluştukça (ekstra bütçe ekle) karşılığını burada göreceksin.",
       geriMetin: (g) => `borçsuz olmana <strong>${g} gün</strong>`,
@@ -3748,9 +3770,10 @@ const SOZLUK = {
       hayat_h: "What Your Saved Interest Buys",
       hd_h: "Set a goal", hd_alt: "Pick the month you want to be debt-free; I'll work out how much you need to pay each month.",
       hd_ay: "Month", hd_yil: "Year", hd_uygula: "Apply this plan", hd_kaldir: "Remove goal",
-      iy_h: "Two Paths", iy_a: "Minimum only", iy_b: "With your plan",
-      iy_bitis: "Debt-free date", iy_odeme: "Total paid",
-      iy_kay: "If I pay extra each month", iy_detay: "Debt by debt: minimum only",
+      iy_h: "Two Paths", iy_a: "Minimum payments only", iy_b: "With your plan",
+      iy_bitis: "Debt-free by", iy_odeme: "Total paid to lenders",
+      iy_kay: "If I pay extra each month", iy_kay_ipucu: "The amount you add on top of your minimum payments each month. Drag it and watch the result change.",
+      iy_grafik_bas: "How your remaining debt shrinks, month by month", iy_detay: "Debt by debt: minimum only",
       iy_an_tekrar: "Replay the moment", iy_an_btn: "Show my plan",
       iy_an_ust: "If you pay only the minimum",
       iy_not: "An estimate, not financial advice. Calculated entirely on your device by the plan engine.",
@@ -3962,7 +3985,7 @@ const SOZLUK = {
       /* Two Paths — "do this and you gain this" tone; never blaming */
       iy: {
         sonuYok: "No end", hicKapanmaz: "Never paid off", kolonKapanmaz: "Doesn't close",
-        devTasarruf: (sure) => "saved in interest" + (sure ? ` · ${sure} sooner` : ""),
+        devTasarruf: (sure) => "less interest with your plan" + (sure ? ` · debt-free ${sure} sooner` : ""),
         devErken: "sooner",
         devKurtarir: "your debt-free date — minimums alone would never get there",
         devAyni: "debt-free date — both paths are the same right now",
@@ -3982,7 +4005,8 @@ const SOZLUK = {
         hayatOn: "That difference is roughly:",
         hayatBos: "Enter your rent or grocery amount and I'll translate this into real life.",
         hayatGir: "Enter amounts",
-        lejA: "Minimum only", lejB: "With your plan", lejAlan: "Saved",
+        lejA: "Minimum payments only", lejB: "With your plan", lejAlan: "The gap",
+        bitisEtiket: (t) => `debt-free ${t}`,
         kayKaydedildi: "Saved to your plan.",
         anA: (t) => `your debts last until <strong>${t}</strong> and you pay`,
         anAAlt: "in interest.",
@@ -4281,6 +4305,8 @@ const SOZLUK = {
       hayatMarket: (n) => `${n} months of groceries`,
       hayatKira: (n) => `${n} months of rent`,
       hayatBilet: (n) => `${n} tickets`,
+      hayatMarketGun: (n) => `${n} days of groceries`,
+      hayatKiraGun: (n) => `${n} days of rent`,
       hayatBos: "Enter your own reference amounts below to see what your savings buy in real life.",
       hayatYok: "As your plan starts saving interest (add an extra budget), you'll see its real-life value here.",
       geriMetin: (g) => `<strong>${g} days</strong> to debt-free`,
@@ -7370,19 +7396,23 @@ const ARAYUZ = () => {
     const alan = `M ${aYol.join(" L ")} L ${bYol.slice().reverse().join(" L ")} Z`;
     const taban = H - ALT;
     const bBitti = B.uygulanabilir && nB - 1 < N;
-    const aEtiket = A.hicBitmez || nA > KISIT ? s.eksenAy(N - 1) + " →" : s.eksenAy(nA - 1);
-    const bx = bBitti ? Math.max(44, Math.min(W - 44, gx(nB - 1))) : 0;
+    // Eksen uçları gerçek tarih: "bugün" yerine bu ay, sağda sadece-asgarinin bittiği ay
+    const aEtiket = A.hicBitmez || nA > KISIT ? s.eksenAy(N - 1) + " →" : iyTarih(A.aySayisi);
+    const buAyAd = new Intl.DateTimeFormat(s.yerel, { month: "short", year: "numeric" }).format(new Date());
+    // Planın bittiği nokta: etiket noktanın sağında (sığmazsa solunda), zemin renginde haleyle
+    const bpx = bBitti ? gx(nB - 1) : 0;
+    const bSag = bpx < W - 120;
     $("iyGrafik").innerHTML = `
       <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${kacis(t.lejA + " / " + t.lejB)}">
         <line x1="${SOL}" y1="${taban}" x2="${W - SAG}" y2="${taban}" stroke="var(--border)" stroke-width="1"/>
         <path d="${alan}" fill="var(--sicak)" fill-opacity="0.2"/>
         <path d="M ${aYol.join(" L ")}" fill="none" stroke="var(--danger)" stroke-opacity="0.6" stroke-width="1.6" stroke-dasharray="5 4"/>
         <path d="M ${bYol.join(" L ")}" fill="none" stroke="var(--sicak)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-        ${bBitti ? `<circle cx="${gx(nB - 1).toFixed(1)}" cy="${taban}" r="4.5" fill="var(--sicak)"/>
-          <text x="${bx.toFixed(1)}" y="${taban - 10}" font-size="12" font-weight="700" text-anchor="middle" fill="var(--sicak)">${kacis(iyTarih(B.aySayisi))}</text>` : ""}
+        ${bBitti ? `<circle cx="${bpx.toFixed(1)}" cy="${taban}" r="5" fill="var(--sicak)" stroke="var(--surface)" stroke-width="2"/>
+          <text x="${(bSag ? bpx + 9 : bpx - 9).toFixed(1)}" y="${taban - 9}" font-size="12" font-weight="700" text-anchor="${bSag ? "start" : "end"}" fill="var(--sicak)" stroke="var(--surface)" stroke-width="4" paint-order="stroke" stroke-linejoin="round">${kacis(t.bitisEtiket(iyTarih(B.aySayisi)))}</text>` : ""}
         ${A.hicBitmez ? `<text x="${W - SAG}" y="${UST - 4}" font-size="12" font-weight="700" text-anchor="end" fill="var(--danger)">↑ ∞</text>` : ""}
         <text x="${SOL}" y="${UST - 4}" font-size="12" fill="var(--text-muted)">${paraFmt.format(A.baslangic)}</text>
-        <text x="${SOL}" y="${H - 4}" font-size="12" fill="var(--text-muted)">${s.eksenBugun}</text>
+        <text x="${SOL}" y="${H - 4}" font-size="12" fill="var(--text-muted)">${kacis(buAyAd)}</text>
         <text x="${W - SAG}" y="${H - 4}" font-size="12" text-anchor="end" fill="var(--text-muted)">${kacis(aEtiket)}</text>
       </svg>
       <p class="iy-lejant">
@@ -7429,7 +7459,7 @@ const ARAYUZ = () => {
     $("iyDevAlt").textContent = devAlt;
 
     // 2) İki sütun, hizalı satırlar
-    $("iyFaizEt").textContent = faizEtiketi();
+    document.querySelectorAll(".iy-faiz-et").forEach((e) => { e.textContent = faizEtiketi(); });
     if (!onizleme) {
       $("iyABitis").textContent = A.hicBitmez ? t.hicKapanmaz : iyTarih(A.aySayisi);
       $("iyAFaiz").textContent = A.hicBitmez ? t.sonuYok : paraFmt.format(A.toplamFaiz);
@@ -7469,14 +7499,23 @@ const ARAYUZ = () => {
     if (K.durum === "fark" && K.faizFark >= 1) {
       const r = durum.referanslar;
       const sayi = (v) => (Math.round(v * 10) / 10).toLocaleString(s.yerel);
+      // Ay cinsinden 1'in altındaysa gün olarak söyle ("0,1 ay kira" yerine "3 günlük kira");
+      // 1 günden / 1 biletten az kalemler hiç gösterilmez — "0 bilet" gibi anlamsız satır yok
+      const ayGun = (oran, ayFn, gunFn) => {
+        if (oran >= 1) return ayFn(sayi(oran));
+        const gun = Math.round(oran * 30);
+        return gun >= 1 ? gunFn(gun.toLocaleString(s.yerel)) : null;
+      };
       const kalemler = [];
-      if (r.kira > 0) kalemler.push(s.hayatKira(sayi(K.faizFark / r.kira)));
-      if (r.market > 0) kalemler.push(s.hayatMarket(sayi(K.faizFark / r.market)));
-      if (r.bilet > 0) kalemler.push(s.hayatBilet(Math.floor(K.faizFark / r.bilet).toLocaleString(s.yerel)));
-      hayat.hidden = false;
-      hayat.innerHTML = kalemler.length
-        ? `${t.hayatOn} <strong>${kalemler.join(" · ")}</strong>`
-        : `${t.hayatBos}<button type="button" class="ghost small" data-iy-hayat>${t.hayatGir}</button>`;
+      const refVar = r.kira > 0 || r.market > 0 || r.bilet > 0;
+      if (r.kira > 0) kalemler.push(ayGun(K.faizFark / r.kira, s.hayatKira, s.hayatKiraGun));
+      if (r.market > 0) kalemler.push(ayGun(K.faizFark / r.market, s.hayatMarket, s.hayatMarketGun));
+      if (r.bilet > 0 && K.faizFark / r.bilet >= 1) kalemler.push(s.hayatBilet(Math.floor(K.faizFark / r.bilet).toLocaleString(s.yerel)));
+      const dolu = kalemler.filter(Boolean);
+      hayat.hidden = refVar && dolu.length === 0;
+      hayat.innerHTML = dolu.length
+        ? `${t.hayatOn} <strong>${dolu.join(" · ")}</strong>`
+        : refVar ? "" : `${t.hayatBos}<button type="button" class="ghost small" data-iy-hayat>${t.hayatGir}</button>`;
     } else {
       hayat.hidden = true;
       hayat.innerHTML = "";
