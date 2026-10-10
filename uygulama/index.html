@@ -34,6 +34,7 @@
   // Açılış katmanı (#acilis → giriş animasyonu) yalnızca ana ekrandan açılan
   // PWA'da ve native uygulamada: tarayıcı sekmesinde asla görünmez.
   if (native || kok.classList.contains("standalone")) kok.classList.add("acilis-var");
+  if (native) kok.classList.add("natif");
   if (native) {
     // Yalnızca geliştiricinin test telefonu: depoya GİRMEYEN (gitignore)
     // uygulama/test-ayar.js varsa yüklenir. Mağaza paketinde bu dosya yoktur.
@@ -392,8 +393,40 @@
   @supports ((-webkit-background-clip: text) or (background-clip: text)) {
     .halka-yuzde { background: linear-gradient(172deg, var(--rakam-a) 8%, var(--rakam-b) 74%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 28px var(--rakam-glow); }
   }
-  #heroTarih { font-size: 12px; letter-spacing: 0.05em; opacity: var(--hero-alt-op); }
-  .hero-statlar { display: flex; gap: 48px; justify-content: center; }
+  /* Hero kartı: dokular kartın içinde kalır, sert dikdörtgen kenar oluşmaz */
+  .hero { border-radius: 24px; border: 1px solid var(--border); background: var(--surface); padding: 30px 18px 20px; gap: 22px; }
+  .halka-alt { font-size: 12.5px; font-weight: 500; letter-spacing: 0.02em; color: var(--text-muted); }
+  /* Lejant: halkanın iki parçası — renkli nokta kimliği taşır, rakam metin renginde */
+  .hero-lejant { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 420px; }
+  .hero-lejant > div { padding: 2px 12px; min-width: 0; }
+  .hero-lejant > div + div { border-left: 1px solid var(--border); }
+  .lejant-ad { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .hero-lejant .deger { margin-top: 4px; font-family: var(--font-baslik); font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent-strong); overflow-wrap: anywhere; }
+  #ozetTrend:empty { display: none; }
+  #ozetTrend { margin-top: 2px; }
+  .nokta { width: 9px; height: 9px; border-radius: 50%; flex: none; background: transparent; box-shadow: inset 0 0 0 2px var(--text-muted); opacity: 0.8; }
+  .nokta.dolu { background: linear-gradient(135deg, var(--halka-a), var(--halka-b)); box-shadow: none; opacity: 1; }
+  /* Bu ayın ödemeleri: iç blok + ince çubuk */
+  .ay-ilerleme { width: 100%; max-width: 420px; text-align: left; background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px 13px; }
+  .ay-ust { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .ay-baslik { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .ay-yuzde { font-family: var(--font-baslik); font-size: 17px; font-weight: 800; color: var(--accent-strong); font-variant-numeric: tabular-nums; }
+  .ay-cubuk { height: 8px; margin: 10px 0 9px; border-radius: 999px; background: var(--halka-iz); overflow: hidden; }
+  .ay-cubuk i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--halka-a), var(--halka-b)); transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+  @media (prefers-reduced-motion: reduce) { .ay-cubuk i { transition: none; } }
+  .ay-alt { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .ay-alt strong { color: var(--accent-strong); }
+  .ay-ilerleme.tamam .ay-yuzde { color: var(--sicak); }
+  /* Notlar: ikonlu, sola hizalı kısa satırlar — ince ayraçlarla */
+  .hero-notlar { list-style: none; margin: 0; padding: 0; width: 100%; max-width: 420px; text-align: left; }
+  .hero-notlar li { position: relative; padding: 10px 2px 10px 30px; font-size: 13.5px; line-height: 1.45; color: var(--text-muted); border-top: 1px solid var(--border); }
+  .hero-notlar li[hidden] { display: none; }
+  .hero-notlar li strong { color: var(--accent-strong); }
+  .hero-notlar li::before { content: ""; position: absolute; left: 4px; top: 11px; width: 17px; height: 17px; background: var(--sicak);
+    -webkit-mask: var(--not-ikon) center / contain no-repeat; mask: var(--not-ikon) center / contain no-repeat; }
+  .not-tarih { --not-ikon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 21V4'/%3E%3Cpath d='M5 4h11l-2 4 2 4H5'/%3E%3C/svg%3E"); }
+  .not-faiz { --not-ikon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E"); }
+  .not-hedef { --not-ikon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Ccircle cx='12' cy='12' r='1'/%3E%3C/svg%3E"); }
   .geri-ic { display: flex; align-items: center; gap: 16px; }
   .geri-halka { width: 64px; height: 64px; flex: none; }
   .geri-halka #geriDolu { transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -406,8 +439,6 @@
   body.widget-modu #geriSayimKart { display: flex !important; flex-direction: column; justify-content: center; align-items: center; min-height: 92vh; margin: 0; border: none; box-shadow: none; background: transparent; }
   body.widget-modu #geriSayimKart .no-print { display: none !important; }
   body.widget-modu .alt-nav { display: none !important; }
-  .hero-statlar .deger { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent-strong); font-family: var(--font-baslik); }
-  .hero-statlar .muted { font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; }
   .table-wrap { overflow-x: auto; }
   .progress { display: inline-block; width: 56px; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; vertical-align: middle; margin-right: 0.35rem; }
   .progress-bar { height: 100%; background: var(--gradyan); border-radius: 999px; transform-origin: left; animation: cubukDol 0.6s ease; }
@@ -559,12 +590,40 @@
   .buyuk-cubuk-dolu { height: 100%; background: var(--gradyan); border-radius: 999px; width: 0%; transition: width 0.6s ease; }
   /* Hero: imzalı gradyan yalnızca burada, çok hafif bir yıkama olarak */
   input[type="range"] { width: 100%; border: none; background: transparent; padding: 0; accent-color: var(--accent); cursor: pointer; }
-  #yolculuk svg { width: 100%; height: auto; display: block; }
-  .yol-nabiz { animation: yolNabiz 1.6s ease-out infinite; }
-  @keyframes yolNabiz { 0% { opacity: 0.8; } 70% { opacity: 0; } 100% { opacity: 0; } }
-  .yol-avatar { animation: yolZipla 2s ease-in-out infinite; }
-  @keyframes yolZipla { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-  @media (prefers-reduced-motion: reduce) { .yol-nabiz, .yol-avatar { animation: none; } }
+  /* Kurtuluş Yolculuğu: dikey zaman çizelgesi — sol rayda duraklar */
+  .yol-ust { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; font-size: 13.5px; color: var(--text-muted); }
+  .yol-ust strong { color: var(--accent-strong); }
+  .yol-liste { list-style: none; margin: 0; padding: 0; }
+  .yol-durak { position: relative; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding-bottom: 18px; }
+  .yol-durak:last-child { padding-bottom: 0; }
+  /* Ray: işaretin ortasından bir sonraki durağa */
+  .yol-durak::before { content: ""; position: absolute; left: 13px; top: 22px; bottom: -2px; width: 2px; background: var(--border); }
+  .yol-durak.odendi::before { background: var(--sicak); opacity: 0.7; }
+  .yol-durak:last-child::before { display: none; }
+  .yol-isaret { position: relative; z-index: 1; width: 22px; height: 22px; margin: 1px 0 0 3px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface); box-sizing: border-box; }
+  .yol-durak.odendi .yol-isaret { border-color: var(--sicak); background: var(--sicak); }
+  .yol-durak.odendi .yol-isaret::after { content: ""; position: absolute; left: 6px; top: 2.5px; width: 5px; height: 10px; border: solid var(--surface); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .yol-durak.siradaki .yol-isaret { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .yol-durak.siradaki .yol-isaret::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) { .yol-durak.siradaki .yol-isaret { animation: yolNabiz 2.2s ease-out infinite; } }
+  @keyframes yolNabiz { 0% { box-shadow: 0 0 0 0 var(--accent-soft); } 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .yol-durak.final .yol-isaret { border-radius: 7px; border-color: var(--sicak); background: transparent; }
+  .yol-durak.final .yol-isaret::after { content: ""; position: absolute; inset: 3px; background: var(--sicak);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 21V4'/%3E%3Cpath d='M5 4h11l-2 4 2 4H5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 21V4'/%3E%3Cpath d='M5 4h11l-2 4 2 4H5'/%3E%3C/svg%3E") center / contain no-repeat; }
+  .yol-govde { min-width: 0; }
+  .yol-s1 { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 24px; }
+  .yol-ad { font-weight: 600; font-size: 15px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .yol-durak.odendi .yol-ad { color: var(--text-muted); }
+  .yol-durak.siradaki .yol-ad { color: var(--accent-strong); }
+  .yol-etiket { flex: none; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+  .yol-etiket.ok { color: var(--sicak); background: color-mix(in srgb, var(--sicak) 14%, transparent); }
+  .yol-etiket.sira { color: var(--accent-strong); background: var(--accent-soft); }
+  .yol-cubuk { height: 5px; margin: 8px 0 6px; border-radius: 999px; background: var(--halka-iz); overflow: hidden; }
+  .yol-cubuk i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--halka-a), var(--halka-b)); }
+  .yol-durak.bekliyor .yol-cubuk i { background: var(--accent); opacity: 0.5; }
+  .yol-s2 { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .yol-final-tarih { font-weight: 700; color: var(--sicak); font-size: 14px; }
   .kay-statlar { display: flex; gap: 2.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
   .kay-statlar .deger { font-size: 1.3rem; font-weight: 700; color: var(--accent-strong); }
   .kontroller { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
@@ -660,7 +719,7 @@
   .trend .ikn { width: 12px; height: 12px; }
 
   /* Tipografi disiplini: rakamlar sabit genişlikte hizalansın */
-  .deger, .stat-blok .buyuk, td.num, th.num, .halka-yuzde, .hero-statlar .deger { font-variant-numeric: tabular-nums; }
+  .deger, .stat-blok .buyuk, td.num, th.num, .halka-yuzde, .hero-lejant .deger { font-variant-numeric: tabular-nums; }
 
   /* Faiz yardımcısı: bilmeyen kullanıcıyı engellemeyen küçük rehber */
   .mini-ipucu { margin-top: 4px; font-size: 11.5px; color: var(--text-muted); }
@@ -1077,8 +1136,13 @@
   html.giris-gizli body > :not(.giris):not(#acilis) { opacity: 0; }
   html.giris-gecis body > :not(.giris):not(#acilis) { transition: opacity var(--giris-sure, 300ms) ease-out var(--giris-gecikme, 0ms); }
   @media print { #acilis, .giris { display: none !important; } }
+  /* Native: Safari'ye özel widget ipucu anlamsız; durum çubuğunun arkasında
+     ince bir perde — kaydırılan içerik saat/pil simgeleriyle çakışmaz */
+  html.natif .widget-not { display: none; }
+  html.natif body > .durum-perde { position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); z-index: 900; pointer-events: none;
+    background: color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
   /* Yalnızca test telefonundaki Pro anahtarı açıkken: mağazaya yanlışlıkla gitmesin diye göze batar */
-  .test-etiket { position: fixed; top: calc(env(safe-area-inset-top) + 2px); left: 50%; transform: translateX(-50%); z-index: 950;
+  .test-etiket { position: fixed; top: calc(env(safe-area-inset-top) + 4px); right: 10px; z-index: 950; opacity: 0.85;
     font: 700 10.5px/1 system-ui, sans-serif; letter-spacing: 0.06em; padding: 4px 9px; border-radius: 99px;
     background: #B4232A; color: #fff; pointer-events: none; }
 
@@ -1558,6 +1622,7 @@ var GIRIS = (function () {
 })();
 </script>
 <!-- Açılış katmanı: native splash ile aynı ilk kare; tarayıcı sekmesinde asla görünmez -->
+<div class="durum-perde" aria-hidden="true"></div>
 <div id="acilis" aria-hidden="true">
   <div class="acilis-logo" id="acilisLogo"></div>
 </div>
@@ -1660,27 +1725,37 @@ var GIRIS = (function () {
       </svg>
       <div class="halka-merkez">
         <p class="halka-yuzde sayac" id="genelYuzde">%0</p>
-        <p class="muted" id="heroTarih">—</p>
+        <p class="halka-alt" data-i18n="hero_borcun">borcunun ödendi</p>
       </div>
     </div>
-    <!-- İki Yol hatırlatması: plana uyarak kurtarılan faiz (her açılışta, ödemeyle güncellenir) -->
-    <p class="iy-genel" id="iyGenelSatir" hidden></p>
-    <!-- Hedef takibi: "Hedef: Kasım 2027 · Yoldasın ✓" / "2 ay gerisindesin — ayda X daha" -->
-    <p class="iy-genel hd-genel" id="hedefGenelSatir" hidden></p>
-    <div class="hero-statlar">
+    <!-- Halkanın lejantı: toplam borcun ödenen / kalan kısmı -->
+    <div class="hero-lejant">
       <div>
-        <p class="muted" data-i18n="ozet_bakiye">Toplam bakiye</p>
+        <p class="lejant-ad"><span class="nokta dolu" aria-hidden="true"></span><span data-i18n="hero_odenen">Ödenen</span></p>
+        <p class="deger sayac" id="ozetOdenen">₺0</p>
+      </div>
+      <div>
+        <p class="lejant-ad"><span class="nokta" aria-hidden="true"></span><span data-i18n="hero_kalan">Kalan borç</span></p>
         <p class="deger sayac" id="ozetBakiye">₺0</p>
         <!-- Minik trend: geçen aya göre değişim (rozet sistemindeki aylık kayıtlardan) -->
-        <p id="ozetTrend" style="margin-top:2px"></p>
-      </div>
-      <div>
-        <p class="muted" data-i18n="hero_buay">Bu ay ödenecek</p>
-        <p class="deger sayac" id="ozetOdeme">₺0</p>
+        <p id="ozetTrend"></p>
       </div>
     </div>
-    <!-- Bu ay gerçekte ödenen: kayıtlı ödemelerden, canlı -->
-    <p class="muted" id="ozetBuAySatir" style="margin-top:2px"></p>
+    <!-- Bu ayın ödemeleri: plan hedefinin ne kadarı karşılandı (Bu Ay sekmesiyle aynı mantık) -->
+    <div class="ay-ilerleme" id="ayIlerleme" hidden>
+      <div class="ay-ust">
+        <span class="ay-baslik" data-i18n="hero_ay_baslik">Bu ayın ödemeleri</span>
+        <span class="ay-yuzde sayac" id="ayYuzde">%0</span>
+      </div>
+      <div class="ay-cubuk" id="ayCubuk" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="ayDolu"></i></div>
+      <div class="ay-alt"><span id="ayOdenenTxt"></span><span id="ayKalanTxt"></span></div>
+    </div>
+    <!-- Kısa notlar: borçsuz tarih · plana uyarak kurtarılan faiz · hedef takibi -->
+    <ul class="hero-notlar">
+      <li class="not-tarih" id="heroTarih">—</li>
+      <li class="not-faiz" id="iyGenelSatir" hidden></li>
+      <li class="not-hedef" id="hedefGenelSatir" hidden></li>
+    </ul>
     <!-- Boş durumda birincil çağrı: doğrudan borç kayıt formuna götürür -->
     <button id="heroEkleBtn" class="borcEkleGit no-print" hidden data-i18n="btn_borc_ekle">Borç ekle</button>
   </section>
@@ -1718,7 +1793,7 @@ var GIRIS = (function () {
         <p class="muted" id="geriTarih"></p>
       </div>
     </div>
-    <p class="muted no-print" style="margin-top:12px" data-i18n="geri_not">
+    <p class="muted no-print widget-not" style="margin-top:12px" data-i18n="geri_not">
       Bunu widget gibi kullanmak için: <a href="?widget=1">?widget=1</a> adresini Safari'de açıp
       Paylaş → "Ana Ekrana Ekle" de. Gerçek kilit ekranı widget'ı saf HTML ile yapılamaz;
       bunun için uygulamanın native bir sarmalayıcıya (ör. iOS WidgetKit) taşınması gerekir.
@@ -2960,6 +3035,7 @@ const SOZLUK = {
       slogan: "Borcunu sıfırla.",
       opt_gece: "Gece Mavisi", opt_gumus: "Gümüş", opt_oto: "Otomatik (cihaz ayarı)",
       ozet_bakiye: "Toplam bakiye", hero_buay: "Bu ay ödenecek",
+      hero_borcun: "borcunun ödendi", hero_odenen: "Ödenen", hero_kalan: "Kalan borç", hero_ay_baslik: "Bu ayın ödemeleri",
       hayat_h: "Önlenen Faizin Karşılığı",
       hd_h: "Hedef koy", hd_alt: "Borçsuz olmak istediğin ayı seç; ayda ne kadar ödemen gerektiğini hesaplayayım.",
       hd_ay: "Ay", hd_yil: "Yıl", hd_uygula: "Bu planı uygula", hd_kaldir: "Hedefi kaldır",
@@ -3410,6 +3486,15 @@ const SOZLUK = {
       // Bu ay ödenen: özet göstergesi
       ozetBuAyOdedin: (t) => `Bu ay ödedin: <strong>${t}</strong>`,
       ozetBuAyYok: "Bu ay henüz ödeme eklemedin.",
+      ayOdendi: (o, h) => `<strong>${o}</strong> / ${h}`,
+      ayKaldi: (t) => `${t} kaldı`,
+      ayTamam: "Tamamlandı ✓",
+      yolOzet: (k, n) => `Kapanan: <strong>${k} / ${n}</strong> borç`,
+      yolKapandi: "Kapandı",
+      yolSiradaki: "Sıradaki",
+      yolKapanis: (t) => `Kapanış: ${t}`,
+      yolOdenen: (o, t) => `${o} / ${t} ödendi`,
+      yolBorcsuz: "Borçsuz",
       bhHedefKiyas: (hedef, y) => `Hedefin ${hedef} · %${y} tamamlandı`,
       bhHedefTamam: (t) => `🎉 ${t} — bu ayın hedefine ulaştın!`,
       bhFaizAnapara: (f, a) => `Bu ayın ödemesinin ≈ ${f} kadarı faize, ${a} kadarı anaparaya gitti (tahmini).`,
@@ -3492,7 +3577,7 @@ const SOZLUK = {
       kayKurtar: (t) => `Ayda ${t} daha → plan makul sürede kapanır hâle geliyor!`,
       yolBos: "Borç ekleyince kurtuluş haritan burada çizilecek.",
       yolBitti: "Borçsuzsun!",
-      heroTarih: (t) => `borçsuz olma: ${t}`,
+      heroTarih: (t) => `Borçsuz olma tarihi: <strong>${t}</strong>`,
       heroBos: "borç ekleyerek başla",
       hayatOnlenen: (t) => `Planın toplam <strong>${t}</strong> faizi önlüyor. Bu yaklaşık:`,
       hayatMarket: (n) => `${n} ay market`,
@@ -3659,6 +3744,7 @@ const SOZLUK = {
       slogan: "Debt payoff planner",
       opt_gece: "Midnight Blue", opt_gumus: "Silver", opt_oto: "Automatic (device setting)",
       ozet_bakiye: "Total balance", hero_buay: "Due this month",
+      hero_borcun: "of your debt paid", hero_odenen: "Paid", hero_kalan: "Remaining", hero_ay_baslik: "This month's payments",
       hayat_h: "What Your Saved Interest Buys",
       hd_h: "Set a goal", hd_alt: "Pick the month you want to be debt-free; I'll work out how much you need to pay each month.",
       hd_ay: "Month", hd_yil: "Year", hd_uygula: "Apply this plan", hd_kaldir: "Remove goal",
@@ -4100,6 +4186,15 @@ const SOZLUK = {
       takvimProIpucu: "See the full calendar (Pro)",
       ozetBuAyOdedin: (t) => `Paid this month: <strong>${t}</strong>`,
       ozetBuAyYok: "No payments recorded this month yet.",
+      ayOdendi: (o, h) => `<strong>${o}</strong> / ${h}`,
+      ayKaldi: (t) => `${t} to go`,
+      ayTamam: "Done ✓",
+      yolOzet: (k, n) => `Paid off: <strong>${k} of ${n}</strong> debts`,
+      yolKapandi: "Paid off",
+      yolSiradaki: "Up next",
+      yolKapanis: (t) => `Clears: ${t}`,
+      yolOdenen: (o, t) => `${o} of ${t} paid`,
+      yolBorcsuz: "Debt-free",
       bhHedefKiyas: (hedef, y) => `Your target is ${hedef} · ${y}% done`,
       bhHedefTamam: (t) => `🎉 ${t} — you hit this month's target!`,
       bhFaizAnapara: (f, a) => `Of this month's payments, ≈ ${f} went to interest and ${a} to principal (estimate).`,
@@ -4180,7 +4275,7 @@ const SOZLUK = {
       kayKurtar: (t) => `${t} more per month → the plan becomes feasible!`,
       yolBos: "Add debts and your freedom map will be drawn here.",
       yolBitti: "Debt-free!",
-      heroTarih: (t) => `debt-free: ${t}`,
+      heroTarih: (t) => `Debt-free date: <strong>${t}</strong>`,
       heroBos: "start by adding a debt",
       hayatOnlenen: (t) => `Your plan prevents <strong>${t}</strong> in interest. That's roughly:`,
       hayatMarket: (n) => `${n} months of groceries`,
@@ -6414,16 +6509,14 @@ const ARAYUZ = () => {
 
     // "Bu ay ödenecek": seçili plana göre ilk ayın toplamı (motordan)
     const acik = durum.borclar.filter(b => b.balance > 0.005);
-    let buAyToplam = 0, tarihTxt;
+    let sim = null, tarihTxt;
     if (acik.length > 0) {
-      const sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
-      buAyToplam = sim.ilkAylar[0] ? sim.ilkAylar[0].toplam : 0;
+      sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
       tarihTxt = sim.uygulanabilir ? s.heroTarih(tarihFmt.format(sim.borcsuzTarih)) : s.uygulanamaz;
     } else {
       tarihTxt = durum.borclar.length > 0 ? s.yolBitti : s.heroBos;
     }
-    sayacTween($("ozetOdeme"), buAyToplam, (v) => paraFmt.format(v));
-    $("heroTarih").textContent = tarihTxt;
+    $("heroTarih").innerHTML = tarihTxt; // tarih Intl çıktısı / sabit sözlük metni — kullanıcı girdisi yok
 
     // Halka: başlangıç toplamına göre kapatılan pay
     const ilkToplam = durum.borclar.reduce((t, b) => t + (b.initialBalance > 0 ? b.initialBalance : b.balance), 0);
@@ -6439,16 +6532,50 @@ const ARAYUZ = () => {
     const uc = $("halkaUc");
     uc.style.transform = `rotate(${(yuzde * 3.6).toFixed(1)}deg)`;
     uc.setAttribute("opacity", yuzde > 0 ? "1" : "0");
+    // Lejant: toplam borcun ödenen kısmı (başlangıç toplamı − bugünkü bakiye)
+    sayacTween($("ozetOdenen"), Math.max(0, ilkToplam - toplamBakiye), (v) => paraFmt.format(v));
     $("ozetTrend").innerHTML = durum.borclar.length > 0 ? trendHtml() : ""; // boş durumda trend anlamsız
-    // Bu ay gerçekte ödenen: kayıtlı ödemelerden türetilir, her çizimde tazedir
-    const buAyOd = durum.borclar.length > 0 ? buAyOdenen() : 0;
-    $("ozetBuAySatir").innerHTML = durum.borclar.length === 0 ? ""
-      : (buAyOd > 0.005 ? s.ozetBuAyOdedin(paraFmt.format(buAyOd)) : s.ozetBuAyYok);
+    ayIlerlemeCiz(sim);
     // İlk kullanım: hiç borç yoksa akış "başla" gibi davranır (birincil çağrı görünür)
     $("heroEkleBtn").hidden = durum.borclar.length !== 0;
     selamCiz(); // selamlama + bağlam cümlesi hero ile birlikte tazelenir
     iyGenelCiz(); // İki Yol hatırlatması: ödeme yaptıkça güncellenir
     hedefGenelCiz(); // Hedef takibi: yoldasın / ayda X daha
+  }
+
+  /* ---- Hero: bu ayın ödemeleri — planın bu ayki hedefinin ne kadarı karşılandı ----
+     Bu Ay sekmesindeki satır mantığıyla aynı: borç başına hedef = asgari + ekstra,
+     karşılanan = min(ödenen, hedef). Fazla ödeme bir borçtaki eksiği kapatmış gibi
+     sayılmaz; plandan düşmüş (bu ay kapanmış) borca yapılan ödeme kendi hedefidir. */
+  function ayIlerlemeHesapla(sim) {
+    const ayK = ayAnahtari(new Date());
+    const plan = sim && sim.ilkAylar && sim.ilkAylar[0] ? sim.ilkAylar[0].odemeler : [];
+    let hedef = 0, karsilanan = 0, kalan = 0, odenen = 0;
+    for (const b of durum.borclar) {
+      let o = 0;
+      for (const p of (b.payments || [])) if (String(p.tarih).slice(0, 7) === ayK) o += p.tutar;
+      const satir = plan.find(x => x.ad === b.ad);
+      const h = satir ? satir.asgari + satir.ekstra : o; // plandan düşmüşse ödenen = hedef
+      hedef += h; odenen += o;
+      karsilanan += Math.min(o, h);
+      kalan += Math.max(0, h - o);
+    }
+    const oran = hedef > 0.005 ? Math.min(1, karsilanan / hedef) : 0;
+    return { hedef, odenen, kalan, oran, tamam: hedef > 0.005 && kalan < 0.5 };
+  }
+  function ayIlerlemeCiz(sim) {
+    const kutu = $("ayIlerleme");
+    if (durum.borclar.length === 0) { kutu.hidden = true; return; }
+    const s = sd(), A = ayIlerlemeHesapla(sim);
+    if (A.hedef <= 0.005) { kutu.hidden = true; return; }
+    kutu.hidden = false;
+    const y = Math.round(A.oran * 100);
+    sayacTween($("ayYuzde"), y, (v) => yuzdeYaz(v));
+    $("ayDolu").style.width = (A.oran * 100).toFixed(1) + "%";
+    $("ayCubuk").setAttribute("aria-valuenow", String(y));
+    $("ayOdenenTxt").innerHTML = s.ayOdendi(paraFmt.format(A.odenen), paraFmt.format(A.hedef));
+    $("ayKalanTxt").textContent = A.tamam ? s.ayTamam : s.ayKaldi(paraFmt.format(A.kalan));
+    kutu.classList.toggle("tamam", A.tamam);
   }
 
   /* ---- Borç grafikleri: dağılım çubuğu + sparkline (inline SVG) ---- */
@@ -7995,48 +8122,38 @@ const ARAYUZ = () => {
     const tarihTxt = acik.length === 0 ? s.yolBitti
       : (sim && sim.uygulanabilir ? tarihFmt.format(sim.borcsuzTarih) : s.uygulanamaz);
 
-    // 1) Patikayı çiz, uzunluğu ölçüp noktaları hesapla
-    const D = "M 40 250 C 190 250 190 95 400 95 C 610 95 590 250 745 250";
-    kap.innerHTML = `<svg viewBox="0 0 800 310" xmlns="http://www.w3.org/2000/svg" role="img"><path id="yolPatika" d="${D}" fill="none" stroke="none"/></svg>`;
-    const patika = kap.querySelector("#yolPatika");
-    const L = patika.getTotalLength();
-    const nokta = (f) => patika.getPointAtLength(Math.max(0, Math.min(1, f)) * L);
-    const OLCEK = 0.85; // patikanın sonu bayrağa ayrılır
-    const kisalt = (ad) => ad.length > 14 ? ad.slice(0, 13) + "…" : ad;
+    // Kapanış tarihleri: motorun kapanış ayından (borçsuz tarihiyle aynı sayım)
+    const simdi = new Date();
+    const kapanis = {};
+    if (sim && sim.uygulanabilir) for (const o of sim.odemeSirasi) kapanis[o.ad] = new Date(simdi.getFullYear(), simdi.getMonth() + o.ay, 1);
+    const ayFmt = new Intl.DateTimeFormat(durum.dil === "en" ? "en-US" : "tr-TR", { month: "short", year: "numeric" });
 
-    // 2) Katmanları oluştur
-    let ic = `<path d="${D}" fill="none" stroke="var(--border)" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 14"/>`;
-    ic += `<path d="${D}" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(oran * OLCEK * L).toFixed(1)} ${Math.ceil(L)}"/>`;
-
-    duraklar.forEach((d, i) => {
-      const p = nokta(d.f * OLCEK);
-      // Son durağın etiketi bayrak pankartıyla çakışmasın diye hep altta
-      const ustte = i % 2 === 0 && i !== duraklar.length - 1;
-      if (d.siradaki) {
-        ic += `<circle class="yol-nabiz" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="21" fill="none" stroke="var(--accent)" stroke-width="3"/>`;
-      }
-      ic += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="13" fill="${d.odendi ? "var(--accent)" : "var(--surface)"}" stroke="${d.odendi || d.siradaki ? "var(--accent)" : "var(--border)"}" stroke-width="3"/>`;
-      if (d.odendi) {
-        ic += `<text x="${p.x.toFixed(1)}" y="${(p.y + 4.5).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--bg)">✓</text>`;
-      }
-      ic += `<text x="${p.x.toFixed(1)}" y="${(p.y + (ustte ? -24 : 36)).toFixed(1)}" text-anchor="middle" font-size="12" fill="${d.siradaki ? "var(--accent-strong)" : "var(--text-muted)"}" font-weight="${d.siradaki ? "700" : "400"}">${kacis(kisalt(d.b.ad))}</text>`;
+    // Dikey zaman çizelgesi: her borç bir durak (kapananlar → sıradaki → bekleyenler) + bitiş
+    const kapananSay = duraklar.filter(d => d.odendi).length;
+    let html = `<div class="yol-ust">
+      <p>${s.yolOzet(kapananSay, duraklar.length)}</p>
+    </div><ol class="yol-liste">`;
+    duraklar.forEach((d) => {
+      const ilk = pay(d.b), odenen = Math.max(0, ilk - d.b.balance);
+      const oranB = ilk > 0 ? Math.max(0, Math.min(1, odenen / ilk)) : (d.odendi ? 1 : 0);
+      const durumCls = d.odendi ? "odendi" : d.siradaki ? "siradaki" : "bekliyor";
+      const sag = d.odendi ? `<span class="yol-etiket ok">${s.yolKapandi}</span>`
+        : d.siradaki ? `<span class="yol-etiket sira">${s.yolSiradaki}</span>` : "";
+      const tarih = !d.odendi && kapanis[d.b.ad] ? s.yolKapanis(ayFmt.format(kapanis[d.b.ad])) : "";
+      html += `<li class="yol-durak ${durumCls}">
+        <span class="yol-isaret" aria-hidden="true"></span>
+        <div class="yol-govde">
+          <div class="yol-s1"><span class="yol-ad">${kacis(d.b.ad)}</span>${sag}</div>
+          ${d.odendi ? "" : `<div class="yol-cubuk" aria-hidden="true"><i style="width:${(oranB * 100).toFixed(1)}%"></i></div>`}
+          <div class="yol-s2"><span>${s.yolOdenen(paraFmt.format(odenen), paraFmt.format(ilk))}</span>${tarih ? `<span>${tarih}</span>` : ""}</div>
+        </div>
+      </li>`;
     });
-
-    // Avatar: genel ilerleme yüzdesinde — çizgi stilinde küçük yürüyen figür
-    const ap = nokta(oran * OLCEK);
-    ic += `<g class="yol-avatar" stroke="var(--accent-strong)" stroke-width="2.4" stroke-linecap="round" fill="none">
-      <circle cx="${ap.x.toFixed(1)}" cy="${(ap.y - 34).toFixed(1)}" r="5"/>
-      <path d="M${ap.x.toFixed(1)} ${(ap.y - 28).toFixed(1)}v10M${(ap.x - 7).toFixed(1)} ${(ap.y - 24).toFixed(1)}l7 3 7-3M${ap.x.toFixed(1)} ${(ap.y - 18).toFixed(1)}l-6 9M${ap.x.toFixed(1)} ${(ap.y - 18).toFixed(1)}l6 9"/>
-    </g>`;
-
-    // Bayrak: patikanın sonunda, borçsuz tarihini taşır
-    const uc = nokta(1);
-    const BW = 132;
-    ic += `<line x1="${uc.x.toFixed(1)}" y1="${uc.y.toFixed(1)}" x2="${uc.x.toFixed(1)}" y2="${(uc.y - 74).toFixed(1)}" stroke="var(--accent-strong)" stroke-width="3" stroke-linecap="round"/>`;
-    ic += `<rect x="${(uc.x - BW).toFixed(1)}" y="${(uc.y - 74).toFixed(1)}" width="${BW}" height="26" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>`;
-    ic += `<text x="${(uc.x - BW / 2).toFixed(1)}" y="${(uc.y - 56).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-strong)">${kacis(tarihTxt)}</text>`;
-
-    kap.querySelector("svg").innerHTML = `<path id="yolPatika" d="${D}" fill="none" stroke="none"/>` + ic;
+    html += `<li class="yol-durak final${acik.length === 0 ? " odendi" : ""}">
+        <span class="yol-isaret" aria-hidden="true"></span>
+        <div class="yol-govde"><div class="yol-s1"><span class="yol-ad">${s.yolBorcsuz}</span><span class="yol-final-tarih">${kacis(tarihTxt)}</span></div></div>
+      </li></ol>`;
+    kap.innerHTML = html;
   }
 
   /* ---- Bu ay ne yapmalıyım ---- */
