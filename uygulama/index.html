@@ -515,6 +515,7 @@
   #onboard .ob-secim[aria-checked="true"] { color: var(--accent-strong); border-color: var(--sicak);
     background: color-mix(in srgb, var(--halka-b) 24%, var(--surface)); box-shadow: inset 0 0 0 1px var(--sicak), var(--shadow); }
   :root[data-theme="dark"] #onboard .ob-secim[aria-checked="true"] { background: color-mix(in srgb, var(--sicak) 16%, var(--surface)); }
+  #onboard .ob-para { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #onboard .ob-para .ob-secim { min-width: 0; flex: 1 1 120px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .ob-para .ob-secim b { font-family: var(--font-baslik); font-size: 26px; line-height: 1.1; }
   .ob-ust { display: flex; justify-content: flex-end; padding: calc(10px + env(safe-area-inset-top)) 12px 0; }
@@ -2467,10 +2468,12 @@ var GIRIS = (function () {
           <option value="USD">$ USD</option>
           <option value="EUR">€ EUR</option>
           <option value="GBP">£ GBP</option>
+          <option value="CHF">CHF</option>
+          <option value="AZN">₼ AZN</option>
         </select>
       </div>
     </div>
-    <p class="mini-ipucu" data-i18n="ayar_para_not">Para birimini değiştirmek tutarları dönüştürmez; yalnızca sembol değişir.</p>
+    <p class="mini-ipucu" data-i18n="ayar_para_not">Bu, borçlarının ödendiği para birimidir. Değiştirmek tutarları çevirmez, yalnızca sembolü değiştirir — borçların TL ise TL'de bırak.</p>
     <p class="muted" style="margin-top:0.7rem" data-i18n="ayar_yedek_not">
       Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin
       tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong>
@@ -3000,8 +3003,10 @@ var GIRIS = (function () {
         <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="USD"><b>$</b>USD</button>
         <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="EUR"><b>€</b>EUR</button>
         <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="GBP"><b>£</b>GBP</button>
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="CHF"><b>Fr</b>CHF</button>
+        <button type="button" class="ob-secim" role="radio" aria-checked="false" data-ob-para="AZN"><b>₼</b>AZN</button>
       </div>
-      <p data-i18n="ob_para_m">Tüm tutarlar bu birimle gösterilir. Sonra Ayarlar'dan değiştirebilirsin; tutarlar dönüştürülmez, yalnızca sembol değişir.</p>
+      <p data-i18n="ob_para_m">Bankaya hangi para biriminde ödüyorsan onu seç; Türkiye'deki kart ve krediler TL'dir. Uygulama kur çevirisi yapmaz, tüm tutarlar bu birimle gösterilir.</p>
     </section>
     <section class="ob-kart">
       <svg class="buyuk" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8 6 12v28l12-4 12 4 12-4V8l-12 4-12-4z"/><path d="M18 8v28M30 12v28"/><path d="M36 4v10M36 4h7l-2 3 2 3h-7"/></svg>
@@ -3156,15 +3161,15 @@ const SOZLUK = {
       ob5m: "Bu bilgi yalnızca cihazında kalır — istersen boş bırak.",
       ob_gec: "Şimdilik geç",
       ob_dil_not: "İstediğin zaman Ayarlar'dan değiştirebilirsin.",
-      ob_para_b: "Hangi para birimiyle?",
-      ob_para_m: "Tüm tutarlar bu birimle gösterilir. Sonra Ayarlar'dan değiştirebilirsin; tutarlar dönüştürülmez, yalnızca sembol değişir.",
+      ob_para_b: "Borçların hangi para biriminde?",
+      ob_para_m: "Bankaya hangi para biriminde ödüyorsan onu seç; Türkiye'deki kart ve krediler TL'dir. Uygulama kur çevirisi yapmaz, tüm tutarlar bu birimle gösterilir.",
       ayar_h: "Ayarlar",
-      ayar_tema: "Tema", ayar_para: "Para birimi", vergi_tr: "Türkiye'ye özel",
+      ayar_tema: "Tema", ayar_para: "Borçlarının para birimi", vergi_tr: "Türkiye'ye özel",
       aria_kapat: "Kapat", aria_faiz_birimi: "Faiz birimi", title_tema: "Tema: Gece Mavisi / Gümüş",
       aria_onceki_ay: "Önceki ay", aria_sonraki_ay: "Sonraki ay",
       dogrula_h: "Bilinen-Cevap Doğrulaması",
       dogrula_not: 'Bu bölüm ?dev=1 ile açılır; "beklenen" sütunundaki değerler elle/kapalı formülle hesaplanmıştır.',
-      ayar_para_not: "Para birimini değiştirmek tutarları dönüştürmez; yalnızca sembol değişir.",
+      ayar_para_not: "Bu, borçlarının ödendiği para birimidir. Değiştirmek tutarları çevirmez, yalnızca sembolü değiştirir — borçların TL ise TL'de bırak.",
       btn_rapor: "Aylık raporu gör",
       devam_btn: "Devam et",
       btn_borc_ekle: "Borç ekle",
@@ -3869,15 +3874,15 @@ const SOZLUK = {
       ob5m: "This stays only on your device — leave it blank if you like.",
       ob_gec: "Skip for now",
       ob_dil_not: "You can change this anytime in Settings.",
-      ob_para_b: "Which currency?",
-      ob_para_m: "All amounts are shown in this currency. You can change it later in Settings; amounts aren't converted, only the symbol changes.",
+      ob_para_b: "What currency are your debts in?",
+      ob_para_m: "Pick the currency you pay your lenders in. The app doesn't convert exchange rates; every amount is shown in this currency.",
       ayar_h: "Settings",
-      ayar_tema: "Theme", ayar_para: "Currency", vergi_tr: "Turkey only",
+      ayar_tema: "Theme", ayar_para: "Your debts' currency", vergi_tr: "Turkey only",
       aria_kapat: "Close", aria_faiz_birimi: "Interest unit", title_tema: "Theme: Midnight Blue / Silver",
       aria_onceki_ay: "Previous month", aria_sonraki_ay: "Next month",
       dogrula_h: "Known-Answer Verification",
       dogrula_not: 'This section opens with ?dev=1; values in the "expected" column were computed by hand / closed-form formula.',
-      ayar_para_not: "Changing the currency doesn't convert your amounts; only the symbol changes.",
+      ayar_para_not: "This is the currency your debts are paid in. Changing it doesn't convert amounts, only the symbol — keep it matching your debts.",
       btn_rapor: "See monthly report",
       devam_btn: "Continue",
       btn_borc_ekle: "Add a debt",
@@ -6045,7 +6050,7 @@ function yerelOrtamMi(host, protokol) {
    CİHAZ DİLİ + PARA BİRİMİ — yalnızca ilk kurulum varsayılanı için.
    Hiçbir dış çağrı yok: tarayıcının/cihazın kendi dil listesine bakılır.
    ============================================================ */
-const PARA_BIRIMLERI = ["TRY", "USD", "EUR", "GBP"];
+const PARA_BIRIMLERI = ["TRY", "USD", "EUR", "GBP", "CHF", "AZN"];
 const EURO_BOLGE = ["AT", "BE", "HR", "CY", "EE", "FI", "FR", "DE", "GR", "IE", "IT", "LV", "LT", "LU",
   "MT", "NL", "PT", "SK", "SI", "ES", "AD", "MC", "SM", "VA", "ME", "XK"];
 const CIHAZ = (() => {
@@ -6066,6 +6071,8 @@ const CIHAZ = (() => {
       if (bolge === "US") return "USD";
       if (bolge === "GB") return "GBP";
       if (EURO_BOLGE.includes(bolge)) return "EUR";
+      if (bolge === "CH" || bolge === "LI") return "CHF";
+      if (bolge === "AZ") return "AZN";
       return "USD";
     }
     return "USD";
