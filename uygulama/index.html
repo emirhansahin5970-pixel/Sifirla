@@ -783,6 +783,19 @@
   .akis-geri { flex: 0 0 auto; padding: 0 18px; }
   .akis-ileri { flex: 1 1 auto; max-width: 420px; margin-left: auto; padding: 0 20px; }
   .akis-geri[hidden] + .akis-ileri { margin-left: auto; }
+  /* Kaydırılan tam ekran panellerde (borç detayı, aylık rapor) çubuk ekranın
+     altına sabitlenir; içerik altında çubuk kadar boşluk bırakılır */
+  .alt-sabit { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; }
+  .alt-sabit .akis-ileri:only-child { margin-left: auto; }
+  #borcDetay .detay-ic, #raporOverlay .rapor-ic { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  .zil-alt { flex: none; background: var(--surface); }
+  /* Üstte kalan ✕'ler: çentik / Dynamic Island altına girmesin, dokunma alanı ≥ 44px */
+  .sb-ust { padding-top: calc(14px + env(safe-area-inset-top)); }
+  .zil-ust { padding-top: calc(14px + env(safe-area-inset-top)); }
+  #borcDetay .detay-ic { padding-top: calc(20px + env(safe-area-inset-top)); }
+  #raporOverlay .rapor-ic { padding-top: calc(40px + env(safe-area-inset-top)); }
+  #raporOverlay .rapor-kapat { top: calc(14px + env(safe-area-inset-top)); }
+  #sbKapatBtn, #tsKapatBtn, #detayKapat, #zilKapatBtn, #raporKapat, #obAtla { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
   /* Faiz adımı: üç yol */
   .sb-yollar { display: grid; gap: 10px; width: min(420px, 100%); }
   .sb-yol, :root[data-theme="dark"] .sb-yol { min-height: 56px; padding: 12px 16px; border-radius: 14px; text-align: left; display: grid; gap: 2px; font-family: inherit;
@@ -2773,11 +2786,13 @@ var GIRIS = (function () {
       <svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.8 2.8L16.5 9"/></svg>
       <strong data-i18n="odeme_kaydedildi">Ödeme kaydedildi</strong>
     </div>
-    <div style="margin:16px 0 8px; display:flex; align-items:center; justify-content:space-between; gap:10px">
-      <h3 class="alt-baslik" style="margin:0" data-i18n="odeme_gecmisi">Ödeme geçmişi</h3>
-      <button type="button" id="detayOdemeEkle" data-i18n="btn_odeme_ekle">Ödeme ekle</button>
-    </div>
+    <h3 class="alt-baslik" style="margin:16px 0 8px" data-i18n="odeme_gecmisi">Ödeme geçmişi</h3>
     <div id="odemeListesi"></div>
+  </div>
+  <!-- Alt çubuk: başparmak bölgesi — [← Geri] [Ödeme ekle]. Üstteki ✕ de kalır. -->
+  <div class="akis-alt alt-sabit" id="detayAlt">
+    <button type="button" id="detayGeri" class="ghost akis-geri"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
+    <button type="button" id="detayOdemeEkle" class="akis-ileri" data-i18n="btn_odeme_ekle">Ödeme ekle</button>
   </div>
 </div>
 
@@ -2864,11 +2879,14 @@ var GIRIS = (function () {
       <input type="checkbox" id="raporGizle">
       <span data-i18n="rapor_gizle">Tutarları gizle (paylaşım için)</span>
     </label>
-    <div class="no-print" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
-      <button type="button" id="raporTamam" data-i18n="devam_btn">Devam et</button>
-      <button type="button" id="raporPaylasBtn" class="ghost" hidden data-i18n="rapor_paylas">Görseli paylaş</button>
+    <div class="no-print" id="raporIcerikDugme" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
       <button type="button" id="raporIndirBtn" class="ghost" data-i18n="rapor_indir_png">Görseli indir (PNG)</button>
     </div>
+  </div>
+  <!-- Alt çubuk: başparmak bölgesi — [← Geri] [Görseli paylaş]; paylaşım yoksa İndir buraya gelir -->
+  <div class="akis-alt alt-sabit no-print" id="raporAlt">
+    <button type="button" id="raporTamam" class="ghost akis-geri"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
+    <button type="button" id="raporPaylasBtn" class="akis-ileri" hidden data-i18n="rapor_paylas">Görseli paylaş</button>
   </div>
 </div>
 
@@ -2881,6 +2899,10 @@ var GIRIS = (function () {
     <button id="zilKapatBtn" class="ghost" aria-label="Kapat" data-i18n-aria="aria_kapat"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div id="zilListe"></div>
+  <!-- Alt çubuk: başparmak bölgesi — sağ üstteki ✕'ye uzanmadan kapanır -->
+  <div class="akis-alt zil-alt">
+    <button type="button" id="zilGeri" class="ghost akis-geri"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="form_geri">Geri</span></button>
+  </div>
 </aside>
 
 <div id="onboard" class="no-print" hidden>
@@ -9820,6 +9842,7 @@ const ARAYUZ = () => {
   }
   $("zilBtn").addEventListener("click", () => { zilCiz(); zilPanelAc(true); });
   $("zilKapatBtn").addEventListener("click", () => zilPanelAc(false));
+  $("zilGeri").addEventListener("click", () => zilPanelAc(false));
   $("zilPerde").addEventListener("click", () => zilPanelAc(false));
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
@@ -10279,6 +10302,14 @@ const ARAYUZ = () => {
   }
   $("raporIndirBtn").addEventListener("click", raporGorselIndir);
   $("raporPaylasBtn").hidden = !navigator.share; // Web Share API varsa görünür
+  // Paylaşım yoksa birincil eylem İndir olur ve başparmak bölgesindeki çubuğa geçer
+  if (!navigator.share) {
+    const ind = $("raporIndirBtn");
+    ind.classList.remove("ghost"); ind.classList.add("akis-ileri");
+    $("raporAlt").appendChild(ind);
+    $("raporIcerikDugme").hidden = true;
+  }
+  kenarKaydirmaBagla($("raporOverlay"), raporKapatFn);
   $("raporPaylasBtn").addEventListener("click", raporGorselPaylas);
   function raporKapatFn() { $("raporOverlay").hidden = true; }
   $("aylikRaporBtn").addEventListener("click", raporAc);
@@ -11666,6 +11697,8 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   });
   $("detayOdemeEkle").addEventListener("click", () => odemeAc(detayIdx));
   $("detayKapat").addEventListener("click", () => { $("borcDetay").hidden = true; detayIdx = null; });
+  $("detayGeri").addEventListener("click", () => $("detayKapat").click());
+  kenarKaydirmaBagla($("borcDetay"), () => $("detayKapat").click());
 
   /* ---- Onboarding turu: yalnızca ilk açılışta (gorduByte bayrağı) ---- */
   const TUR_ANAHTAR = "borcPlanlayici.gorduByte";

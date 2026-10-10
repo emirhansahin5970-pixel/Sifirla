@@ -94,7 +94,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v12`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v13`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -128,7 +128,11 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Faiz + bildirim + Tasarruf** (`ozellik/faiz-bildirim-tasarruf`):
   çok adımlı akışlarda (borç ekle, Tasarruf Modu, onboarding) geri tuşu altta
   `.akis-alt` çubuğunda, üstte yalnızca ✕; sol kenardan kaydırma ve Android
-  geri tuşu adım geri götürür. Sihirbaza ödeme günü adımı (1–31 / bilmiyorum)
+  geri tuşu adım geri götürür. Aynı kural tam ekran panellerde de geçerli
+  (`ozellik/geri-tusu`): borç detayı ([← Geri] [Ödeme ekle]), aylık rapor
+  ([← Geri] [Paylaş/İndir]) ve bildirim paneli altta `.akis-alt` çubuğuyla
+  kapanır; kaydırılan panellerde çubuk `.alt-sabit` ile ekrana sabit. Üstteki
+  ✕'ler `env(safe-area-inset-top)` kadar aşağıda ve ≥ 44px. Sihirbaza ödeme günü adımı (1–31 / bilmiyorum)
   ve gerekçeli hatırlatma teklifi. Hatırlatmalar 3/1/0 gün + saat ayarlı,
   ödenen dönem iptal; kilit ekranı varsayılan NÖTR (`bildirimAyrinti`).
   Faiz bilinmiyorsa TL'de TCMB dilim tahmini (`faizKaynak: "tcmb"`, tutar
