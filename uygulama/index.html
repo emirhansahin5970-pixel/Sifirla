@@ -34,7 +34,13 @@
   // Açılış katmanı (#acilis → giriş animasyonu) yalnızca ana ekrandan açılan
   // PWA'da ve native uygulamada: tarayıcı sekmesinde asla görünmez.
   if (native || kok.classList.contains("standalone")) kok.classList.add("acilis-var");
-  if (native) kok.classList.add("natif");
+  if (native) {
+    kok.classList.add("natif");
+    // Native uygulamada yakınlaştırma kapalı: yanlışlıkla iki parmak/çift dokunuşla
+    // büyüyen sayfa sağa sola kayıyordu. (Web'de erişilebilirlik için açık kalır.)
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (vp) vp.setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover");
+  }
   if (native) {
     // Yalnızca geliştiricinin test telefonu: depoya GİRMEYEN (gitignore)
     // uygulama/test-ayar.js varsa yüklenir. Mağaza paketinde bu dosya yoktur.
@@ -1147,6 +1153,11 @@
   html.giris-gizli body > :not(.giris):not(#acilis) { opacity: 0; }
   html.giris-gecis body > :not(.giris):not(#acilis) { transition: opacity var(--giris-sure, 300ms) ease-out var(--giris-gecikme, 0ms); }
   @media print { #acilis, .giris { display: none !important; } }
+  /* Yatay sallanma yok: ekran dışına itilen paneller (#zilPanel translateX(103%)),
+     kayarak giren animasyonlar ve gölgeler sayfayı yana genişletmesin;
+     kenar esnemesi yalnızca dikeyde */
+  html { overflow-x: hidden; overscroll-behavior-x: none; } /* html'deki overflow görünüm alanına yayılır; body kaydırma kabı olmaz */
+  @supports (overflow: clip) { body { overflow-x: clip; } }  /* clip kaydırma kabı yaratmaz: sticky öğeler bozulmaz */
   /* Native: Safari'ye özel widget ipucu anlamsız; durum çubuğunun arkasında
      ince bir perde — kaydırılan içerik saat/pil simgeleriyle çakışmaz */
   html.natif .widget-not { display: none; }
