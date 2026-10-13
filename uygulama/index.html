@@ -3563,6 +3563,9 @@ const SOZLUK = {
       raporUyumSeri: (n) => `seri: ${n} ay`,
       raporOnlenenSatir: (t) => `Bu ay borcunu azaltarak ~<strong>${t}</strong> faizden kurtuldun.`,
       raporIleriBakis: (t) => `Bu hızla <strong>${t}</strong>'de borçsuzsun.`,
+      raporErken: (x, t, f) => `Ayda <strong>${x}</strong> daha fazla ödersen bir ay erken bitirirsin (<strong>${t}</strong>)` + (f ? ` ve <strong>${f}</strong> daha az faiz ödersin.` : "."),
+      raporBildirimB: "Aylık raporun hazır",
+      raporBildirimM: "Geçen ayın özeti seni bekliyor.",
       // Görsel kart satırları (canvas — kısa ve HTML'siz)
       gorselGenelIlerleme: "toplam ilerleme",
       gorselHedefYuzde: (y) => `Bu ay hedefin %${y}'i tamamlandı`,
@@ -4267,6 +4270,9 @@ const SOZLUK = {
       raporUyumSeri: (n) => `streak: ${n} months`,
       raporOnlenenSatir: (t) => `By shrinking your debt this month you avoided ~<strong>${t}</strong> in interest.`,
       raporIleriBakis: (t) => `At this pace you're debt-free in <strong>${t}</strong>.`,
+      raporErken: (x, t, f) => `Pay <strong>${x}</strong> more each month and you'll finish a month sooner, in <strong>${t}</strong>` + (f ? `, paying <strong>${f}</strong> less interest.` : "."),
+      raporBildirimB: "Your monthly report is ready",
+      raporBildirimM: "Last month's summary is waiting for you.",
       gorselGenelIlerleme: "overall progress",
       gorselHedefYuzde: (y) => `${y}% of this month's target done`,
       gorselAzalmaYuzde: (y) => `Total debt shrank ${y}% this month`,
@@ -10143,12 +10149,24 @@ const ARAYUZ = () => {
     }
     const azalma = kayitliAy ? basT - sonT : null;
     const anapara = (kayitliAy && odenen > 0.005) ? Math.max(0, Math.min(odenen, azalma)) : null;
-    let ileriTarih = null;
+    let ileriTarih = null, erken = null;
     if (guncel) {
       const acik = durum.borclar.filter(b => b.balance > 0.005);
       if (acik.length > 0) {
-        const sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
-        if (sim.uygulanabilir) ileriTarih = tarihFmt.format(sim.borcsuzTarih);
+        const kayitli = parseFloat($("ekstra").value) || 0;
+        const sim = ENGINE.simulatePlan(acik, kayitli, durum.yontem, durum.ayarlar);
+        if (sim.uygulanabilir) {
+          ileriTarih = tarihFmt.format(sim.borcsuzTarih);
+          // "Ayda X daha ödersen 1 ay erken": ters çözüm HEDEF katmanından (hesap motorda,
+          // tutar yukarı yuvarlanmış ve doğrulanmış). Gerçekçi değilse hiç önerilmez.
+          if (sim.aySayisi >= 3) {
+            const c = HEDEF.coz(acik, sim.aySayisi - 1, durum.yontem, durum.ayarlar, { kayitliEkstra: kayitli });
+            const fark = c.durum === "cozum" ? c.ekstra - kayitli : 0;
+            if (c.durum === "cozum" && !c.gercekciDegil && fark >= 1 && c.sim && c.sim.uygulanabilir) {
+              erken = { fark, tarih: tarihFmt.format(c.sim.borcsuzTarih), faiz: Math.max(0, sim.toplamFaiz - c.sim.toplamFaiz) };
+            }
+          }
+        }
       }
     }
     const ilkToplam = durum.borclar.reduce((t, b) => t + (b.initialBalance > 0 ? b.initialBalance : b.balance), 0);
@@ -10157,7 +10175,7 @@ const ARAYUZ = () => {
       faiz: anapara !== null ? Math.max(0, odenen - anapara) : null,
       kapananlar: [...kapananlar],
       hedef: guncel ? buAyHedefi() : null,
-      uyum: rozetDurum.checkin[ayK], seri: checkinSerisi(), ileriTarih,
+      uyum: rozetDurum.checkin[ayK], seri: checkinSerisi(), ileriTarih, erken,
       genelYuzde: ilkToplam > 0 ? Math.max(0, Math.min(100, Math.round((1 - kalanT / ilkToplam) * 100))) : 0 };
   }
 
@@ -10226,6 +10244,10 @@ const ARAYUZ = () => {
       // 8) İleriye bakış (yalnızca güncel ay; motordan)
       if (R.ileriTarih) {
         bolumler.push(`<div class="rapor-kart"><p class="altsatir">${s.raporIleriBakis(R.ileriTarih)}</p></div>`);
+      }
+      // 8b) Bir adım ötesi: bir ay erken bitirmek için ayda ne kadar daha (öneri değil, hesap)
+      if (R.erken) {
+        bolumler.push(`<div class="rapor-kart"><p class="altsatir">${s.raporErken(paraFmt.format(R.erken.fark), R.erken.tarih, R.erken.faiz >= 1 ? paraFmt.format(R.erken.faiz) : "")}</p></div>`);
       }
     }
     // 9) Kapanış: sıcak, yargısız
@@ -10535,6 +10557,12 @@ const ARAYUZ = () => {
         ? liste.map(h => s.bilAyrintiM(h.ad, paraFmt.format(h.tutar), h.gun)).join(" · ")
         : s.zilYerelHatirlatma;
       kayitlar.push({ tarih: new Date(ms), baslik: s.zilYerelBaslik, govde });
+    }
+    if (durum.borclar.some(b => b.balance > 0.005)) {
+      const [sa, dk] = (durum.ayarlar.hatirlatmaSaat || "10:00").split(":").map(Number);
+      const n = new Date();
+      const birinci = new Date(n.getFullYear(), n.getMonth() + 1, 1, sa || 10, dk || 0);
+      kayitlar.push({ tarih: birinci, baslik: s.raporBildirimB, govde: s.raporBildirimM });
     }
     return NATIF.hatirlatmalariPlanla(kayitlar);
   }
