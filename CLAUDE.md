@@ -157,6 +157,10 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   ile piksel aynı ilk kareden başlar; splash ilk kare çizilince kaldırılır.
   Dokunmak atlatır, Hareketi Azalt'ta yalnızca kısa geçiş. Tanıtım sitesi de
   yeni logoya geçti.
+- **Site:** gerçek uygulama ekranları (`node tasarim/ekran-uret.js` [en] →
+  `assets/ekran-1..4[-en].jpg`, örnek veri uydurma, banka adı yok), "Telefonuna
+  ekle" bölümü (Android/iPhone ana ekrana ekleme), og.png yeni logoyla
+  (`ikon-uret.js` üretir), Android SSS'si, yatay taşma kapalı.
 
 ---
 
@@ -188,8 +192,6 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   gelmesi hiç doğrulanmadı (simülatörde mümkün değil). Uygulamada bunun için
   "Test bildirimi gönder" düğmesi var (2 dakika sonrasına kurar).
 - **Android gerçek cihazda/emulatörde çalıştırılmadı** — yalnızca APK derlendi.
-- **Site ekran görüntüleri yok:** `assets/ekran-1..4.png` eksik, sayfa yer
-  tutucuya düşüyor.
 - **Mağaza linkleri boş:** `APP_STORE_LINKI` / `PLAY_STORE_LINKI`.
 
 ---

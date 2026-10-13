@@ -125,6 +125,25 @@ async function main() {
   await bas(splashHtml(2732, 2732), 2732, 2732, "assets/splash.png");
   fs.copyFileSync(yaz("assets/splash.png"), yaz("assets/splash-dark.png"));
 
+  // ---- Paylaşım görseli (og:image, 1200×630, opak) — WhatsApp/X/LinkedIn önizlemesi ----
+  const ogSvg = L.svg({ etiket: false, id: "og" }).replace("<svg ", '<svg style="display:block;width:100%;height:auto;overflow:visible" ');
+  const ogHtml = `<html><head><style>
+    body{margin:0;width:1200px;height:630px;font-family:Inter,"Inter Display",system-ui,sans-serif;color:#E6ECF4;
+      background:radial-gradient(70% 90% at 22% 40%,#1A3460 0%,transparent 70%),radial-gradient(60% 80% at 92% 100%,#2A2A55 0%,transparent 70%),${ZEMIN};
+      display:flex;align-items:center;gap:64px;padding:0 84px;box-sizing:border-box}
+    .logo{flex:0 0 420px}
+    h1{margin:0;font-size:96px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+    .i{position:relative}.i::after{content:"";position:absolute;top:.2em;left:50%;transform:translateX(-50%);width:.11em;height:.11em;border-radius:50%;background:#E3C88F}
+    .slogan{margin:14px 0 0;font-size:36px;font-weight:600;color:#E3C88F}
+    .alt{margin:26px 0 0;font-size:24px;line-height:1.45;color:#AEC0D6;max-width:560px}
+    .url{margin-top:28px;font-size:22px;font-weight:600;color:#C6D2E2;letter-spacing:.02em}
+  </style></head><body>
+    <div class="logo">${ogSvg}</div>
+    <div><h1>S<span class="i">ı</span>fırla</h1><p class="slogan">Borcunu sıfırla.</p>
+    <p class="alt">Borçlarını gir, ne zaman biteceğini ve ne kadar faiz ödeyeceğini gör. Verilerin telefonundan çıkmaz.</p>
+    <p class="url">sifirla.app</p></div></body></html>`;
+  await bas(ogHtml, 1200, 630, "assets/og.png");
+
   await tarayici.close();
 }
 main().catch((e) => { console.error(e); process.exit(1); });

@@ -66,7 +66,8 @@
     --cam-ust:rgba(238,242,247,.06);--cam-kenar-a:rgba(238,242,247,.14);--cam-kenar-b:rgba(238,242,247,.02);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none}
+  @supports (overflow:clip){body{overflow-x:clip}}
   body{font-family:var(--font-govde);font-size:16px;line-height:1.6;color:var(--text);-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;
     background:linear-gradient(180deg,var(--yol-1) 0%,var(--yol-2) 34%,var(--yol-3) 68%,var(--yol-4) 100%);}
   h1,h2,h3{font-family:var(--font-baslik);line-height:1.15;letter-spacing:-0.02em}
@@ -209,6 +210,17 @@
   .kart h3{font-size:18px;color:var(--accent-strong);margin-bottom:6px}
   .kart p{color:var(--text-muted);font-size:15px}
 
+  /* ---- Telefonuna ekle ---- */
+  .hero-kur{margin-top:14px;font-size:14px}
+  .kur-kartlar{display:grid;grid-template-columns:1fr;gap:16px}
+  @media (min-width:720px){.kur-kartlar{grid-template-columns:repeat(2,1fr)}}
+  .kur-kart h3{margin-bottom:12px}
+  .kur-kart ol{margin:0;padding-left:20px;color:var(--text-muted);font-size:15px;line-height:1.55}
+  .kur-kart li+li{margin-top:6px}
+  .kur-kart strong{color:var(--accent-strong)}
+  .kur-cta{text-align:center;margin-top:26px}
+  .kur-not{text-align:center;margin-top:12px;font-size:14px;color:var(--text-muted)}
+
   /* ---- Nasıl çalışır ---- */
   .adimlar{display:grid;grid-template-columns:1fr;gap:16px;counter-reset:adim}
   @media (min-width:720px){.adimlar{grid-template-columns:repeat(3,1fr)}}
@@ -298,13 +310,14 @@
       <p class="slogan anim" style="--d:160ms" data-en="Zero out your debt.">Borcunu sıfırla.</p>
       <p class="aciklama anim" style="--d:240ms" data-en="Add your debts and see exactly when they'll be gone, using proven payoff methods. Your data never leaves your phone.">Borçlarını gir, bilimsel yöntemlerle ne zaman biteceğini gör. Verilerin telefonundan çıkmaz.</p>
       <div class="hero-btnlar anim" style="--d:320ms">
-        <a class="btn btn-primary" href="./uygulama/" data-en="Open the app">Uygulamayı aç</a>
+        <a class="btn btn-primary" href="./uygulama/" data-en="Try it free now">Hemen ücretsiz dene</a>
         <!-- Mağaza yayınlanınca APP_STORE_LINKI / PLAY_STORE_LINKI buraya bağlanacak -->
         <button class="btn btn-ghost" type="button" disabled aria-disabled="true">
-          <span data-en="Download from store">Mağazadan indir</span>
+          <span data-en="App Store · Google Play">App Store · Google Play</span>
           <span class="yakinda" data-en="Soon">Yakında</span>
         </button>
       </div>
+      <p class="hero-kur anim" style="--d:360ms"><a class="cizgi-link" href="#kur" data-en="Works on every phone — add it to your home screen">Her telefonda çalışır — ana ekranına nasıl eklenir?</a></p>
       <p class="gizlilik-rozet anim" style="--d:400ms">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
         <span data-en="No account, no server, no tracking.">Hesap yok, sunucu yok, izleme yok.</span>
@@ -339,24 +352,24 @@
   <section aria-labelledby="ekranlar-bas">
     <div class="wrap bolum-bas">
       <h2 id="ekranlar-bas" class="grad reveal" data-en="A look inside">Uygulamadan kareler</h2>
-      <p class="reveal" data-en="A calm, honest interface — no dark patterns, no noise.">Sakin, dürüst bir arayüz — karanlık desen yok, gürültü yok.</p>
+      <p class="reveal" data-en="Real screens from the app. The sample data is made up.">Uygulamanın gerçek ekranları. Örnekteki veriler uydurmadır.</p>
     </div>
     <div class="ekranlar" role="list">
       <div class="ekran-kart reveal" role="listitem" style="--i:0">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-1.png" width="360" height="780" loading="lazy" alt="Borçsuz olma tarihini gösteren ilerleme halkası ekranı" data-alt-en="Progress ring screen showing the debt-free date" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-1.png — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="See your debt-free date">Borçsuz olacağın günü gör</p>
+        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-1.jpg" data-src-en="assets/ekran-1-en.jpg" width="360" height="780" loading="lazy" alt="Ne kadarını ödediğini ve borçsuz olacağın ayı gösteren ana ekran" data-alt-en="Home screen showing how much you've paid and your debt-free month" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-1.jpg — yer tutucu gösteriliyor.')"></div></div>
+        <p data-en="See how much you've paid and your debt-free date">Ne kadarını ödediğini ve borçsuz olacağın günü gör</p>
       </div>
       <div class="ekran-kart reveal" role="listitem" style="--i:1">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-2.png" width="360" height="780" loading="lazy" alt="Kartopu ve çığ yöntemlerini karşılaştıran ekran" data-alt-en="Screen comparing snowball and avalanche methods" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-2.png — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="Snowball or avalanche? Compare side by side">Kartopu mu, çığ mı? Yan yana karşılaştır</p>
+        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-2.jpg" data-src-en="assets/ekran-2-en.jpg" width="360" height="780" loading="lazy" alt="Sadece asgari ödemek ile planla ödemeyi karşılaştıran İki Yol ekranı" data-alt-en="Two Paths screen comparing minimum-only payments with a plan" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-2.jpg — yer tutucu gösteriliyor.')"></div></div>
+        <p data-en="Minimum only or a plan? See the difference">Sadece asgari mi, planla mı? Farkı gör</p>
       </div>
       <div class="ekran-kart reveal" role="listitem" style="--i:2">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-3.png" width="360" height="780" loading="lazy" alt="Sadece asgari ödeme uyarısını gösteren ekran" data-alt-en="Screen showing the minimum-payment warning" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-3.png — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="What if you only pay the minimum?">Sadece asgari ödersen ne olur?</p>
+        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-3.jpg" data-src-en="assets/ekran-3-en.jpg" width="360" height="780" loading="lazy" alt="Bu ay ne kadar ödeneceğini ve ne kadarının ödendiğini gösteren ekran" data-alt-en="Screen showing what's due this month and how much is paid" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-3.jpg — yer tutucu gösteriliyor.')"></div></div>
+        <p data-en="This month's payments at a glance">Bu ay ne ödeyeceğin, tek bakışta</p>
       </div>
       <div class="ekran-kart reveal" role="listitem" style="--i:3">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-4.png" width="360" height="780" loading="lazy" alt="Bu ayki ödeme planını gösteren ekran" data-alt-en="Screen showing this month's payment plan" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-4.png — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="Exactly what to do this month">Bu ay tam olarak ne yapmalısın</p>
+        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-4.jpg" data-src-en="assets/ekran-4-en.jpg" width="360" height="780" loading="lazy" alt="Borçların kapanış sırasını gösteren kurtuluş yolculuğu ekranı" data-alt-en="Payoff journey screen showing the order your debts close" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-4.jpg — yer tutucu gösteriliyor.')"></div></div>
+        <p data-en="Your payoff journey, debt by debt">Borç borç kurtuluş yolculuğun</p>
       </div>
     </div>
   </section>
@@ -419,6 +432,38 @@
 
   <hr class="ayirici">
 
+  <!-- TELEFONUNA EKLE: mağaza beklemeden, her telefonda -->
+  <section aria-labelledby="kur-bas" id="kur">
+    <div class="wrap">
+      <div class="bolum-bas">
+        <h2 id="kur-bas" class="grad reveal" data-en="Add it to your phone">Telefonuna ekle</h2>
+        <p class="reveal" data-en="No store needed. Samsung, Xiaomi, iPhone — it works on every phone, even offline.">Mağazaya gerek yok. Samsung, Xiaomi, iPhone — her telefonda, internetsiz de çalışır.</p>
+      </div>
+      <div class="kur-kartlar">
+        <div class="kart kur-kart reveal" style="--i:0">
+          <h3 data-en="Android (Samsung, Xiaomi…)">Android (Samsung, Xiaomi…)</h3>
+          <ol>
+            <li data-en="Open sifirla.app/uygulama in Chrome.">Chrome'da <strong>sifirla.app/uygulama</strong> adresini aç.</li>
+            <li data-en="Tap the ⋮ menu in the top right.">Sağ üstteki <strong>⋮</strong> menüsüne dokun.</li>
+            <li data-en="Choose “Add to home screen” or “Install app”.">“Ana ekrana ekle” ya da “Uygulamayı yükle”yi seç.</li>
+          </ol>
+        </div>
+        <div class="kart kur-kart reveal" style="--i:1">
+          <h3 data-en="iPhone">iPhone</h3>
+          <ol>
+            <li data-en="Open sifirla.app/uygulama in Safari.">Safari'de <strong>sifirla.app/uygulama</strong> adresini aç.</li>
+            <li data-en="Tap the Share button at the bottom.">Alttaki <strong>Paylaş</strong> düğmesine dokun.</li>
+            <li data-en="Choose “Add to Home Screen”.">“Ana Ekrana Ekle”yi seç.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="kur-cta reveal"><a class="btn btn-primary" href="./uygulama/" data-en="Open the app">Uygulamayı aç</a></p>
+      <p class="kur-not reveal" data-en="Your data stays on that phone. The App Store and Google Play versions are on the way.">Verilerin yalnızca o telefonda kalır. App Store ve Google Play sürümleri yolda.</p>
+    </div>
+  </section>
+
+  <hr class="ayirici">
+
   <!-- SSS -->
   <section aria-labelledby="sss-bas">
     <div class="wrap">
@@ -428,7 +473,7 @@
       <div class="sss" id="sss">
         <div class="sss-oge reveal" style="--i:0">
           <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Is it free?">Ücretsiz mi?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Yes — the whole app is free right now, with no debt limit. A one-time Pro upgrade is planned for later (coming soon, not on sale yet); there will never be a subscription.">Şu an evet: uygulamanın tamamı ücretsiz, borç sayısı sınırsız. İleride tek seferlik bir Pro yükseltmesi planlıyoruz — <strong>yakında</strong>, henüz satışta değil. Abonelik hiçbir zaman olmayacak.</div></div></div>
+          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Yes — the whole app is free right now, with no debt limit. An optional Pro version with extra features is planned for later; the core debt plan will always stay free.">Şu an evet: uygulamanın tamamı ücretsiz, borç sayısı sınırsız. İleride ek özellikli, isteğe bağlı bir Pro sürümü planlıyoruz; temel borç planı her zaman ücretsiz kalacak.</div></div></div>
         </div>
         <div class="sss-oge reveal" style="--i:1">
           <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Where does my data go?">Verilerim nereye gidiyor?</span><span class="ok" aria-hidden="true"></span></button>
@@ -449,6 +494,10 @@
         <div class="sss-oge reveal" style="--i:5">
           <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Do I need an internet connection?">İnternet gerekiyor mu?</span><span class="ok" aria-hidden="true"></span></button>
           <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="No, it works offline.">Hayır, çevrimdışı çalışır.</div></div></div>
+        </div>
+        <div class="sss-oge reveal" style="--i:6">
+          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Does it work on Android?">Android'de çalışıyor mu?</span><span class="ok" aria-hidden="true"></span></button>
+          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Yes. Open sifirla.app/uygulama in Chrome and add it to your home screen — it works like an app. The Google Play version is on the way.">Evet. Chrome'da sifirla.app/uygulama adresini açıp ana ekranına ekle; uygulama gibi çalışır. Google Play sürümü de yolda.</div></div></div>
         </div>
       </div>
     </div>
@@ -503,6 +552,10 @@
       if(el===titleEl||el===descEl)return;
       if(el.dataset.tr===undefined)el.dataset.tr=el.textContent;
       el.textContent=(l==='en')?el.dataset.en:el.dataset.tr;
+    });
+    document.querySelectorAll('[data-src-en]').forEach(function(el){
+      if(el.dataset.srcTr===undefined)el.dataset.srcTr=el.getAttribute('src');
+      el.setAttribute('src',(l==='en')?el.dataset.srcEn:el.dataset.srcTr);
     });
     document.querySelectorAll('[data-alt-en]').forEach(function(el){
       if(el.dataset.altTr===undefined)el.dataset.altTr=el.getAttribute('alt')||'';
