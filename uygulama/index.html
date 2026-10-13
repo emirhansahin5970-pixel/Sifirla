@@ -3370,6 +3370,10 @@ const SOZLUK = {
       bilRed: "Bildirim izni tarayıcıda reddedilmiş; hatırlatmalar yalnızca bu panoda görünecek.",
       bilAcikTxt: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir ve uygulama açıkken güvenilirdir.",
       bilAcikTxtNatif: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir.",
+      bilSiradaki: (n, t) => `Telefonuna ${n} hatırlatma kurulu; sıradaki: ${t}.`,
+      bilKuruluYok: "Şu an kurulu hatırlatma yok (bu dönemin ödemeleri girilmiş ya da yaklaşan ödeme yok).",
+      bilGunYok: "Borçlarında ödeme günü girili değil; hatırlatma kurulamıyor. Borcu düzenleyip ödeme gününü ekle.",
+      bilIzinVarKapali: "Telefon izni var ama hatırlatmalar kapalı — açmak için düğmeye bas.",
       bilTestGovde: "Test bildirimi — her şey çalışıyor.",
       bilTestKuruldu: "2 dakika sonrasına test bildirimi kuruldu. Uygulamayı kapatabilirsin.",
       bilTestOlmadi: "Test bildirimi kurulamadı.",
@@ -4083,6 +4087,10 @@ const SOZLUK = {
       bilRed: "Notification permission is denied in the browser; reminders will appear only on this board.",
       bilAcikTxt: "Lock-screen notifications are on — only neutral text is sent, and they are reliable only while the app is open.",
       bilAcikTxtNatif: "Lock-screen notifications are on — only neutral text is sent.",
+      bilSiradaki: (n, t) => `${n} reminders are scheduled on your phone; next: ${t}.`,
+      bilKuruluYok: "No reminders scheduled right now (this period is paid or nothing is due soon).",
+      bilGunYok: "Your debts have no payment day, so no reminders can be set. Edit a debt and add its payment day.",
+      bilIzinVarKapali: "Your phone allows notifications but reminders are off — tap the button to turn them on.",
       bilTestGovde: "Test notification — everything works.",
       bilTestKuruldu: "A test notification is set for 2 minutes from now. You can close the app.",
       bilTestOlmadi: "Couldn't schedule the test notification.",
@@ -5962,9 +5970,23 @@ const NATIF = (() => {
     catch (e) { yut(e); return 0; }
   }
 
+  async function bekleyenHatirlatmalar() {
+    if (!VAR) return null;
+    const L = E().LocalNotifications;
+    if (!L) return null;
+    try {
+      const { notifications } = await L.getPending();
+      return notifications
+        .filter(n => n.id >= PLAN_TABAN && n.id < PLAN_TABAN + 100)
+        .map(n => ({ id: n.id, at: n.schedule && n.schedule.at ? new Date(n.schedule.at) : null }))
+        .filter(n => n.at && !isNaN(n.at))
+        .sort((a, b) => a.at - b.at);
+    } catch (e) { yut(e); return null; }
+  }
+
   return { VAR, platform, titresim, durumCubugu, splashGizle, geriTusu, klavye,
            bildirimIzniDurumu, bildirimIzniIste, bildirimGonder, testBildirimi,
-           hatirlatmalariPlanla, hatirlatmalariIptal };
+           hatirlatmalariPlanla, hatirlatmalariIptal, bekleyenHatirlatmalar };
 })();
 
 /* ============================================================
@@ -10501,8 +10523,18 @@ const ARAYUZ = () => {
         // Native'de "yalnızca uygulama açıkken güvenilir" DOĞRU DEĞİL:
         // planlı bildirimler uygulama kapalıyken de gelir.
         btn.textContent = s.bilKapat; yazi.textContent = s.bilAcikTxtNatif;
+        // Teşhis: telefona gerçekten kaç hatırlatma kurulu, sıradaki ne zaman?
+        const gunluBorc = durum.borclar.some(b => b.balance > 0.005 && Number.isInteger(b.dueDay));
+        const bekleyen = await NATIF.bekleyenHatirlatmalar();
+        let ek = "";
+        if (!gunluBorc && durum.borclar.some(b => b.balance > 0.005)) ek = s.bilGunYok;
+        else if (bekleyen && bekleyen.length) ek = s.bilSiradaki(bekleyen.length,
+          new Intl.DateTimeFormat(s.yerel, { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(bekleyen[0].at));
+        else if (bekleyen) ek = s.bilKuruluYok;
+        if (ek) yazi.textContent = s.bilAcikTxtNatif + " " + ek;
       } else {
-        btn.textContent = s.bilDene; yazi.textContent = "";
+        btn.textContent = s.bilDene;
+        yazi.textContent = izin === "granted" ? s.bilIzinVarKapali : "";
       }
       return;
     }
@@ -10564,7 +10596,9 @@ const ARAYUZ = () => {
       const birinci = new Date(n.getFullYear(), n.getMonth() + 1, 1, sa || 10, dk || 0);
       kayitlar.push({ tarih: birinci, baslik: s.raporBildirimB, govde: s.raporBildirimM });
     }
-    return NATIF.hatirlatmalariPlanla(kayitlar);
+    const kurulan = await NATIF.hatirlatmalariPlanla(kayitlar);
+    bildirimDurumGoster(); // Ayarlar'daki "kaç hatırlatma kurulu · sıradaki" satırı tazelensin
+    return kurulan;
   }
 
   /* Bildirimleri aç: izin, NEDENİ anlatan metin gösterildikten SONRA istenir
