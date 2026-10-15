@@ -96,3 +96,12 @@ python3 -m http.server 8642
 - Uygulama: `http://localhost:8642/uygulama/`
 - Geliştirici modu: `http://localhost:8642/uygulama/?dev=1` (bilinen-cevap tablosu)
 - Pro test kilidi: `?pro=1` — **yalnızca localhost'ta** çalışır, canlıda yoktur.
+
+## App Store ekran görüntüleri
+
+`node tasarim/magaza-uret.js` (TR) ve `node tasarim/magaza-uret.js en` →
+`magaza/tr|en/01..06.png`, 1320×2868 (6.9" iPhone; Apple küçük boyutlara
+kendisi ölçekler). Uygulamanın kendisi örnek (uydurma, banka adı yok) veriyle
+açılıp gerçek ekranlar çekilir, başlık + telefon çerçevesiyle birleştirilir.
+Yerel sunucu açık olmalı: `python3 -m http.server 8642`.
+
