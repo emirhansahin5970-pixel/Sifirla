@@ -95,7 +95,7 @@ public class SifirlaAbonelikPlugin: CAPPlugin, CAPBridgedPlugin {
                 }
                 call.resolve(["urunler": cikti])
             } catch {
-                call.resolve(["urunler": [], "hata": error.localizedDescription])
+                call.resolve(["urunler": [] as [Any], "hata": error.localizedDescription])
             }
         }
     }
@@ -156,7 +156,7 @@ public class SifirlaAbonelikPlugin: CAPPlugin, CAPBridgedPlugin {
                 do { try await AppStore.showManageSubscriptions(in: sahne); call.resolve(); return } catch { }
             }
             if let adres = URL(string: "https://apps.apple.com/account/subscriptions") {
-                await UIApplication.shared.open(adres)
+                _ = await UIApplication.shared.open(adres)
             }
             call.resolve()
         }
