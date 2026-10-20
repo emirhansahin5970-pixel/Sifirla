@@ -745,6 +745,39 @@
      Yalnızca transform/opacity animasyonu; reduced-motion'da sade.
      ============================================================ */
   .gorunmez-metin { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* ---- Sıfırla Pro: kilit + deneme şeridi + abone ekranı ---- */
+  .pro-kilit { display: none; }
+  .card.kilitli .pro-kilit { display: block; margin-top: 10px; padding: 14px; border-radius: 14px; background: var(--accent-soft); text-align: center; }
+  .pro-kilit-b { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0 0 4px; font-weight: 700; color: var(--accent-strong); }
+  .pro-kilit .mini-ipucu { margin: 0 0 10px; }
+  .card.kilitli:not(.iy-kart) > :not(h2):not(.pro-kilit) { display: none !important; }
+  .iy-kart.kilitli > :not(.iy-ust):not(.iy-kahraman):not(.pro-kilit) { display: none !important; }
+  html.erisim-kilitli #hedefGenelSatir { display: none !important; }
+  .deneme-serit { display: block; width: 100%; margin: 0 0 12px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font: inherit; font-size: 13.5px; text-align: left; cursor: pointer; }
+  .deneme-serit[hidden] { display: none; }
+  .deneme-serit strong { color: var(--accent-strong); }
+  .ab-kart-btnlar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 10px; }
+  .abone-ekran { position: fixed; inset: 0; z-index: 210; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .abone-ekran[hidden] { display: none; }
+  .abone-ic { position: relative; max-width: 480px; margin: 0 auto; padding: calc(env(safe-area-inset-top, 0px) + 52px) 20px calc(env(safe-area-inset-bottom, 0px) + 28px); text-align: center; }
+  .abone-kapat { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); right: 12px; width: 40px; height: 40px; padding: 0; border-radius: 50%; background: var(--surface-2); color: var(--text); border: 0; font-size: 16px; }
+  .abone-rozet { display: inline-block; margin: 0 0 10px; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-weight: 700; font-size: 13px; letter-spacing: .02em; }
+  .abone-ekran h2 { margin: 0 0 8px; font-size: 26px; line-height: 1.2; letter-spacing: -0.02em; }
+  .abone-alt { margin: 0 0 14px; color: var(--muted); }
+  .abone-deger { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+  .abone-liste { list-style: none; margin: 0 0 18px; padding: 0; text-align: left; }
+  .abone-liste li { position: relative; padding: 9px 0 9px 30px; border-bottom: 1px solid var(--border); }
+  .abone-liste li:last-child { border-bottom: 0; }
+  .abone-liste li::before { content: "✓"; position: absolute; left: 4px; top: 9px; color: var(--ok); font-weight: 800; }
+  .abone-fiyat { margin: 0 0 12px; font-size: 22px; font-weight: 800; }
+  .abone-fiyat small { display: block; margin-top: 2px; font-size: 13px; font-weight: 500; color: var(--muted); }
+  .abone-al { width: 100%; min-height: 52px; font-size: 17px; font-weight: 700; border-radius: 14px; }
+  .abone-durum { min-height: 1.2em; margin: 8px 0; }
+  .abone-yasal { margin: 14px 0 8px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+  .abone-baglanti { margin: 0 0 14px; font-size: 13px; }
+  .abone-baglanti a { color: var(--accent-strong); }
+  .abone-sonra { width: 100%; }
+
   #sihirbaz, .akis-ekran { position: fixed; inset: 0; z-index: 190; background: var(--bg); display: flex; flex-direction: column; }
   #sihirbaz[hidden], .akis-ekran[hidden] { display: none; }
   .sb-ust { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
@@ -1689,6 +1722,7 @@ var GIRIS = (function () {
 
   <!-- SEKME: Genel Bakış — özet, yolculuk, öneriler, hatırlatmalar -->
   <div class="sekme" id="sekme-genel">
+  <button type="button" class="deneme-serit pro-ac no-print" id="denemeSerit" hidden></button>
 
   <!-- Hero: sayfanın tezi — tek büyük, sakin ilerleme halkası -->
   <section class="hero" id="ozetKart">
@@ -2061,6 +2095,11 @@ var GIRIS = (function () {
       <p class="iy-dev" id="iyDev">—</p>
       <p class="iy-dev-alt" id="iyDevAlt"></p>
     </div>
+    <div class="pro-kilit no-print">
+      <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
+      <p class="mini-ipucu" data-i18n="kilit_iy"></p>
+      <button type="button" class="pro-ac small" data-i18n="kilit_btn">Pro'ya geç</button>
+    </div>
     <!-- İki yol yan yana: her kart kendi başlığını taşır, kaydırınca anlam kaybolmaz -->
     <div class="iy-ikili">
       <div class="iy-yol iy-yol-a">
@@ -2107,6 +2146,11 @@ var GIRIS = (function () {
   <!-- Hedef: "şu ayda borçsuz olmak istiyorum" → ayda ne kadar (HEDEF katmanı, motordan) -->
   <section class="card hd-kart" id="hedefKart" hidden aria-labelledby="hdBaslik">
     <h2 id="hdBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4h11l-2 4 2 4H5"/></svg><span data-i18n="hd_h">Hedef koy</span></h2>
+    <div class="pro-kilit no-print">
+      <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
+      <p class="mini-ipucu" data-i18n="kilit_hd"></p>
+      <button type="button" class="pro-ac small" data-i18n="kilit_btn">Pro'ya geç</button>
+    </div>
     <p class="muted" data-i18n="hd_alt">Borçsuz olmak istediğin ayı seç; ayda ne kadar ödemen gerektiğini hesaplayayım.</p>
     <div class="hd-secici no-print">
       <div>
@@ -2136,6 +2180,11 @@ var GIRIS = (function () {
   <!-- Tasarruf Modu: gelir − giderler − asgariler = serbest para → önerilen ekstra (BUTCE katmanı) -->
   <section class="card ts-kart" id="tasarrufKart" hidden aria-labelledby="tsBaslik">
     <h2 id="tsBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 7l2-3h12l2 3"/><path d="M16 14h.01"/></svg><span data-i18n="ts_h">Tasarruf Modu</span></h2>
+    <div class="pro-kilit no-print">
+      <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
+      <p class="mini-ipucu" data-i18n="kilit_ts"></p>
+      <button type="button" class="pro-ac small" data-i18n="kilit_btn">Pro'ya geç</button>
+    </div>
     <div id="tsBos">
       <p class="muted" data-i18n="ts_alt">Gelirini ve giderlerini gir; borçlarına ayda ne kadar ayırabileceğini ve en erken ne zaman borçsuz olacağını hesaplayayım.</p>
       <p style="margin-top:12px"><button type="button" id="tsBaslat" data-i18n="ts_baslat">Bütçemi gir</button></p>
@@ -2584,8 +2633,9 @@ var GIRIS = (function () {
   <!-- "Ya şöyle yaparsam" senaryoları (Pro) -->
   <section class="card no-print">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v6l-5.2 9a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9V3"/><path d="M8.5 3h7M7.5 14.5h9"/></svg><span data-i18n="sen_h">Ya Şöyle Yaparsam? <span class="badge accent">Pro</span></span></h2>
-    <div id="senaryoKilit" class="info" data-i18n="sen_kilit">
-      Bu özellik Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.
+    <div id="senaryoKilit" class="info">
+      <span data-i18n="sen_kilit">Bu özellik Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.</span>
+      <button type="button" class="pro-ac small" style="margin-top:8px" data-i18n="kilit_btn">Pro'ya geç</button>
     </div>
     <div id="senaryoIcerik" hidden>
       <div class="form-grid" style="max-width:520px">
@@ -2605,32 +2655,22 @@ var GIRIS = (function () {
     </div>
   </section>
 
-  <!-- Reklam yer tutucusu: yalnızca ücretsiz sürümde görünür, gerçek reklam yok -->
-  <div id="reklam" class="reklam no-print" data-i18n="reklam">
-    Reklam alanı — Pro'da kaldırılır. (Şu an gerçek reklam gösterilmiyor; bu yalnızca yer tutucudur.)
-  </div>
 
-  <!-- Pro: henüz satın alınamaz. Kilit yalnızca setPro() ile açılır;
-       arayüzde kilidi açan bir düğme yoktur (bkz. setPro). -->
-  <section class="card no-print">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4L4.2 9.7l5.4-.8z"/></svg><span data-i18n="pro_h">Pro <span class="badge accent">Yakında</span></span></h2>
-    <p id="proDurum" class="badge accent" style="margin-bottom:0.4rem"></p>
-    <ul class="pro-liste" data-i18n="pro_avantaj">
-      <li>Sınırsız borç (ücretsizde en fazla 4)</li>
-      <li>"Ya şöyle yaparsam" senaryoları</li>
-      <li>PDF / rapor dışa aktarma</li>
-      
-      <li>Reklamsız görünüm</li>
-    </ul>
-    <div style="display:flex; gap:0.6rem; flex-wrap:wrap">
-      <button id="proBtn" class="ghost" disabled data-i18n="btn_pro">Yakında — satın alma henüz açık değil</button>
-      <button id="yazdirBtn" class="ghost" hidden data-i18n="btn_yazdir">PDF için yazdır</button>
-      <button id="raporBtn" class="ghost" hidden data-i18n="btn_rapor">HTML raporu indir</button>
+  <!-- Sıfırla Pro: 30 gün deneme → Apple aboneliği (ABONELIK modülü).
+       Kilit TEK kapıdan: tamErisim(). Satın almayı Apple yapar. -->
+  <section class="card no-print" id="aboneKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4L4.2 9.7l5.4-.8z"/></svg><span data-i18n="ab_kart_h">Sıfırla Pro</span></h2>
+    <p><span id="proDurum" class="badge accent"></span></p>
+    <p class="muted" id="abKartMetin" style="margin-top:8px"></p>
+    <div class="ab-kart-btnlar">
+      <button type="button" id="proBtn" class="pro-ac" data-i18n="kilit_btn">Pro'ya geç</button>
+      <button type="button" id="abKartYonet" class="ghost" hidden data-i18n="ab_yonet">Aboneliği yönet</button>
+      <button type="button" id="abKartGeri" class="ghost small" hidden data-i18n="ab_geri">Satın alımları geri yükle</button>
     </div>
-    <p class="muted" style="margin-top:0.6rem" data-i18n="pro_not">
-      Pro henüz satışta değil; hazır olduğunda tek seferlik bir yükseltme olacak, abonelik olmayacak.
-      O güne kadar borç sayısı sınırsız ve uygulama tam sürümüyle ücretsiz.
-    </p>
+    <div class="ab-kart-btnlar">
+      <button id="yazdirBtn" class="ghost small" hidden data-i18n="btn_yazdir">PDF için yazdır</button>
+      <button id="raporBtn" class="ghost small" hidden data-i18n="btn_rapor">HTML raporu indir</button>
+    </div>
   </section>
 
   <!-- Motor kendi kendine test sonuçları: geliştirici modunda (?dev=1) görünür;
@@ -2656,6 +2696,30 @@ var GIRIS = (function () {
     hesaplama yöntemi, vergiler (KKDF/BSMV), ücretler veya oran değişiklikleri nedeniyle gerçek tutarlar farklı olabilir.
     Önemli finansal kararlar öncesinde lütfen bir uzmana danışın.
   </footer>
+</div>
+
+<!-- Abone ekranı: Apple 3.1.2 — fiyat + süre + otomatik yenileme + iptal yolu +
+     geri yükleme + Kullanım Koşulları + Gizlilik bağlantıları aynı ekranda -->
+<div id="aboneOverlay" class="no-print abone-ekran" role="dialog" aria-modal="true" aria-labelledby="abBaslik" hidden>
+  <div class="abone-ic">
+    <button type="button" class="abone-kapat" id="abKapat" data-i18n-aria="ab_kapat" aria-label="Kapat">✕</button>
+    <p class="abone-rozet" data-i18n="ab_kart_h">Sıfırla Pro</p>
+    <h2 id="abBaslik"></h2>
+    <p class="abone-alt" id="abAlt"></p>
+    <p class="abone-deger" id="abDeger" hidden></p>
+    <ul class="abone-liste" data-i18n="ab_liste"></ul>
+    <p class="abone-fiyat" id="abFiyat"></p>
+    <button type="button" id="abAl" class="abone-al" data-i18n="ab_al">Abone ol</button>
+    <p class="mini-ipucu abone-durum" id="abDurum" role="status" aria-live="polite"></p>
+    <button type="button" class="ghost small" id="abGeri" data-i18n="ab_geri">Satın alımları geri yükle</button>
+    <p class="abone-yasal" data-i18n="ab_yasal"></p>
+    <p class="abone-baglanti">
+      <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener" data-i18n="ab_sartlar">Kullanım Koşulları (EULA)</a>
+      <span aria-hidden="true">·</span>
+      <a id="abGizlilik" href="https://sifirla.app/gizlilik" target="_blank" rel="noopener" data-i18n="ab_gizlilik">Gizlilik Politikası</a>
+    </p>
+    <button type="button" class="ghost abone-sonra" id="abSonra" data-i18n="ab_sonra">Şimdilik değil</button>
+  </div>
 </div>
 
 <!-- Kayıt sonrası kısa onay -->
@@ -3159,14 +3223,18 @@ const SOZLUK = {
       nav_genel: "Genel", nav_borclar: "Borçlar", nav_plan: "Plan", nav_buay: "Bu Ay", nav_daha: "Daha",
       buay_h: "Bu Ay Ne Yapmalıyım?",
       yontem_cig: "Çığ (önce en yüksek faiz)", yontem_kartopu: "Kartopu (önce en küçük bakiye)",
-      sen_h: 'Ya Şöyle Yaparsam? <span class="badge accent">Pro · Yakında</span>',
-      sen_kilit: "Bu özellik Pro ile gelecek (yakında): farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır. Henüz satışta değil.",
+      sen_h: 'Ya Şöyle Yaparsam? <span class="badge accent">Pro</span>',
+      sen_kilit: "Bu özellik Sıfırla Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.",
+      kilit_b: "Sıfırla Pro ile açılır", kilit_btn: "Pro'ya geç",
+      kilit_iy: "Sadece asgari ile planının tam karşılaştırması, kaydırıcı ve grafik Pro'da.",
+      kilit_hd: "Borçsuz olmak istediğin ayı seç, ayda ne kadar ödemen gerektiğini gör.",
+      kilit_ts: "Gelir ve giderlerinden borcuna ayırabileceğin tutarı hesapla.",
+      ab_kart_h: "Sıfırla Pro", ab_yonet: "Aboneliği yönet", ab_geri: "Satın alımları geri yükle",
+      ab_kapat: "Kapat", ab_al: "Abone ol", ab_sonra: "Şimdilik değil",
+      ab_sartlar: "Kullanım Koşulları (EULA)", ab_gizlilik: "Gizlilik Politikası",
+      ab_liste: "<li>Kilit ekranında ödeme hatırlatmaları</li><li>Aylık rapor ve “bir ay erken bitir” önerisi</li><li>İki Yol: sadece asgari ile planın, kaydırıcıyla</li><li>Hedef: “şu ayda borçsuz olmak istiyorum”</li><li>Tasarruf Modu: bütçene göre önerilen ekstra</li><li>“Ya şöyle yaparsam” senaryoları ve PDF</li>",
+      ab_yasal: "Ödeme, satın almayı onayladığında Apple Kimliği hesabından alınır. Abonelik, dönem bitmeden en az 24 saat önce iptal edilmezse her ay aynı fiyattan otomatik yenilenir. Aboneliğini iPhone Ayarlar › adın › Abonelikler bölümünden yönetebilir ve istediğin an iptal edebilirsin. Abone olmasan da borçların, temel planın ve ödeme kaydın ücretsiz kalır.",
       lbl_sen_ekstra: "Aylık ekstraya ekle (₺)", lbl_sen_tek: "Bugün tek seferlik öde (₺)", btn_sen: "Senaryoyu hesapla",
-      reklam: "Reklam alanı — Pro geldiğinde kaldırılabilecek. (Şu an gerçek reklam gösterilmiyor; bu yalnızca yer tutucudur.)",
-      pro_h: 'Pro <span class="badge accent">Yakında</span>',
-      pro_avantaj: '<li>"Ya şöyle yaparsam" senaryoları</li><li>PDF / rapor dışa aktarma</li><li>Reklamsız görünüm</li><li>Sınırsız borç — satın alma açılana kadar zaten herkeste açık</li>',
-      btn_pro: "Yakında — satın alma henüz açık değil",
-      pro_not: "Pro henüz satışta değil; hazır olduğunda tek seferlik bir yükseltme olacak, abonelik olmayacak. O güne kadar borç sayısı sınırsız ve uygulama tam sürümüyle ücretsiz.",
       btn_yazdir: "PDF için yazdır", btn_rapor: "HTML raporu indir",
       ob5b: "Sana nasıl hitap edelim?",
       ob5m: "Bu bilgi yalnızca cihazında kalır — istersen boş bırak.",
@@ -3602,7 +3670,38 @@ const SOZLUK = {
       zilYerelHatirlatma: "Bir hatırlatman var.",
       zilYerelOzet: "Yeni bir özetin var.",
       zilYerelGenel: "Yeni bir bildirimin var.",
-      proEtkin: "Pro etkin ✓", proDegil: "Ücretsiz sürüm — Pro yakında",
+      proEtkin: "Pro etkin ✓",
+      abWebRozet: "Tüm özellikler açık",
+      abWebMetin: "Web sürümü şimdilik tamamen ücretsiz. Sıfırla Pro aboneliği iPhone uygulamasında.",
+      abTestMetin: "Test sürümü: Pro bu cihazda test için açık.",
+      abAktifMetin: "Aboneliğin etkin. Teşekkürler!",
+      abYenilenir: (t) => `Aboneliğin etkin; ${t} tarihinde yenilenir. İstediğin an iptal edebilirsin.`,
+      abBitecek: (t) => `Aboneliğin iptal edildi; ${t} tarihine kadar Pro açık kalır.`,
+      abDenemeRozet: (n) => `Ücretsiz deneme · ${n} gün kaldı`,
+      abDenemeMetin: "İlk 30 gün tüm özellikler ücretsiz; kart ya da onay gerekmez. Deneme bitince istersen aylık abonelikle devam edersin. Abone olmazsan borçların, temel planın ve ödeme kaydın ücretsiz kalır.",
+      abBittiRozet: "Deneme bitti",
+      abBittiMetin: "Borçların, temel planın, Bu Ay ve ödeme kaydın ücretsiz kalır. Hatırlatmalar, aylık rapor, İki Yol, Hedef ve Tasarruf Modu için Pro'ya geçebilirsin.",
+      abSeritKalan: (n) => `Ücretsiz denemenin bitmesine <strong>${n} gün</strong> kaldı · Pro'ya göz at`,
+      abSeritBitti: "Ücretsiz deneme bitti · <strong>Pro'ya geç</strong>, hatırlatmaların ve raporun geri gelsin",
+      abBaslikDeneme: "Borcunu planla bitir",
+      abBaslikBitti: "Ücretsiz denemen bitti",
+      abAltDeneme: (n) => `Denemende ${n} gün kaldı. Şimdi abone olursan ücret bugün başlar.`,
+      abAltBitti: "30 gün boyunca her şeyi kullandın. Planına devam etmek için Pro'ya geç.",
+      abDeger: (t) => `Planınla, sadece asgari ödemeye göre faize yaklaşık ${t} daha az ödüyorsun.`,
+      abFiyat: (f) => `${f} <span style="font-size:15px;font-weight:600">/ ay</span><small>Aylık otomatik yenilenir · istediğin an iptal</small>`,
+      abAlFiyat: (f) => `Abone ol — ${f} / ay`,
+      abFiyatYukleniyor: '<small>Fiyat App Store\'dan alınıyor…</small>',
+      abFiyatYok: "<small>Abonelik şu an alınamıyor. İnternet bağlantını kontrol edip tekrar dene.</small>",
+      abAciliyor: "App Store açılıyor…",
+      abTesekkur: "Teşekkürler! Sıfırla Pro açık.",
+      abBekliyor: "Satın alma onay bekliyor (ör. Aile Paylaşımı). Onaylanınca Pro kendiliğinden açılır.",
+      abHata: "İşlem tamamlanamadı. Biraz sonra tekrar dene.",
+      abGeriYukleniyor: "Satın alımların kontrol ediliyor…",
+      abGeriTamam: "Aboneliğin geri yüklendi. Pro açık.",
+      abGeriYok: "Bu Apple Kimliğinde etkin bir Sıfırla Pro aboneliği bulunamadı.",
+      abBildirim: "Ücretsiz denemenin bitmesine 2 gün kaldı.",
+      bilKilitBtn: "Pro ile aç",
+      bilKilit: "Kilit ekranı hatırlatmaları Sıfırla Pro'da. Uygulama içi zil çalışmaya devam eder.",
       senBos: "Değişiklik girmediniz; iki alandan en az birini doldurun.",
       senBorcYok: "Önce en az bir açık borç ekleyin.",
       senUygulanamaz: "Bu senaryo da makul sürede kapanmıyor; daha yüksek bir tutar deneyebilirsin.",
@@ -3879,14 +3978,18 @@ const SOZLUK = {
       nav_genel: "Overview", nav_borclar: "Debts", nav_plan: "Plan", nav_buay: "This Month", nav_daha: "More",
       buay_h: "What Should I Do This Month?",
       yontem_cig: "Avalanche (highest interest first)", yontem_kartopu: "Snowball (smallest balance first)",
-      sen_h: 'What If? <span class="badge accent">Pro · Soon</span>',
-      sen_kilit: "Coming with Pro: compare different extra budgets and one-off payments against your current plan. Not on sale yet.",
+      sen_h: 'What If? <span class="badge accent">Pro</span>',
+      sen_kilit: "This is part of Sıfırla Pro: compare different extra budgets and one-off payments against your current plan.",
+      kilit_b: "Unlocks with Sıfırla Pro", kilit_btn: "Go Pro",
+      kilit_iy: "The full minimum-only vs. plan comparison, slider and chart are in Pro.",
+      kilit_hd: "Pick the month you want to be debt-free and see how much to pay each month.",
+      kilit_ts: "Work out how much of your income you can put toward your debts.",
+      ab_kart_h: "Sıfırla Pro", ab_yonet: "Manage subscription", ab_geri: "Restore purchases",
+      ab_kapat: "Close", ab_al: "Subscribe", ab_sonra: "Not now",
+      ab_sartlar: "Terms of Use (EULA)", ab_gizlilik: "Privacy Policy",
+      ab_liste: "<li>Payment reminders on your lock screen</li><li>Monthly report with a “finish a month sooner” tip</li><li>Two Paths: minimum-only vs. your plan, with a slider</li><li>Goal: “I want to be debt-free by…”</li><li>Savings Mode: suggested extra from your budget</li><li>“What if” scenarios and PDF export</li>",
+      ab_yasal: "Payment is charged to your Apple Account when you confirm the purchase. The subscription renews automatically every month at the same price unless cancelled at least 24 hours before the end of the current period. You can manage or cancel it anytime in iPhone Settings › your name › Subscriptions. Without a subscription, your debts, basic plan and payment log stay free.",
       lbl_sen_ekstra: "Add to monthly extra (₺)", lbl_sen_tek: "One-off payment today (₺)", btn_sen: "Run scenario",
-      reklam: "Ad space — removable once Pro arrives. (No real ads are shown; this is just a placeholder.)",
-      pro_h: 'Pro <span class="badge accent">Soon</span>',
-      pro_avantaj: '<li>"What if" scenarios</li><li>PDF / report export</li><li>Ad-free view</li><li>Unlimited debts — already open to everyone until purchasing opens</li>',
-      btn_pro: "Coming soon — purchasing isn't open yet",
-      pro_not: "Pro isn't on sale yet; when it's ready it will be a one-time upgrade, never a subscription. Until then the debt count is unlimited and the app is free in full.",
       btn_yazdir: "Print to PDF", btn_rapor: "Download HTML report",
       ob5b: "What should we call you?",
       ob5m: "This stays only on your device — leave it blank if you like.",
@@ -4312,7 +4415,38 @@ const SOZLUK = {
       zilYerelHatirlatma: "You have a reminder.",
       zilYerelOzet: "You have a new summary.",
       zilYerelGenel: "You have a new notification.",
-      proEtkin: "Pro active ✓", proDegil: "Free version — Pro coming soon",
+      proEtkin: "Pro active ✓",
+      abWebRozet: "Everything unlocked",
+      abWebMetin: "The web version is fully free for now. The Sıfırla Pro subscription lives in the iPhone app.",
+      abTestMetin: "Test build: Pro is unlocked on this device for testing.",
+      abAktifMetin: "Your subscription is active. Thank you!",
+      abYenilenir: (t) => `Your subscription is active and renews on ${t}. Cancel anytime.`,
+      abBitecek: (t) => `Your subscription is cancelled; Pro stays on until ${t}.`,
+      abDenemeRozet: (n) => `Free trial · ${n} day${n === 1 ? "" : "s"} left`,
+      abDenemeMetin: "Everything is free for your first 30 days — no card, nothing to confirm. When the trial ends you can continue with a monthly subscription. Without it, your debts, basic plan and payment log stay free.",
+      abBittiRozet: "Trial ended",
+      abBittiMetin: "Your debts, basic plan, This Month and payment log stay free. Go Pro for reminders, the monthly report, Two Paths, Goal and Savings Mode.",
+      abSeritKalan: (n) => `Your free trial ends in <strong>${n} day${n === 1 ? "" : "s"}</strong> · See Pro`,
+      abSeritBitti: "Your free trial has ended · <strong>Go Pro</strong> to bring back reminders and your report",
+      abBaslikDeneme: "Finish your debt with a plan",
+      abBaslikBitti: "Your free trial has ended",
+      abAltDeneme: (n) => `${n} day${n === 1 ? "" : "s"} left in your trial. If you subscribe now, billing starts today.`,
+      abAltBitti: "You've had everything for 30 days. Go Pro to keep your plan going.",
+      abDeger: (t) => `With your plan you pay about ${t} less interest than paying only the minimum.`,
+      abFiyat: (f) => `${f} <span style="font-size:15px;font-weight:600">/ month</span><small>Renews monthly · cancel anytime</small>`,
+      abAlFiyat: (f) => `Subscribe — ${f} / month`,
+      abFiyatYukleniyor: "<small>Getting the price from the App Store…</small>",
+      abFiyatYok: "<small>The subscription isn't available right now. Check your connection and try again.</small>",
+      abAciliyor: "Opening the App Store…",
+      abTesekkur: "Thank you! Sıfırla Pro is on.",
+      abBekliyor: "Purchase is awaiting approval (e.g. Family Sharing). Pro turns on automatically once approved.",
+      abHata: "Couldn't complete that. Please try again shortly.",
+      abGeriYukleniyor: "Checking your purchases…",
+      abGeriTamam: "Subscription restored. Pro is on.",
+      abGeriYok: "No active Sıfırla Pro subscription was found for this Apple Account.",
+      abBildirim: "Your free trial ends in 2 days.",
+      bilKilitBtn: "Unlock with Pro",
+      bilKilit: "Lock-screen reminders are part of Sıfırla Pro. The in-app bell keeps working.",
       senBos: "No change entered; fill at least one of the two fields.",
       senBorcYok: "Add at least one open debt first.",
       senUygulanamaz: "This scenario doesn't close in a reasonable time either; you could try a larger amount.",
@@ -6060,6 +6194,88 @@ const ZEKA = (() => {
 })();
 
 /* ============================================================
+   ABONELIK — Apple aboneliği (StoreKit 2) köprüsü + 30 günlük deneme.
+   Ödemeyi Apple alır; burada yalnızca durum okunur. Dış SDK/sunucu yok.
+   Native eklenti: ios/App/App/SifirlaAbonelik.swift (nativePromise ile).
+   denemeKalan SAF fonksiyondur (DOM/depo yok) ve kendi testleri vardır.
+   ============================================================ */
+const ABONELIK = (() => {
+  const EKLENTI = "SifirlaAbonelik";
+  const URUN = "app.sifirla.pro.aylik";
+  const DENEME_GUN = 30;
+  const GUN_MS = 86400000;
+  const kopru = () => {
+    try { return NATIF.VAR && typeof window.Capacitor.nativePromise === "function"; }
+    catch (e) { return false; }
+  };
+  const cagir = (metot, veri) => window.Capacitor.nativePromise(EKLENTI, metot, veri || {});
+
+  /* Kalan deneme günü (0 = bitti). İlk gün 30 sayılır; 30 tam gün geçince 0.
+     Saat ileri/geri oynatılırsa sonuç 0..30 aralığında kalır. */
+  function denemeKalan(basMs, simdiMs) {
+    if (!(basMs > 0)) return DENEME_GUN;
+    const gecen = Math.floor((simdiMs - basMs) / GUN_MS);
+    return Math.max(0, Math.min(DENEME_GUN, DENEME_GUN - gecen));
+  }
+  const denemeBitisMs = (basMs) => basMs + DENEME_GUN * GUN_MS;
+
+  async function urun() {
+    if (!kopru()) return null;
+    try {
+      const r = await cagir("urunler");
+      return (r && Array.isArray(r.urunler) && r.urunler.find(u => u.id === URUN)) || null;
+    } catch (e) { return null; }
+  }
+  // { aktif, bitisMs, yenilenecek } ya da null (köprü yok / okunamadı: durumu DEĞİŞTİRME)
+  async function durum() {
+    if (!kopru()) return null;
+    try { const r = await cagir("durum"); return r && typeof r.aktif === "boolean" ? r : null; }
+    catch (e) { return null; }
+  }
+  async function satinAl() {
+    if (!kopru()) return { sonuc: "kopruYok" };
+    try { return await cagir("satinAl", { id: URUN }); }
+    catch (e) { return { sonuc: "hata" }; }
+  }
+  async function geriYukle() {
+    if (!kopru()) return null;
+    try { return await cagir("geriYukle"); } catch (e) { return null; }
+  }
+  async function yonet() {
+    if (!kopru()) return;
+    try { await cagir("yonet"); } catch (e) { /* yoksay */ }
+  }
+  // Anahtarlık: silip yeniden kurmak denemeyi sıfırlamaz. Erken olan tarih kazanır.
+  async function denemeBaslangic(ms) {
+    if (!kopru()) return ms;
+    try { const r = await cagir("denemeBaslangic", { ms }); return r && r.ms > 0 ? r.ms : ms; }
+    catch (e) { return ms; }
+  }
+
+  function selfTest() {
+    const t0 = Date.UTC(2026, 9, 1, 9, 0);
+    const vakalar = [
+      ["başlangıç yoksa tam süre", denemeKalan(0, t0), 30],
+      ["ilk gün 30", denemeKalan(t0, t0 + 3600000), 30],
+      ["1 gün sonra 29", denemeKalan(t0, t0 + GUN_MS), 29],
+      ["29. gün sonunda 1", denemeKalan(t0, t0 + 29 * GUN_MS + 5000), 1],
+      ["30 gün sonra 0", denemeKalan(t0, t0 + 30 * GUN_MS), 0],
+      ["çok sonra yine 0", denemeKalan(t0, t0 + 400 * GUN_MS), 0],
+      ["saat geri alınsa en fazla 30", denemeKalan(t0, t0 - 10 * GUN_MS), 30],
+      ["bitiş tarihi = başlangıç + 30 gün", denemeBitisMs(t0), t0 + 30 * GUN_MS]
+    ];
+    const kalan = vakalar.filter(([, g, b]) => g !== b);
+    console.log(`Abonelik testleri: ${vakalar.length - kalan.length}/${vakalar.length} geçti`);
+    kalan.forEach(([ad, g, b]) => console.error("Abonelik testi KALDI:", ad, "→", g, "beklenen", b));
+    return kalan.length === 0;
+  }
+
+  return { URUN, DENEME_GUN, denemeKalan, denemeBitisMs, urun, durum, satinAl, geriYukle, yonet,
+           denemeBaslangic, selfTest, get kopruVar() { return kopru(); } };
+})();
+ABONELIK.selfTest();
+
+/* ============================================================
    DEPOLAMA — DEPO üzerinden, try/catch ile güvenli.
    schemaVersion + migrate ile geleceğe dayanıklı: eski sürüm yeni
    şemaya taşınır, bilinmeyen sürümde veri SİLİNMEZ (bilinen alanlar
@@ -6143,6 +6359,7 @@ const STORAGE = (() => {
     ad: "", selamIlk: null, // kişiselleştirme: ad yalnızca cihazda
     referanslar: null, ilkPlan: null,
     yedek: YEDEK_VARSAYILAN(), ilkKullanimMs: Date.now(),
+    denemeBasMs: Date.now(), denemeBittiGoruldu: false,
     schemaVersion: SEMA
   });
 
@@ -6252,6 +6469,9 @@ const STORAGE = (() => {
           acilisHatirlatildi: veri.yedek.acilisHatirlatildi === true
         } : {}),
         ilkKullanimMs: typeof veri.ilkKullanimMs === "number" && veri.ilkKullanimMs > 0 ? veri.ilkKullanimMs : Date.now(),
+        // Sıfırla Pro denemesi: yoksa BUGÜN başlar (gelecek tarih kabul edilmez)
+        denemeBasMs: typeof veri.denemeBasMs === "number" && veri.denemeBasMs > 0 && veri.denemeBasMs <= Date.now() ? veri.denemeBasMs : Date.now(),
+        denemeBittiGoruldu: veri.denemeBittiGoruldu === true,
         sekme: typeof veri.sekme === "string" ? veri.sekme : "genel",
         referanslar: (veri.referanslar && typeof veri.referanslar === "object") ? veri.referanslar : null,
         ilkPlan: (veri.ilkPlan && typeof veri.ilkPlan === "object") ? veri.ilkPlan : null,
@@ -6295,6 +6515,30 @@ const ARAYUZ = () => {
      (5. borcunu ekleyemeyen kullanıcının yapabileceği hiçbir şey olmazdı). */
   const PRO_SATIN_ALINABILIR = false;
   const SINIR_UCRETSIZ_BORC = PRO_SATIN_ALINABILIR ? 4 : Infinity;
+
+  /* ---- Sıfırla Pro erişimi: TEK kapı tamErisim() ----
+     İlk 30 gün her şey açık (kart/onay yok). Sonra Apple aboneliği; abone
+     olmayan kullanıcı borçlarını, temel planı, Bu Ay'ı, ödeme kaydını ve
+     yedeklemeyi KULLANMAYA DEVAM EDER (veri asla rehin alınmaz). Kilitlenen:
+     kilit ekranı hatırlatmaları, aylık rapor, İki Yol ayrıntısı, Hedef,
+     Tasarruf Modu, senaryolar, dışa aktarma.
+     Web sürümünde satın alma yok → orada şimdilik her şey açık.
+     Yerel test (yalnızca localhost): ?abone=1 → kilit mantığı web'de de çalışır,
+     ?abone=bitti → deneme bitmiş gibi. Canlıda ve native'de bu kapı yoktur. */
+  const ABONE_YEREL = yerelOrtamMi(location.hostname, location.protocol)
+    ? new URLSearchParams(location.search).get("abone") : null;
+  const ABONELIK_ZORUNLU = NATIF.VAR || ABONE_YEREL === "1" || ABONE_YEREL === "bitti";
+  const TEST_AYAR = (NATIF.VAR && window.SIFIRLA_TEST) || {};
+  let aboneBilgi = null;   // ABONELIK.durum() son sonucu (yenileme tarihi vb.)
+  let aboneUrun = null;    // App Store ürünü (yerel fiyat metni)
+  let sonErisim = null;
+  function denemeKalanGun() {
+    if (TEST_AYAR.denemeBitti === true || ABONE_YEREL === "bitti") return 0;
+    return ABONELIK.denemeKalan(durum.denemeBasMs, Date.now());
+  }
+  function tamErisim() {
+    return !ABONELIK_ZORUNLU || durum.pro === true || denemeKalanGun() > 0;
+  }
   let paraFmt, tarihFmt, gunAyFmt, yuzdeFmt;
   const yuzdeYaz = (v) => yuzdeFmt.format(Math.round(v) / 100);
 
@@ -10327,6 +10571,7 @@ const ARAYUZ = () => {
   }
 
   function raporAc() {
+    if (!tamErisim()) { aboneAc("rapor"); return; }
     raporAyK = ayAnahtari(new Date()); // varsayılan: içinde bulunulan ay
     raporCiz();
     $("raporOverlay").hidden = false;
@@ -10517,6 +10762,11 @@ const ARAYUZ = () => {
       const izin = await NATIF.bildirimIzniDurumu();
       if (izin === "denied") { btn.hidden = true; yazi.textContent = s.bilRed; return; }
       btn.hidden = false;
+      if (!tamErisim()) { // deneme bitti, abone değil: kilit ekranı hatırlatmaları Pro'da
+        btn.textContent = s.bilKilitBtn; yazi.textContent = s.bilKilit;
+        $("bildirimTestBtn").hidden = true;
+        return;
+      }
       // Test düğmesi yalnızca bildirimler gerçekten açıkken anlamlı
       $("bildirimTestBtn").hidden = !(durum.ayarlar.bildirimAcik && izin === "granted");
       if (durum.ayarlar.bildirimAcik && izin === "granted") {
@@ -10571,7 +10821,11 @@ const ARAYUZ = () => {
      Her çağrıda eski plan iptal edilip yeniden kurulur. */
   async function hatirlatmalariTazele() {
     if (!NATIF.VAR) return 0;
-    if (!durum.ayarlar.bildirimAcik) { await NATIF.hatirlatmalariIptal(); return 0; }
+    if (!durum.ayarlar.bildirimAcik || !tamErisim()) {
+      await NATIF.hatirlatmalariIptal();
+      bildirimDurumGoster();
+      return 0;
+    }
     const s = sd();
     // Tek kaynak: HATIRLATMA.planla — ödenmiş dönemler zaten listede yok
     const plan = HATIRLATMA.planla(durum.borclar, { gunler: durum.ayarlar.hatirlatmaGunleri, saat: durum.ayarlar.hatirlatmaSaat });
@@ -10596,6 +10850,13 @@ const ARAYUZ = () => {
       const birinci = new Date(n.getFullYear(), n.getMonth() + 1, 1, sa || 10, dk || 0);
       kayitlar.push({ tarih: birinci, baslik: s.raporBildirimB, govde: s.raporBildirimM });
     }
+    // Deneme bitmeden 2 gün önce tek, dürüst bir uyarı (abone değilse)
+    if (ABONELIK_ZORUNLU && !durum.pro && denemeKalanGun() > 2) {
+      const [sa, dk] = (durum.ayarlar.hatirlatmaSaat || "10:00").split(":").map(Number);
+      const t = new Date(ABONELIK.denemeBitisMs(durum.denemeBasMs) - 2 * 86400000);
+      t.setHours(sa || 10, dk || 0, 0, 0);
+      if (t.getTime() > Date.now()) kayitlar.push({ tarih: t, baslik: s.zilYerelBaslik, govde: s.abBildirim });
+    }
     const kurulan = await NATIF.hatirlatmalariPlanla(kayitlar);
     bildirimDurumGoster(); // Ayarlar'daki "kaç hatırlatma kurulu · sıradaki" satırı tazelensin
     return kurulan;
@@ -10604,6 +10865,7 @@ const ARAYUZ = () => {
   /* Bildirimleri aç: izin, NEDENİ anlatan metin gösterildikten SONRA istenir
      (sihirbazdaki teklif kartı ya da Ayarlar'daki gerekçe paneli). */
   async function bildirimleriAc() {
+    if (NATIF.VAR && !tamErisim()) { aboneAc("bildirim"); return false; }
     if (NATIF.VAR) {
       const n = await NATIF.bildirimIzniIste();
       if (n === "granted") {
@@ -10631,6 +10893,7 @@ const ARAYUZ = () => {
     return izin === "granted";
   }
   $("bildirimBtn").addEventListener("click", async () => {
+    if (NATIF.VAR && !tamErisim()) { aboneAc("bildirim"); return; }
     if (durum.ayarlar.bildirimAcik) {
       durum.ayarlar.bildirimAcik = false;
       STORAGE.kaydet(durum);
@@ -10873,18 +11136,161 @@ const ARAYUZ = () => {
     if (NATIF.VAR) hatirlatmalariTazele(); // planlı kilit ekranı metinleri yeni dilde kurulsun
   });
 
-  /* ---- Pro: tek seferlik yerel kilit ---- */
+  /* ---- Pro: kilit görünümü + Daha'daki abonelik kartı + deneme şeridi ---- */
   function proUygula() {
-    const s = sd();
-    $("proDurum").textContent = durum.pro ? s.proEtkin : s.proDegil;
-    $("proDurum").className = durum.pro ? "badge ok" : "badge accent";
-    $("proBtn").hidden = durum.pro;
-    $("yazdirBtn").hidden = !durum.pro;
-    $("raporBtn").hidden = !durum.pro;
-    $("reklam").hidden = durum.pro;
-    $("senaryoKilit").hidden = durum.pro;
-    $("senaryoIcerik").hidden = !durum.pro;
+    const s = sd(), acik = tamErisim(), kalan = denemeKalanGun();
+    document.documentElement.classList.toggle("erisim-kilitli", !acik);
+    ["ikiYolKart", "hedefKart", "tasarrufKart"].forEach(id => $(id).classList.toggle("kilitli", !acik));
+    $("senaryoKilit").hidden = acik;
+    $("senaryoIcerik").hidden = !acik;
+    $("yazdirBtn").hidden = !acik;
+    $("raporBtn").hidden = !acik;
+    // Abonelik kartı
+    const d = $("proDurum"), m = $("abKartMetin");
+    const satinalma = durum.pro && durum.proKaynak === "satinalma";
+    $("proBtn").hidden = !ABONELIK_ZORUNLU || durum.pro;
+    $("abKartYonet").hidden = !satinalma || !NATIF.VAR;
+    $("abKartGeri").hidden = !ABONELIK_ZORUNLU || durum.pro;
+    if (!ABONELIK_ZORUNLU) {
+      d.textContent = s.abWebRozet; d.className = "badge ok"; m.textContent = s.abWebMetin;
+    } else if (durum.pro) {
+      d.textContent = s.proEtkin; d.className = "badge ok";
+      const bit = aboneBilgi && aboneBilgi.bitisMs > 0 ? tarihUzun(new Date(aboneBilgi.bitisMs)) : null;
+      m.textContent = !satinalma ? s.abTestMetin
+        : bit ? (aboneBilgi.yenilenecek === false ? s.abBitecek(bit) : s.abYenilenir(bit)) : s.abAktifMetin;
+    } else if (kalan > 0) {
+      d.textContent = s.abDenemeRozet(kalan); d.className = "badge accent"; m.textContent = s.abDenemeMetin;
+    } else {
+      d.textContent = s.abBittiRozet; d.className = "badge err"; m.textContent = s.abBittiMetin;
+    }
+    // Genel'deki şerit: yalnızca son 5 gün ve deneme bitince
+    const serit = $("denemeSerit");
+    const goster = ABONELIK_ZORUNLU && !durum.pro && kalan <= 5;
+    serit.hidden = !goster;
+    if (goster) serit.innerHTML = kalan > 0 ? s.abSeritKalan(kalan) : s.abSeritBitti;
   }
+  const tarihUzun = (t) => new Intl.DateTimeFormat(sd().yerel, { day: "numeric", month: "long", year: "numeric" }).format(t);
+
+  /* Erişim değişince (satın alma, iade, deneme bitişi) hatırlatmalar yeniden
+     kurulur; deneme bittiğinde abone ekranı YALNIZCA BİR KEZ kendiliğinden açılır. */
+  function erisimDegisti() {
+    const acik = tamErisim();
+    proUygula();
+    if (sonErisim !== null && sonErisim !== acik && NATIF.VAR) hatirlatmalariTazele();
+    sonErisim = acik;
+    if (!acik && ABONELIK_ZORUNLU && !durum.denemeBittiGoruldu) bittiEkraniDene(0);
+  }
+  // Deneme bitince abone ekranı bir kez; başka pencere açıksa kapanmasını bekler
+  let bittiZamanlayici = null;
+  function bittiEkraniDene(deneme) {
+    clearTimeout(bittiZamanlayici);
+    bittiZamanlayici = setTimeout(() => {
+      if (tamErisim() || durum.denemeBittiGoruldu) return;
+      const acikPencere = [...document.querySelectorAll('[role="dialog"]')].some(x => !x.hidden && x.id !== "aboneOverlay");
+      if (acikPencere) { if (deneme < 40) bittiEkraniDene(deneme + 1); return; }
+      durum.denemeBittiGoruldu = true;
+      STORAGE.kaydet(durum);
+      aboneAc("bitti");
+    }, deneme === 0 ? 1800 : 1500);
+  }
+  async function aboneligiTazele() {
+    if (!ABONELIK_ZORUNLU) return;
+    const d = await ABONELIK.durum();
+    if (d) { // okunamadıysa son bilinen durum korunur (çevrimdışı vb.)
+      aboneBilgi = d;
+      if (d.aktif && !durum.pro) setPro(true, "satinalma");
+      else if (!d.aktif && durum.proKaynak === "satinalma") setPro(false, "satinalma");
+    }
+    erisimDegisti();
+  }
+
+  /* ---- Abone ekranı ---- */
+  let aboneDonus = null;
+  async function aboneAc(sebep) {
+    const s = sd();
+    aboneDonus = document.activeElement;
+    const kalan = denemeKalanGun();
+    $("abBaslik").textContent = kalan > 0 ? s.abBaslikDeneme : s.abBaslikBitti;
+    $("abAlt").textContent = kalan > 0 ? s.abAltDeneme(kalan) : s.abAltBitti;
+    // Kişisel değer: motorun hesapladığı "planınla daha az faiz" (uydurma yok)
+    const deger = $("abDeger");
+    deger.hidden = true;
+    try {
+      const acik = iyAcik();
+      if (acik.length) {
+        const K = IKIYOL.karsilastir(iyA(acik), IKIYOL.planla(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar));
+        if (K.durum === "fark" && K.faizFark >= 1) { deger.textContent = s.abDeger(paraFmt.format(K.faizFark)); deger.hidden = false; }
+      }
+    } catch (e) { /* değer satırı isteğe bağlı */ }
+    $("abDurum").textContent = "";
+    $("abGizlilik").href = durum.dil === "en" ? "https://sifirla.app/privacy" : "https://sifirla.app/gizlilik";
+    fiyatGoster();
+    $("aboneOverlay").hidden = false;
+    $("aboneOverlay").scrollTop = 0;
+    $("abKapat").focus();
+    if (!aboneUrun) { aboneUrun = await ABONELIK.urun(); fiyatGoster(); }
+  }
+  function fiyatGoster() {
+    const s = sd(), al = $("abAl");
+    if (aboneUrun && aboneUrun.fiyat) {
+      $("abFiyat").innerHTML = s.abFiyat(aboneUrun.fiyat);
+      al.textContent = s.abAlFiyat(aboneUrun.fiyat);
+      al.disabled = false;
+    } else {
+      $("abFiyat").innerHTML = ABONELIK.kopruVar ? s.abFiyatYukleniyor : s.abFiyatYok;
+      al.textContent = s.ab_al || st().ab_al;
+      al.disabled = true;
+    }
+  }
+  function aboneKapat() {
+    $("aboneOverlay").hidden = true;
+    if (aboneDonus && aboneDonus.focus) try { aboneDonus.focus(); } catch (e) { /* yoksay */ }
+  }
+  $("abKapat").addEventListener("click", aboneKapat);
+  $("abSonra").addEventListener("click", aboneKapat);
+  $("aboneOverlay").addEventListener("keydown", (e) => { if (e.key === "Escape") aboneKapat(); });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest && e.target.closest(".pro-ac");
+    if (b) { e.preventDefault(); aboneAc("kilit"); }
+  });
+  $("abAl").addEventListener("click", async () => {
+    const s = sd(), al = $("abAl"), yazi = $("abDurum");
+    al.disabled = true;
+    yazi.textContent = s.abAciliyor;
+    const r = await ABONELIK.satinAl();
+    if (r && r.sonuc === "tamam" && r.aktif) {
+      aboneBilgi = r;
+      setPro(true, "satinalma");
+      erisimDegisti();
+      titret(30);
+      yazi.textContent = s.abTesekkur;
+      setTimeout(aboneKapat, 1400);
+      return;
+    }
+    al.disabled = false;
+    yazi.textContent = r && r.sonuc === "vazgecti" ? ""
+      : r && r.sonuc === "bekliyor" ? s.abBekliyor : s.abHata;
+  });
+  async function geriYukle(yazi) {
+    const s = sd();
+    if (yazi) yazi.textContent = s.abGeriYukleniyor;
+    const r = await ABONELIK.geriYukle();
+    if (r && r.aktif) {
+      aboneBilgi = r;
+      setPro(true, "satinalma");
+      erisimDegisti();
+      if (yazi) yazi.textContent = s.abGeriTamam;
+      return true;
+    }
+    if (yazi) yazi.textContent = r ? s.abGeriYok : s.abHata;
+    return false;
+  }
+  $("abGeri").addEventListener("click", async () => {
+    if (await geriYukle($("abDurum"))) setTimeout(aboneKapat, 1400);
+  });
+  $("abKartGeri").addEventListener("click", () => geriYukle($("abKartMetin")));
+  $("abKartYonet").addEventListener("click", () => ABONELIK.yonet());
+
   /* Pro kilidi TEK kapıdan açılır: setPro(). Bugün bu fonksiyonu çağıran tek
      yer, yalnızca localhost'ta çalışan ?pro=1 test kısayoludur; mağaza IAP'si
      eklendiğinde satın alma doğrulaması da buraya bağlanacak. Çağrılmadığı
@@ -12059,6 +12465,17 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     document.body.insertAdjacentHTML("beforeend",
       '<div class="test-etiket no-print" aria-hidden="true">TEST · Pro</div>');
   }
+  // Deneme: başlangıç cihazda + Anahtarlık'ta (yeniden kurulumda erken olan kazanır)
+  if (!(durum.denemeBasMs > 0)) { durum.denemeBasMs = Date.now(); STORAGE.kaydet(durum); }
+  if (ABONELIK_ZORUNLU) {
+    ABONELIK.denemeBaslangic(durum.denemeBasMs).then((ms) => {
+      if (ms > 0 && ms < durum.denemeBasMs) { durum.denemeBasMs = ms; STORAGE.kaydet(durum); erisimDegisti(); }
+    });
+    aboneligiTazele();
+    // Uygulamaya dönüşte: yenileme/iptal/iade ve gün dönümü yansısın
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") aboneligiTazele(); });
+  }
+  erisimDegisti();
   // Geliştirici modu (?dev=1): bilinen-cevap doğrulama tablosunu aç
   // Geliştirici modu da YEREL ortamla sınırlı: canlı adreste ve native
   // pakette ?dev=1 diye bir kapı yoktur (bkz. CLAUDE.md değişmez kurallar).

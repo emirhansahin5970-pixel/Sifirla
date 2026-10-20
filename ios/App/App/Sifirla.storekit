@@ -1,0 +1,65 @@
+{
+  "identifier" : "5F1A2B3C",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6700000000",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "tr_TR",
+    "_storefront" : "TUR",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21500001",
+      "localizations" : [
+
+      ],
+      "name" : "Sıfırla Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "49.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6700000001",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Hatırlatmalar, aylık rapor, İki Yol, Hedef ve Tasarruf Modu",
+              "displayName" : "Sıfırla Pro (aylık)",
+              "locale" : "tr"
+            },
+            {
+              "description" : "Reminders, monthly report, Two Paths, Goal and Savings Mode",
+              "displayName" : "Sıfırla Pro (monthly)",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "app.sifirla.pro.aylik",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Sifirla Pro Aylik",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

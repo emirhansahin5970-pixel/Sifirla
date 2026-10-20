@@ -13,6 +13,7 @@ import Capacitor
 class SifirlaViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
         bridge?.registerPluginType(SifirlaZekaPlugin.self)
+        bridge?.registerPluginType(SifirlaAbonelikPlugin.self)
         // Uygulama hissi: sayfa yalnızca dikey kayar. Çapraz parmak hareketinde
         // içerik sağa sola "sallanmaz"; yatay sekme/esneme kapalı.
         if let kaydirma = webView?.scrollView {

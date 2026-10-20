@@ -94,7 +94,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v12`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v13`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -166,15 +166,23 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 
 ## Kararlar
 
-- **1.0 App Store'a ÜCRETSİZ ve yapay zekasız çıkacak.** Mağaza içi satın alma
-  yok, Pro kilidi kapalı, ücretsiz borç sınırı uygulanmıyor
-  (`PRO_SATIN_ALINABILIR = false`).
+- **1.0 App Store'a yapay zekasız, 30 gün ücretsiz deneme + Sıfırla Pro aylık
+  aboneliğiyle çıkacak** (karar 20 Ekim 2026). Deneme kart/onay istemez
+  (uygulama içi, `durum.denemeBasMs` + Keychain); sonra Apple aboneliği
+  `app.sifirla.pro.aylik` (49,99 TL kademesi, yıllık yok). Abone olmayan
+  **yumuşak kilit**: borçlar, temel plan, Bu Ay, ödeme kaydı, yedekleme
+  ücretsiz; kilit ekranı hatırlatmaları, aylık rapor, İki Yol ayrıntısı,
+  Hedef, Tasarruf, senaryolar, dışa aktarma Pro. Tek kapı `tamErisim()`.
+  StoreKit 2 köprüsü `ios/App/App/SifirlaAbonelik.swift` (nativePromise),
+  JS `ABONELIK` modülü (8 test). Xcode'da `Sifirla.storekit` paylaşılan şemaya
+  bağlı (yerel satın alma testi). **Web sürümü şimdilik tamamen açık**
+  (`ABONELIK_ZORUNLU = NATIF.VAR`); yerelde `?abone=1` / `?abone=bitti` ile
+  kilit denenir. Borç sınırı yok (`PRO_SATIN_ALINABILIR = false` kalır).
 - **Yapay zeka 1.1'de gelecek, hibrit olarak:** cihazda Apple'ın modeli varsa
   (iOS 26+, Apple Intelligence açık, dil destekli) o kullanılır; yoksa güvenli
   bir bulut proxy'sine düşülür. Hibrit tasarımın gizlilik sonuçları 1.1'de
   ayrıca ele alınacak — bulut yolu açılırsa gizlilik politikası ve mağaza
   gizlilik etiketi güncellenmek zorunda.
-- **Pro abonelik + ücretsiz deneme** 1.1 ile birlikte.
 - **Jev kullanılmayacak.**
 
 ---
@@ -242,6 +250,10 @@ oluşturulur (`.gitignore`'da, depoya ASLA girmez):
 ```js
 window.SIFIRLA_TEST = { pro: true };
 ```
+
+Deneme bitmiş hâli denemek için `{ denemeBitti: true }` (Pro kapalıyken
+kilit + abone ekranı görünür; satın alma Xcode'da `Sifirla.storekit` ile
+sahte ödemeyle denenir).
 
 Yalnızca native pakette okunur; açıkken ekranın üstünde kırmızı
 **TEST · Pro** etiketi durur. **App Store'a göndermeden önce bu dosya
