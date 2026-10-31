@@ -732,6 +732,7 @@
   .mini-ipucu { margin-top: 4px; font-size: 11.5px; color: var(--text-muted); }
   .link-btn { background: none !important; border: none; padding: 4px 0 0; margin: 0; color: var(--accent); font-size: 12.5px; font-weight: 600; cursor: pointer; box-shadow: none; }
   .link-btn:hover { text-decoration: underline; }
+  :root[data-theme="dark"] button.link-btn { color: var(--accent-strong); } /* koyu temanın gümüş düğme rengi bağlantıyı ezmesin */
   /* Panel açılır (dropdown) olarak konumlanır: form-grid satırını şişirmez,
      komşu alanlar yerinden oynamaz */
   .faiz-hucre { position: relative; }
@@ -745,6 +746,51 @@
      Yalnızca transform/opacity animasyonu; reduced-motion'da sade.
      ============================================================ */
   .gorunmez-metin { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* ---- Son ödeme durumu, sıkışık ay, yapılandırma ---- */
+  .vade-uyari { margin: 0 0 12px; display: grid; gap: 8px; }
+  .vade-uyari[hidden] { display: none; }
+  .vu-satir { display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); font-size: 13.5px; line-height: 1.4; }
+  .vu-satir.gecikti, .vu-satir.eksik { background: var(--danger-bg); border-color: transparent; }
+  .vu-satir.gecikti .vu-ikon, .vu-satir.eksik .vu-ikon { color: var(--danger); }
+  .vu-satir.bugun .vu-ikon { color: var(--accent-strong); }
+  .vu-ikon { flex: 0 0 auto; width: 22px; height: 22px; margin-top: 1px; color: var(--muted); }
+  .vu-metin { flex: 1 1 auto; min-width: 0; }
+  .vu-metin small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+  .vu-satir .ode-btn, .vu-satir .vu-btn { flex: 0 0 auto; align-self: center; }
+  .gun-rozet { margin-left: 4px; }
+  .link-btn.ge-ac { color: var(--accent-strong); font-size: 13.5px; text-decoration: underline; text-underline-offset: 3px; }
+  .ge-satir strong { color: var(--text); font-size: 15px; }
+  .ge-ic .abone-sonra { margin-top: 10px; }
+  .ge-liste { display: grid; gap: 10px; margin: 6px 0 18px; text-align: left; }
+  .ge-satir { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); }
+  .ge-satir strong { min-width: 0; overflow-wrap: anywhere; }
+  .ge-satir select { width: auto; min-width: 128px; }
+  .zor-kart summary { cursor: pointer; list-style: none; font-weight: 700; font-size: 16px; }
+  .zor-kart summary::-webkit-details-marker { display: none; }
+  .zor-baslik { display: flex; align-items: center; gap: 8px; }
+  .zor-baslik .ikn { color: var(--danger); flex: 0 0 auto; }
+  .zor-kart summary::after { content: "›"; float: right; margin-top: -24px; transform: rotate(90deg); color: var(--muted); }
+  .zor-kart details[open] summary::after { transform: rotate(-90deg); }
+  .zor-giris { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-top: 10px; }
+  .zor-giris > div { flex: 1 1 180px; }
+  .zor-ozet { margin: 12px 0 6px; font-weight: 600; }
+  .zor-liste, .yp-taktik-liste, .zor-adim { margin: 8px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.5; }
+  .zor-liste li, .yp-taktik-liste li, .zor-adim li { margin: 4px 0; }
+  .zor-tablo td.eksik { color: var(--danger); font-weight: 600; }
+  .yp-secim { border: 0; padding: 0; margin: 10px 0 0; }
+  .yp-secim legend { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .yp-girdi { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 10px; }
+  .yp-sonuc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .yp-sut { padding: 12px; border-radius: 14px; background: var(--surface-2); }
+  .yp-sut.yeni { background: var(--accent-soft); }
+  .yp-sut p { margin: 0 0 8px; font-weight: 700; font-size: 13px; }
+  .yp-sut dl { margin: 0; display: grid; gap: 2px; font-size: 13px; }
+  .yp-sut dt { color: var(--muted); }
+  .yp-sut dd { margin: 0 0 6px; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .yp-cumle { margin-top: 12px; font-weight: 600; }
+  .yp-taktik { margin-top: 14px; }
+  .yp-taktik summary { cursor: pointer; font-weight: 600; }
+
   /* ---- Sıfırla Pro: kilit + deneme şeridi + abone ekranı ---- */
   .pro-kilit { display: none; }
   .card.kilitli .pro-kilit { display: block; margin-top: 10px; padding: 14px; border-radius: 14px; background: var(--accent-soft); text-align: center; }
@@ -1723,6 +1769,8 @@ var GIRIS = (function () {
   <!-- SEKME: Genel Bakış — özet, yolculuk, öneriler, hatırlatmalar -->
   <div class="sekme" id="sekme-genel">
   <button type="button" class="deneme-serit pro-ac no-print" id="denemeSerit" hidden></button>
+  <!-- Son ödeme durumu: gecikti / eksik / bugün + günü girilmemiş borçlar (HATIRLATMA.donemDurumu) -->
+  <section class="vade-uyari no-print" id="vadeUyari" hidden aria-live="polite"></section>
 
   <!-- Hero: sayfanın tezi — tek büyük, sakin ilerleme halkası -->
   <section class="hero" id="ozetKart">
@@ -2178,6 +2226,38 @@ var GIRIS = (function () {
   </section>
 
   <!-- Tasarruf Modu: gelir − giderler − asgariler = serbest para → önerilen ekstra (BUTCE katmanı) -->
+  <!-- Yapılandırma: seçili borçları tek krediyle kapatmak ne kazandırır? (YAPILANDIRMA) -->
+  <section class="card yp-kart" id="yapKart" hidden aria-labelledby="ypBaslik">
+    <h2 id="ypBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11M4 12h7M4 17h11"/><path d="m16 9 4 3-4 3"/></svg><span data-i18n="yp_h">Yapılandırma ve borç kapatma kredisi</span></h2>
+    <div class="pro-kilit no-print">
+      <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
+      <p class="mini-ipucu" data-i18n="kilit_yp"></p>
+      <button type="button" class="pro-ac small" data-i18n="kilit_btn">Pro'ya geç</button>
+    </div>
+    <p class="muted" data-i18n="yp_alt">Seçtiğin borçları tek bir krediyle kapatırsan aylık ödemen ve toplam faizin ne olur? Bankanın teklifindeki oranı yaz, karşılaştırayım.</p>
+    <fieldset class="yp-secim"><legend data-i18n="yp_borclar">Kapatılacak borçlar</legend><div id="ypBorclar"></div></fieldset>
+    <div class="yp-girdi">
+      <div>
+        <label for="ypFaiz" data-i18n="yp_faiz">Teklif edilen aylık faiz (%)</label>
+        <input id="ypFaiz" type="text" inputmode="decimal" placeholder="3,11">
+      </div>
+      <div>
+        <label for="ypVade" data-i18n="yp_vade">Vade (ay)</label>
+        <select id="ypVade"><option>12</option><option selected>24</option><option>36</option><option>48</option><option>60</option></select>
+      </div>
+      <div>
+        <label for="ypMasraf" data-i18n="yp_masraf">Masraf (tahsis ücreti, sigorta…)</label>
+        <input id="ypMasraf" type="text" inputmode="decimal" placeholder="0">
+      </div>
+    </div>
+    <div id="ypSonuc" aria-live="polite"></div>
+    <details class="yp-taktik">
+      <summary data-i18n="yp_taktik_h">Yapılandırma taktikleri</summary>
+      <ul class="yp-taktik-liste" data-i18n="yp_taktikler"></ul>
+    </details>
+    <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
+  </section>
+
   <section class="card ts-kart" id="tasarrufKart" hidden aria-labelledby="tsBaslik">
     <h2 id="tsBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 7l2-3h12l2 3"/><path d="M16 14h.01"/></svg><span data-i18n="ts_h">Tasarruf Modu</span></h2>
     <div class="pro-kilit no-print">
@@ -2464,6 +2544,24 @@ var GIRIS = (function () {
     <div id="buAy" style="margin-top:0.9rem"></div>
   </section>
 
+  <!-- Sıkışık ay: asgarilerin hepsi ödenemiyorsa en az zararlı dağıtım (SIKISIK) -->
+  <section class="card zor-kart no-print" id="zorAyKart" hidden>
+    <details id="zorAyDetay">
+      <summary><span class="zor-baslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.1"/></svg><span data-i18n="zor_h">Bu ay asgarilerin hepsini ödeyemiyor musun?</span></span></summary>
+      <p class="muted" style="margin-top:8px" data-i18n="zor_alt">Elindeki tutarı yaz; gecikmeye düşen borç sayısını en aza indiren bir dağıtım çıkarayım.</p>
+      <p class="mini-ipucu" id="zorToplam"></p>
+      <div class="zor-giris">
+        <div>
+          <label for="zorTutar" data-i18n="zor_lbl">Bu ay ödeyebileceğin toplam</label>
+          <input id="zorTutar" type="text" inputmode="decimal" placeholder="0">
+        </div>
+        <button type="button" id="zorHesapla" data-i18n="zor_btn">Dağıt</button>
+      </div>
+      <div id="zorSonuc" aria-live="polite"></div>
+      <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
+    </details>
+  </section>
+
   <!-- Başarı rozetleri: kural tabanlı kilometre taşları -->
   <section class="card">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="m9 13-1.5 8 4.5-2.5L16.5 21 15 13"/></svg><span data-i18n="rozet_h">Başarı Rozetleri</span></h2>
@@ -2696,6 +2794,18 @@ var GIRIS = (function () {
     hesaplama yöntemi, vergiler (KKDF/BSMV), ücretler veya oran değişiklikleri nedeniyle gerçek tutarlar farklı olabilir.
     Önemli finansal kararlar öncesinde lütfen bir uzmana danışın.
   </footer>
+</div>
+
+<!-- Ödeme günlerini tamamla: günü girilmemiş açık borçlar tek ekranda -->
+<div id="gunEkleOverlay" class="no-print abone-ekran" role="dialog" aria-modal="true" aria-labelledby="geBaslik" hidden>
+  <div class="abone-ic ge-ic">
+    <button type="button" class="abone-kapat" id="geKapat" data-i18n-aria="ab_kapat" aria-label="Kapat">✕</button>
+    <h2 id="geBaslik" data-i18n="ge_h">Ödeme günlerini ekle</h2>
+    <p class="abone-alt" data-i18n="ge_alt">Son ödeme gününü bilirsem seni zamanında uyarır, geciken ödemeyi gösteririm. Ekstrende ya da kredi sözleşmende yazar.</p>
+    <div id="geListe" class="ge-liste"></div>
+    <button type="button" id="geKaydet" class="abone-al" data-i18n="ge_kaydet">Kaydet</button>
+    <button type="button" class="ghost abone-sonra" id="geSonra" data-i18n="ab_sonra">Şimdilik değil</button>
+  </div>
 </div>
 
 <!-- Abone ekranı: Apple 3.1.2 — fiyat + süre + otomatik yenileme + iptal yolu +
@@ -3226,6 +3336,18 @@ const SOZLUK = {
       sen_h: 'Ya Şöyle Yaparsam? <span class="badge accent">Pro</span>',
       sen_kilit: "Bu özellik Sıfırla Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.",
       kilit_b: "Sıfırla Pro ile açılır", kilit_btn: "Pro'ya geç",
+      kilit_yp: "Borçlarını tek krediyle kapatmanın aylık ödemene ve toplam faizine etkisini gör.",
+      zor_h: "Bu ay asgarilerin hepsini ödeyemiyor musun?",
+      zor_alt: "Elindeki tutarı yaz; gecikmeye düşen borç sayısını en aza indiren bir dağıtım çıkarayım.",
+      zor_lbl: "Bu ay ödeyebileceğin toplam", zor_btn: "Dağıt",
+      yp_h: "Yapılandırma ve borç kapatma kredisi",
+      yp_alt: "Seçtiğin borçları tek bir krediyle kapatırsan aylık ödemen ve toplam faizin ne olur? Bankanın teklifindeki oranı yaz, karşılaştırayım.",
+      yp_borclar: "Kapatılacak borçlar", yp_faiz: "Teklif edilen aylık faiz (%)", yp_vade: "Vade (ay)",
+      yp_masraf: "Masraf (tahsis ücreti, sigorta…)", yp_taktik_h: "Yapılandırma taktikleri",
+      yp_taktikler: "<li><strong>Önce bankanla konuş.</strong> Kart borcunu taksitlendirme ya da yapılandırma talep edebilirsin; şartlar bankaya göre değişir, teklifi yazılı iste.</li><li><strong>Yüksek faizi düşük faizle değiştir.</strong> Kart/KMH borcunu daha düşük faizli bir krediyle kapatmak toplam faizi azaltabilir; bankanın oranını yukarıya yazıp karşılaştır.</li><li><strong>Taksite değil, toplam maliyete bak.</strong> Uzun vade aylık ödemeyi düşürür ama toplam faizi artırır. Tahsis ücreti, sigorta ve KKDF/BSMV'yi de sor.</li><li><strong>Kapattığın kartı yeniden doldurma.</strong> Yapılandırmanın en büyük riski aynı borcun ikinci kez birikmesidir; gerekirse limitini düşürt.</li><li><strong>KMH faizi günlük işler.</strong> Maaş yatar yatmaz hesaba para koymak faizi azaltır; KMH'yi taksitli krediye çevirmeyi bankana sorabilirsin.</li><li><strong>Genel yapılandırma kampanyalarını takip et.</strong> BDDK zaman zaman toplu yapılandırma imkânı tanır (en son 2026 başında, 48 aya kadar; başvurular 29 Nisan 2026'da sona erdi). Yenisi açılırsa bankan ve BDDK duyurur.</li>",
+      ge_h: "Ödeme günlerini ekle",
+      ge_alt: "Son ödeme gününü bilirsem seni zamanında uyarır, geciken ödemeyi gösteririm. Ekstrende ya da kredi sözleşmende yazar.",
+      ge_kaydet: "Kaydet",
       kilit_iy: "Sadece asgari ile planının tam karşılaştırması, kaydırıcı ve grafik Pro'da.",
       kilit_hd: "Borçsuz olmak istediğin ayı seç, ayda ne kadar ödemen gerektiğini gör.",
       kilit_ts: "Gelir ve giderlerinden borcuna ayırabileceğin tutarı hesapla.",
@@ -3521,7 +3643,7 @@ const SOZLUK = {
       sbFaizBos: "Oranı yaz (ör. 3,75).",
       sbEkstreHata: "Faiz tutarını ve o dönemin borcunu gir; faiz borçtan küçük olmalı.",
       faizGerekliTRYDisi: "TL dışındaki para birimlerinde tahmini oran yok: kart/KMH faizini yaz ya da sihirbazda ekstredeki faiz tutarından hesaplat.",
-      bilAyrintiM: (ad, t, g) => `${ad}: ${t} · ${g === 0 ? "bugün son gün" : g === 1 ? "yarın son gün" : `son güne ${g} gün`}`,
+      bilAyrintiM: (ad, t, g) => `${ad}: ${t} · ${g < 0 ? "son ödeme günü geçti" : g === 0 ? "bugün son gün" : g === 1 ? "yarın son gün" : `son güne ${g} gün`}`,
       ftKaynak: (ay) => `TCMB azami akdi faiz oranları · son güncelleme: ${ay}`,
       ftKaynakKendi: "Kendi düzenlediğin oranlar kullanılıyor.",
       ts: {
@@ -3671,6 +3793,49 @@ const SOZLUK = {
       zilYerelOzet: "Yeni bir özetin var.",
       zilYerelGenel: "Yeni bir bildirimin var.",
       proEtkin: "Pro etkin ✓",
+      vuGecikti: (ad, g) => `<strong>${ad}</strong> · son ödeme günü ${g} gün önce geçti`,
+      vuEksik: (ad, t, g) => `<strong>${ad}</strong> · asgarinin ${t} kadarı eksik ödendi (vade ${g} gün önce geçti)`,
+      vuBugun: (ad, t) => `<strong>${ad}</strong> · bugün son ödeme günü (en az ${t})`,
+      vuBugunNot: "Gün içinde ödersen gecikme sayılmaz.",
+      vuKayitNot: "Bankada ödediysen Öde ile kaydet; uyarı kalkar.",
+      vuGecikmeNot: (oran, gunluk) => `Ödenmeyen asgari kısma gecikme faizi işler (aylık ≈ ${oran}, günde ≈ ${gunluk}) ve gecikme kredi notuna yansır.`,
+      vuGecikmeNotGenel: "Ödenmeyen kısma gecikme faizi ve ücret işleyebilir; gecikme kredi kaydına yansıyabilir.",
+      vuTaksitNot: "Geciken taksite sözleşmendeki gecikme faizi işler ve gecikme kredi notuna yansır.",
+      vuGunYok: (n) => `${n} borcunun ödeme günü yok — ekle`,
+      vuGunYokUzun: (n) => `<strong>${n} borcunun</strong> son ödeme günü girilmemiş. Ekle ki zamanında hatırlatayım, geciken ödemeyi göstereyim.`,
+      vuGunEkle: "Ödeme günü ekle", vuGunEkleBtn: "Günleri ekle",
+      vuRozetGecikti: (g) => `${g} gün gecikti`,
+      vuRozetEksik: (t) => `${t} eksik`,
+      vuGeciktiKisa: "Gecikti",
+      kmhErken: (t, k) => `KMH faizi günlük işler: ${t} tutarını 10 gün erken yatırırsan ≈ ${k} daha az faiz.`,
+      haftaGecikme: (ad, t) => `<strong>${ad}</strong>: geciken ${t} — ilk fırsatta öde`,
+      zilGecikmeB: "Geciken ödeme",
+      zilYerelGecikme: "Bir ödemenin son günü geçti. Ödediysen uygulamada işaretle.",
+      geSec: "Gün seç", geGun: (n) => `Ayın ${n}'i`,
+      zorToplam: (t) => `Bu ayki asgari ve taksitlerinin toplamı: ${t}`,
+      zorTutarYok: "Önce bu ay ödeyebileceğin tutarı yaz.",
+      zorYeter: (t) => `Bu tutar bütün asgarilere yetiyor. Artan tutarı (${t}) en yüksek faizli borcuna yatırırsan planın hızlanır.`,
+      zorTam: "tam", zorThOde: "Öde", zorThEksik: "Eksik",
+      zorOzet: (tam, n, eksik) => `${n} borcundan ${tam} tanesinin asgarisi tam karşılanıyor; toplam ${eksik} eksik kalıyor.`,
+      zorKural: "Kural: önce küçük asgariler tam ödenir ki mümkün olduğunca az borç gecikmeye düşsün; artan para, gecikmesi en pahalı borca gider.",
+      zorFaiz: (t) => `Eksik kalan kart asgarilerine bir ayda tahminen ${t} gecikme faizi işler (TCMB tavanı: akdi faiz + 0,30 puan).`,
+      zorTaksitNot: "Eksik kalan taksit ya da kredilerde gecikme faizi sözleşmene bağlı; tutarını tahmin etmiyorum.",
+      zorSonucH: "Eksik ödersen ne olur?",
+      zorSonuclar: "<li><strong>Kredi kartında</strong> asgarinin ödenmeyen kısmına gecikme faizi işler; asgarinin üstündeki borca zaten akdi faiz işliyor.</li><li>Gecikme, ertesi gün ödense bile kredi kaydına “gecikme” olarak yansır ve kredi notunu düşürür.</li><li>Bir takvim yılında 3 kez asgarisi geciken kart nakit kullanımına ve limit artışına kapanır; üst üste 3 kez ödenmezse kart kullanıma kapanır.</li><li><strong>Taksitli kredide</strong> gecikme faizi ve yaptırımlar sözleşmene bağlıdır.</li>",
+      zorSonuclarGenel: "<li>Ödenmeyen kısma gecikme faizi ve ücret işleyebilir.</li><li>Gecikmeler kredi kaydına yansıyabilir ve kredi notunu düşürebilir.</li><li>Kuralları bankan ve sözleşmen belirler; ayrıntıyı bankana sor.</li>",
+      zorAdimH: "Şimdi ne yapabilirsin?",
+      zorAdimlar: "<li>Bankanı son ödeme gününden <strong>önce</strong> ara; erteleme, taksitlendirme ya da yapılandırma iste.</li><li>Bu ay kartlarla yeni harcama yapma; her harcama gelecek ayın asgarisini büyütür.</li><li>Eksik kalan tutarı ilk fırsatta öde: gecikme faizi gün gün işler.</li><li>Durum birkaç ay sürecekse Plan'daki “Yapılandırma” hesabıyla tek krediye toplamanın etkisine bak.</li>",
+      ypSecYok: "Karşılaştırmak için en az bir borç seç.",
+      ypFaizYok: "Bankanın teklif ettiği aylık faizi yaz (ör. 3,11).",
+      ypSimdi: "Şimdi (yalnız asgari)", ypKrediyle: "Tek krediyle",
+      ypAylik: "Aylık ödeme", ypBiter: "Biter", ypBitmez: "Asgariyle kapanmıyor",
+      ypToplamFaiz: "Toplam faiz", ypToplamMaliyet: "Faiz + masraf",
+      ypKazanc: (t) => `Bu teklifle, yalnız asgari ödemeye göre ≈ ${t} daha az faiz ödersin.`,
+      ypZarar: (t) => `Bu teklif, yalnız asgari ödemeye göre ≈ ${t} daha pahalı. Daha kısa vade ya da daha düşük oran dene.`,
+      ypKapanmaz: (t) => `Bu borçlar asgariyle hiç kapanmıyor; kredi ile ${t} faiz ve masrafla biter.`,
+      ypAylikArtar: (t) => `Aylık ödemen ${t} artar.`,
+      ypAylikAzalir: (t) => `Aylık ödemen ${t} azalır.`,
+      ypNot: "Kredi eşit taksitli hesaplandı; KKDF/BSMV ayarın açıksa faize eklendi.",
       abWebRozet: "Tüm özellikler açık",
       abWebMetin: "Web sürümü şimdilik tamamen ücretsiz. Sıfırla Pro aboneliği iPhone uygulamasında.",
       abTestMetin: "Test sürümü: Pro bu cihazda test için açık.",
@@ -3981,6 +4146,18 @@ const SOZLUK = {
       sen_h: 'What If? <span class="badge accent">Pro</span>',
       sen_kilit: "This is part of Sıfırla Pro: compare different extra budgets and one-off payments against your current plan.",
       kilit_b: "Unlocks with Sıfırla Pro", kilit_btn: "Go Pro",
+      kilit_yp: "See how folding your debts into one loan changes your monthly payment and total interest.",
+      zor_h: "Can't cover every minimum this month?",
+      zor_alt: "Enter what you can pay and I'll split it so as few debts as possible go late.",
+      zor_lbl: "Total you can pay this month", zor_btn: "Split it",
+      yp_h: "Restructuring and consolidation loan",
+      yp_alt: "What happens to your monthly payment and total interest if you pay off the selected debts with one loan? Enter the rate from your bank's offer to compare.",
+      yp_borclar: "Debts to pay off", yp_faiz: "Offered monthly interest (%)", yp_vade: "Term (months)",
+      yp_masraf: "Fees (origination, insurance…)", yp_taktik_h: "Restructuring tactics",
+      yp_taktikler: "<li><strong>Talk to your bank first.</strong> You can ask to convert card debt into installments or restructure it; terms vary by bank, so get the offer in writing.</li><li><strong>Swap high interest for low interest.</strong> Paying off card/overdraft debt with a cheaper loan can cut total interest; enter the bank's rate above to compare.</li><li><strong>Look at total cost, not just the payment.</strong> A longer term lowers the monthly payment but raises total interest. Ask about fees, insurance and taxes too.</li><li><strong>Don't refill the card you paid off.</strong> The biggest risk of consolidating is building the same debt again; lower the limit if needed.</li><li><strong>Overdraft interest accrues daily.</strong> Putting money in as soon as you're paid lowers the interest; ask your bank about turning it into an installment loan.</li><li><strong>Watch for public relief programs.</strong> In Turkey, the BDDK occasionally allows broad restructuring (most recently in early 2026, up to 48 months; applications closed on 29 April 2026).</li>",
+      ge_h: "Add due days",
+      ge_alt: "If I know your due day, I can remind you on time and flag late payments. It's on your statement or loan agreement.",
+      ge_kaydet: "Save",
       kilit_iy: "The full minimum-only vs. plan comparison, slider and chart are in Pro.",
       kilit_hd: "Pick the month you want to be debt-free and see how much to pay each month.",
       kilit_ts: "Work out how much of your income you can put toward your debts.",
@@ -4271,7 +4448,7 @@ const SOZLUK = {
       sbFaizBos: "Enter the rate (e.g. 3.75).",
       sbEkstreHata: "Enter the interest amount and that period's balance; interest must be lower than the balance.",
       faizGerekliTRYDisi: "There's no estimated rate for currencies other than TRY: enter the card/overdraft rate, or let the wizard calculate it from your statement's interest amount.",
-      bilAyrintiM: (ad, t, g) => `${ad}: ${t} · ${g === 0 ? "due today" : g === 1 ? "due tomorrow" : `due in ${g} days`}`,
+      bilAyrintiM: (ad, t, g) => `${ad}: ${t} · ${g < 0 ? "due date has passed" : g === 0 ? "due today" : g === 1 ? "due tomorrow" : `due in ${g} days`}`,
       ftKaynak: (ay) => `TCMB maximum contractual interest rates · last updated: ${ay}`,
       ftKaynakKendi: "Using the rates you edited.",
       ts: {
@@ -4416,6 +4593,49 @@ const SOZLUK = {
       zilYerelOzet: "You have a new summary.",
       zilYerelGenel: "You have a new notification.",
       proEtkin: "Pro active ✓",
+      vuGecikti: (ad, g) => `<strong>${ad}</strong> · due date passed ${g} day${g === 1 ? "" : "s"} ago`,
+      vuEksik: (ad, t, g) => `<strong>${ad}</strong> · ${t} short of the minimum (due ${g} day${g === 1 ? "" : "s"} ago)`,
+      vuBugun: (ad, t) => `<strong>${ad}</strong> · due today (at least ${t})`,
+      vuBugunNot: "Paying today still counts as on time.",
+      vuKayitNot: "Paid at your bank? Log it with Pay and this goes away.",
+      vuGecikmeNot: (oran, gunluk) => `Late interest applies to the unpaid minimum (≈ ${oran} a month, ≈ ${gunluk} a day) and the late payment shows on your credit record.`,
+      vuGecikmeNotGenel: "Late interest and fees may apply to the unpaid part, and it may show on your credit record.",
+      vuTaksitNot: "Your loan agreement's late interest applies, and the late payment shows on your credit record.",
+      vuGunYok: (n) => `${n} debt${n === 1 ? " has" : "s have"} no due day — add`,
+      vuGunYokUzun: (n) => `<strong>${n} debt${n === 1 ? "" : "s"}</strong> without a due day. Add it so I can remind you on time and flag late payments.`,
+      vuGunEkle: "Add due day", vuGunEkleBtn: "Add days",
+      vuRozetGecikti: (g) => `${g} day${g === 1 ? "" : "s"} late`,
+      vuRozetEksik: (t) => `${t} short`,
+      vuGeciktiKisa: "Late",
+      kmhErken: (t, k) => `Overdraft interest accrues daily: paying ${t} 10 days earlier saves ≈ ${k}.`,
+      haftaGecikme: (ad, t) => `<strong>${ad}</strong>: ${t} overdue — pay it as soon as you can`,
+      zilGecikmeB: "Late payment",
+      zilYerelGecikme: "A payment's due date has passed. If you paid, mark it in the app.",
+      geSec: "Pick a day", geGun: (n) => `Day ${n}`,
+      zorToplam: (t) => `Your minimums and installments this month: ${t}`,
+      zorTutarYok: "First enter how much you can pay this month.",
+      zorYeter: (t) => `That covers every minimum. Put the remaining ${t} on your highest-interest debt to speed up your plan.`,
+      zorTam: "full", zorThOde: "Pay", zorThEksik: "Short",
+      zorOzet: (tam, n, eksik) => `${tam} of your ${n} debts get their full minimum; ${eksik} is left short in total.`,
+      zorKural: "Rule: smaller minimums are paid in full first so as few debts as possible go late; what's left goes to the debt where being late costs most.",
+      zorFaiz: (t) => `Late interest on the unpaid card minimums is about ${t} for a month (Turkish central bank cap: contract rate + 0.30 points).`,
+      zorTaksitNot: "Late interest on short installments or loans depends on your agreement, so I don't estimate it.",
+      zorSonucH: "What happens if you pay less?",
+      zorSonuclar: "<li><strong>On a credit card</strong>, late interest applies to the unpaid part of the minimum; the rest of the balance already accrues regular interest.</li><li>Even one day late is recorded as a late payment and lowers your credit score.</li><li>In Turkey, a card with 3 late minimums in a calendar year is closed to cash use and limit increases; 3 missed in a row closes the card.</li><li><strong>On installment loans</strong>, late interest and penalties depend on your agreement.</li>",
+      zorSonuclarGenel: "<li>Late interest and fees may apply to the unpaid part.</li><li>Late payments may show on your credit record and lower your score.</li><li>Your bank and agreement set the rules; ask your bank for details.</li>",
+      zorAdimH: "What can you do now?",
+      zorAdimlar: "<li>Call your bank <strong>before</strong> the due date and ask about a deferral, installments or restructuring.</li><li>Don't put new spending on your cards this month; it grows next month's minimum.</li><li>Pay the shortfall as soon as you can: late interest accrues daily.</li><li>If this will last a few months, check the “Restructuring” calculator in Plan.</li>",
+      ypSecYok: "Pick at least one debt to compare.",
+      ypFaizYok: "Enter the monthly rate your bank offered (e.g. 3.11).",
+      ypSimdi: "Now (minimums only)", ypKrediyle: "With one loan",
+      ypAylik: "Monthly payment", ypBiter: "Paid off", ypBitmez: "Never, on minimums",
+      ypToplamFaiz: "Total interest", ypToplamMaliyet: "Interest + fees",
+      ypKazanc: (t) => `With this offer you'd pay ≈ ${t} less interest than paying only the minimums.`,
+      ypZarar: (t) => `This offer costs ≈ ${t} more than paying only the minimums. Try a shorter term or a lower rate.`,
+      ypKapanmaz: (t) => `These debts never close on minimums; with the loan they're done for ${t} in interest and fees.`,
+      ypAylikArtar: (t) => `Your monthly payment goes up by ${t}.`,
+      ypAylikAzalir: (t) => `Your monthly payment goes down by ${t}.`,
+      ypNot: "The loan is calculated with equal installments; taxes are added to interest if enabled in your settings.",
       abWebRozet: "Everything unlocked",
       abWebMetin: "The web version is fully free for now. The Sıfırla Pro subscription lives in the iPhone app.",
       abTestMetin: "Test build: Pro is unlocked on this device for testing.",
@@ -5543,7 +5763,8 @@ const HATIRLATMA = (() => {
       if (!b || !Number.isInteger(b.dueDay) || b.dueDay < 1 || b.dueDay > 31 || !(b.balance > 0.005)) return;
       for (const vade of vadeler(b.dueDay, now, 2)) {
         if (odendiMi(b, vade)) continue; // bu dönem ödendi: kalan hatırlatmalar iptal
-        for (const g of gunler) {
+        const secili = ayar && ayar.gecikme === true ? gunler.concat([-1]) : gunler; // -1: vadeden 1 gün sonra
+        for (const g of secili) {
           const t = new Date(vade.getFullYear(), vade.getMonth(), vade.getDate() - g, Number.isInteger(sa) ? sa : 10, Number.isInteger(dk) ? dk : 0);
           if (t > now) liste.push({ tarih: t, ad: b.ad, tutar: b.payment, gun: g, vade, indeks });
         }
@@ -5563,6 +5784,53 @@ const HATIRLATMA = (() => {
     });
     return out;
   }
+  const gunNo = (d) => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const odemeNo = (p) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(p.tarih)); return m && +p.tutar > 0 ? +m[1] * 10000 + +m[2] * 100 + +m[3] : null; };
+  /**
+   * donemDurumu(borc, simdi) — son ödeme gününe göre borcun DURUMU (saf).
+   * Dönem: (önceki vade, vade]. Vadeden SONRA yapılan ödeme önce geçen dönemin
+   * eksiğini kapatır (geç ödeme), kalanı yeni döneme sayılır.
+   * Geçen dönem yalnızca borç o vadeden ÖNCE eklendiyse değerlendirilir
+   * (eklenmeMs) — yeni eklenen borç "gecikti" diye işaretlenmez.
+   * Dönüş: null (gün yok / kapalı) ya da
+   *  { tip: "gecikti" | "eksik" | "bugun" | "yaklasiyor" | "bekliyor" | "odendi",
+   *    vade, gun (gecikme ya da kalan gün), gerekli, odenen, eksik }
+   *  gecikti: vade geçti, dönem için hiç ödeme yok · eksik: vade geçti, kısmi ödeme
+   */
+  function donemDurumu(borc, simdi) {
+    if (!borc || !Number.isInteger(borc.dueDay) || borc.dueDay < 1 || borc.dueDay > 31 || !(borc.balance > 0.005)) return null;
+    const b = gunBasi(simdi || new Date());
+    const gun = borc.dueDay;
+    let sonraki = vadeYap(b.getFullYear(), b.getMonth(), gun);
+    if (sonraki < b) sonraki = vadeYap(b.getFullYear(), b.getMonth() + 1, gun);
+    const gecen = oncekiVade(sonraki, gun);            // en son geçmiş vade (< bugün)
+    const gecenOnce = oncekiVade(gecen, gun);
+    const gerekli = Math.max(0, Math.min(+borc.payment || 0, borc.balance + 0.005));
+    const yeter = (x) => x >= gerekli * 0.98 - 0.5;    // asgari tahmini: küçük farklar sayılmaz
+    const nG = gunNo(gecen), nGO = gunNo(gecenOnce), nB = gunNo(b);
+    let gecenOdenen = 0, sonra = 0;
+    for (const p of borc.payments || []) {
+      const n = odemeNo(p);
+      if (n === null || n <= nGO || n > nB) continue;
+      if (n <= nG) gecenOdenen += +p.tutar; else sonra += +p.tutar;
+    }
+    const eklenme = +borc.eklenmeMs > 0 ? gunBasi(new Date(+borc.eklenmeMs)) : null;
+    const gecenSayilir = eklenme !== null && eklenme <= gecen && gerekli > 0.005;
+    const gun2 = (a, c) => Math.round((c - a) / 86400000);
+    if (gecenSayilir && !yeter(gecenOdenen)) {
+      const ek = Math.min(sonra, gerekli - gecenOdenen);   // geç ödeme önce geçen dönemi kapatır
+      gecenOdenen += ek; sonra -= ek;
+      if (!yeter(gecenOdenen)) {
+        return { tip: gecenOdenen > 0.005 ? "eksik" : "gecikti", vade: gecen, gun: gun2(gecen, b),
+                 gerekli, odenen: gecenOdenen, eksik: Math.max(0, gerekli - gecenOdenen) };
+      }
+    }
+    const kalan = gun2(b, sonraki);
+    const tip = gerekli > 0.005 && yeter(sonra) && sonra > 0.005 ? "odendi"
+      : kalan === 0 ? "bugun" : kalan <= 3 ? "yaklasiyor" : "bekliyor";
+    return { tip, vade: sonraki, gun: kalan, gerekli, odenen: sonra, eksik: Math.max(0, gerekli - sonra) };
+  }
+
   function selfTest() {
     const r = [], k = (ad, g, d) => r.push({ ad, gecti: !!g, detay: g ? "" : d });
     const simdi = new Date(2026, 9, 8, 9, 0);                 // 8 Ekim 2026 09:00
@@ -5583,9 +5851,162 @@ const HATIRLATMA = (() => {
     const z = bugunkuler([kart], [3, 1, 0], new Date(2026, 9, 12));
     k("Zil: 3 gün kala aday; ödendiyse aday değil", z.length === 1 && z[0].gun === 3 &&
       bugunkuler([odenmis], [3, 1, 0], new Date(2026, 9, 12)).length === 0, JSON.stringify(z));
+    // ---- Gecikme hatırlatması (isteğe bağlı) + dönem durumu ----
+    const pg = planla([kart], { gunler: [0], gecikme: true, saat: "10:00" }, simdi);
+    k("Gecikme hatırlatması vadeden 1 gün sonra (16 Ekim) eklenir", pg.length === 4 && pg.some(x => x.gun === -1 && x.tarih.getDate() === 16 && x.tarih.getMonth() === 9), pg.map(x => x.tarih.toDateString()).join(","));
+    const eskiKart = Object.assign({}, kart, { eklenmeMs: new Date(2026, 7, 1).getTime() }); // Ağustos'ta eklendi, vade 15
+    const d1 = donemDurumu(eskiKart, new Date(2026, 9, 18));
+    k("Vade geçti, ödeme yok → gecikti (3 gün)", d1 && d1.tip === "gecikti" && d1.gun === 3 && d1.eksik === 1000, JSON.stringify(d1));
+    const d2 = donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 400, tarih: "2026-10-14" }] }), new Date(2026, 9, 18));
+    k("Kısmi ödeme → eksik (₺600)", d2 && d2.tip === "eksik" && Math.abs(d2.eksik - 600) < 1e-6, JSON.stringify(d2));
+    const d3 = donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 1000, tarih: "2026-10-17" }] }), new Date(2026, 9, 18));
+    k("Geç ödeme geçen dönemi kapatır, yeni dönem bekliyor", d3 && d3.tip === "bekliyor" && d3.vade.getMonth() === 10 && d3.odenen === 0, JSON.stringify(d3));
+    const d4 = donemDurumu(Object.assign({}, kart, { eklenmeMs: new Date(2026, 9, 17).getTime() }), new Date(2026, 9, 18));
+    k("Vadeden SONRA eklenen borç gecikti sayılmaz", d4 && d4.tip === "bekliyor" && d4.vade.getMonth() === 10, JSON.stringify(d4));
+    k("Geçen dönem ödenmediyse yeni vade gününde de gecikti görünür", donemDurumu(eskiKart, new Date(2026, 9, 15, 14)).tip === "gecikti", "");
+    k("Eklenme tarihi bilinmiyorsa gecikti denmez", donemDurumu(kart, new Date(2026, 9, 18)).tip === "bekliyor", "");
+    const d5 = donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 1000, tarih: "2026-09-12" }] }), new Date(2026, 9, 15, 14));
+    k("Vade günü (geçen dönem ödenmiş) → bugün", d5 && d5.tip === "bugun" && d5.gun === 0, JSON.stringify(d5));
+    const d6 = donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 1000, tarih: "2026-09-10" }, { tutar: 1000, tarih: "2026-10-02" }] }), new Date(2026, 9, 13));
+    k("Dönem içinde tam ödendi → ödendi; 2 gün kala", d6 && d6.tip === "odendi" && d6.gun === 2, JSON.stringify(d6));
+    k("Asgari tahmininden küçük fark sayılmaz (%98)", donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 985, tarih: "2026-10-10" }] }), new Date(2026, 9, 18)).tip !== "eksik", "");
     return r;
   }
-  return { vadeler, odendiMi, planla, bugunkuler, selfTest };
+  return { vadeler, odendiMi, planla, bugunkuler, donemDurumu, selfTest };
+})();
+
+/* ============================================================
+   SIKIŞIK AY — "Bu ay asgarilerin hepsini ödeyemiyorum" (saf hesap).
+   Kural (açık ve tek): mümkün olduğunca ÇOK borcu gecikmeye düşürmemek.
+   Her geciken borç ayrı bir gecikme kaydıdır ve kartta yılda 3 gecikme
+   nakit kullanımını/limit artışını kapatır. Bu yüzden asgariler KÜÇÜKTEN
+   büyüğe tam karşılanır (eşitse faizi yüksek önce); karşılanamayan ilk
+   borca artan para kısmi yatırılır (ödenmeyen kısım küçülür).
+   Gecikme faizi tahmini yalnızca faizli (revolving) borçlar için:
+   TCMB kuralı: azami gecikme faizi = azami akdi faiz + 0,30 puan (aylık).
+   Taksitli kredinin gecikme faizi sözleşmeye bağlıdır → tutar UYDURULMAZ.
+   ============================================================ */
+const GECIKME_EK_PUAN = 0.30;
+const SIKISIK = (() => {
+  const vergiCarpan = (ay) => (ay && ay.vergiUygula) ? 1 + ((+ay.kkdf || 0) + (+ay.bsmv || 0)) / 100 : 1;
+  /** Aylık % oranla `gun` günlük faiz (bankalar ayı 30 gün sayar) — saf */
+  function gunlukFaiz(tutar, aylikYuzde, gun, ayarlar) {
+    if (!(tutar > 0) || !(aylikYuzde > 0) || !(gun > 0)) return 0;
+    return tutar * (aylikYuzde / 100) / 30 * gun * vergiCarpan(ayarlar);
+  }
+  /** Faizli borçta ödenmeyen asgari kısım için aylık gecikme oranı (%) */
+  const gecikmeAylik = (b) => b.type === "revolving" ? (b.annualRate / 12) + GECIKME_EK_PUAN : null;
+
+  /**
+   * dagit(borclar, butce, ayarlar) →
+   *  { yeterli, toplamAsgari, artan, eksikToplam, tamSayisi, satirlar:[{ad, indeks, asgari, odenecek, eksik, tam,
+   *    gecikmeAylik, aylikGecikmeFaizi}], aylikGecikmeFaizi, faizBilinmeyen }
+   */
+  function dagit(borclar, butce, ayarlar) {
+    butce = Math.max(0, +butce || 0);
+    const acik = borclar.map((b, indeks) => ({ b, indeks }))
+      .filter(x => x.b && x.b.balance > 0.005)
+      .map(x => ({ ad: x.b.ad, indeks: x.indeks, b: x.b, asgari: Math.min(+x.b.payment || 0, x.b.balance) }));
+    const toplamAsgari = acik.reduce((t, x) => t + x.asgari, 0);
+    if (butce >= toplamAsgari - 0.005) {
+      return { yeterli: true, toplamAsgari, artan: butce - toplamAsgari, eksikToplam: 0, tamSayisi: acik.length,
+               satirlar: acik.map(x => ({ ad: x.ad, indeks: x.indeks, asgari: x.asgari, odenecek: x.asgari, eksik: 0, tam: true, gecikmeAylik: gecikmeAylik(x.b), aylikGecikmeFaizi: 0 })),
+               aylikGecikmeFaizi: 0, faizBilinmeyen: false };
+    }
+    const sira = acik.slice().sort((a, c) => (a.asgari - c.asgari) || (c.b.annualRate - a.b.annualRate));
+    let kalan = butce;
+    const odenecek = new Map();
+    for (const x of sira) {
+      if (kalan >= x.asgari - 0.005) { odenecek.set(x, x.asgari); kalan -= x.asgari; }
+      else odenecek.set(x, 0);
+    }
+    if (kalan > 0.005) {
+      // Artanı, karşılanamayanlar içinde gecikmesi en pahalı olana yatır (taksit faizi bilinmez → sona)
+      const aday = sira.filter(x => odenecek.get(x) === 0)
+        .sort((a, c) => (gecikmeAylik(c.b) ?? -1) - (gecikmeAylik(a.b) ?? -1))[0];
+      if (aday) { odenecek.set(aday, Math.min(aday.asgari, kalan)); kalan = 0; }
+    }
+    let aylikGecikmeFaizi = 0, faizBilinmeyen = false, tamSayisi = 0;
+    const satirlar = acik.map(x => {
+      const od = odenecek.get(x) || 0, eksik = Math.max(0, x.asgari - od), tam = eksik <= 0.005;
+      if (tam) tamSayisi++;
+      const g = gecikmeAylik(x.b);
+      const f = eksik > 0.005 && g !== null ? eksik * g / 100 * vergiCarpan(ayarlar) : 0;
+      if (eksik > 0.005 && g === null) faizBilinmeyen = true;
+      aylikGecikmeFaizi += f;
+      return { ad: x.ad, indeks: x.indeks, asgari: x.asgari, odenecek: od, eksik, tam, gecikmeAylik: g, aylikGecikmeFaizi: f };
+    });
+    return { yeterli: false, toplamAsgari, artan: 0, eksikToplam: toplamAsgari - butce, tamSayisi, satirlar, aylikGecikmeFaizi, faizBilinmeyen };
+  }
+
+  function selfTest() {
+    const r = [], k = (ad, g, d) => r.push({ ad, gecti: !!g, detay: g ? "" : d });
+    const B = [
+      { ad: "Kart A", type: "revolving", balance: 40000, annualRate: 45, payment: 8000 },
+      { ad: "Kart B", type: "revolving", balance: 9000, annualRate: 39, payment: 1800 },
+      { ad: "Kredi", type: "installment", balance: 30000, annualRate: 0, payment: 3000 }
+    ];
+    const tam = dagit(B, 20000);
+    k("Bütçe yeterliyse herkes tam, artan doğru", tam.yeterli && Math.abs(tam.artan - 7200) < 1e-6 && tam.tamSayisi === 3, JSON.stringify(tam));
+    const d = dagit(B, 6000);
+    const sat = (ad) => d.satirlar.find(x => x.ad === ad);
+    k("Küçük asgariler önce tam: Kart B + Kredi tam", sat("Kart B").tam && sat("Kredi").tam && d.tamSayisi === 2, JSON.stringify(d.satirlar));
+    k("Artan para karşılanamayana kısmi: Kart A ₺1.200", Math.abs(sat("Kart A").odenecek - 1200) < 1e-6 && Math.abs(sat("Kart A").eksik - 6800) < 1e-6, sat("Kart A").odenecek);
+    k("Dağıtılan toplam = bütçe", Math.abs(d.satirlar.reduce((t, x) => t + x.odenecek, 0) - 6000) < 1e-6, "");
+    k("Gecikme faizi = eksik × (akdi + 0,30) — 6.800 × %4,05 = ₺275,40", Math.abs(d.aylikGecikmeFaizi - 6800 * 0.0405) < 1e-6, d.aylikGecikmeFaizi);
+    const t = dagit(B, 1000);
+    k("Taksitte eksik kalırsa faiz tutarı uydurulmaz (bilinmiyor bayrağı)", !t.yeterli && t.faizBilinmeyen === true && t.satirlar.find(x => x.ad === "Kredi").aylikGecikmeFaizi === 0, JSON.stringify(t));
+    k("Günlük faiz: 1.000 × %3 / 30 × 10 gün = ₺10", Math.abs(gunlukFaiz(1000, 3, 10) - 10) < 1e-9, gunlukFaiz(1000, 3, 10));
+    k("Günlük faiz vergiyle: × 1,30", Math.abs(gunlukFaiz(1000, 3, 10, { vergiUygula: true, kkdf: 15, bsmv: 15 }) - 13) < 1e-9, "");
+    return r;
+  }
+  return { dagit, gunlukFaiz, gecikmeAylik, selfTest };
+})();
+
+/* ============================================================
+   YAPILANDIRMA — seçili borçları tek bir krediyle kapatmak (saf hesap).
+   Yeni kredi: eşit taksitli (annüite), aylık faiz + (açıksa) KKDF/BSMV.
+   Bugünkü durum: aynı borçlar yalnızca asgari/taksitle (motor) ödenirse.
+   Masraf (tahsis ücreti, sigorta…) toplam maliyete eklenir.
+   ============================================================ */
+const YAPILANDIRMA = (() => {
+  function taksit(anapara, aylikYuzde, vade, ayarlar) {
+    const vergi = (ayarlar && ayarlar.vergiUygula) ? 1 + ((+ayarlar.kkdf || 0) + (+ayarlar.bsmv || 0)) / 100 : 1;
+    const r = (aylikYuzde / 100) * vergi;
+    if (!(anapara > 0) || !(vade >= 1)) return 0;
+    if (!(r > 0)) return anapara / vade;
+    return anapara * r / (1 - Math.pow(1 + r, -vade));
+  }
+  /** karsilastir(borclar, { aylikFaiz, vade, masraf }, ayarlar) */
+  function karsilastir(borclar, k, ayarlar) {
+    const acik = borclar.filter(b => b && b.balance > 0.005);
+    const anapara = acik.reduce((t, b) => t + b.balance, 0);
+    const vade = Math.max(1, Math.round(+k.vade || 0));
+    const masraf = Math.max(0, +k.masraf || 0);
+    const yeniAylik = taksit(anapara, +k.aylikFaiz || 0, vade, ayarlar);
+    const yeniFaiz = yeniAylik * vade - anapara;
+    const eskiAylik = acik.reduce((t, b) => t + Math.min(b.payment, b.balance), 0);
+    const sim = ENGINE.simulatePlan(acik, 0, "avalanche", ayarlar);
+    const eski = sim.uygulanabilir ? { aySayisi: sim.aySayisi, toplamFaiz: sim.toplamFaiz } : { aySayisi: null, toplamFaiz: null };
+    return {
+      anapara, vade, masraf, yeniAylik, yeniFaiz, yeniToplamMaliyet: yeniFaiz + masraf,
+      eskiAylik, eskiAy: eski.aySayisi, eskiFaiz: eski.toplamFaiz,
+      kazanc: eski.toplamFaiz === null ? null : eski.toplamFaiz - (yeniFaiz + masraf)
+    };
+  }
+  function selfTest() {
+    const r = [], k = (ad, g, d) => r.push({ ad, gecti: !!g, detay: g ? "" : d });
+    k("Annüite: 12.000 · %1 · 12 ay = ₺1.066,19", Math.abs(taksit(12000, 1, 12) - 1066.1855) < 0.01, taksit(12000, 1, 12));
+    k("Faizsiz: 12.000 / 12 = ₺1.000", taksit(12000, 0, 12) === 1000, "");
+    k("Vergi açık: oran × 1,30 (taksit büyür)", taksit(12000, 1, 12, { vergiUygula: true, kkdf: 15, bsmv: 15 }) > taksit(12000, 1, 12), "");
+    const kart = { ad: "Kart", type: "revolving", balance: 50000, annualRate: 51, payment: 2500 };
+    const c = karsilastir([kart], { aylikFaiz: 2.5, vade: 24, masraf: 500 }, null);
+    k("Düşük faizli kredi: kazanç pozitif, maliyete masraf dahil", c.kazanc > 0 && Math.abs(c.yeniToplamMaliyet - (c.yeniFaiz + 500)) < 1e-9 && c.eskiAylik === 2500, JSON.stringify(c));
+    const kapanmaz = karsilastir([Object.assign({}, kart, { payment: 1000 })], { aylikFaiz: 2.5, vade: 24 }, null);
+    k("Asgariyle kapanmayan borçta kazanç uydurulmaz (null)", kapanmaz.eskiFaiz === null && kapanmaz.kazanc === null, JSON.stringify(kapanmaz));
+    return r;
+  }
+  return { taksit, karsilastir, selfTest };
 })();
 
 /* ============================================================
@@ -6584,9 +7005,11 @@ const ARAYUZ = () => {
   let oncekiKapali = durum.borclar.filter(b => b.balance <= 0.005).length; // kapanış kutlaması için
 
   // Eski kayıtlar için göç: ilerleme hesabı başlangıç bakiyesine ihtiyaç duyar
+  let eklenmeGoc = false;
   for (const b of durum.borclar) {
     if (typeof b.initialBalance !== "number") b.initialBalance = b.balance;
     if (b.dueDay === undefined) b.dueDay = null;
+    if (!(+b.eklenmeMs > 0)) { b.eklenmeMs = Date.now(); eklenmeGoc = true; } // gecikme yalnızca bundan sonraki vadelerde
     if (!Array.isArray(b.payments)) b.payments = []; // v2: ödeme geçmişi
     // Faiz kaynağı (yeni alan, şema değişmeden): eski "tahmini" kayıtlar TL'de
     // TCMB dilim tahminine geçer (tahmin daha isabetli), diğer birimlerde eski
@@ -6596,6 +7019,8 @@ const ARAYUZ = () => {
       if (!b.faizKaynak) b.faizKaynak = b.faizTahmini ? (durum.paraBirimi === "TRY" ? "tcmb" : "varsayilan") : "elle";
     }
   }
+
+  if (eklenmeGoc) STORAGE.kaydet(durum);
 
   // Ayarlar — başlangıç değerleri; kullanıcı hepsini arayüzden değiştirebilir
   durum.ayarlar = Object.assign(
@@ -6674,11 +7099,183 @@ const ARAYUZ = () => {
     }
   }
 
+  /* ---- Son ödeme durumu: Genel'deki uyarı kartı + Borçlar rozeti ---- */
+  const VU_IKON = {
+    gecikti: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.1"/>',
+    bugun: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    gun: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M12 14v4M10 16h4"/>'
+  };
+  VU_IKON.eksik = VU_IKON.gecikti;
+  const vuIkon = (k) => `<svg class="vu-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${VU_IKON[k]}</svg>`;
+  function vadeRozet(b) {
+    const s = sd();
+    if (!Number.isInteger(b.dueDay)) return ` <button type="button" class="link-btn ge-ac gun-rozet">${s.vuGunEkle}</button>`;
+    const d = HATIRLATMA.donemDurumu(b, new Date());
+    if (!d) return "";
+    if (d.tip === "gecikti") return ` <span class="badge err gun-rozet">${s.vuRozetGecikti(d.gun)}</span>`;
+    if (d.tip === "eksik") return ` <span class="badge err gun-rozet">${s.vuRozetEksik(paraFmt.format(d.eksik))}</span>`;
+    if (d.tip === "bugun") return ` <span class="badge accent gun-rozet">${s.bugun}</span>`;
+    return "";
+  }
+  // Faizli borçta ödenmeyen asgari kısma işleyen gecikme faizinin günlük tahmini
+  function gecikmeNotu(b, d) {
+    const s = sd();
+    if (b.type !== "revolving") return s.vuTaksitNot;
+    if (PARA.kod !== "TRY") return s.vuGecikmeNotGenel; // +0,30 puan kuralı Türkiye'ye özel
+    const oran = SIKISIK.gecikmeAylik(b);
+    const gunluk = SIKISIK.gunlukFaiz(d.eksik, oran, 1, durum.ayarlar);
+    const oranTxt = new Intl.NumberFormat(s.yerel, { style: "percent", maximumFractionDigits: 2 }).format(oran / 100);
+    return s.vuGecikmeNot(oranTxt, paraFmt.format(gunluk));
+  }
+  function vadeUyariCiz() {
+    const kap = $("vadeUyari"), s = sd();
+    const satirlar = [];
+    durum.borclar.forEach((b, i) => {
+      const d = HATIRLATMA.donemDurumu(b, new Date());
+      if (!d || !["gecikti", "eksik", "bugun"].includes(d.tip)) return;
+      let metin;
+      if (d.tip === "gecikti") metin = `${s.vuGecikti(kacis(b.ad), d.gun)}<small>${gecikmeNotu(b, d)} ${s.vuKayitNot}</small>`;
+      else if (d.tip === "eksik") metin = `${s.vuEksik(kacis(b.ad), paraFmt.format(d.eksik), d.gun)}<small>${gecikmeNotu(b, d)}</small>`;
+      else metin = `${s.vuBugun(kacis(b.ad), paraFmt.format(d.eksik > 0.005 ? d.eksik : d.gerekli))}<small>${s.vuBugunNot}</small>`;
+      satirlar.push({ sira: d.tip === "bugun" ? 1 : 0, html: `<div class="vu-satir ${d.tip}">${vuIkon(d.tip)}<p class="vu-metin" style="margin:0">${metin}</p>` +
+        `<button type="button" class="ode-btn mini" data-vu-ode="${i}">${ODE_IKON}${s.btnOde}</button></div>` });
+    });
+    const gunsuz = durum.borclar.filter(b => b.balance > 0.005 && !Number.isInteger(b.dueDay)).length;
+    if (gunsuz > 0) satirlar.push({ sira: 2, html: `<div class="vu-satir gun">${vuIkon("gun")}<p class="vu-metin" style="margin:0">${s.vuGunYokUzun(gunsuz)}</p>` +
+      `<button type="button" class="ghost small vu-btn ge-ac">${s.vuGunEkleBtn}</button></div>` });
+    satirlar.sort((a, c) => a.sira - c.sira);
+    kap.hidden = satirlar.length === 0 || document.body.classList.contains("widget-modu");
+    kap.innerHTML = satirlar.map(x => x.html).join("");
+  }
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest ? e.target : null;
+    if (!t) return;
+    const ode = t.closest("[data-vu-ode]");
+    if (ode) { odemeAc(Number(ode.dataset.vuOde)); return; }
+    if (t.closest(".ge-ac")) { e.preventDefault(); gunEkleAc(); }
+  });
+
+  /* ---- Ödeme günlerini tamamla ---- */
+  let geDonus = null;
+  function gunEkleAc() {
+    const s = sd();
+    const liste = durum.borclar.map((b, i) => ({ b, i })).filter(x => x.b.balance > 0.005 && !Number.isInteger(x.b.dueDay));
+    if (liste.length === 0) return;
+    geDonus = document.activeElement;
+    const secenek = `<option value="">${s.geSec}</option>` + Array.from({ length: 31 }, (_, k) => `<option value="${k + 1}">${s.geGun(k + 1)}</option>`).join("");
+    $("geListe").innerHTML = liste.map(x => `<label class="ge-satir"><strong>${kacis(x.b.ad)}</strong>` +
+      `<select data-ge="${x.i}" aria-label="${kacis(x.b.ad)}">${secenek}</select></label>`).join("");
+    $("gunEkleOverlay").hidden = false;
+    $("gunEkleOverlay").scrollTop = 0;
+    const ilk = $("geListe").querySelector("select");
+    if (ilk) ilk.focus();
+  }
+  function gunEkleKapat() {
+    $("gunEkleOverlay").hidden = true;
+    if (geDonus && geDonus.focus) try { geDonus.focus(); } catch (e) { /* yoksay */ }
+  }
+  $("geKapat").addEventListener("click", gunEkleKapat);
+  $("geSonra").addEventListener("click", gunEkleKapat);
+  $("gunEkleOverlay").addEventListener("keydown", (e) => { if (e.key === "Escape") gunEkleKapat(); });
+  $("geKaydet").addEventListener("click", () => {
+    let degisti = false;
+    $("geListe").querySelectorAll("select[data-ge]").forEach(sel => {
+      const n = parseInt(sel.value, 10), b = durum.borclar[Number(sel.dataset.ge)];
+      if (b && n >= 1 && n <= 31) { b.dueDay = n; degisti = true; }
+    });
+    gunEkleKapat();
+    if (degisti) { kaydetVeCiz(); titret(15); }
+  });
+
+  /* ---- Sıkışık ay: asgarilerin hepsi ödenemiyorsa (SIKISIK.dagit) ---- */
+  function zorAyCiz() {
+    const kart = $("zorAyKart"), s = sd();
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    kart.hidden = acik.length === 0;
+    if (kart.hidden) return;
+    const toplam = acik.reduce((t, b) => t + Math.min(b.payment, b.balance), 0);
+    $("zorToplam").textContent = s.zorToplam(paraFmt.format(toplam));
+    if (!$("zorSonuc").innerHTML) return;
+    zorHesapla(); // veri değiştiyse açık sonuç tazelensin
+  }
+  function zorHesapla() {
+    const s = sd(), el = $("zorSonuc");
+    const tutar = sayiOku($("zorTutar").value);
+    if (!(tutar >= 0) || $("zorTutar").value.trim() === "") { el.innerHTML = `<p class="alan-uyari">${s.zorTutarYok}</p>`; return; }
+    const r = SIKISIK.dagit(durum.borclar, tutar, durum.ayarlar);
+    if (r.yeterli) { el.innerHTML = `<p class="oneri kutlama">${s.zorYeter(paraFmt.format(r.artan))}</p>`; return; }
+    const satir = r.satirlar.map(x => `<tr><td>${kacis(x.ad)}${x.tam ? ` <span class="badge ok">${s.zorTam}</span>` : ""}</td>` +
+      `<td class="num" data-et="${s.thAsgari}">${paraFmt.format(x.asgari)}</td>` +
+      `<td class="num" data-et="${s.zorThOde}"><strong>${paraFmt.format(x.odenecek)}</strong></td>` +
+      `<td class="num${x.eksik > 0.005 ? " eksik" : ""}" data-et="${s.zorThEksik}">${x.eksik > 0.005 ? paraFmt.format(x.eksik) : "—"}</td></tr>`).join("");
+    el.innerHTML = `<p class="zor-ozet">${s.zorOzet(r.tamSayisi, r.satirlar.length, paraFmt.format(r.eksikToplam))}</p>
+      <div class="table-wrap"><table class="buay-tablo zor-tablo"><thead><tr><th>${s.thBorc}</th><th class="num">${s.thAsgari}</th><th class="num">${s.zorThOde}</th><th class="num">${s.zorThEksik}</th></tr></thead><tbody>${satir}</tbody></table></div>
+      <p class="mini-ipucu" style="margin-top:8px">${s.zorKural}</p>
+      ${r.aylikGecikmeFaizi > 0.005 && PARA.kod === "TRY" ? `<p class="warning">${s.zorFaiz(paraFmt.format(r.aylikGecikmeFaizi))}</p>` : ""}
+      ${r.faizBilinmeyen || (r.aylikGecikmeFaizi > 0.005 && PARA.kod !== "TRY") ? `<p class="info">${s.zorTaksitNot}</p>` : ""}
+      <h3 class="alt-baslik">${s.zorSonucH}</h3><ul class="zor-liste">${PARA.kod === "TRY" ? s.zorSonuclar : s.zorSonuclarGenel}</ul>
+      <h3 class="alt-baslik">${s.zorAdimH}</h3><ol class="zor-adim">${s.zorAdimlar}</ol>`;
+  }
+  $("zorHesapla").addEventListener("click", zorHesapla);
+  $("zorTutar").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); zorHesapla(); } });
+
+  /* ---- Yapılandırma karşılaştırması (YAPILANDIRMA.karsilastir) ---- */
+  let ypSecili = null; // borç indeksleri; ilk çizimde faizli borçlar seçili gelir
+  function ypCiz() {
+    const kart = $("yapKart"), s = sd();
+    const acik = durum.borclar.map((b, i) => ({ b, i })).filter(x => x.b.balance > 0.005);
+    kart.hidden = acik.length === 0;
+    if (kart.hidden) return;
+    if (ypSecili === null) ypSecili = new Set(acik.filter(x => x.b.type === "revolving").map(x => x.i));
+    for (const i of [...ypSecili]) if (!acik.some(x => x.i === i)) ypSecili.delete(i);
+    $("ypBorclar").innerHTML = acik.map(x => `<label class="check"><input type="checkbox" data-yp="${x.i}"${ypSecili.has(x.i) ? " checked" : ""}> ` +
+      `<span>${kacis(x.b.ad)} · ${paraFmt.format(x.b.balance)}</span></label>`).join("");
+    ypHesapla();
+  }
+  function ypHesapla() {
+    const s = sd(), el = $("ypSonuc");
+    const secili = [...ypSecili].map(i => durum.borclar[i]).filter(b => b && b.balance > 0.005);
+    const faiz = sayiOku($("ypFaiz").value);
+    if (secili.length === 0) { el.innerHTML = `<p class="mini-ipucu">${s.ypSecYok}</p>`; return; }
+    if (!(faiz >= 0) || $("ypFaiz").value.trim() === "") { el.innerHTML = `<p class="mini-ipucu">${s.ypFaizYok}</p>`; return; }
+    const masraf = sayiOku($("ypMasraf").value);
+    const k = YAPILANDIRMA.karsilastir(secili, { aylikFaiz: faiz, vade: +$("ypVade").value, masraf: masraf > 0 ? masraf : 0 }, durum.ayarlar);
+    const simdi = new Date();
+    const tarih = (ay) => tarihFmt.format(new Date(simdi.getFullYear(), simdi.getMonth() + ay, 1));
+    const cumle = k.kazanc === null ? s.ypKapanmaz(paraFmt.format(k.yeniToplamMaliyet))
+      : k.kazanc >= 1 ? s.ypKazanc(paraFmt.format(k.kazanc)) : s.ypZarar(paraFmt.format(-k.kazanc));
+    const aylikFark = k.yeniAylik - k.eskiAylik;
+    el.innerHTML = `<div class="yp-sonuc">
+        <div class="yp-sut"><p>${s.ypSimdi}</p><dl>
+          <dt>${s.ypAylik}</dt><dd>${paraFmt.format(k.eskiAylik)}</dd>
+          <dt>${s.ypBiter}</dt><dd>${k.eskiAy === null ? s.ypBitmez : tarih(k.eskiAy)}</dd>
+          <dt>${s.ypToplamFaiz}</dt><dd>${k.eskiFaiz === null ? "—" : paraFmt.format(k.eskiFaiz)}</dd></dl></div>
+        <div class="yp-sut yeni"><p>${s.ypKrediyle}</p><dl>
+          <dt>${s.ypAylik}</dt><dd>${paraFmt.format(k.yeniAylik)}</dd>
+          <dt>${s.ypBiter}</dt><dd>${tarih(k.vade)}</dd>
+          <dt>${s.ypToplamMaliyet}</dt><dd>${paraFmt.format(k.yeniToplamMaliyet)}</dd></dl></div>
+      </div>
+      <p class="yp-cumle">${cumle}</p>
+      <p class="mini-ipucu">${Math.abs(aylikFark) < 1 ? "" : aylikFark > 0 ? s.ypAylikArtar(paraFmt.format(aylikFark)) : s.ypAylikAzalir(paraFmt.format(-aylikFark))} ${s.ypNot}</p>`;
+  }
+  $("ypBorclar").addEventListener("change", (e) => {
+    const c = e.target.closest("[data-yp]");
+    if (!c) return;
+    const i = Number(c.dataset.yp);
+    if (c.checked) ypSecili.add(i); else ypSecili.delete(i);
+    ypHesapla();
+  });
+  ["ypFaiz", "ypMasraf"].forEach(id => $(id).addEventListener("input", ypHesapla));
+  $("ypVade").addEventListener("change", ypHesapla);
+
   function kaydetVeCiz() {
     faizTahminleriTazele();
     STORAGE.kaydet(durum);
     listeCiz();
     buAyCiz();
+    vadeUyariCiz();
+    zorAyCiz();
+    ypCiz();
     panoCiz();
     oneriCiz();
     kaydiriciGuncelle();
@@ -7002,7 +7599,7 @@ const ARAYUZ = () => {
         <div class="bk-ust">
           <div>
             <h3>${kacis(b.ad)}</h3>
-            <p class="bk-meta">${b.type === "revolving" && b.altTur === "kmh" ? s.turKmh : s.tur[b.type]} · ${b.type === "revolving" ? s.oranIfade(yuvarla2(b.annualRate / 12), true) : yuzdeYaz(0)}${b.faizTahmini ? ` <span class="badge accent">${s.tahmini}</span>` : b.faizKaynak === "ekstre" ? ` <span class="badge ok">${s.ekstredenRozet}</span>` : ""}</p>
+            <p class="bk-meta">${b.type === "revolving" && b.altTur === "kmh" ? s.turKmh : s.tur[b.type]} · ${b.type === "revolving" ? s.oranIfade(yuvarla2(b.annualRate / 12), true) : yuzdeYaz(0)}${b.faizTahmini ? ` <span class="badge accent">${s.tahmini}</span>` : b.faizKaynak === "ekstre" ? ` <span class="badge ok">${s.ekstredenRozet}</span>` : ""}${kapandi ? "" : vadeRozet(b)}</p>
           </div>
           ${kapandi
             ? `<span class="badge ok">${s.kapandiEtiket}</span>`
@@ -7421,11 +8018,13 @@ const ARAYUZ = () => {
       const eski = durum.borclar[duzenlenen];
       veri.initialBalance = Math.max(eski.initialBalance ?? eski.balance, veri.balance);
       veri.payments = eski.payments || []; // ödeme geçmişi düzenlemede korunur
+      veri.eklenmeMs = eski.eklenmeMs || Date.now();
       durum.borclar[duzenlenen] = veri;
       duzenlemeBitir();
     } else {
       veri.initialBalance = veri.balance;
       veri.payments = []; // v2: ödeme geçmişi
+      veri.eklenmeMs = Date.now();
       durum.borclar.push(veri);
       e.target.reset();
       $("ad").focus();
@@ -8523,11 +9122,11 @@ const ARAYUZ = () => {
       const kapananSayi = buAyD.odemeler.filter(o => o.kapaniyor).length;
       $("bhKapanan").textContent = kapananSayi > 0 ? String(kapananSayi) : "—";
       $("bhKapananLbl").textContent = s.bhKapananLbl;
-      const yakinVade = durum.borclar
-        .filter(b => b.dueDay)
-        .map(b => sonrakiSonOdeme(b.dueDay).kalanGun)
-        .sort((a, b) => a - b)[0];
-      $("bhVade").textContent = yakinVade === undefined ? "—" : (yakinVade === 0 ? s.bugun : s.gunKisa(yakinVade));
+      const vDurum = durum.borclar.map(b => HATIRLATMA.donemDurumu(b, new Date())).filter(Boolean);
+      const yakinVade = vDurum.filter(d => d.tip !== "odendi" && d.tip !== "gecikti" && d.tip !== "eksik")
+        .map(d => d.gun).sort((a, b) => a - b)[0];
+      $("bhVade").textContent = vDurum.some(d => d.tip === "gecikti" || d.tip === "eksik") ? s.vuGeciktiKisa
+        : yakinVade === undefined ? "—" : (yakinVade === 0 ? s.bugun : s.gunKisa(yakinVade));
       $("bhVadeLbl").textContent = s.bhVadeLbl;
       // KAHRAMAN gösterge: bu ay gerçekte ödenen (kayıtlı ödemelerden) — canlı
       const odenen = buAyOdenen();
@@ -8610,28 +9209,40 @@ const ARAYUZ = () => {
         `.${kapananlar.length ? s.siradakiKapanan(kapananlar.join(", ")) : ""}</p>`;
     }
 
-    // Yaklaşan son ödeme günleri
+    // Son ödeme günleri: gecikenler en üstte, sonra en yakın vade (HATIRLATMA.donemDurumu)
+    const oncelik = { gecikti: 0, eksik: 1, bugun: 2, yaklasiyor: 3, bekliyor: 4, odendi: 5 };
     const vadeli = durum.borclar
-      .filter(b => b.dueDay)
-      .map(b => Object.assign({ b }, sonrakiSonOdeme(b.dueDay)))
-      .sort((a, y) => a.kalanGun - y.kalanGun);
-    if (vadeli.length > 0) {
+      .map((b, i) => ({ b, i, d: HATIRLATMA.donemDurumu(b, new Date()) }))
+      .filter(x => x.d)
+      .sort((a, y) => (oncelik[a.d.tip] - oncelik[y.d.tip]) || (a.d.vade - y.d.vade));
+    const gunsuz = durum.borclar.filter(b => b.balance > 0.005 && !Number.isInteger(b.dueDay)).length;
+    if (vadeli.length > 0 || gunsuz > 0) {
       html += `<h3 class="alt-baslik">${s.vadeH}</h3>`;
       for (const v of vadeli) {
-        const rozet = v.kalanGun === 0 ? `<span class="badge err">${s.bugun}</span>`
-          : v.kalanGun <= 3 ? `<span class="badge err">${s.gunKaldi(v.kalanGun)}</span>`
-          : v.kalanGun <= 7 ? `<span class="badge accent">${s.gunKaldi(v.kalanGun)}</span>`
-          : `<span class="badge ok">${s.gunVar(v.kalanGun)}</span>`;
-        html += `<p style="margin-top:0.35rem">${rozet} <strong>${kacis(v.b.ad)}</strong> — ${gunAyFmt.format(v.tarih)} (${s.enAz(paraFmt.format(v.b.payment))})</p>`;
+        const d = v.d;
+        const rozet = d.tip === "gecikti" ? `<span class="badge err">${s.vuRozetGecikti(d.gun)}</span>`
+          : d.tip === "eksik" ? `<span class="badge err">${s.vuRozetEksik(paraFmt.format(d.eksik))}</span>`
+          : d.tip === "odendi" ? `<span class="badge ok">✓ ${s.odendiEtiket}</span>`
+          : d.gun === 0 ? `<span class="badge err">${s.bugun}</span>`
+          : d.gun <= 3 ? `<span class="badge err">${s.gunKaldi(d.gun)}</span>`
+          : d.gun <= 7 ? `<span class="badge accent">${s.gunKaldi(d.gun)}</span>`
+          : `<span class="badge ok">${s.gunVar(d.gun)}</span>`;
+        // KMH: faiz günlük işler → erken yatırmanın tahmini kazancı (yalnızca ödenmemiş dönemde)
+        const kmhIpucu = v.b.type === "revolving" && v.b.altTur === "kmh" && d.tip !== "odendi" && d.gerekli > 0.005
+          ? `<br><span class="mini-ipucu">${s.kmhErken(paraFmt.format(d.gerekli), paraFmt.format(SIKISIK.gunlukFaiz(d.gerekli, v.b.annualRate / 12, 10, durum.ayarlar)))}</span>` : "";
+        html += `<p style="margin-top:0.35rem">${rozet} <strong>${kacis(v.b.ad)}</strong> — ${gunAyFmt.format(d.vade)} (${s.enAz(paraFmt.format(v.b.payment))})${kmhIpucu}</p>`;
       }
+      if (gunsuz > 0) html += `<p style="margin-top:0.5rem"><button type="button" class="link-btn ge-ac">${s.vuGunYok(gunsuz)}</button></p>`;
     }
 
     // Haftalık özet: bu hafta dikkat edilecekler
     html += `<h3 class="alt-baslik">${s.haftaH}</h3>`;
     const hafta = [];
     for (const v of vadeli) {
-      if (v.kalanGun <= 7) {
-        hafta.push(s.haftaVade(v.kalanGun === 0 ? `<strong>${s.haftaBugun}</strong>` : gunAyFmt.format(v.tarih), kacis(v.b.ad), paraFmt.format(v.b.payment)));
+      const d = v.d;
+      if (d.tip === "gecikti" || d.tip === "eksik") hafta.push(s.haftaGecikme(kacis(v.b.ad), paraFmt.format(d.eksik)));
+      else if (d.tip !== "odendi" && d.gun <= 7) {
+        hafta.push(s.haftaVade(d.gun === 0 ? `<strong>${s.haftaBugun}</strong>` : gunAyFmt.format(d.vade), kacis(v.b.ad), paraFmt.format(d.eksik > 0.005 ? d.eksik : v.b.payment)));
       }
     }
     if (buAyD) {
@@ -10047,6 +10658,7 @@ const ARAYUZ = () => {
     ozet: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>'
   };
   ZIL_IKON.seriRisk = ZIL_IKON.seri;
+  ZIL_IKON.gecikme = ZIL_IKON.faiz;
   ZIL_IKON.hedef = ZIL_IKON.kapandi;      // bayrak
   ZIL_IKON.hedefUlasti = ZIL_IKON.checkin;
 
@@ -10055,6 +10667,7 @@ const ARAYUZ = () => {
     const s = sd(), p = o.p || {};
     switch (o.tur) {
       case "odeme": return [s.zilOdemeB, s.bilKala(p.ad, p.gun, paraFmt.format(p.tutar))];
+      case "gecikme": return [s.zilGecikmeB, p.tip === "eksik" ? s.vuEksik(p.ad, paraFmt.format(p.eksik || 0), p.gun) : s.vuGecikti(p.ad, p.gun)];
       case "checkin": return [s.zilCheckinB, s.zilCheckinM];
       case "kapandi": return [s.zilKapandiB, s.zilKapandiM(p.ad)];
       case "esik": return [s.zilEsikB(p.y), s.zilEsikM(p.y)];
@@ -10099,6 +10712,14 @@ const ARAYUZ = () => {
     for (const h of HATIRLATMA.bugunkuler(durum.borclar, durum.ayarlar.hatirlatmaGunleri)) {
       const vadeK = h.vade.toISOString().slice(0, 10);
       oner(h.gun === 0 ? 1 : h.gun === 1 ? 1 : 2, `odeme${h.gun}|${h.ad}|${vadeK}`, "odeme", { ad: h.ad, gun: h.gun, tutar: h.tutar }, "hatirlatma");
+    }
+
+    // 1b) Geciken / eksik ödenen dönem: vade başına bir kez
+    for (const b of durum.borclar) {
+      const d = HATIRLATMA.donemDurumu(b, bugun);
+      if (d && (d.tip === "gecikti" || d.tip === "eksik")) {
+        oner(0, `gecikme|${b.ad}|${d.vade.toISOString().slice(0, 10)}`, "gecikme", { ad: b.ad, gun: d.gun, eksik: d.eksik, tip: d.tip }, "hatirlatma");
+      }
     }
 
     const acik = durum.borclar.filter(b => b.balance > 0.005);
@@ -10828,7 +11449,7 @@ const ARAYUZ = () => {
     }
     const s = sd();
     // Tek kaynak: HATIRLATMA.planla — ödenmiş dönemler zaten listede yok
-    const plan = HATIRLATMA.planla(durum.borclar, { gunler: durum.ayarlar.hatirlatmaGunleri, saat: durum.ayarlar.hatirlatmaSaat });
+    const plan = HATIRLATMA.planla(durum.borclar, { gunler: durum.ayarlar.hatirlatmaGunleri, saat: durum.ayarlar.hatirlatmaSaat, gecikme: true });
     // Aynı ana düşenler tek bildirimde birleşir
     const gruplar = new Map();
     for (const h of plan) {
@@ -10841,7 +11462,7 @@ const ARAYUZ = () => {
       // GİZLİLİK: varsayılan gövde nötr; ayrıntı yalnızca kullanıcı açtıysa
       const govde = durum.ayarlar.bildirimAyrinti
         ? liste.map(h => s.bilAyrintiM(h.ad, paraFmt.format(h.tutar), h.gun)).join(" · ")
-        : s.zilYerelHatirlatma;
+        : liste.every(h => h.gun < 0) ? s.zilYerelGecikme : s.zilYerelHatirlatma;
       kayitlar.push({ tarih: new Date(ms), baslik: s.zilYerelBaslik, govde });
     }
     if (durum.borclar.some(b => b.balance > 0.005)) {
@@ -10961,7 +11582,7 @@ const ARAYUZ = () => {
       if (kalanlar.length === 0) console.info(ozet);
       else console.warn(ozet + "\nKALANLAR:\n" + kalanlar.map(t => `✗ ${t.ad}${t.detay ? " — " + t.detay : ""}`).join("\n"));
       const iyT = IKIYOL.selfTest(), iyK = iyT.filter(t => !t.gecti);
-      for (const [ad, mod] of [["Faiz tahmini", FAIZ], ["Hatırlatma", HATIRLATMA], ["Bütçe", BUTCE]]) {
+      for (const [ad, mod] of [["Faiz tahmini", FAIZ], ["Hatırlatma", HATIRLATMA], ["Bütçe", BUTCE], ["Sıkışık ay", SIKISIK], ["Yapılandırma", YAPILANDIRMA]]) {
         const t = mod.selfTest(), k = t.filter(x => !x.gecti);
         const o = `Sıfırla ${ad} testleri: ${t.length - k.length}/${t.length} geçti`;
         if (k.length === 0) console.info(o);
@@ -11122,6 +11743,9 @@ const ARAYUZ = () => {
     bildirimDurumGoster();
     testleriGoster();
     proUygula();
+    vadeUyariCiz();
+    zorAyCiz();
+    ypCiz();
     kaydiriciGuncelle();
     yolculukCiz();
     hamleCiz();
@@ -11140,7 +11764,7 @@ const ARAYUZ = () => {
   function proUygula() {
     const s = sd(), acik = tamErisim(), kalan = denemeKalanGun();
     document.documentElement.classList.toggle("erisim-kilitli", !acik);
-    ["ikiYolKart", "hedefKart", "tasarrufKart"].forEach(id => $(id).classList.toggle("kilitli", !acik));
+    ["ikiYolKart", "hedefKart", "tasarrufKart", "yapKart"].forEach(id => $(id).classList.toggle("kilitli", !acik));
     $("senaryoKilit").hidden = acik;
     $("senaryoIcerik").hidden = !acik;
     $("yazdirBtn").hidden = !acik;

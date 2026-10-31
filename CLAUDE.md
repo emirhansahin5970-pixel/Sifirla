@@ -47,8 +47,12 @@ karşılaştıran saf katman (DOM yok, kendi 15 testi). Ardından `HEDEF`:
 ikili arama + yukarı yuvarlama + doğrulama (DOM yok, kendi 11 testi).
 Sonra üç saf katman daha: `FAIZ` (TCMB tavan tablosu `FAIZ_TABLOSU_VARSAYILAN`,
 dilim seçimi, ekstreden oran; 10 test), `HATIRLATMA` (vade, "o dönem
-ödendi mi", zil + yerel bildirim planı; 8 test), `BUTCE` (Tasarruf Modu:
-serbest para, önerilen ekstra, gider senaryoları; 8 test).
+ödendi mi", zil + yerel bildirim planı, `donemDurumu`: gecikti/eksik/bugün/
+ödendi, isteğe bağlı vade+1 gecikme hatırlatması; 18 test), `BUTCE` (Tasarruf Modu:
+serbest para, önerilen ekstra, gider senaryoları; 8 test), `SIKISIK` ("bu ay
+asgarileri ödeyemiyorum": en az borcu gecikmeye düşüren dağıtım, gecikme faizi
+= akdi + 0,30 puan [TCMB], günlük faiz yardımcısı; 8 test), `YAPILANDIRMA`
+(seçili borçları tek krediyle kapatma: annüite vs yalnız asgari; 5 test).
 
 **2. DEPOLAMA (`DEPO` → `STORAGE`)** — iki katman:
 - `DEPO`: senkron yüzlü soyutlama. **Native'de** `@capacitor/preferences`
@@ -94,7 +98,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v13`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v14`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -135,6 +139,15 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   dilim değiştirince oran güncellenir), ekstreden oran (`"ekstre"`), elle
   (`"elle"`). Alt tür: `altTur: "kart" | "kmh"`. Tasarruf Modu: `durum.butce`,
   `TASARRUF_PRO_GEREKLI = false`.
+- **Vade durumu + zor ay + yapılandırma** (31 Ekim 2026): her borçta son ödeme
+  durumu (gecikti N gün / ₺X eksik / bugün / ödendi) Genel'in üstünde uyarı
+  kartı, Bu Ay listesi, Borçlar rozeti ve zilde; vadeden sonraki ödeme önce
+  geçen dönemin eksiğini kapatır. Borçlara `eklenmeMs` eklendi (bilinmiyorsa
+  ilk açılış anı) — eklenmeden önceki vadeler "gecikti" sayılmaz. Günü
+  girilmemiş borçlar için "Ödeme günlerini ekle" penceresi. Gecikmede günlük
+  gecikme faizi tahmini (yalnız TRY'de, revolving), KMH'de "10 gün erken
+  yatırırsan" ipucu. Bu Ay'da "asgarilerin hepsini ödeyemiyor musun?" (ücretsiz),
+  Plan'da yapılandırma karşılaştırması + taktikler (Pro).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
