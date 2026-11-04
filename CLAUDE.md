@@ -98,7 +98,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v15`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v16`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -200,6 +200,10 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   bağlı (yerel satın alma testi). **Web sürümü şimdilik tamamen açık**
   (`ABONELIK_ZORUNLU = NATIF.VAR`); yerelde `?abone=1` / `?abone=bitti` ile
   kilit denenir. Borç sınırı yok (`PRO_SATIN_ALINABILIR = false` kalır).
+  İlk açılışta bir kez "30 gün ücretsiz dene" karşılaması (`#denemeOverlay`,
+  `durum.denemeKarsilamaGoruldu`); deneme bitişine 3/1/0 gün kala nötr bildirim
+  ("otomatik ücret alınmaz"). Otomatik açılan pencereler `modalAcik()` ile
+  yalnız aria-modal pencerelere bakar (zil paneli sayılmaz).
 - **Yapay zeka 1.1'de gelecek, hibrit olarak:** cihazda Apple'ın modeli varsa
   (iOS 26+, Apple Intelligence açık, dil destekli) o kullanılır; yoksa güvenli
   bir bulut proxy'sine düşülür. Hibrit tasarımın gizlilik sonuçları 1.1'de

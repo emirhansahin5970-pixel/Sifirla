@@ -2853,6 +2853,19 @@ var GIRIS = (function () {
   </div>
 </div>
 
+<!-- Karşılama: 30 gün ücretsiz deneme (yalnız uygulamada, bir kez) -->
+<div id="denemeOverlay" class="no-print abone-ekran" role="dialog" aria-modal="true" aria-labelledby="dkBaslik" hidden>
+  <div class="abone-ic">
+    <p class="abone-rozet" data-i18n="ab_kart_h">Sıfırla Pro</p>
+    <h2 id="dkBaslik"></h2>
+    <p class="abone-alt" id="dkAlt"></p>
+    <ul class="abone-liste" data-i18n="dk_liste"></ul>
+    <p class="mini-ipucu" style="margin:0 0 16px" data-i18n="dk_sonra"></p>
+    <button type="button" id="dkTamam" class="abone-al" data-i18n="dk_tamam">Ücretsiz denemeye başla</button>
+    <button type="button" id="dkFiyat" class="ghost abone-sonra" style="margin-top:10px" data-i18n="dk_fiyat">Fiyatı gör</button>
+  </div>
+</div>
+
 <!-- Abone ekranı: Apple 3.1.2 — fiyat + süre + otomatik yenileme + iptal yolu +
      geri yükleme + Kullanım Koşulları + Gizlilik bağlantıları aynı ekranda -->
 <div id="aboneOverlay" class="no-print abone-ekran" role="dialog" aria-modal="true" aria-labelledby="abBaslik" hidden>
@@ -3389,6 +3402,9 @@ const SOZLUK = {
       faiz_oto_chk: "Kart ve KMH bakiyelerine her ay faizi otomatik ekle",
       faiz_oto_not: "Her ayın başında, faizli borçların bakiyesine geçen ayın tahmini faizi eklenir. Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yazman yeterli.",
       geri_btn: "Geri",
+      dk_liste: "<li>Kilit ekranında ödeme hatırlatmaları</li><li>Aylık rapor ve “bir ay erken bitir” önerisi</li><li>İki Yol, Hedef ve Tasarruf Modu</li><li>Yapılandırma karşılaştırması ve senaryolar</li>",
+      dk_sonra: "Deneme bitince istersen ayda bir küçük ücretle Sıfırla Pro'ya geçersin. Geçmezsen borçların, temel planın ve ödeme kaydın ücretsiz kalır.",
+      dk_tamam: "Ücretsiz denemeye başla", dk_fiyat: "Fiyatı gör",
       zor_h: "Bu ay asgarilerin hepsini ödeyemiyor musun?",
       zor_alt: "Elindeki tutarı yaz; gecikmeye düşen borç sayısını en aza indiren bir dağıtım çıkarayım.",
       zor_lbl: "Bu ay ödeyebileceğin toplam", zor_btn: "Dağıt",
@@ -3932,6 +3948,10 @@ const SOZLUK = {
       abGeriTamam: "Aboneliğin geri yüklendi. Pro açık.",
       abGeriYok: "Bu Apple Kimliğinde etkin bir Sıfırla Pro aboneliği bulunamadı.",
       abBildirim: "Ücretsiz denemenin bitmesine 2 gün kaldı.",
+      abBildirimGun: (g) => g === 0 ? "Ücretsiz denemen bugün bitiyor. Hatırlatmaların ve raporun için Pro'ya geçebilirsin; otomatik ücret alınmaz."
+        : g === 1 ? "Ücretsiz denemen yarın bitiyor. Otomatik ücret alınmaz." : `Ücretsiz denemenin bitmesine ${g} gün kaldı. Otomatik ücret alınmaz.`,
+      dkBaslik: (n) => n >= 30 ? "30 gün ücretsiz dene" : `Ücretsiz denemende ${n} gün var`,
+      dkAlt: (t) => `${t} tarihine kadar bütün özellikler açık. Kart istemiyoruz, otomatik ücret yok.`,
       bilKilitBtn: "Pro ile aç",
       bilKilit: "Kilit ekranı hatırlatmaları Sıfırla Pro'da. Uygulama içi zil çalışmaya devam eder.",
       senBos: "Değişiklik girmediniz; iki alandan en az birini doldurun.",
@@ -4224,6 +4244,9 @@ const SOZLUK = {
       faiz_oto_chk: "Add interest to card and overdraft balances every month",
       faiz_oto_not: "At the start of each month, last month's estimated interest is added to interest-bearing balances. If your statement differs, edit the debt and enter the real balance.",
       geri_btn: "Back",
+      dk_liste: "<li>Payment reminders on your lock screen</li><li>Monthly report with a “finish a month sooner” tip</li><li>Two Paths, Goal and Savings Mode</li><li>Restructuring comparison and scenarios</li>",
+      dk_sonra: "When the trial ends you can continue with Sıfırla Pro for a small monthly fee. If you don't, your debts, basic plan and payment log stay free.",
+      dk_tamam: "Start my free trial", dk_fiyat: "See the price",
       zor_h: "Can't cover every minimum this month?",
       zor_alt: "Enter what you can pay and I'll split it so as few debts as possible go late.",
       zor_lbl: "Total you can pay this month", zor_btn: "Split it",
@@ -4757,6 +4780,10 @@ const SOZLUK = {
       abGeriTamam: "Subscription restored. Pro is on.",
       abGeriYok: "No active Sıfırla Pro subscription was found for this Apple Account.",
       abBildirim: "Your free trial ends in 2 days.",
+      abBildirimGun: (g) => g === 0 ? "Your free trial ends today. Go Pro to keep reminders and your report — you won't be charged automatically."
+        : g === 1 ? "Your free trial ends tomorrow. You won't be charged automatically." : `Your free trial ends in ${g} days. You won't be charged automatically.`,
+      dkBaslik: (n) => n >= 30 ? "Try it free for 30 days" : `${n} day${n === 1 ? "" : "s"} left in your free trial`,
+      dkAlt: (t) => `Every feature is unlocked until ${t}. No card needed, no automatic charge.`,
       bilKilitBtn: "Unlock with Pro",
       bilKilit: "Lock-screen reminders are part of Sıfırla Pro. The in-app bell keeps working.",
       senBos: "No change entered; fill at least one of the two fields.",
@@ -11796,12 +11823,15 @@ const ARAYUZ = () => {
       const birinci = new Date(n.getFullYear(), n.getMonth() + 1, 1, sa || 10, dk || 0);
       kayitlar.push({ tarih: birinci, baslik: s.raporBildirimB, govde: s.raporBildirimM });
     }
-    // Deneme bitmeden 2 gün önce tek, dürüst bir uyarı (abone değilse)
-    if (ABONELIK_ZORUNLU && !durum.pro && denemeKalanGun() > 2) {
+    // Deneme bitişi: 3 gün kala, 1 gün kala ve bittiği gün — dürüst, otomatik ücret yok (abone değilse)
+    if (ABONELIK_ZORUNLU && !durum.pro && denemeKalanGun() > 0) {
       const [sa, dk] = (durum.ayarlar.hatirlatmaSaat || "10:00").split(":").map(Number);
-      const t = new Date(ABONELIK.denemeBitisMs(durum.denemeBasMs) - 2 * 86400000);
-      t.setHours(sa || 10, dk || 0, 0, 0);
-      if (t.getTime() > Date.now()) kayitlar.push({ tarih: t, baslik: s.zilYerelBaslik, govde: s.abBildirim });
+      const bitis = ABONELIK.denemeBitisMs(durum.denemeBasMs);
+      for (const g of [3, 1, 0]) {
+        const t = new Date(bitis - g * 86400000);
+        t.setHours(sa || 10, dk || 0, 0, 0);
+        if (t.getTime() > Date.now()) kayitlar.push({ tarih: t, baslik: s.zilYerelBaslik, govde: s.abBildirimGun(g) });
+      }
     }
     const kurulan = await NATIF.hatirlatmalariPlanla(kayitlar);
     bildirimDurumGoster(); // Ayarlar'daki "kaç hatırlatma kurulu · sıradaki" satırı tazelensin
@@ -12129,15 +12159,40 @@ const ARAYUZ = () => {
     if (sonErisim !== null && sonErisim !== acik && NATIF.VAR) hatirlatmalariTazele();
     sonErisim = acik;
     if (!acik && ABONELIK_ZORUNLU && !durum.denemeBittiGoruldu) bittiEkraniDene(0);
+    if (acik) denemeKarsilamaDene(0);
   }
   // Deneme bitince abone ekranı bir kez; başka pencere açıksa kapanmasını bekler
   let bittiZamanlayici = null;
+  // Açık tam ekran (modal) pencere var mı? Zil paneli ve küçük ipucu kutuları sayılmaz.
+  const modalAcik = (haric) => [...document.querySelectorAll('[aria-modal="true"]')].some(x => !x.hidden && x.id !== haric) ||
+    (!$("onboard").hidden && haric !== "onboard");
+  /* ---- Karşılama: "30 gün ücretsiz dene" — yalnız uygulamada, bir kez ---- */
+  let karsilamaZamanlayici = null;
+  function denemeKarsilamaDene(deneme) {
+    if (!ABONELIK_ZORUNLU || durum.pro || durum.denemeKarsilamaGoruldu || denemeKalanGun() <= 0) return;
+    clearTimeout(karsilamaZamanlayici);
+    karsilamaZamanlayici = setTimeout(() => {
+      if (durum.pro || durum.denemeKarsilamaGoruldu) return;
+      if (modalAcik("denemeOverlay")) { if (deneme < 200) denemeKarsilamaDene(deneme + 1); return; }
+      const s = sd(), kalan = denemeKalanGun();
+      $("dkBaslik").textContent = s.dkBaslik(kalan);
+      $("dkAlt").textContent = s.dkAlt(new Intl.DateTimeFormat(s.yerel, { day: "numeric", month: "long" }).format(new Date(ABONELIK.denemeBitisMs(durum.denemeBasMs))));
+      $("denemeOverlay").hidden = false;
+      $("dkTamam").focus();
+    }, deneme === 0 ? 1200 : 1500);
+  }
+  function denemeKarsilamaKapat() {
+    $("denemeOverlay").hidden = true;
+    durum.denemeKarsilamaGoruldu = true;
+    STORAGE.kaydet(durum);
+  }
+  $("dkTamam").addEventListener("click", denemeKarsilamaKapat);
+  $("dkFiyat").addEventListener("click", () => { denemeKarsilamaKapat(); aboneAc("karsilama"); });
   function bittiEkraniDene(deneme) {
     clearTimeout(bittiZamanlayici);
     bittiZamanlayici = setTimeout(() => {
       if (tamErisim() || durum.denemeBittiGoruldu) return;
-      const acikPencere = [...document.querySelectorAll('[role="dialog"]')].some(x => !x.hidden && x.id !== "aboneOverlay");
-      if (acikPencere) { if (deneme < 40) bittiEkraniDene(deneme + 1); return; }
+      if (modalAcik("aboneOverlay")) { if (deneme < 40) bittiEkraniDene(deneme + 1); return; }
       durum.denemeBittiGoruldu = true;
       STORAGE.kaydet(durum);
       aboneAc("bitti");
