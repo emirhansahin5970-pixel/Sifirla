@@ -746,6 +746,28 @@
      Yalnızca transform/opacity animasyonu; reduced-motion'da sade.
      ============================================================ */
   .gorunmez-metin { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* ---- Kendi planım ---- */
+  .kp-ac { margin-top: 10px; font-weight: 600; }
+  .kp-liste { display: grid; gap: 10px; margin-top: 12px; }
+  .kp-satir { padding: 12px; border-radius: 14px; background: var(--surface-2); }
+  .kp-ust { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .kp-ust strong { min-width: 0; overflow-wrap: anywhere; }
+  .kp-ust span { font-size: 12.5px; color: var(--muted); }
+  .kp-satir input { margin-top: 8px; }
+  .kp-hizli { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .kp-hizli button { padding: 4px 10px; font-size: 12.5px; }
+  .kp-uyari { margin: 6px 0 0; font-size: 12.5px; color: var(--danger); }
+  .kp-fazla { margin: 6px 0 0; font-size: 12.5px; color: var(--ok); }
+  .kp-ozet { margin-top: 12px; padding: 12px; border-radius: 14px; background: var(--accent-soft); font-size: 14px; line-height: 1.5; }
+  .kp-ozet strong { font-variant-numeric: tabular-nums; }
+  .faiz-gizle { flex: 0 0 auto; align-self: center; width: 32px; height: 32px; padding: 0; border-radius: 50%; }
+
+  /* ---- Alt "Geri" düğmesi: tam ekran pencerelerde baş parmak bölgesinde ---- */
+  .geri-fab { position: fixed; left: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); z-index: 230; display: inline-flex; align-items: center; gap: 6px; padding: 12px 18px 12px 14px; border-radius: 999px; font-size: 16px; font-weight: 700; box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.45); }
+  .geri-fab[hidden] { display: none; }
+  .geri-fab svg { width: 20px; height: 20px; }
+  #borcDetay .detay-ic, #raporOverlay .rapor-ic, .abone-ic, #zilListe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px) !important; }
+
   /* ---- Son ödeme durumu, sıkışık ay, yapılandırma ---- */
   .vade-uyari { margin: 0 0 12px; display: grid; gap: 8px; }
   .vade-uyari[hidden] { display: none; }
@@ -2425,6 +2447,26 @@ var GIRIS = (function () {
       Vergiler faiz tutarı üzerinden hesaplanır: efektif aylık oran = nominal oran × (1 + KKDF% + BSMV%).
       Faiz her ay bileşik olarak işler.
     </p>
+    <label class="check" style="margin-top:0.8rem">
+      <input type="checkbox" id="faizOtomatik">
+      <span data-i18n="faiz_oto_chk">Kart ve KMH bakiyelerine her ay faizi otomatik ekle</span>
+    </label>
+    <p class="muted check-not" data-i18n="faiz_oto_not">Her ayın başında, faizli borçların bakiyesine geçen ayın tahmini faizi eklenir. Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yazman yeterli.</p>
+  </section>
+
+  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
+  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
+    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Kendi planını kur</span></h2>
+    <p class="muted" data-i18n="kp_alt">Her borca ayda ne kadar ödeyeceğine sen karar ver — asgariden az ya da çok. Bütün ekranlar bu plana göre hesaplanır.</p>
+    <label class="check kp-ac">
+      <input type="checkbox" id="kpAcik">
+      <span data-i18n="kp_chk">Kendi tutarlarımla ödeyeceğim</span>
+    </label>
+    <div id="kpIcerik" hidden>
+      <div id="kpListe" class="kp-liste"></div>
+      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
+      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
+    </div>
   </section>
 
   <!-- Plan hesaplama -->
@@ -2795,6 +2837,9 @@ var GIRIS = (function () {
     Önemli finansal kararlar öncesinde lütfen bir uzmana danışın.
   </footer>
 </div>
+
+<!-- Tam ekran pencereler için alttaki tek "Geri" düğmesi (en üstteki açık pencereyi kapatır) -->
+<button type="button" id="geriFab" class="geri-fab no-print" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span data-i18n="geri_btn">Geri</span></button>
 
 <!-- Ödeme günlerini tamamla: günü girilmemiş açık borçlar tek ekranda -->
 <div id="gunEkleOverlay" class="no-print abone-ekran" role="dialog" aria-modal="true" aria-labelledby="geBaslik" hidden>
@@ -3337,6 +3382,13 @@ const SOZLUK = {
       sen_kilit: "Bu özellik Sıfırla Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.",
       kilit_b: "Sıfırla Pro ile açılır", kilit_btn: "Pro'ya geç",
       kilit_yp: "Borçlarını tek krediyle kapatmanın aylık ödemene ve toplam faizine etkisini gör.",
+      kp_h: "Kendi planını kur",
+      kp_alt: "Her borca ayda ne kadar ödeyeceğine sen karar ver — asgariden az ya da çok. Bütün ekranlar bu plana göre hesaplanır.",
+      kp_chk: "Kendi tutarlarımla ödeyeceğim",
+      kp_not: "Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.",
+      faiz_oto_chk: "Kart ve KMH bakiyelerine her ay faizi otomatik ekle",
+      faiz_oto_not: "Her ayın başında, faizli borçların bakiyesine geçen ayın tahmini faizi eklenir. Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yazman yeterli.",
+      geri_btn: "Geri",
       zor_h: "Bu ay asgarilerin hepsini ödeyemiyor musun?",
       zor_alt: "Elindeki tutarı yaz; gecikmeye düşen borç sayısını en aza indiren bir dağıtım çıkarayım.",
       zor_lbl: "Bu ay ödeyebileceğin toplam", zor_btn: "Dağıt",
@@ -3793,6 +3845,21 @@ const SOZLUK = {
       zilYerelOzet: "Yeni bir özetin var.",
       zilYerelGenel: "Yeni bir bildirimin var.",
       proEtkin: "Pro etkin ✓",
+      kpAsgari: (t) => `asgari ${t}`, kpTaksit: (t) => `taksit ${t}`, kpEtiket: "aylık ödeme",
+      kpHizliAsgari: "Asgari", kpHizliKat: (k) => `${k} kat`,
+      kpGecersiz: "Geçerli bir tutar yaz.",
+      kpAsgariAlti: (t) => `Asgarinin ${t} altında: eksik kısma gecikme faizi işler ve gecikme kredi kaydına yansır.`,
+      kpTaksitAlti: (t) => `Taksitin ${t} altında: sözleşmendeki gecikme faizi işler ve gecikme kredi kaydına yansır.`,
+      kpFazla: (t) => `Asgarinin ${t} üstü — faiz azalır, borç erken biter.`,
+      kpToplam: (t, a) => `Aylık toplam: <strong>${t}</strong> (asgariler ${a})`,
+      kpKapanmaz: "Bu tutarlarla en az bir borç hiç kapanmıyor: ödeme, işleyen faizi karşılamıyor.",
+      kpSonuc: (t, f) => `Borçsuz: <strong>${t}</strong> · toplam faiz <strong>${f}</strong>`,
+      kpAyni: "Önerilen planla aynı sonuç.",
+      kpKiyas: (ay, f, dahaCok) => `Önerilen plana göre ${ay === 0 ? "aynı sürede" : ay > 0 ? `${ay} ay geç` : `${-ay} ay erken`} biter, ${f} ${dahaCok ? "daha fazla" : "daha az"} faiz.`,
+      kpAltindaOzet: (n) => `${n} borçta asgarinin altında ödüyorsun.`,
+      kpAltRozet: "asgarinin altında",
+      faizIslendi: (ay, t) => `${ay} ayının tahmini faizi bakiyelerine eklendi: <strong>+${t}</strong>`,
+      faizIslendiNot: "Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yaz. Ayarlardan kapatabilirsin.",
       vuGecikti: (ad, g) => `<strong>${ad}</strong> · son ödeme günü ${g} gün önce geçti`,
       vuEksik: (ad, t, g) => `<strong>${ad}</strong> · asgarinin ${t} kadarı eksik ödendi (vade ${g} gün önce geçti)`,
       vuBugun: (ad, t) => `<strong>${ad}</strong> · bugün son ödeme günü (en az ${t})`,
@@ -4018,7 +4085,10 @@ const SOZLUK = {
         "Ödeme=faiz: plan sınırda güvenle durmalı (döngü kilidi yok)",
         "Son ödeme kalan bakiyeyi aşmaz (525,00₺ senaryosu)",
         "Asgari projeksiyonu bitişte makul: ~15 ay, ~4.200₺ faiz",
-        "Çığ ≤ kartopu taraması (4 çok-borçlu senaryonun tümü)"
+        "Çığ ≤ kartopu taraması (4 çok-borçlu senaryonun tümü)",
+        "Kendi planı: asgariden fazlası ekstra sayılır, plan kısalır",
+        "Kendi planı: asgarinin altı uzar, faizi karşılamayan uygulanamaz",
+        "Kendi planı yoksa sonuç değişmez"
       ],
       oneri: {
         kapandi: (ad) => `<strong>${ad}</strong> borcunu tamamen kapattın — tebrikler, bir borç daha tarih oldu!`,
@@ -4147,6 +4217,13 @@ const SOZLUK = {
       sen_kilit: "This is part of Sıfırla Pro: compare different extra budgets and one-off payments against your current plan.",
       kilit_b: "Unlocks with Sıfırla Pro", kilit_btn: "Go Pro",
       kilit_yp: "See how folding your debts into one loan changes your monthly payment and total interest.",
+      kp_h: "Build your own plan",
+      kp_alt: "Decide how much you'll pay on each debt every month — less or more than the minimum. Every screen follows this plan.",
+      kp_chk: "I'll pay my own amounts",
+      kp_not: "When a debt closes, its amount rolls to the next one. Your monthly extra budget below is added on top.",
+      faiz_oto_chk: "Add interest to card and overdraft balances every month",
+      faiz_oto_not: "At the start of each month, last month's estimated interest is added to interest-bearing balances. If your statement differs, edit the debt and enter the real balance.",
+      geri_btn: "Back",
       zor_h: "Can't cover every minimum this month?",
       zor_alt: "Enter what you can pay and I'll split it so as few debts as possible go late.",
       zor_lbl: "Total you can pay this month", zor_btn: "Split it",
@@ -4593,6 +4670,21 @@ const SOZLUK = {
       zilYerelOzet: "You have a new summary.",
       zilYerelGenel: "You have a new notification.",
       proEtkin: "Pro active ✓",
+      kpAsgari: (t) => `minimum ${t}`, kpTaksit: (t) => `installment ${t}`, kpEtiket: "monthly payment",
+      kpHizliAsgari: "Minimum", kpHizliKat: (k) => `${k.replace(",", ".")}×`,
+      kpGecersiz: "Enter a valid amount.",
+      kpAsgariAlti: (t) => `${t} below the minimum: late interest applies to the shortfall and it shows on your credit record.`,
+      kpTaksitAlti: (t) => `${t} below the installment: your agreement's late interest applies and it shows on your credit record.`,
+      kpFazla: (t) => `${t} above the minimum — less interest, paid off sooner.`,
+      kpToplam: (t, a) => `Monthly total: <strong>${t}</strong> (minimums ${a})`,
+      kpKapanmaz: "With these amounts at least one debt never closes: the payment doesn't cover the interest.",
+      kpSonuc: (t, f) => `Debt-free: <strong>${t}</strong> · total interest <strong>${f}</strong>`,
+      kpAyni: "Same result as the suggested plan.",
+      kpKiyas: (ay, f, dahaCok) => `Compared with the suggested plan: ${ay === 0 ? "same finish" : ay > 0 ? `${ay} month${ay === 1 ? "" : "s"} later` : `${-ay} month${ay === -1 ? "" : "s"} sooner`}, ${f} ${dahaCok ? "more" : "less"} interest.`,
+      kpAltindaOzet: (n) => `You're paying below the minimum on ${n} debt${n === 1 ? "" : "s"}.`,
+      kpAltRozet: "below minimum",
+      faizIslendi: (ay, t) => `${ay}'s estimated interest was added to your balances: <strong>+${t}</strong>`,
+      faizIslendiNot: "If your statement differs, edit the debt and enter the real balance. You can turn this off in settings.",
       vuGecikti: (ad, g) => `<strong>${ad}</strong> · due date passed ${g} day${g === 1 ? "" : "s"} ago`,
       vuEksik: (ad, t, g) => `<strong>${ad}</strong> · ${t} short of the minimum (due ${g} day${g === 1 ? "" : "s"} ago)`,
       vuBugun: (ad, t) => `<strong>${ad}</strong> · due today (at least ${t})`,
@@ -4817,7 +4909,10 @@ const SOZLUK = {
         "Payment = interest: plan must stop safely at the cap (no lock-up)",
         "Last payment never exceeds remaining balance (₺525.00 case)",
         "Minimum-only projection ends sane: ~15 months, ~₺4,200 interest",
-        "Avalanche ≤ snowball sweep (all 4 multi-debt scenarios)"
+        "Avalanche ≤ snowball sweep (all 4 multi-debt scenarios)",
+        "Custom plan: amount above minimum counts as extra, plan shortens",
+        "Custom plan: below minimum takes longer; below interest is not feasible",
+        "No custom plan: result unchanged"
       ],
       oneri: {
         kapandi: (ad) => `You fully paid off <strong>${ad}</strong> — congratulations, one more debt is history!`,
@@ -4908,7 +5003,11 @@ const ENGINE = (() => {
     const ds = borclar.map((b, i) => ({
       ad: b.ad || "Borç " + (i + 1),
       type: b.type, balance: b.balance,
-      annualRate: b.annualRate, payment: b.payment,
+      annualRate: b.annualRate,
+      // Kendi planı: kullanıcı bu borca her ay sabit tutar öder (asgariden az ya da çok).
+      // asgari ayrı tutulur: döküm "asgari / ekstra" diye ayrışsın.
+      payment: Number.isFinite(b.planOdeme) && b.planOdeme >= 0 ? b.planOdeme : b.payment,
+      asgari: b.payment,
       aylikEk: b.aylikEk || 0, // isteğe bağlı: karta her ay eklenen yeni harcama
       kapanisAyi: null
     }));
@@ -4946,7 +5045,12 @@ const ENGINE = (() => {
         if (d.balance <= EPS) continue;
         const odenen = Math.min(d.payment, d.balance);
         d.balance -= odenen;
-        if (kayit) kayit[i].asgari = odenen;
+        if (kayit) {
+          // Planlanan tutar asgarinin üstündeyse fazlası "ekstra" sütununa yazılır
+          const asgariKismi = Math.min(odenen, d.asgari);
+          kayit[i].asgari = asgariKismi;
+          kayit[i].ekstra += odenen - asgariKismi;
+        }
         if (d.balance <= EPS) { d.balance = 0; d.kapanisAyi = ay; bosalan += d.payment; }
       }
 
@@ -5240,6 +5344,25 @@ const ENGINE = (() => {
     }
     kaydet("Çığ ≤ kartopu taraması (4 çok-borçlu senaryonun tümü)",
       ihlal24 === null, "tüm senaryolarda çığ ≤ kartopu", ihlal24 || "");
+
+    // 25) Kendi planı: planOdeme asgariden yüksekse fazlası ekstra sayılır ve plan kısalır
+    const kp = { type: "revolving", balance: 10000, annualRate: 36, payment: 500 };
+    const kpTaban = simulatePlan([kp], 0, "avalanche");
+    const kpCok = simulatePlan([Object.assign({}, kp, { planOdeme: 1500 })], 0, "avalanche");
+    const d25 = kpCok.ilkAylar[0] && kpCok.ilkAylar[0].odemeler[0];
+    kaydet("Kendi planı: asgariden fazlası ekstra sayılır, plan kısalır",
+      kpCok.uygulanabilir && kpCok.aySayisi < kpTaban.aySayisi && d25 && Math.abs(d25.asgari - 500) < 1e-9 && Math.abs(d25.ekstra - 1000) < 1e-9,
+      "asgari 500 + ekstra 1000, daha kısa", d25 ? `${d25.asgari}+${d25.ekstra}, ${kpCok.aySayisi}/${kpTaban.aySayisi} ay` : "döküm yok");
+    // 26) Asgarinin altında plan: daha uzun sürer; faizi karşılamıyorsa uygulanamaz
+    const kpAz = simulatePlan([Object.assign({}, kp, { planOdeme: 400 })], 0, "avalanche");
+    const kpCokAz = simulatePlan([Object.assign({}, kp, { planOdeme: 250 })], 0, "avalanche");
+    kaydet("Kendi planı: asgarinin altı uzar, faizi karşılamayan uygulanamaz",
+      kpAz.uygulanabilir && kpAz.aySayisi > kpTaban.aySayisi && !kpCokAz.uygulanabilir,
+      "400 → daha uzun, 250 → uygulanamaz", `${kpAz.aySayisi}, ${kpCokAz.uygulanabilir}`);
+    // 27) planOdeme yoksa sonuç birebir aynı (geriye uyum)
+    const kpYok = simulatePlan([Object.assign({}, kp, { planOdeme: undefined })], 0, "avalanche");
+    kaydet("planOdeme yoksa sonuç değişmez",
+      kpYok.aySayisi === kpTaban.aySayisi && Math.abs(kpYok.toplamFaiz - kpTaban.toplamFaiz) < 1e-9, kpTaban.aySayisi, kpYok.aySayisi);
 
     return sonuclar;
   }
@@ -5714,9 +5837,36 @@ const FAIZ = (() => {
     k("Ekstreden oran: 1.234 / 45.678 → %2,70", ekstredenOran(1234, 45678) === 2.7, ekstredenOran(1234, 45678));
     k("Ekstre: sıfır/negatif/faiz ≥ borç → null", ekstredenOran(0, 1000) === null && ekstredenOran(100, 0) === null &&
       ekstredenOran(-5, 1000) === null && ekstredenOran(1000, 1000) === null, "");
+    // ---- Aylık faiz işleme ----
+    const kk = { type: "revolving", balance: 10000, annualRate: 48, faizAyi: "2026-09" };
+    const i1 = aylikIsle(kk, "2026-10", null);
+    k("1 ay: 10.000 × %4 = ₺400 eklenir", i1.ay === 1 && Math.abs(i1.eklenen - 400) < 1e-9 && Math.abs(i1.bakiye - 10400) < 1e-9, JSON.stringify(i1));
+    const i2 = aylikIsle(kk, "2026-11", null);
+    k("2 ay bileşik: ₺816", i2.ay === 2 && Math.abs(i2.eklenen - 816) < 1e-9, JSON.stringify(i2));
+    k("Aynı ay / taksitli / kapalı / ay bilgisi yok → eklenmez",
+      aylikIsle(kk, "2026-09").ay === 0 && aylikIsle(Object.assign({}, kk, { type: "installment" }), "2026-11").ay === 0 &&
+      aylikIsle(Object.assign({}, kk, { balance: 0 }), "2026-11").ay === 0 && aylikIsle(Object.assign({}, kk, { faizAyi: null }), "2026-11").ay === 0, "");
+    k("En fazla 12 ay işlenir", aylikIsle(Object.assign({}, kk, { faizAyi: "2024-01" }), "2026-11").ay === 12, "");
+    k("Vergi açıksa oran × 1,30", Math.abs(aylikIsle(kk, "2026-10", { vergiUygula: true, kkdf: 15, bsmv: 15 }).eklenen - 520) < 1e-9, "");
     return r;
   }
-  return { tablo, tahmin, ekstredenOran, selfTest };
+  /** aylikIsle(borc, buAyK, ayarlar) → { ay, eklenen, bakiye } — faizli (revolving) açık borçta
+      borc.faizAyi (YYYY-MM, son işlenen ay) ile buAyK arasındaki her ay için bakiyeye
+      efektif aylık faiz eklenir (aylık bileşik, motorla aynı oran). Saf; borcu değiştirmez.
+      Uzun aradan sonra açılışta abartı olmasın diye en fazla 12 ay. */
+  function aylikIsle(borc, buAyK, ayarlar) {
+    const yok = { ay: 0, eklenen: 0, bakiye: borc ? borc.balance : 0 };
+    if (!borc || borc.type !== "revolving" || !(borc.balance > 0.005)) return yok;
+    const m1 = /^(\d{4})-(\d{2})$/.exec(String(borc.faizAyi || "")), m2 = /^(\d{4})-(\d{2})$/.exec(String(buAyK || ""));
+    if (!m1 || !m2) return yok;
+    const fark = (+m2[1] * 12 + +m2[2]) - (+m1[1] * 12 + +m1[2]);
+    if (!(fark > 0)) return yok;
+    const ay = Math.min(12, fark), oran = ENGINE.efektifAylikOran(borc.annualRate, ayarlar);
+    let bakiye = borc.balance;
+    for (let i = 0; i < ay; i++) bakiye += bakiye * oran;
+    return { ay, eklenen: bakiye - borc.balance, bakiye };
+  }
+  return { tablo, tahmin, ekstredenOran, aylikIsle, selfTest };
 })();
 
 /* ============================================================
@@ -7027,8 +7177,37 @@ const ARAYUZ = () => {
     { vergiUygula: false, kkdf: 15, bsmv: 15, hatirlatmaGun: 7, bildirimAcik: false, uygulamaIci: true, varsayilanFaiz: 60,
       // Ödeme hatırlatmaları: kaç gün kala (3/1/0) ve saat; kilit ekranı varsayılan NÖTR
       hatirlatmaGunleri: [3, 1, 0], hatirlatmaSaat: "10:00", bildirimAyrinti: false, bildirimSoruldu: false,
-      faizTablosu: null }, // null = TCMB varsayılan tablosu (FAIZ_TABLOSU_VARSAYILAN)
+      faizTablosu: null, // null = TCMB varsayılan tablosu (FAIZ_TABLOSU_VARSAYILAN)
+      faizOtomatik: true }, // faizli borçlara her ay tahmini faiz eklensin
     durum.ayarlar || {});
+
+  /* ---- Aylık faiz işleme: bakiye zamanla faizle büyür (FAIZ.aylikIsle) ----
+     faizAyi = son işlenen ay. Bilinmiyorsa BU AY sayılır (geçmişe dönük ekleme yok).
+     Açılışta yeni aya geçildiyse faizli açık borçlara geçen ay(lar)ın faizi eklenir. */
+  const buAyKodu = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}`; };
+  function aylikFaizIsle() {
+    const buAy = buAyKodu();
+    let toplam = 0, degisti = false;
+    const liste = [];
+    for (const b of durum.borclar) {
+      if (b.type !== "revolving") continue;
+      if (!/^\d{4}-\d{2}$/.test(String(b.faizAyi || ""))) { b.faizAyi = buAy; degisti = true; continue; }
+      if (b.faizAyi === buAy) continue;
+      if (durum.ayarlar.faizOtomatik !== false) {
+        const r = FAIZ.aylikIsle(b, buAy, durum.ayarlar);
+        if (r.eklenen > 0.005) {
+          b.balance = r.bakiye;
+          toplam += r.eklenen;
+          liste.push({ ad: b.ad, tutar: r.eklenen });
+        }
+      }
+      b.faizAyi = buAy; degisti = true;
+    }
+    if (toplam > 0.005) durum.sonFaizIslem = { ay: buAy, tutar: toplam, borclar: liste, gizli: false };
+    if (degisti) STORAGE.kaydet(durum);
+  }
+  aylikFaizIsle();
+  kpUygula(); // kendi planı açık/kapalı durumu motor girdisine yansısın
 
   // Hayat karşılığı referansları — kullanıcı tanımlar, hiçbir tutar gömülü değildir
   durum.referanslar = Object.assign({ market: 0, kira: 0, bilet: 0 }, durum.referanslar || {});
@@ -7106,6 +7285,7 @@ const ARAYUZ = () => {
     gun: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M12 14v4M10 16h4"/>'
   };
   VU_IKON.eksik = VU_IKON.gecikti;
+  VU_IKON.faiz = '<path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>';
   const vuIkon = (k) => `<svg class="vu-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${VU_IKON[k]}</svg>`;
   function vadeRozet(b) {
     const s = sd();
@@ -7143,6 +7323,13 @@ const ARAYUZ = () => {
     const gunsuz = durum.borclar.filter(b => b.balance > 0.005 && !Number.isInteger(b.dueDay)).length;
     if (gunsuz > 0) satirlar.push({ sira: 2, html: `<div class="vu-satir gun">${vuIkon("gun")}<p class="vu-metin" style="margin:0">${s.vuGunYokUzun(gunsuz)}</p>` +
       `<button type="button" class="ghost small vu-btn ge-ac">${s.vuGunEkleBtn}</button></div>` });
+    const fi = durum.sonFaizIslem;
+    if (fi && fi.ay === buAyKodu() && !fi.gizli && fi.tutar > 0.005) {
+      const [yy, mm] = fi.ay.split("-").map(Number);
+      const gecenAy = new Intl.DateTimeFormat(s.yerel, { month: "long" }).format(new Date(yy, mm - 2, 1));
+      satirlar.push({ sira: 3, html: `<div class="vu-satir faiz">${vuIkon("faiz")}<p class="vu-metin" style="margin:0">${s.faizIslendi(gecenAy, paraFmt.format(fi.tutar))}<small>${s.faizIslendiNot}</small></p>` +
+        `<button type="button" class="ghost faiz-gizle" data-faiz-gizle aria-label="${s.ab_kapat || "✕"}">✕</button></div>` });
+    }
     satirlar.sort((a, c) => a.sira - c.sira);
     kap.hidden = satirlar.length === 0 || document.body.classList.contains("widget-modu");
     kap.innerHTML = satirlar.map(x => x.html).join("");
@@ -7152,7 +7339,8 @@ const ARAYUZ = () => {
     if (!t) return;
     const ode = t.closest("[data-vu-ode]");
     if (ode) { odemeAc(Number(ode.dataset.vuOde)); return; }
-    if (t.closest(".ge-ac")) { e.preventDefault(); gunEkleAc(); }
+    if (t.closest(".ge-ac")) { e.preventDefault(); gunEkleAc(); return; }
+    if (t.closest("[data-faiz-gizle]") && durum.sonFaizIslem) { durum.sonFaizIslem.gizli = true; STORAGE.kaydet(durum); vadeUyariCiz(); }
   });
 
   /* ---- Ödeme günlerini tamamla ---- */
@@ -7268,6 +7456,130 @@ const ARAYUZ = () => {
   ["ypFaiz", "ypMasraf"].forEach(id => $(id).addEventListener("input", ypHesapla));
   $("ypVade").addEventListener("change", ypHesapla);
 
+  /* ---- Kendi planım: her borca kullanıcının tutarı (motor: planOdeme) ----
+     planTutar kalıcıdır; planOdeme yalnızca plan AÇIKKEN yazılır (motor onu okur). */
+  function kpUygula() {
+    for (const b of durum.borclar) {
+      if (durum.kendiPlan === true && Number.isFinite(b.planTutar) && b.planTutar >= 0) b.planOdeme = b.planTutar;
+      else delete b.planOdeme;
+    }
+  }
+  function kpCiz() {
+    const kart = $("kpKart"), s = sd();
+    const acik = durum.borclar.map((b, i) => ({ b, i })).filter(x => x.b.balance > 0.005);
+    kart.hidden = acik.length === 0;
+    if (kart.hidden) return;
+    $("kpAcik").checked = durum.kendiPlan === true;
+    $("kpIcerik").hidden = durum.kendiPlan !== true;
+    if (durum.kendiPlan !== true) return;
+    $("kpListe").innerHTML = acik.map(({ b, i }) => {
+      const asgari = Math.min(b.payment, b.balance);
+      const deger = Number.isFinite(b.planTutar) ? b.planTutar : asgari;
+      return `<div class="kp-satir" data-kp-satir="${i}">
+        <div class="kp-ust"><strong>${kacis(b.ad)}</strong><span>${b.type === "installment" ? s.kpTaksit(paraFmt.format(asgari)) : s.kpAsgari(paraFmt.format(asgari))}</span></div>
+        <input type="text" inputmode="decimal" data-kp="${i}" value="${Math.round(deger * 100) / 100}" aria-label="${kacis(b.ad)}: ${s.kpEtiket}">
+        <div class="kp-hizli">
+          <button type="button" class="ghost small" data-kp-hizli="${i}" data-kat="1">${s.kpHizliAsgari}</button>
+          <button type="button" class="ghost small" data-kp-hizli="${i}" data-kat="1.5">${s.kpHizliKat("1,5")}</button>
+          <button type="button" class="ghost small" data-kp-hizli="${i}" data-kat="2">${s.kpHizliKat("2")}</button>
+        </div>
+        <p class="kp-uyari" data-kp-not="${i}" hidden></p>
+      </div>`;
+    }).join("");
+    kpOzetCiz();
+  }
+  // Satır uyarıları + özet: kaydetmeden, yazarken canlı (motorun kopyalarıyla)
+  function kpOzetCiz() {
+    const s = sd();
+    const acik = durum.borclar.map((b, i) => ({ b, i })).filter(x => x.b.balance > 0.005);
+    const tutarlar = new Map();
+    $("kpListe").querySelectorAll("[data-kp]").forEach(inp => {
+      const v = sayiOku(inp.value);
+      tutarlar.set(Number(inp.dataset.kp), v >= 0 ? v : null);
+    });
+    let toplam = 0, asgariToplam = 0, altinda = 0;
+    for (const { b, i } of acik) {
+      const asgari = Math.min(b.payment, b.balance), v = tutarlar.has(i) ? tutarlar.get(i) : asgari;
+      const notEl = $("kpListe").querySelector(`[data-kp-not="${i}"]`);
+      asgariToplam += asgari; toplam += v ?? 0;
+      if (!notEl) continue;
+      if (v === null) { notEl.hidden = false; notEl.className = "kp-uyari"; notEl.textContent = s.kpGecersiz; }
+      else if (v < asgari - 0.005) {
+        altinda++;
+        notEl.hidden = false; notEl.className = "kp-uyari";
+        notEl.textContent = b.type === "installment" ? s.kpTaksitAlti(paraFmt.format(asgari - v)) : s.kpAsgariAlti(paraFmt.format(asgari - v));
+      } else if (v > asgari + 0.005) {
+        notEl.hidden = false; notEl.className = "kp-fazla"; notEl.textContent = s.kpFazla(paraFmt.format(v - asgari));
+      } else notEl.hidden = true;
+    }
+    const ekstra = parseFloat($("ekstra").value) || 0;
+    const kopya = acik.map(({ b, i }) => Object.assign({}, b, { planOdeme: tutarlar.get(i) ?? Math.min(b.payment, b.balance) }));
+    const benim = ENGINE.simulatePlan(kopya, ekstra, durum.yontem, durum.ayarlar);
+    const oneri = ENGINE.simulatePlan(acik.map(x => Object.assign({}, x.b, { planOdeme: undefined })), ekstra, durum.yontem, durum.ayarlar);
+    let html = s.kpToplam(paraFmt.format(toplam + ekstra), paraFmt.format(asgariToplam));
+    if (!benim.uygulanabilir) html += `<br><strong style="color:var(--danger)">${s.kpKapanmaz}</strong>`;
+    else {
+      html += `<br>${s.kpSonuc(tarihFmt.format(benim.borcsuzTarih), paraFmt.format(benim.toplamFaiz))}`;
+      if (oneri.uygulanabilir) {
+        const ayF = benim.aySayisi - oneri.aySayisi, fF = benim.toplamFaiz - oneri.toplamFaiz;
+        html += `<br><span class="muted">${Math.abs(ayF) < 1 && Math.abs(fF) < 1 ? s.kpAyni : s.kpKiyas(ayF, paraFmt.format(Math.abs(fF)), fF > 0)}</span>`;
+      }
+    }
+    if (altinda > 0) html += `<br><span style="color:var(--danger)">${s.kpAltindaOzet(altinda)}</span>`;
+    $("kpOzet").innerHTML = html;
+  }
+  function kpKaydet() {
+    $("kpListe").querySelectorAll("[data-kp]").forEach(inp => {
+      const b = durum.borclar[Number(inp.dataset.kp)], v = sayiOku(inp.value);
+      if (b && v >= 0) b.planTutar = Math.round(v * 100) / 100;
+    });
+    kpUygula();
+    kaydetVeCiz();
+  }
+  $("kpAcik").addEventListener("change", () => {
+    durum.kendiPlan = $("kpAcik").checked;
+    // İlk açılışta her borcun tutarı bugünkü planın ilk ayıyla dolar (asgari + payına düşen ekstra değil, sade asgari)
+    if (durum.kendiPlan) for (const b of durum.borclar) if (!Number.isFinite(b.planTutar)) b.planTutar = Math.min(b.payment, b.balance);
+    kpUygula();
+    kaydetVeCiz();
+    kpCiz();
+  });
+  $("kpListe").addEventListener("input", (e) => { if (e.target.matches("[data-kp]")) kpOzetCiz(); });
+  $("kpListe").addEventListener("change", (e) => { if (e.target.matches("[data-kp]")) kpKaydet(); });
+  $("kpListe").addEventListener("click", (e) => {
+    const h = e.target.closest("[data-kp-hizli]");
+    if (!h) return;
+    const i = Number(h.dataset.kpHizli), b = durum.borclar[i];
+    const inp = $("kpListe").querySelector(`[data-kp="${i}"]`);
+    if (!b || !inp) return;
+    inp.value = String(Math.round(Math.min(b.payment, b.balance) * Number(h.dataset.kat) * 100) / 100);
+    kpKaydet();
+  });
+
+  /* ---- Alttaki "Geri" düğmesi: en üstteki açık tam ekran pencereyi kapatır ---- */
+  const GERI_PENCERE = [ // öncelik sırası: üstteki önce
+    ["gunEkleOverlay", "geKapat"], ["aboneOverlay", "abKapat"], ["raporOverlay", "raporKapat"],
+    ["borcDetay", "detayKapat"], ["zilPanel", "zilKapatBtn"]
+  ];
+  const kendiAltCubugu = ["sihirbaz", "tasarrufAkis", "onboard", "odemeOverlay", "anOverlay", "iyAnOverlay"];
+  const pencereAcik = (id) => { const el = $(id); return !!el && (id === "zilPanel" ? el.classList.contains("acik") : !el.hidden); };
+  function geriFabGuncelle() {
+    const fab = $("geriFab");
+    const ust = kendiAltCubugu.some(pencereAcik) ? null : GERI_PENCERE.find(([id]) => pencereAcik(id));
+    fab.hidden = !ust;
+    fab.dataset.hedef = ust ? ust[1] : "";
+  }
+  $("geriFab").addEventListener("click", () => {
+    const btn = $($("geriFab").dataset.hedef || "");
+    if (btn) btn.click();
+    titret(10);
+  });
+  const geriGozcu = new MutationObserver(geriFabGuncelle);
+  GERI_PENCERE.map(x => x[0]).concat(kendiAltCubugu).forEach(id => {
+    const el = $(id);
+    if (el) geriGozcu.observe(el, { attributes: true, attributeFilter: ["hidden", "class"] });
+  });
+
   function kaydetVeCiz() {
     faizTahminleriTazele();
     STORAGE.kaydet(durum);
@@ -7276,6 +7588,7 @@ const ARAYUZ = () => {
     vadeUyariCiz();
     zorAyCiz();
     ypCiz();
+    if (!$("kpListe").contains(document.activeElement)) kpCiz(); else kpOzetCiz(); // yazarken odak kaybolmasın
     panoCiz();
     oneriCiz();
     kaydiriciGuncelle();
@@ -8019,12 +8332,17 @@ const ARAYUZ = () => {
       veri.initialBalance = Math.max(eski.initialBalance ?? eski.balance, veri.balance);
       veri.payments = eski.payments || []; // ödeme geçmişi düzenlemede korunur
       veri.eklenmeMs = eski.eklenmeMs || Date.now();
+      // Bakiye elle değiştiyse girilen değer bugünkü bakiyedir: faiz bu aydan sonra işler
+      veri.faizAyi = Math.abs((eski.balance || 0) - veri.balance) > 0.005 || !eski.faizAyi ? buAyKodu() : eski.faizAyi;
+      if (Number.isFinite(eski.planTutar)) veri.planTutar = eski.planTutar;
+      if (Number.isFinite(eski.planOdeme)) veri.planOdeme = eski.planOdeme;
       durum.borclar[duzenlenen] = veri;
       duzenlemeBitir();
     } else {
       veri.initialBalance = veri.balance;
       veri.payments = []; // v2: ödeme geçmişi
       veri.eklenmeMs = Date.now();
+      veri.faizAyi = buAyKodu();
       durum.borclar.push(veri);
       e.target.reset();
       $("ad").focus();
@@ -8130,6 +8448,7 @@ const ARAYUZ = () => {
     STORAGE.kaydet(durum);
   }
   function ayarlariGoster() {
+    $("faizOtomatik").checked = durum.ayarlar.faizOtomatik !== false;
     $("vergiUygula").checked = durum.ayarlar.vergiUygula;
     $("kkdf").value = durum.ayarlar.kkdf;
     $("bsmv").value = durum.ayarlar.bsmv;
@@ -8176,6 +8495,12 @@ const ARAYUZ = () => {
     }
     $("sonuclar").innerHTML = ""; // eski sonuçlar yeni tahminle geçersiz
     kaydetVeCiz();
+  });
+  $("faizOtomatik").addEventListener("change", () => {
+    durum.ayarlar.faizOtomatik = $("faizOtomatik").checked;
+    // Yeniden açılınca geçmiş aylar birden eklenmesin: sayaç bu aydan başlar
+    for (const b of durum.borclar) if (b.type === "revolving") b.faizAyi = buAyKodu();
+    STORAGE.kaydet(durum);
   });
   ["vergiUygula", "kkdf", "bsmv"].forEach(id => {
     $(id).addEventListener("change", () => {
@@ -9185,7 +9510,7 @@ const ARAYUZ = () => {
           ? ` <span class="muted" style="font-size:12px">${s.buayTaksit(Math.min(tb.toplam, tb.odenen + 1))}</span>` : "";
         return `
         <tr${odendi ? ' class="buay-odendi"' : ""}>
-          <td>${kacis(o.ad)}${taksitEtiketi} ${o.kapaniyor ? `<span class="badge ok">${s.kapaniyor}</span>` : ""}${odendi ? ` <span class="badge ok">✓ ${s.odendiEtiket}</span>` : ""}</td>
+          <td>${kacis(o.ad)}${taksitEtiketi} ${bi >= 0 && durum.kendiPlan && o.asgari + 0.005 < Math.min(durum.borclar[bi].payment, durum.borclar[bi].balance) ? `<span class="badge err">${s.kpAltRozet}</span> ` : ""}${o.kapaniyor ? `<span class="badge ok">${s.kapaniyor}</span>` : ""}${odendi ? ` <span class="badge ok">✓ ${s.odendiEtiket}</span>` : ""}</td>
           <td class="num" data-et="${s.thAsgari}">${paraFmt.format(o.asgari)}</td>
           <td class="num" data-et="${s.thEkstra}">${o.ekstra > 0.005 ? paraFmt.format(o.ekstra) : "—"}</td>
           <td class="num" data-et="${s.thBuAy}"><strong>${paraFmt.format(hedefT)}</strong></td>
@@ -11746,6 +12071,7 @@ const ARAYUZ = () => {
     vadeUyariCiz();
     zorAyCiz();
     ypCiz();
+    kpCiz();
     kaydiriciGuncelle();
     yolculukCiz();
     hamleCiz();

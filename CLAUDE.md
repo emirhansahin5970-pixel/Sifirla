@@ -40,13 +40,13 @@ native pakete girer. Bu kasıtlıdır; bozmayın.
 **1. MOTOR (`ENGINE`)** — saf hesaplama. Kartopu/çığ simülasyonu, aylık bileşik
 faiz (revolving), taksitli sabit ödeme, KKDF/BSMV, `MAX_AY = 600`. İç faiz
 birimi **yıllık nominal %**. DOM'a dokunmaz, depoya dokunmaz.
-24 öz-test + `?dev=1` altında 6 senaryoluk elle hesaplanmış bilinen-cevap tablosu.
+27 öz-test (25–27: kendi planı `planOdeme`) + `?dev=1` altında 6 senaryoluk elle hesaplanmış bilinen-cevap tablosu.
 Hemen ardından `IKIYOL`: motor çıktılarını "sadece asgari / planla" diye
 karşılaştıran saf katman (DOM yok, kendi 15 testi). Ardından `HEDEF`:
 "şu ayda borçsuz olmak istiyorum" için ters çözüm — `simulatePlan` ile
 ikili arama + yukarı yuvarlama + doğrulama (DOM yok, kendi 11 testi).
 Sonra üç saf katman daha: `FAIZ` (TCMB tavan tablosu `FAIZ_TABLOSU_VARSAYILAN`,
-dilim seçimi, ekstreden oran; 10 test), `HATIRLATMA` (vade, "o dönem
+dilim seçimi, ekstreden oran, `aylikIsle` aylık faiz işleme; 15 test), `HATIRLATMA` (vade, "o dönem
 ödendi mi", zil + yerel bildirim planı, `donemDurumu`: gecikti/eksik/bugün/
 ödendi, isteğe bağlı vade+1 gecikme hatırlatması; 18 test), `BUTCE` (Tasarruf Modu:
 serbest para, önerilen ekstra, gider senaryoları; 8 test), `SIKISIK` ("bu ay
@@ -77,7 +77,7 @@ Yardımcı modüller: `NATIF` (Capacitor köprüsü), `ZEKA` (yapay zeka, 1.0'da
 Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 
 - **Motor mantığı bozulmaz.** Hesaplama değişikliği öz-testlerle birlikte gelir.
-  `selfTest()` 24/24 geçmeden hiçbir değişiklik kabul edilmez.
+  `selfTest()` 27/27 geçmeden hiçbir değişiklik kabul edilmez.
 - **Hesap asla yapay zekada yapılmaz.** Model yalnızca (a) kullanıcının yazdığı
   cümleden alan çıkarır, (b) motorun hesapladığı sayıları cümleye döker.
 - **Uydurma rakam yok.** Modelin döndürdüğü her sayı girdide geçiyor mu diye
@@ -98,7 +98,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v14`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v15`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -148,6 +148,15 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   gecikme faizi tahmini (yalnız TRY'de, revolving), KMH'de "10 gün erken
   yatırırsan" ipucu. Bu Ay'da "asgarilerin hepsini ödeyemiyor musun?" (ücretsiz),
   Plan'da yapılandırma karşılaştırması + taktikler (Pro).
+- **Kendi planım + aylık faiz + alt Geri düğmesi** (4 Kasım 2026): Plan'da
+  "Kendi planını kur" — her borca kullanıcı tutarı (`b.planTutar` kalıcı,
+  `durum.kendiPlan` açıkken `b.planOdeme`; motor `planOdeme`yi aylık ödeme
+  sayar, asgari üstü "ekstra" sütununa yazılır). Asgarinin altı uyarılı ve Bu
+  Ay'da rozetli. Faizli borçlara her ayın başında tahmini faiz eklenir
+  (`b.faizAyi`, `FAIZ.aylikIsle`, en çok 12 ay; bakiye elle değişince sayaç
+  sıfırlanır; Ayarlar'da `faizOtomatik` ile kapatılır; Genel'de bilgi satırı).
+  Tam ekran pencerelerde (detay, rapor, abone, gün ekle, zil) altta sabit
+  "← Geri" düğmesi (`#geriFab`, MutationObserver).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
