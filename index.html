@@ -41,7 +41,7 @@
 <style>
   :root{
     --bg:#F4F6F8;--surface:#fff;--surface-2:#EDF0F4;--text:#131A22;--text-muted:#5A6672;
-    --accent:#24406B;--accent-strong:#142E52;--accent-soft:#E2E9F2;--border:#E3E7EC;
+    --accent:#24406B;--accent-strong:#142E52;--accent-soft:#E2E9F2;--border:#E3E7EC;--kotu:#A3412E;--kotu-bg:#F7E7E2;
     --amber:#24406B;--amber-ink:#F4F6F9;--ok:#276A4A;--ok-bg:#E3F0E9;
     --grad-a:#24406B;--grad-b:#3A5C8C;--sicak:#8A7442;--halka-a:#24406B;--halka-b:#A68E58;
     --shadow:0 1px 2px rgba(19,26,34,.04),0 2px 8px rgba(19,26,34,.05);
@@ -56,7 +56,7 @@
   }
   :root[data-theme="dark"]{
     --bg:#0A1220;--surface:#111C2E;--surface-2:#182740;--text:#F4F8FD;--text-muted:#AEC0D6;
-    --accent:#7FA0C8;--accent-strong:#DCE7F4;--accent-soft:#1B2A44;--border:#243756;
+    --accent:#7FA0C8;--accent-strong:#DCE7F4;--accent-soft:#1B2A44;--border:#243756;--kotu:#E79A88;--kotu-bg:#2A1B20;
     --amber:#E4EBF5;--amber-ink:#101B2D;--ok:#A5D2BD;--ok-bg:#16283C;
     --grad-a:#7FA0C8;--grad-b:#BCD1E6;--sicak:#E3C88F;--halka-a:#7FA0C8;--halka-b:#E8D9B8;
     --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.28);
@@ -133,6 +133,41 @@
   section{position:relative;padding:60px 0}
   .ayirici{height:1px;border:0;max-width:1080px;margin:0 auto;background:linear-gradient(90deg,transparent,var(--border),transparent);opacity:.8}
   .bolum-bas{text-align:center;max-width:640px;margin:0 auto 40px}
+  /* ---- Amacımız ---- */
+  .amac{max-width:760px;text-align:center}
+  .amac-buyuk{font-family:var(--font-baslik);font-size:clamp(21px,3.6vw,28px);font-weight:700;line-height:1.35;color:var(--accent-strong);letter-spacing:-.01em}
+  .amac-metin{margin-top:18px;color:var(--text-muted);font-size:17px;line-height:1.65}
+  /* ---- İki hikâye: kök → iki dal (karar ağacı) ---- */
+  .senaryo{max-width:980px;margin:0 auto 56px}
+  .sn-kok{position:relative;max-width:560px;margin:0 auto;padding:20px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+  .sn-ad{font-family:var(--font-baslik);font-size:22px;font-weight:800;color:var(--accent-strong)}
+  .sn-yas{font-weight:500;font-size:15px;color:var(--text-muted)}
+  .sn-durum{margin-top:6px;color:var(--text);font-size:15.5px;line-height:1.5}
+  .sn-dallar{position:relative;display:grid;gap:22px;margin-top:44px}
+  .sn-dallar::before{content:"";position:absolute;left:50%;top:-44px;height:44px;width:2px;background:var(--border);transform:translateX(-50%)}
+  .sn-dal{position:relative;padding:20px 20px 18px;border-radius:18px;border:1px solid var(--border);background:var(--surface)}
+  .sn-dal.kotu{background:var(--kotu-bg);border-color:transparent}
+  .sn-dal.iyi{background:var(--ok-bg);border-color:transparent}
+  .sn-etiket{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:800;font-size:13px;letter-spacing:.03em;text-transform:uppercase}
+  .kotu .sn-etiket{background:var(--kotu);color:var(--surface)}
+  .iyi .sn-etiket{background:var(--ok);color:var(--surface)}
+  .sn-adimlar{list-style:none;margin:14px 0 0;padding:0 0 0 22px;position:relative}
+  .sn-adimlar::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;border-radius:2px;background:currentColor;opacity:.25}
+  .kotu .sn-adimlar{color:var(--kotu)} .iyi .sn-adimlar{color:var(--ok)}
+  .sn-adimlar li{position:relative;color:var(--text);font-size:15px;line-height:1.5;margin:0 0 12px}
+  .sn-adimlar li::before{content:"";position:absolute;left:-21px;top:7px;width:10px;height:10px;border-radius:50%;background:currentColor;color:inherit}
+  .kotu .sn-adimlar li::before{background:var(--kotu)} .iyi .sn-adimlar li::before{background:var(--ok)}
+  .sn-sonuc{margin-top:6px;padding:14px 16px;border-radius:14px;background:var(--surface)}
+  .sn-sonuc p{color:var(--text-muted);font-size:14.5px;line-height:1.45}
+  .sn-rakam{font-family:var(--font-baslik);font-size:30px!important;font-weight:800;line-height:1.1!important;margin-bottom:4px}
+  .kotu .sn-rakam{color:var(--kotu)!important} .iyi .sn-rakam{color:var(--ok)!important}
+  .sn-not{max-width:720px;margin:0 auto;text-align:center;color:var(--text-muted);font-size:13px;line-height:1.55}
+  @media (min-width:760px){
+    .sn-dallar{grid-template-columns:1fr 1fr;gap:28px}
+    .sn-dallar::after{content:"";position:absolute;top:-22px;left:25%;right:25%;height:22px;border:2px solid var(--border);border-bottom:0;border-radius:14px 14px 0 0}
+    .sn-dallar::before{top:-44px;height:22px}
+  }
+
   .bolum-bas h2{font-size:clamp(26px,5vw,36px);display:inline-block}
   .bolum-bas p{color:var(--text-muted);margin-top:10px}
 
@@ -310,14 +345,13 @@
       <p class="slogan anim" style="--d:160ms" data-en="Zero out your debt.">Borcunu sıfırla.</p>
       <p class="aciklama anim" style="--d:240ms" data-en="Add your debts and see exactly when they'll be gone, using proven payoff methods. Your data never leaves your phone.">Borçlarını gir, bilimsel yöntemlerle ne zaman biteceğini gör. Verilerin telefonundan çıkmaz.</p>
       <div class="hero-btnlar anim" style="--d:320ms">
-        <a class="btn btn-primary" href="./uygulama/" data-en="Try it free now">Hemen ücretsiz dene</a>
+        <a class="btn btn-primary" href="#senaryolar" data-en="See how it helps">Nasıl işe yarar?</a>
         <!-- Mağaza yayınlanınca APP_STORE_LINKI / PLAY_STORE_LINKI buraya bağlanacak -->
         <button class="btn btn-ghost" type="button" disabled aria-disabled="true">
           <span data-en="App Store · Google Play">App Store · Google Play</span>
           <span class="yakinda" data-en="Soon">Yakında</span>
         </button>
       </div>
-      <p class="hero-kur anim" style="--d:360ms"><a class="cizgi-link" href="#kur" data-en="Works on every phone — add it to your home screen">Her telefonda çalışır — ana ekranına nasıl eklenir?</a></p>
       <p class="gizlilik-rozet anim" style="--d:400ms">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
         <span data-en="No account, no server, no tracking.">Hesap yok, sunucu yok, izleme yok.</span>
@@ -343,6 +377,100 @@
           <div class="etiket" data-en="estimated time">tahmini süre</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <hr class="ayirici">
+
+  <!-- AMACIMIZ -->
+  <section aria-labelledby="amac-bas">
+    <div class="wrap amac">
+      <div class="bolum-bas">
+        <h2 id="amac-bas" class="grad reveal" data-en="Our mission">Amacımız</h2>
+      </div>
+      <p class="amac-buyuk reveal" data-en="Minimum payments make debt feel under control, while interest quietly starts over every month.">Asgari ödeme borcu kontrol altındaymış gibi hissettirir; oysa faiz her ay sessizce yeniden işler.</p>
+      <p class="amac-metin reveal" data-en="Sıfırla exists so anyone can see, in plain numbers, when their debt will end, how much interest they'll pay and how to finish sooner — without linking a bank and without handing their data to anyone. It doesn't lend money or sell loans. It only shows the way.">Sıfırla, herkesin borcunun ne zaman biteceğini, ne kadar faiz ödeyeceğini ve nasıl daha erken bitirebileceğini sade rakamlarla görebilmesi için var — banka bağlamadan, verisini kimseye vermeden. Kredi vermez, kredi satmaz. Yalnızca yolu gösterir.</p>
+    </div>
+  </section>
+
+  <hr class="ayirici">
+
+  <!-- İKİ HİKÂYE: Sıfırla olmadan / Sıfırla ile — rakamlar uygulamanın kendi motoruyla hesaplandı
+       (tasarim/senaryo notu: ENGINE.minimumOnlyProjection + simulatePlan; KKDF/BSMV ve yeni harcama yok) -->
+  <section aria-labelledby="senaryo-bas" id="senaryolar">
+    <div class="wrap">
+      <div class="bolum-bas">
+        <h2 id="senaryo-bas" class="grad reveal" data-en="Two stories, two paths">İki hikâye, iki yol</h2>
+        <p class="reveal" data-en="Two made-up people with everyday debt. What happens without Sıfırla, and what changes with it?">Sıradan borçları olan iki kurgusal kişi. Sıfırla olmadan ne oluyor, Sıfırla ile ne değişiyor?</p>
+      </div>
+
+      <article class="senaryo reveal">
+        <div class="sn-kok">
+          <p class="sn-ad">Maya<span class="sn-yas" data-en=" · 29, designer"> · 29, tasarımcı</span></p>
+          <p class="sn-durum" data-en="Has ₺40,000 on a credit card (3.75% a month). Pays ₺2,000 every month.">Kredi kartında ₺40.000 borcu var (aylık faiz %3,75). Her ay ₺2.000 ödüyor.</p>
+        </div>
+        <div class="sn-dallar">
+          <div class="sn-dal kotu">
+            <p class="sn-etiket" data-en="Without Sıfırla">Sıfırla olmadan</p>
+            <ol class="sn-adimlar">
+              <li data-en="Of the first ₺2,000 she pays, ₺1,500 goes to interest.">Ödediği ilk ₺2.000'in ₺1.500'ü faize gidiyor.</li>
+              <li data-en="The balance barely moves; she has no idea when it will end.">Bakiye zor kıpırdıyor; borcun ne zaman biteceğini bilmiyor.</li>
+              <li data-en="Month after month, the same payment.">Aylar boyunca hep aynı ödeme.</li>
+            </ol>
+            <div class="sn-sonuc">
+              <p class="sn-rakam" data-en="38 months">38 ay</p>
+              <p data-en="₺35,322 in interest · ₺75,322 paid to the bank in total">₺35.322 faiz · bankaya toplam ₺75.322</p>
+            </div>
+          </div>
+          <div class="sn-dal iyi">
+            <p class="sn-etiket" data-en="With Sıfırla">Sıfırla ile</p>
+            <ol class="sn-adimlar">
+              <li data-en="Two Paths shows her the gap: at this pace it's 38 months.">İki Yol ekranı farkı gösteriyor: bu tempoyla 38 ay.</li>
+              <li data-en="She decides to pay ₺1,000 more a month; her plan updates instantly.">Ayda ₺1.000 fazla ödemeye karar veriyor; plan anında güncelleniyor.</li>
+              <li data-en="Reminders and the This Month screen keep her on track.">Hatırlatmalar ve Bu Ay ekranı onu yolda tutuyor.</li>
+            </ol>
+            <div class="sn-sonuc">
+              <p class="sn-rakam" data-en="19 months">19 ay</p>
+              <p data-en="₺16,493 in interest → done 19 months sooner, ₺18,829 less interest">₺16.493 faiz → 19 ay erken biter, ₺18.829 daha az faiz</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="senaryo reveal">
+        <div class="sn-kok">
+          <p class="sn-ad">Alex<span class="sn-yas" data-en=" · 34, sales rep"> · 34, satış temsilcisi</span></p>
+          <p class="sn-durum" data-en="Three debts: credit card ₺25,000 (pays ₺1,500), overdraft ₺12,000 (pays ₺900), personal loan ₺30,000 (₺3,000 installments). No extra money to spare.">Üç borcu var: kredi kartı ₺25.000 (₺1.500 ödüyor), KMH ₺12.000 (₺900 ödüyor), ihtiyaç kredisi ₺30.000 (₺3.000 taksit). Fazladan parası yok.</p>
+        </div>
+        <div class="sn-dallar">
+          <div class="sn-dal kotu">
+            <p class="sn-etiket" data-en="Without Sıfırla">Sıfırla olmadan</p>
+            <ol class="sn-adimlar">
+              <li data-en="Three different due dates. Forget one, and late interest hits the unpaid minimum (about ₺61 a month on the card).">Üç ayrı son ödeme günü. Birini unutunca asgarinin ödenmeyen kısmına gecikme faizi işliyor (kartta ayda ≈ ₺61).</li>
+              <li data-en="Each late payment shows on his credit record; 3 in a year close the card to cash use.">Her gecikme kredi kaydına yansıyor; yılda 3 gecikmede kart nakit kullanımına kapanıyor.</li>
+              <li data-en="When the loan ends, the freed ₺3,000 just gets spent.">Kredi bitince boşalan ₺3.000 harcanıp gidiyor.</li>
+            </ol>
+            <div class="sn-sonuc">
+              <p class="sn-rakam" data-en="27 months">27 ay</p>
+              <p data-en="₺21,055 in interest">₺21.055 faiz</p>
+            </div>
+          </div>
+          <div class="sn-dal iyi">
+            <p class="sn-etiket" data-en="With Sıfırla">Sıfırla ile</p>
+            <ol class="sn-adimlar">
+              <li data-en="A reminder before every due date — no late payments.">Her son ödeme gününden önce hatırlatma geliyor; gecikme yok.</li>
+              <li data-en="When the loan ends, the plan moves its ₺3,000 to the overdraft, then the card.">Kredi bitince plan o ₺3.000'i önce KMH'ye, sonra karta yönlendiriyor.</li>
+              <li data-en="Same money, not a single extra lira.">Aynı parayla, bir lira bile fazla ödemeden.</li>
+            </ol>
+            <div class="sn-sonuc">
+              <p class="sn-rakam" data-en="16 months">16 ay</p>
+              <p data-en="₺15,783 in interest → done 11 months sooner, ₺5,272 less interest">₺15.783 faiz → 11 ay erken biter, ₺5.272 daha az faiz</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <p class="sn-not reveal" data-en="Made-up examples. Calculated with the same engine the app uses: fixed monthly payments, monthly compound interest; taxes, fees and new spending not included. Real amounts depend on your bank. Not financial advice.">Kurgusal örneklerdir. Uygulamanın kullandığı hesap motoruyla hesaplandı: sabit aylık ödeme, aylık bileşik faiz; vergi, masraf ve yeni harcamalar dahil değil. Gerçek tutarlar bankana göre değişir. Finansal tavsiye değildir.</p>
     </div>
   </section>
 
@@ -432,37 +560,6 @@
 
   <hr class="ayirici">
 
-  <!-- TELEFONUNA EKLE: mağaza beklemeden, her telefonda -->
-  <section aria-labelledby="kur-bas" id="kur">
-    <div class="wrap">
-      <div class="bolum-bas">
-        <h2 id="kur-bas" class="grad reveal" data-en="Add it to your phone">Telefonuna ekle</h2>
-        <p class="reveal" data-en="No store needed. Samsung, Xiaomi, iPhone — it works on every phone, even offline.">Mağazaya gerek yok. Samsung, Xiaomi, iPhone — her telefonda, internetsiz de çalışır.</p>
-      </div>
-      <div class="kur-kartlar">
-        <div class="kart kur-kart reveal" style="--i:0">
-          <h3 data-en="Android (Samsung, Xiaomi…)">Android (Samsung, Xiaomi…)</h3>
-          <ol>
-            <li data-en="Open sifirla.app/uygulama in Chrome.">Chrome'da <strong>sifirla.app/uygulama</strong> adresini aç.</li>
-            <li data-en="Tap the ⋮ menu in the top right.">Sağ üstteki <strong>⋮</strong> menüsüne dokun.</li>
-            <li data-en="Choose “Add to home screen” or “Install app”.">“Ana ekrana ekle” ya da “Uygulamayı yükle”yi seç.</li>
-          </ol>
-        </div>
-        <div class="kart kur-kart reveal" style="--i:1">
-          <h3 data-en="iPhone">iPhone</h3>
-          <ol>
-            <li data-en="Open sifirla.app/uygulama in Safari.">Safari'de <strong>sifirla.app/uygulama</strong> adresini aç.</li>
-            <li data-en="Tap the Share button at the bottom.">Alttaki <strong>Paylaş</strong> düğmesine dokun.</li>
-            <li data-en="Choose “Add to Home Screen”.">“Ana Ekrana Ekle”yi seç.</li>
-          </ol>
-        </div>
-      </div>
-      <p class="kur-cta reveal"><a class="btn btn-primary" href="./uygulama/" data-en="Open the app">Uygulamayı aç</a></p>
-      <p class="kur-not reveal" data-en="Your data stays on that phone. The App Store and Google Play versions are on the way.">Verilerin yalnızca o telefonda kalır. App Store ve Google Play sürümleri yolda.</p>
-    </div>
-  </section>
-
-  <hr class="ayirici">
 
   <!-- SSS -->
   <section aria-labelledby="sss-bas">
@@ -473,7 +570,7 @@
       <div class="sss" id="sss">
         <div class="sss-oge reveal" style="--i:0">
           <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Is it free?">Ücretsiz mi?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="The web version is fully free right now. In the iPhone app, every feature is free for your first 30 days with no card needed; after that, an optional Sıfırla Pro monthly subscription keeps reminders, the monthly report, Two Paths, Goal and Savings Mode. Your debts and core plan always stay free.">Web sürümü şu an tamamen ücretsiz. iPhone uygulamasında ilk 30 gün tüm özellikler ücretsiz, kart gerekmez; sonrasında isteğe bağlı Sıfırla Pro aylık aboneliğiyle hatırlatmalar, aylık rapor, İki Yol, Hedef ve Tasarruf Modu devam eder. Borçların ve temel planın her zaman ücretsiz kalır.</div></div></div>
+          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Every feature is free for your first 30 days, no card needed. After that, an optional Sıfırla Pro monthly subscription keeps reminders, the monthly report, Two Paths, Goal and Savings Mode. Your debts and core plan always stay free.">İlk 30 gün tüm özellikler ücretsiz, kart gerekmez. Sonrasında isteğe bağlı Sıfırla Pro aylık aboneliğiyle hatırlatmalar, aylık rapor, İki Yol, Hedef ve Tasarruf Modu devam eder. Borçların ve temel planın her zaman ücretsiz kalır.</div></div></div>
         </div>
         <div class="sss-oge reveal" style="--i:1">
           <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Where does my data go?">Verilerim nereye gidiyor?</span><span class="ok" aria-hidden="true"></span></button>
@@ -497,7 +594,7 @@
         </div>
         <div class="sss-oge reveal" style="--i:6">
           <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Does it work on Android?">Android'de çalışıyor mu?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Yes. Open sifirla.app/uygulama in Chrome and add it to your home screen — it works like an app. The Google Play version is on the way.">Evet. Chrome'da sifirla.app/uygulama adresini açıp ana ekranına ekle; uygulama gibi çalışır. Google Play sürümü de yolda.</div></div></div>
+          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="The iPhone version comes first; the Google Play version is on the way.">Önce iPhone sürümü çıkıyor; Google Play sürümü de yolda.</div></div></div>
         </div>
       </div>
     </div>
