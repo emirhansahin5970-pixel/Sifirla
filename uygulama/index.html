@@ -747,7 +747,79 @@
      ============================================================ */
   .gorunmez-metin { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   /* ---- Kendi planım ---- */
-  .kp-ac { margin-top: 10px; font-weight: 600; }
+  /* Borcun nasıl değişiyor */
+  .dg-manset { display: flex; gap: 12px; align-items: center; margin-top: 4px; }
+  .dg-ok { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 18px; background: var(--surface-2); color: var(--text-muted); }
+  .dg-manset.iyi .dg-ok { background: var(--ok-bg); color: var(--ok); }
+  .dg-manset.kotu .dg-ok { background: var(--danger-bg); color: var(--danger); }
+  .dg-buyuk { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; font-variant-numeric: tabular-nums; }
+  .dg-manset.iyi .dg-buyuk { color: var(--ok); } .dg-manset.kotu .dg-buyuk { color: var(--danger); }
+  .dg-manset .muted { margin: 2px 0 0; font-size: 13px; }
+  .dg-dokum { display: grid; gap: 7px; margin-top: 14px; }
+  .dg-satir { display: grid; grid-template-columns: minmax(84px, 30%) 1fr auto; gap: 8px; align-items: center; font-size: 13.5px; }
+  .dg-lbl { color: var(--text-muted); min-width: 0; overflow-wrap: anywhere; }
+  .dg-cubuk { height: 10px; border-radius: 6px; background: var(--surface-2); overflow: hidden; }
+  .dg-cubuk i { display: block; height: 100%; border-radius: 6px; background: var(--accent); opacity: 0.55; transform-origin: left; animation: dgDol 0.7s ease-out; }
+  .dg-satir.iyi i { background: var(--ok); opacity: 1; } .dg-satir.kotu i { background: var(--danger); opacity: 1; }
+  .dg-satir.simdi i { opacity: 1; }
+  .dg-tutar { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+  .dg-satir.iyi .dg-tutar { color: var(--ok); } .dg-satir.kotu .dg-tutar { color: var(--danger); }
+  .dg-satir.simdi .dg-lbl, .dg-satir.simdi .dg-tutar { color: var(--text); font-weight: 700; }
+  @keyframes dgDol { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .dg-grafik { margin: 16px 0 0; }
+  .dg-lejant { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+  .dg-lejant i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .dg-lejant i.iyi { background: var(--ok); } .dg-lejant i.kotu { background: var(--danger); } .dg-lejant i.tahmin { background: var(--accent); opacity: 0.35; }
+  .dg-uyari { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+  .dg-uyari.kotu { background: var(--danger-bg); } .dg-uyari.iyi { background: var(--ok-bg); }
+  /* Küçük değişiklik */
+  .kd-liste { display: grid; gap: 8px; margin-top: 12px; }
+  .kd-satir { display: grid; grid-template-columns: 36px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 14px; background: var(--surface-2); border: 1.5px solid transparent; transition: border-color 0.2s, background 0.2s; }
+  .kd-satir.secili { border-color: var(--accent); background: var(--accent-soft); }
+  .kd-ikon { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); color: var(--accent-strong); }
+  .kd-ad { display: flex; flex-direction: column; min-width: 0; }
+  .kd-ad strong { font-size: 14px; overflow-wrap: anywhere; }
+  .kd-fiyat { display: flex; align-items: center; gap: 3px; font-size: 12px; color: var(--text-muted); margin: 2px 0 0; white-space: nowrap; }
+  .kd-fiyat input { width: 58px; padding: 2px 6px; min-height: 0; font-size: 12.5px; border-radius: 8px; }
+  .kd-adet { display: flex; align-items: center; gap: 4px; }
+  .kd-adet button { width: 34px; height: 34px; min-height: 34px; padding: 0; border-radius: 50%; font-size: 18px; line-height: 1; }
+  .kd-adet output { min-width: 22px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .kd-sonuc { margin-top: 14px; }
+  .kd-buyuk { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .kd-tutar { margin: 0; font-size: 22px; font-weight: 800; color: var(--ok); font-variant-numeric: tabular-nums; }
+  .kd-buyuk .muted { margin: 0; }
+  .kd-etki { margin: 10px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.55; }
+  .kd-etki li { margin: 3px 0; }
+  .kd-etki strong { color: var(--ok); }
+  .kd-uygula { margin-top: 12px; width: 100%; }
+  .kd-uygulandi { margin: 12px 0 0; font-weight: 600; color: var(--ok); }
+  /* Hamleler */
+  .hm-liste { display: grid; gap: 10px; margin-top: 8px; }
+  .hm-kart { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 12px; border-radius: 14px; background: var(--surface-2); }
+  .hm-ikon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-strong); }
+  .hm-baslik { margin: 0; font-weight: 700; font-size: 15px; line-height: 1.35; }
+  .hm-metin { margin: 4px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--text-muted); }
+  .hm-btn { margin-top: 8px; }
+  @media (prefers-reduced-motion: reduce) { .dg-cubuk i { animation: none; } .kd-satir { transition: none; } }
+  .bk-faiz { margin: 2px 0 6px; font-size: 12.5px; color: var(--danger); font-weight: 600; }
+  .detay-plan { display: grid; grid-template-columns: 1fr auto; gap: 8px 10px; align-items: center; margin-top: 12px; padding: 12px; border-radius: 14px; background: var(--surface-2); }
+  .detay-plan > div:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .detay-plan strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+  .detay-plan small { font-size: 12.5px; }
+  .dp-form { grid-column: 1 / -1; display: grid; gap: 6px; }
+  .detay-ay { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin-top: 10px; padding: 10px 12px; border-radius: 12px; font-size: 13.5px; background: var(--ok-bg); }
+  .detay-ay.artti { background: var(--danger-bg); }
+  .detay-ay > span:first-child { font-weight: 600; width: 100%; }
+  .detay-ay .iyi { color: var(--ok); } .detay-ay .kotu { color: var(--danger); }
+  .detay-ay strong { width: 100%; }
+  .odeme-satir.faiz-satir .tutar { color: var(--danger); }
+  .odeme-satir.faiz-satir .not { color: var(--text-muted); }
+  .kp-mod { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .kp-mod button { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left; padding: 12px; border-radius: 14px;
+    background: var(--surface-2); color: var(--text); border: 1.5px solid transparent; min-height: 74px; }
+  .kp-mod button small { font-size: 12px; font-weight: 400; color: var(--text-muted); line-height: 1.35; }
+  .kp-mod button[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .kp-mod button[aria-checked="true"] strong::before { content: "● "; color: var(--accent); }
   .kp-liste { display: grid; gap: 10px; margin-top: 12px; }
   .kp-satir { padding: 12px; border-radius: 14px; background: var(--surface-2); }
   .kp-ust { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
@@ -1885,6 +1957,12 @@ var GIRIS = (function () {
     <button id="heroEkleBtn" class="borcEkleGit no-print" hidden data-i18n="btn_borc_ekle">Borç ekle</button>
   </section>
 
+  <!-- Borcun nasıl değişiyor: bu ayın dökümü (ödeme − / faiz + / gecikme +), geçmiş aylar + tahmin, uyarı -->
+  <section class="card dg-kart" id="degisimKart" hidden aria-labelledby="dgBaslik">
+    <h2 id="dgBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span data-i18n="dg_h">Borcun nasıl değişiyor?</span></h2>
+    <div id="degisimIcerik"></div>
+  </section>
+
   <!-- Önlenen faiz → hayat karşılığı: kullanıcı tanımlı referanslarla -->
   <section class="card" id="hayatKart">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1.5 12a2 2 0 0 1-2 1.8h-5A2 2 0 0 1 7.5 20z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span data-i18n="hayat_h">Önlenen Faizin Karşılığı</span></h2>
@@ -1935,9 +2013,17 @@ var GIRIS = (function () {
     <div id="yolculuk"></div>
   </section>
 
-  <!-- Kural tabanlı kişisel öneriler (AI yok, dış çağrı yok) -->
+  <!-- Küçük değişiklik, büyük etki: günlük harcamadan kısınca borca etkisi (motor hesaplar) -->
+  <section class="card kd-kart" id="kdKart" hidden aria-labelledby="kdBaslik">
+    <h2 id="kdBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c0 1.5 1.5 1.5 1.5 3M12 3c0 1.5 1.5 1.5 1.5 3"/></svg><span data-i18n="kd_h">Küçük Değişiklik, Büyük Etki</span></h2>
+    <p class="muted" data-i18n="kd_alt">Ayda neyi biraz azaltabilirsin? Seç, borcuna etkisini hemen gör. Fiyatlar örnek — dokunup kendine göre değiştir.</p>
+    <div id="kdListe" class="kd-liste"></div>
+    <div id="kdSonuc" class="kd-sonuc" aria-live="polite"></div>
+  </section>
+
+  <!-- Kural tabanlı kişisel hamleler (AI yok, dış çağrı yok; rakamlar motordan) -->
   <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H9l-5 4z"/></svg><span data-i18n="oneri_h">Sana Özel Öneriler</span></h2>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="oneri_h">Borcunu Eritecek Hamleler</span></h2>
     <div id="oneriler"></div>
     <p class="muted" style="margin-top:0.7rem" data-i18n="oneri_not">
       Bu öneriler tamamen cihazında, kural tabanlı üretilir — yapay zekâ veya internet bağlantısı
@@ -2211,6 +2297,28 @@ var GIRIS = (function () {
   </section>
 
   <!-- Plan hesaplama -->
+  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
+  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
+    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Aylık ödemeni nasıl belirleyelim?</span></h2>
+    <p class="muted" data-i18n="kp_alt">İstersen asgari üzerinden Sıfırla planlasın, istersen her borca kendi tutarını yaz. Bütün ekranlar seçtiğine göre hesaplanır.</p>
+    <div class="kp-mod" role="radiogroup" aria-labelledby="kpBaslik">
+      <button type="button" role="radio" aria-checked="true" data-kp-mod="oneri">
+        <strong data-i18n="kp_mod_oneri">Sıfırla önersin</strong>
+        <small data-i18n="kp_mod_oneri_alt">Asgariler + ekstra bütçe, en kârlı sırayla</small>
+      </button>
+      <button type="button" role="radio" aria-checked="false" data-kp-mod="kendi">
+        <strong data-i18n="kp_mod_kendi">Kendi tutarlarım</strong>
+        <small data-i18n="kp_mod_kendi_alt">Her borca ne ödeyeceğini sen yaz</small>
+      </button>
+    </div>
+    <input type="checkbox" id="kpAcik" hidden tabindex="-1" aria-hidden="true">
+    <div id="kpIcerik" hidden>
+      <div id="kpListe" class="kp-liste"></div>
+      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
+      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
+    </div>
+  </section>
+
   <section class="card">
     <h2 data-i18n="plan_h">Ödeme Planı</h2>
     <div class="form-grid no-print" style="max-width:420px">
@@ -2244,21 +2352,6 @@ var GIRIS = (function () {
     </div>
 
     <div id="sonuclar" style="margin-top:1rem"></div>
-  </section>
-
-  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
-  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
-    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Kendi planını kur</span></h2>
-    <p class="muted" data-i18n="kp_alt">Her borca ayda ne kadar ödeyeceğine sen karar ver — asgariden az ya da çok. Bütün ekranlar bu plana göre hesaplanır.</p>
-    <label class="check kp-ac">
-      <input type="checkbox" id="kpAcik">
-      <span data-i18n="kp_chk">Kendi tutarlarımla ödeyeceğim</span>
-    </label>
-    <div id="kpIcerik" hidden>
-      <div id="kpListe" class="kp-liste"></div>
-      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
-      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
-    </div>
   </section>
 
   <!-- Sıradaki tek adım: plan ezici gelmesin — tek net eylem + hızlı Öde -->
@@ -2994,6 +3087,22 @@ var GIRIS = (function () {
       <p class="sb-hata" id="sbOdemeHata"></p>
     </div>
 
+    <!-- Kendi ödemen (kart/KMH): asgariden fazlasını ödeyecekse plan tutarı (isteğe bağlı) -->
+    <div class="sb-adim" id="sbPlan">
+      <p class="sb-soru" data-i18n="sb_plan_soru">Bu borca ayda ne kadar ödeyeceksin?</p>
+      <div class="sb-buyuk-alan">
+        <input id="sbPlanInp" type="text" inputmode="numeric" autocomplete="off" placeholder="">
+        <span class="sb-birim para-sembol">₺</span>
+      </div>
+      <div class="kp-hizli" style="justify-content:center; margin-top:10px">
+        <button type="button" class="ghost small" data-sb-plan="1" data-i18n="sb_plan_asgari">Asgari kadar</button>
+        <button type="button" class="ghost small" data-sb-plan="1.5">1,5×</button>
+        <button type="button" class="ghost small" data-sb-plan="2">2×</button>
+      </div>
+      <p class="sb-ipucu" id="sbPlanIpucu" data-i18n="sb_plan_ipucu">Asgariden fazlası faizi azaltır ve borcu erken bitirir. Boş bırakırsan asgari sayılır.</p>
+      <p class="sb-hata" id="sbPlanHata"></p>
+    </div>
+
     <!-- Taksit adımı (yalnızca taksitli): opsiyonel — boş bırakılırsa basit davranış -->
     <div class="sb-adim" id="sbTaksit">
       <p class="sb-soru" data-i18n="sb_taksit_soru">Kaç taksit?</p>
@@ -3363,7 +3472,10 @@ const SOZLUK = {
       sifirla_metin: "Tüm borçların, ödeme geçmişin, ayarların ve adın cihazından kalıcı olarak silinecek. Bu geri alınamaz.",
       sifirla_evet: "Evet, hepsini sil", sifirla_vazgec: "Vazgeç",
       sifirla_yedek: "Önce yedek al",
-      oneri_h: "Sana Özel Öneriler",
+      oneri_h: "Borcunu Eritecek Hamleler",
+      dg_h: "Borcun nasıl değişiyor?",
+      kd_h: "Küçük Değişiklik, Büyük Etki",
+      kd_alt: "Ayda neyi biraz azaltabilirsin? Seç, borcuna etkisini hemen gör. Fiyatlar örnek — dokunup kendine göre değiştir.",
       oneri_not: "Bu öneriler tamamen cihazında, kural tabanlı üretilir — yapay zekâ veya internet bağlantısı kullanılmaz; finansal danışmanlık değildir.",
       hat_h: "Hatırlatmalar", hat_esik: "Kaç gün kala vurgulansın?",
       hat_not: "Tarayıcı bildirimleri deneyseldir: genellikle yalnızca uygulama açıkken çalışır ve hiçbir tarayıcıda garanti edilmez. Hatırlatmaların güvenilir kaynağı her zaman bu panodur.",
@@ -3393,8 +3505,10 @@ const SOZLUK = {
       sen_kilit: "Bu özellik Sıfırla Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.",
       kilit_b: "Sıfırla Pro ile açılır", kilit_btn: "Pro'ya geç",
       kilit_yp: "Borçlarını tek krediyle kapatmanın aylık ödemene ve toplam faizine etkisini gör.",
-      kp_h: "Kendi planını kur",
-      kp_alt: "Her borca ayda ne kadar ödeyeceğine sen karar ver — asgariden az ya da çok. Bütün ekranlar bu plana göre hesaplanır.",
+      kp_h: "Aylık ödemeni nasıl belirleyelim?",
+      kp_alt: "İstersen asgari üzerinden Sıfırla planlasın, istersen her borca kendi tutarını yaz. Bütün ekranlar seçtiğine göre hesaplanır.",
+      kp_mod_oneri: "Sıfırla önersin", kp_mod_oneri_alt: "Asgariler + ekstra bütçe, en kârlı sırayla",
+      kp_mod_kendi: "Kendi tutarlarım", kp_mod_kendi_alt: "Her borca ne ödeyeceğini sen yaz",
       kp_chk: "Kendi tutarlarımla ödeyeceğim",
       kp_not: "Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.",
       faiz_oto_chk: "Kart ve KMH bakiyelerine her ay faizi otomatik ekle",
@@ -3445,7 +3559,9 @@ const SOZLUK = {
       kayit_bir_daha: "Bir borç daha ekle",
       kayit_bitti: "Bitti, özeti gör",
       btn_odeme_ekle: "Ödeme ekle",
-      odeme_gecmisi: "Ödeme geçmişi",
+      odeme_gecmisi: "Hareketler",
+      sb_plan_soru: "Bu borca ayda ne kadar ödeyeceksin?", sb_plan_asgari: "Asgari kadar",
+      sb_plan_ipucu: "Asgariden fazlası faizi azaltır ve borcu erken bitirir. Boş bırakırsan asgari sayılır.",
       odeme_kaydedildi: "Ödeme kaydedildi",
       lbl_odeme_tarih: "Tarih",
       lbl_odeme_not: "Not (opsiyonel)",
@@ -3609,17 +3725,20 @@ const SOZLUK = {
       asgariBiter: (ad, ay, tutar, vergili) => `<strong>${ad}:</strong> Sadece asgari ödemeyle ${ay} ayda biter; ${tutar} ${vergili ? "faiz + vergi" : "faiz"} ödersin.`,
       buayBos: "Borç ekleyince aylık eylem planın burada görünecek.",
       buayUygulanamaz: (yil) => `Bu bütçeyle plan ${yil} yıl içinde kapanmıyor. Yine de bu ayın ödemelerine devam et; ekstra bütçeyi artırmayı deneyebilirsin.`,
-      thBorc: "Borç", thAsgari: "Asgari / Taksit", thEkstra: "Ekstra", thBuAy: "Bu ay öde", toplam: "Toplam",
+      thBorc: "Borç", thAsgari: "Asgari / Taksit", thEkstra: "Ekstra", thFazla: "Fazlası", thBuAy: "Bu ay öde", toplam: "Toplam",
       kapaniyor: "bu ay kapanıyor",
       siradaki: (t) => `<strong>Sıradaki ay:</strong> toplam ${t} ödersin`,
       siradakiHedef: (ad, t) => `; ekstra bütçe ${ad} borcuna gider (${t})`,
       siradakiKapanan: (adlar) => ` ${adlar} o ay kapanıyor!`,
       vadeH: "Yaklaşan son ödeme günleri",
       bugun: "BUGÜN", gunKaldi: (g) => `${g} gün kaldı`, gunVar: (g) => `${g} gün var`, gunKisa: (g) => `${g} gün`,
-      enAz: (t) => `en az ${t}`,
+      buayKismi: (o, k) => `bu ay ${o} ödedin · kalan ${k}`,
+      enAz: (t) => `en az ${t}`, bkPlan: (t) => `planın ${t}`,
+      bkFaizCip: (t, gec) => `▲ bu ay ${t} ${gec ? "faiz + gecikme faizi" : "faiz"} eklendi`,
       enAzKalan: (kalan, odenen) => `${odenen} ödendi, kalan en az ${kalan}`,
       haftaH: "Bu hafta dikkat edilecekler", haftaBugun: "Bugün",
       haftaVade: (tarih, ad, t) => `${tarih} — <strong>${ad}</strong> son ödeme günü, en az ${t} öde.`,
+      haftaVadePlan: (tarih, ad, plan, asgari) => `${tarih} — <strong>${ad}</strong> son ödeme günü: planın ${plan} (asgari ${asgari}).`,
       haftaOdak: (ad, t) => `Ekstra bütçeni <strong>${ad}</strong> borcuna yönlendir (${t}).`,
       haftaBos: "Bu hafta son ödeme günü yok; planına devam et.",
       panoBos: 'Son ödeme günü girilmiş borç yok. Borç eklerken "son ödeme günü" alanını doldurursan burada görünür.',
@@ -3873,6 +3992,51 @@ const SOZLUK = {
       kpKiyas: (ay, f, dahaCok) => `Önerilen plana göre ${ay === 0 ? "aynı sürede" : ay > 0 ? `${ay} ay geç` : `${-ay} ay erken`} biter, ${f} ${dahaCok ? "daha fazla" : "daha az"} faiz.`,
       kpAltindaOzet: (n) => `${n} borçta asgarinin altında ödüyorsun.`,
       kpAltRozet: "asgarinin altında",
+      dgBuyudu: (t) => `Bu ay borcun ${t} büyüdü`, dgEridi: (t) => `Bu ay borcun ${t} eridi`, dgSabit: "Bu ay borcun yerinde sayıyor",
+      dgAyNot: (ay) => `${ay} ayının ödemeleri ve işleyen faiz`, dgHareketYok: "Bu ay henüz ödeme ya da faiz yok. Ödeme ekledikçe eriyişini burada görürsün.",
+      dgBasi: (ay) => `${ay} başı`, dgOdeme: "Ödediğin", dgFaiz: "İşleyen faiz", dgGecikme: "Gecikme faizi", dgSimdi: "Şimdi",
+      dgBugun: "Bugün", dgTahmin: "tahmin →", dgGrafikAria: (t, tarih) => `Toplam borç şimdi ${t}; plana göre borçsuz tarih ${tarih}.`,
+      dgLejAzaldi: "azaldı", dgLejArtti: "arttı", dgLejTahmin: "planla tahmin",
+      dgUyariBuyudu: (f, o, g) => `<strong>Dikkat:</strong> bu ay işleyen faiz (${f}) ödediğini (${o}) geçti — borç eriyeceğine büyüyor. Bu ay en az <strong>${g}</strong> daha ödersen yeniden erimeye başlar.`,
+      dgUyariGecikme: (ad, e, g) => `<strong>${ad}</strong>: ${e} gecikmiş. Her gün ≈ <strong>${g}</strong> gecikme faizi ekleniyor ve gecikme kredi notuna yansır — ilk fırsatta öde.`,
+      dgUyariGecikmeOransiz: (ad, e) => `<strong>${ad}</strong>: ${e} gecikmiş. Sözleşmendeki gecikme faizi işler (oranı girilmediği için tutar hesaplanmadı) ve kredi notuna yansır.`,
+      dgUyariTuzak: (ad, f, o) => `<strong>${ad}</strong> asgari tuzağında: ayda ≈ ${f} faiz işliyor, ödemen ${o}. Ödemenin çoğu faize gidiyor — biraz fazlası bile farkı büyütür.`,
+      dgIyiEridi: (t) => `Harika gidiyorsun. Bu tempoyla <strong>${t}</strong>'de sıfırdasın.`,
+      dgIyiDevam: (t) => `Plana uyarsan <strong>${t}</strong>'de borçsuzsun. Bu ayın ödemesini ekleyince çubuk yeşile döner.`,
+      kdAd: { kahve: "Dışarıda kahve", doner: "Tavuk döner", siparis: "Yemek siparişi", sigara: "Sigara (paket)", taksi: "Taksi yolculuğu", abonelik: "Dijital abonelik" },
+      kdAdCogul: { kahve: "kahve", doner: "tavuk döner", siparis: "yemek siparişi", sigara: "paket sigara", taksi: "taksi yolculuğu", abonelik: "abonelik" },
+      kdFiyatAria: (ad) => `${ad} tanesinin fiyatı`, kdBirim: "/ adet", kdAzAria: (ad) => `${ad}: bir azalt`, kdCokAria: (ad) => `${ad}: bir artır`,
+      kdSecHic: "Bir kalemde “ayda kaç tane az” seç — etkisi burada belirir.",
+      kdAylik: (t) => `Ayda ${t} kenara`, kdYillik: (t) => `yılda ${t}`,
+      kdAyErken: (n) => `${n} ay erken borçsuz`, kdAyAyni: "Borçsuz tarih aynı ay",
+      kdTarih: (a, b) => `(${a} → ${b})`, kdFaiz: (t) => `${t} daha az faiz`, kdFaizNot: "bankaya gitmez, sende kalır",
+      kdHedef: (ad, y) => `Bu parayla <strong>${ad}</strong> borcunun her ay ≈ <strong>%${y}</strong>'i erir.`,
+      kdKalemCumle: (n, kalem, ad, yil) => `Ayda ${n} ${kalem} az = yılda <strong>${yil}</strong> doğrudan ${ad} borcuna.`,
+      kdKurtarir: (t) => `Bu tasarrufla borçların kapanabilir hâle geliyor: ${t}'de borçsuz.`,
+      kdUygulandi: (t) => `Planına ekli: ayda ${t}`, kdGeriAl: "Geri al",
+      kdUygula: (t) => `Bunu planıma ekle (+${t}/ay)`, kdGuncelle: (t) => `Planımı güncelle (${t}/ay)`,
+      hmPahali: (ad, t) => `${ad} ayda ≈ ${t} faiz üretiyor`,
+      hmPahaliMetin: (oran, bin, k) => `En pahalı borcun bu (${oran}). Fazladan ödediğin her ${bin}, ayda ≈ ${k} faizi kalıcı olarak durdurur. Ekstranı önce buraya yolla.`,
+      hmYuvarla: (t) => `Ödemelerini yuvarla: ayda +${t}`,
+      hmYuvarlaMetin: (b, ay, f) => `Her ödemeyi bir üst ${b}'e tamamla. Fark küçük ama ${ay > 0 ? `${ay} ay erken bitirir, ` : ""}${f} faiz kurtarır.`,
+      hmPlanaEkle: "Planıma ekle",
+      hmIkramiye: (t) => `İkramiye ya da iade gelirse: ${t}`,
+      hmIkramiyeMetin: (ad, ay, f) => `Tek seferde ${ad} borcuna yatırırsan ${ay > 0 ? `${ay} ay erken biter, ` : ""}${f} faiz kurtarırsın. Harcamadan önce bunu hatırla.`,
+      hmKartopu: (ad, t) => `${ad} ${t}'de kapanıyor`,
+      hmKartopuMetin: (t, sonraki) => `O ay ödediğin ${t} serbest kalır ve kendiliğinden diğer borçlarına akar (sıradaki kapanış: ${sonraki}). Kartopu böyle büyür: son aylar çok daha hızlı geçer.`,
+      hmKmh: (t) => `Maaş günü KMH'ye yatır: yılda ≈ ${t}`,
+      hmKmhMetin: (ad, t, k) => `${ad} faizi günlük işler. ${t} tutarını son güne bırakmayıp 10 gün erken yatırınca her ay ≈ ${k} daha az faiz.`,
+      hmKart: (ad) => `${ad}: yeni harcamayı durdur`,
+      hmKartMetin: (t, ay, f) => `Bu karta ayda ${t} yeni harcama eklemek, borçsuz günü ${ay} ay öteler ve ${f} fazla faiz demek. Kartı bir süre cüzdandan çıkar.`,
+      hmTas: (y, e) => `%${y} tamam — sıradaki durak %${e}`,
+      hmTasMetin: (t, tarih) => `Sadece ${t} kaldı. Bu tempoyla ${tarih}'de oradasın. Her ödeme seni bir adım yaklaştırır.`,
+      dpAylik: "Aylık ödemen", dpOneri: "Asgari — Sıfırla'nın önerdiği planda", dpOneriEk: (a, e) => `Sıfırla'nın planı: asgari ${a} + ekstra ${e}`, dpAsgari: "Asgari kadar (kendi planın)",
+      dpUstu: (t) => `Asgarinin ${t} üstü (kendi planın)`, dpAlti: (t) => `Asgarinin ${t} altı — gecikme riski`, dpKaydet: "Bu tutarla öde",
+      daBaslik: "Bu ay bu borçta", daOdeme: "ödeme", daFaiz: "faiz", daGecikme: "gecikme faizi",
+      daArtti: (t) => `Borç ${t} büyüdü`, daAzaldi: (t) => `Borç ${t} eridi`,
+      hrFaiz: "Faiz eklendi", hrGecikme: "Gecikme faizi eklendi",
+      sbPlanIpucu: (a) => `Asgarin ${a}. Fazlası faizi azaltır, borcu erken bitirir. Boş bırakırsan asgari sayılır.`,
+      sbPlanAlti: "Asgarinin altında: eksik kısma gecikme faizi işler ve kredi kaydına yansır. Yine de kaydetmek için Devam'a bas.",
       faizIslendi: (ay, t) => `${ay} ayının tahmini faizi bakiyelerine eklendi: <strong>+${t}</strong>`,
       faizIslendiNot: "Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yaz. Ayarlardan kapatabilirsin.",
       vuGecikti: (ad, g) => `<strong>${ad}</strong> · son ödeme günü ${g} gün önce geçti`,
@@ -4206,7 +4370,10 @@ const SOZLUK = {
       sifirla_metin: "All your debts, payment history, settings and your name will be permanently deleted from this device. This cannot be undone.",
       sifirla_evet: "Yes, delete everything", sifirla_vazgec: "Cancel",
       sifirla_yedek: "Back up first",
-      oneri_h: "Personal Suggestions",
+      oneri_h: "Moves That Melt Your Debt",
+      dg_h: "How is your debt changing?",
+      kd_h: "Small Change, Big Impact",
+      kd_alt: "What could you cut back a little each month? Pick it and see the effect on your debt right away. Prices are examples — tap to set your own.",
       oneri_not: "These suggestions are generated entirely on your device using rules — no AI, no internet connection; this is not financial advice.",
       hat_h: "Reminders", hat_esik: "Highlight how many days ahead?",
       hat_not: "Browser notifications are experimental: they usually work only while the app is open and are never guaranteed. This board is always the reliable source of reminders.",
@@ -4236,8 +4403,10 @@ const SOZLUK = {
       sen_kilit: "This is part of Sıfırla Pro: compare different extra budgets and one-off payments against your current plan.",
       kilit_b: "Unlocks with Sıfırla Pro", kilit_btn: "Go Pro",
       kilit_yp: "See how folding your debts into one loan changes your monthly payment and total interest.",
-      kp_h: "Build your own plan",
-      kp_alt: "Decide how much you'll pay on each debt every month — less or more than the minimum. Every screen follows this plan.",
+      kp_h: "How should we set your monthly payment?",
+      kp_alt: "Let Sıfırla plan from the minimums, or type your own amount for each debt. Every screen follows your choice.",
+      kp_mod_oneri: "Let Sıfırla suggest", kp_mod_oneri_alt: "Minimums + extra budget, in the smartest order",
+      kp_mod_kendi: "My own amounts", kp_mod_kendi_alt: "You decide what each debt gets",
       kp_chk: "I'll pay my own amounts",
       kp_not: "When a debt closes, its amount rolls to the next one. Your monthly extra budget below is added on top.",
       faiz_oto_chk: "Add interest to card and overdraft balances every month",
@@ -4288,7 +4457,9 @@ const SOZLUK = {
       kayit_bir_daha: "Add another debt",
       kayit_bitti: "Done, see overview",
       btn_odeme_ekle: "Add payment",
-      odeme_gecmisi: "Payment history",
+      odeme_gecmisi: "Activity",
+      sb_plan_soru: "How much will you pay on this each month?", sb_plan_asgari: "Just the minimum",
+      sb_plan_ipucu: "Paying more than the minimum cuts interest and ends the debt sooner. Leave empty for the minimum.",
       odeme_kaydedildi: "Payment saved",
       lbl_odeme_tarih: "Date",
       lbl_odeme_not: "Note (optional)",
@@ -4449,17 +4620,20 @@ const SOZLUK = {
       asgariBiter: (ad, ay, tutar, vergili) => `<strong>${ad}:</strong> minimum-only takes ${ay} months and costs ${tutar} in ${vergili ? "interest + tax" : "interest"}.`,
       buayBos: "Add debts and your monthly action plan will appear here.",
       buayUygulanamaz: (yil) => `With this budget the plan doesn't close within ${yil} years. Keep going with this month's payments; you could try raising the extra budget.`,
-      thBorc: "Debt", thAsgari: "Minimum / Installment", thEkstra: "Extra", thBuAy: "Pay this month", toplam: "Total",
+      thBorc: "Debt", thAsgari: "Minimum / Installment", thEkstra: "Extra", thFazla: "Above min.", thBuAy: "Pay this month", toplam: "Total",
       kapaniyor: "closes this month",
       siradaki: (t) => `<strong>Next month:</strong> you pay ${t} in total`,
       siradakiHedef: (ad, t) => `; the extra goes to ${ad} (${t})`,
       siradakiKapanan: (adlar) => ` ${adlar} closes that month!`,
       vadeH: "Upcoming due dates",
       bugun: "TODAY", gunKaldi: (g) => `${g} days left`, gunVar: (g) => `${g} days away`, gunKisa: (g) => `${g} days`,
-      enAz: (t) => `at least ${t}`,
+      buayKismi: (o, k) => `${o} paid this month · ${k} left`,
+      enAz: (t) => `at least ${t}`, bkPlan: (t) => `your plan ${t}`,
+      bkFaizCip: (t, gec) => `▲ ${t} ${gec ? "interest + late interest" : "interest"} added this month`,
       enAzKalan: (kalan, odenen) => `${odenen} paid, at least ${kalan} left`,
       haftaH: "Watch this week", haftaBugun: "Today",
       haftaVade: (tarih, ad, t) => `${tarih} — <strong>${ad}</strong> due date, pay at least ${t}.`,
+      haftaVadePlan: (tarih, ad, plan, asgari) => `${tarih} — <strong>${ad}</strong> due date: your plan is ${plan} (minimum ${asgari}).`,
       haftaOdak: (ad, t) => `Direct your extra budget to <strong>${ad}</strong> (${t}).`,
       haftaBos: "No due dates this week; keep following your plan.",
       panoBos: 'No debts with a due day yet. Fill the "due day" field when adding a debt and it will show up here.',
@@ -4706,6 +4880,51 @@ const SOZLUK = {
       kpKiyas: (ay, f, dahaCok) => `Compared with the suggested plan: ${ay === 0 ? "same finish" : ay > 0 ? `${ay} month${ay === 1 ? "" : "s"} later` : `${-ay} month${ay === -1 ? "" : "s"} sooner`}, ${f} ${dahaCok ? "more" : "less"} interest.`,
       kpAltindaOzet: (n) => `You're paying below the minimum on ${n} debt${n === 1 ? "" : "s"}.`,
       kpAltRozet: "below minimum",
+      dgBuyudu: (t) => `Your debt grew ${t} this month`, dgEridi: (t) => `Your debt shrank ${t} this month`, dgSabit: "Your debt is standing still this month",
+      dgAyNot: (ay) => `Payments and interest in ${ay}`, dgHareketYok: "No payments or interest yet this month. Add payments and you'll watch it melt here.",
+      dgBasi: (ay) => `Start of ${ay}`, dgOdeme: "You paid", dgFaiz: "Interest", dgGecikme: "Late interest", dgSimdi: "Now",
+      dgBugun: "Today", dgTahmin: "forecast →", dgGrafikAria: (t, tarih) => `Total debt now ${t}; debt-free by plan ${tarih}.`,
+      dgLejAzaldi: "went down", dgLejArtti: "went up", dgLejTahmin: "plan forecast",
+      dgUyariBuyudu: (f, o, g) => `<strong>Heads up:</strong> this month's interest (${f}) is more than you paid (${o}) — the debt is growing, not melting. Pay at least <strong>${g}</strong> more this month to turn it around.`,
+      dgUyariGecikme: (ad, e, g) => `<strong>${ad}</strong>: ${e} overdue. About <strong>${g}</strong> of late interest is added every day and it hits your credit record — pay as soon as you can.`,
+      dgUyariGecikmeOransiz: (ad, e) => `<strong>${ad}</strong>: ${e} overdue. Your agreement's late interest applies (no rate entered, so no amount shown) and it hits your credit record.`,
+      dgUyariTuzak: (ad, f, o) => `<strong>${ad}</strong> is in the minimum-payment trap: about ${f} interest a month, you pay ${o}. Most of it goes to interest — even a little more changes a lot.`,
+      dgIyiEridi: (t) => `You're doing great. At this pace you hit zero in <strong>${t}</strong>.`,
+      dgIyiDevam: (t) => `Stick to the plan and you're debt-free in <strong>${t}</strong>. Add this month's payment and the bar turns green.`,
+      kdAd: { kahve: "Coffee out", doner: "Takeout lunch", siparis: "Food delivery", sigara: "Cigarettes (pack)", taksi: "Taxi / ride", abonelik: "Streaming subscription" },
+      kdAdCogul: { kahve: "coffees", doner: "takeout lunches", siparis: "deliveries", sigara: "packs", taksi: "rides", abonelik: "subscriptions" },
+      kdFiyatAria: (ad) => `Price of one: ${ad}`, kdBirim: "each", kdAzAria: (ad) => `${ad}: one fewer`, kdCokAria: (ad) => `${ad}: one more`,
+      kdSecHic: "Pick “how many fewer a month” on any item — the effect shows up here.",
+      kdAylik: (t) => `${t} a month set aside`, kdYillik: (t) => `${t} a year`,
+      kdAyErken: (n) => `Debt-free ${n} month${n === 1 ? "" : "s"} sooner`, kdAyAyni: "Same debt-free month",
+      kdTarih: (a, b) => `(${a} → ${b})`, kdFaiz: (t) => `${t} less interest`, kdFaizNot: "stays with you, not the bank",
+      kdHedef: (ad, y) => `That melts about <strong>${y}%</strong> of <strong>${ad}</strong> every month.`,
+      kdKalemCumle: (n, kalem, ad, yil) => `${n} fewer ${kalem} a month = <strong>${yil}</strong> a year straight to ${ad}.`,
+      kdKurtarir: (t) => `With these savings your debts can actually close: debt-free in ${t}.`,
+      kdUygulandi: (t) => `In your plan: ${t} a month`, kdGeriAl: "Undo",
+      kdUygula: (t) => `Add this to my plan (+${t}/mo)`, kdGuncelle: (t) => `Update my plan (${t}/mo)`,
+      hmPahali: (ad, t) => `${ad} makes about ${t} of interest a month`,
+      hmPahaliMetin: (oran, bin, k) => `Your most expensive debt (${oran}). Every extra ${bin} you pay stops about ${k} of interest every month, for good. Send your extra here first.`,
+      hmYuvarla: (t) => `Round up your payments: +${t} a month`,
+      hmYuvarlaMetin: (b, ay, f) => `Round each payment up to the next ${b}. Small difference, but it ${ay > 0 ? `ends ${ay} month${ay === 1 ? "" : "s"} sooner and ` : ""}saves ${f} of interest.`,
+      hmPlanaEkle: "Add to my plan",
+      hmIkramiye: (t) => `If a bonus or refund comes: ${t}`,
+      hmIkramiyeMetin: (ad, ay, f) => `Put it on ${ad} in one go and ${ay > 0 ? `it ends ${ay} month${ay === 1 ? "" : "s"} sooner, ` : ""}saving ${f} of interest. Remember this before you spend it.`,
+      hmKartopu: (ad, t) => `${ad} closes in ${t}`,
+      hmKartopuMetin: (t, sonraki) => `That month the ${t} you were paying frees up and rolls into your other debts (next to close: ${sonraki}). That's the snowball: the last months go much faster.`,
+      hmKmh: (t) => `Pay the overdraft on payday: about ${t} a year`,
+      hmKmhMetin: (ad, t, k) => `${ad} interest accrues daily. Paying ${t} 10 days early instead of on the due date saves about ${k} every month.`,
+      hmKart: (ad) => `${ad}: stop new spending`,
+      hmKartMetin: (t, ay, f) => `Adding ${t} of new spending a month pushes your debt-free day back ${ay} month${ay === 1 ? "" : "s"} and costs ${f} more interest. Take the card out of your wallet for a while.`,
+      hmTas: (y, e) => `${y}% done — next stop ${e}%`,
+      hmTasMetin: (t, tarih) => `Only ${t} to go. At this pace you're there by ${tarih}. Every payment moves you closer.`,
+      dpAylik: "Your monthly payment", dpOneri: "Minimum — in Sıfırla's suggested plan", dpOneriEk: (a, e) => `Sıfırla's plan: minimum ${a} + extra ${e}`, dpAsgari: "The minimum (your own plan)",
+      dpUstu: (t) => `${t} above the minimum (your own plan)`, dpAlti: (t) => `${t} below the minimum — late risk`, dpKaydet: "Pay this amount",
+      daBaslik: "This month on this debt", daOdeme: "paid", daFaiz: "interest", daGecikme: "late interest",
+      daArtti: (t) => `Debt grew by ${t}`, daAzaldi: (t) => `Debt shrank by ${t}`,
+      hrFaiz: "Interest added", hrGecikme: "Late interest added",
+      sbPlanIpucu: (a) => `Your minimum is ${a}. More than that cuts interest and ends the debt sooner. Leave empty for the minimum.`,
+      sbPlanAlti: "Below the minimum: late interest applies to the shortfall and it shows on your credit record. Tap Continue to save anyway.",
       faizIslendi: (ay, t) => `${ay}'s estimated interest was added to your balances: <strong>+${t}</strong>`,
       faizIslendiNot: "If your statement differs, edit the debt and enter the real balance. You can turn this off in settings.",
       vuGecikti: (ad, g) => `<strong>${ad}</strong> · due date passed ${g} day${g === 1 ? "" : "s"} ago`,
@@ -6073,6 +6292,36 @@ const SIKISIK = (() => {
   }
   /** Faizli borçta ödenmeyen asgari kısım için aylık gecikme oranı (%) */
   const gecikmeAylik = (b) => b.type === "revolving" ? (b.annualRate / 12) + GECIKME_EK_PUAN : null;
+  /** Gecikmiş tutara işleyen aylık gecikme oranı (%) — bilinmiyorsa null (UYDURULMAZ).
+      Kart/KMH: akdi + 0,30 puan (TCMB). Taksitli kredi: faiz oranı girildiyse
+      akdi × 1,30 (6502 sayılı Kanun: gecikme faizi akdi faizin %30 fazlasını geçemez);
+      oran 0/bilinmiyorsa null. Türkiye'ye özel kurallar → TRY dışında null. */
+  function gecikmeOrani(b, paraKod) {
+    if (!b || (paraKod && paraKod !== "TRY")) return null;
+    if (b.type === "revolving") return (b.annualRate / 12) + GECIKME_EK_PUAN;
+    return b.annualRate > 0 ? (b.annualRate / 12) * 1.3 : null;
+  }
+  /**
+   * gecikmeIslet(borc, d, kayit, ayarlar, paraKod) → { eklenen, akdiPayi, kayit } — saf.
+   * d: HATIRLATMA.donemDurumu sonucu. Geciken (gecikti/eksik) dönemde, en son
+   * işlenen günden bugüne kadar gecikmiş tutara GÜNLÜK gecikme faizi işler.
+   * kayit = { vade: "YYYY-MM-DD", gun } (o dönem için kaç gün işlendi).
+   * akdiPayi: kart/KMH'de bu tutarın akdi faize denk kısmı — aylık faiz zaten
+   * tüm bakiyeye akdi faiz eklediği için ay sonunda ondan düşülür (çift sayım yok).
+   */
+  function gecikmeIslet(borc, d, kayit, ayarlar, paraKod) {
+    const bos = { eklenen: 0, akdiPayi: 0, kayit: kayit || null };
+    if (!d || (d.tip !== "gecikti" && d.tip !== "eksik") || !(d.eksik > 0.005) || !(d.gun > 0)) return bos;
+    const oran = gecikmeOrani(borc, paraKod);
+    if (oran === null || !(oran > 0)) return bos;
+    const v = d.vade, vadeK = `${v.getFullYear()}-${String(v.getMonth() + 1).padStart(2, "0")}-${String(v.getDate()).padStart(2, "0")}`;
+    const once = kayit && kayit.vade === vadeK ? (+kayit.gun || 0) : 0;
+    const yeniGun = Math.min(d.gun, 45) - once;
+    if (!(yeniGun > 0)) return bos;
+    const eklenen = gunlukFaiz(d.eksik, oran, yeniGun, ayarlar);
+    const akdiPayi = borc.type === "revolving" ? gunlukFaiz(d.eksik, borc.annualRate / 12, yeniGun, ayarlar) : 0;
+    return { eklenen, akdiPayi, kayit: { vade: vadeK, gun: once + yeniGun } };
+  }
 
   /**
    * dagit(borclar, butce, ayarlar) →
@@ -6135,9 +6384,23 @@ const SIKISIK = (() => {
     k("Taksitte eksik kalırsa faiz tutarı uydurulmaz (bilinmiyor bayrağı)", !t.yeterli && t.faizBilinmeyen === true && t.satirlar.find(x => x.ad === "Kredi").aylikGecikmeFaizi === 0, JSON.stringify(t));
     k("Günlük faiz: 1.000 × %3 / 30 × 10 gün = ₺10", Math.abs(gunlukFaiz(1000, 3, 10) - 10) < 1e-9, gunlukFaiz(1000, 3, 10));
     k("Günlük faiz vergiyle: × 1,30", Math.abs(gunlukFaiz(1000, 3, 10, { vergiUygula: true, kkdf: 15, bsmv: 15 }) - 13) < 1e-9, "");
+    // ---- Gecikme faizi işletme ----
+    const kartG = { type: "revolving", annualRate: 45, balance: 20000 };
+    const dG = { tip: "gecikti", vade: new Date(2026, 9, 25), gun: 10, eksik: 3000 };
+    const g1 = gecikmeIslet(kartG, dG, null, null, "TRY");
+    k("Kart: 3.000 × %4,05 / 30 × 10 gün = ₺40,50; akdi payı ₺37,50",
+      Math.abs(g1.eklenen - 40.5) < 1e-9 && Math.abs(g1.akdiPayi - 37.5) < 1e-9 && g1.kayit.gun === 10 && g1.kayit.vade === "2026-10-25", JSON.stringify(g1));
+    const g2 = gecikmeIslet(kartG, Object.assign({}, dG, { gun: 13 }), g1.kayit, null, "TRY");
+    k("Aynı dönem: yalnız yeni 3 gün işlenir; tekrar açılış ekleme yapmaz",
+      Math.abs(g2.eklenen - 12.15) < 1e-9 && g2.kayit.gun === 13 && gecikmeIslet(kartG, Object.assign({}, dG, { gun: 13 }), g2.kayit, null, "TRY").eklenen === 0, JSON.stringify(g2));
+    k("Taksitli: oran yoksa uydurulmaz; %36 yıllıkta 1.000 × %3,9 / 30 × 30 = ₺39",
+      gecikmeIslet({ type: "installment", annualRate: 0 }, Object.assign({}, dG, { gun: 30, eksik: 1000 }), null, null, "TRY").eklenen === 0 &&
+      Math.abs(gecikmeIslet({ type: "installment", annualRate: 36 }, Object.assign({}, dG, { gun: 30, eksik: 1000 }), null, null, "TRY").eklenen - 39) < 1e-9, "");
+    k("Ödendi / TRY dışı → gecikme faizi yok",
+      gecikmeIslet(kartG, Object.assign({}, dG, { tip: "odendi" }), null, null, "TRY").eklenen === 0 && gecikmeIslet(kartG, dG, null, null, "USD").eklenen === 0, "");
     return r;
   }
-  return { dagit, gunlukFaiz, gecikmeAylik, selfTest };
+  return { dagit, gunlukFaiz, gecikmeAylik, gecikmeOrani, gecikmeIslet, selfTest };
 })();
 
 /* ============================================================
@@ -7212,6 +7475,19 @@ const ARAYUZ = () => {
      faizAyi = son işlenen ay. Bilinmiyorsa BU AY sayılır (geçmişe dönük ekleme yok).
      Açılışta yeni aya geçildiyse faizli açık borçlara geçen ay(lar)ın faizi eklenir. */
   const buAyKodu = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}`; };
+  /* Faiz hareketleri borcun kendi geçmişine yazılır: { ay: "YYYY-MM", tur: "faiz"|"gecikme", tutar }.
+     Aynı ay + tür tek satırda toplanır; en çok 36 satır tutulur. */
+  function faizKaydet(b, tur, tutar, ay) {
+    if (!(tutar > 0.005)) return;
+    if (!Array.isArray(b.faizKayit)) b.faizKayit = [];
+    const k = ay || buAyKodu();
+    const var_ = b.faizKayit.find(x => x.ay === k && x.tur === tur);
+    if (var_) var_.tutar = Math.round((var_.tutar + tutar) * 100) / 100;
+    else b.faizKayit.push({ ay: k, tur, tutar: Math.round(tutar * 100) / 100 });
+    if (b.faizKayit.length > 36) b.faizKayit = b.faizKayit.slice(-36);
+  }
+  const ayFaizi = (b, ay, tur) => (Array.isArray(b.faizKayit) ? b.faizKayit : [])
+    .filter(x => x.ay === ay && (!tur || x.tur === tur)).reduce((t, x) => t + (+x.tutar || 0), 0);
   function aylikFaizIsle() {
     const buAy = buAyKodu();
     let toplam = 0, degisti = false;
@@ -7222,18 +7498,47 @@ const ARAYUZ = () => {
       if (b.faizAyi === buAy) continue;
       if (durum.ayarlar.faizOtomatik !== false) {
         const r = FAIZ.aylikIsle(b, buAy, durum.ayarlar);
-        if (r.eklenen > 0.005) {
-          b.balance = r.bakiye;
-          toplam += r.eklenen;
-          liste.push({ ad: b.ad, tutar: r.eklenen });
+        // Geçen ay gecikme faizi olarak zaten eklenen akdi pay düşülür (aynı faiz iki kez sayılmaz)
+        const akdiDahil = b.gecikmeAkdi && b.gecikmeAkdi.ay < buAy ? Math.max(0, +b.gecikmeAkdi.tutar || 0) : 0;
+        const net = Math.max(0, r.eklenen - akdiDahil);
+        if (net > 0.005) {
+          b.balance = b.balance + net;
+          toplam += net;
+          liste.push({ ad: b.ad, tutar: net });
+          faizKaydet(b, "faiz", net, buAy);
         }
       }
+      if (b.gecikmeAkdi && b.gecikmeAkdi.ay < buAy) delete b.gecikmeAkdi;
       b.faizAyi = buAy; degisti = true;
     }
     if (toplam > 0.005) durum.sonFaizIslem = { ay: buAy, tutar: toplam, borclar: liste, gizli: false };
     if (degisti) STORAGE.kaydet(durum);
   }
+  /* Gecikme faizi: son ödeme günü geçmiş ve asgari/taksit (tam) ödenmemişse,
+     gecikmiş tutara günlük işler ve bakiyeye eklenir (SIKISIK.gecikmeIslet).
+     Faizi bilinmeyen kredide tutar UYDURULMAZ; yalnızca uyarı gösterilir. */
+  function gecikmeIsle() {
+    if (durum.ayarlar.faizOtomatik === false) return false;
+    let degisti = false;
+    const simdi = new Date(), buAy = buAyKodu();
+    for (const b of durum.borclar) {
+      const d = HATIRLATMA.donemDurumu(b, simdi);
+      const r = SIKISIK.gecikmeIslet(b, d, b.gecikmeKayit, durum.ayarlar, PARA.kod);
+      if (!(r.eklenen > 0.005)) continue;
+      b.balance += r.eklenen;
+      b.gecikmeKayit = r.kayit;
+      faizKaydet(b, "gecikme", r.eklenen, buAy);
+      if (r.akdiPayi > 0) {
+        if (!b.gecikmeAkdi || b.gecikmeAkdi.ay !== buAy) b.gecikmeAkdi = { ay: buAy, tutar: 0 };
+        b.gecikmeAkdi.tutar += r.akdiPayi;
+      }
+      degisti = true;
+    }
+    if (degisti) STORAGE.kaydet(durum);
+    return degisti;
+  }
   aylikFaizIsle();
+  gecikmeIsle();
   kpUygula(); // kendi planı açık/kapalı durumu motor girdisine yansısın
 
   // Hayat karşılığı referansları — kullanıcı tanımlar, hiçbir tutar gömülü değildir
@@ -7497,6 +7802,7 @@ const ARAYUZ = () => {
     kart.hidden = acik.length === 0;
     if (kart.hidden) return;
     $("kpAcik").checked = durum.kendiPlan === true;
+    document.querySelectorAll("[data-kp-mod]").forEach(b => b.setAttribute("aria-checked", String((b.dataset.kpMod === "kendi") === (durum.kendiPlan === true))));
     $("kpIcerik").hidden = durum.kendiPlan !== true;
     if (durum.kendiPlan !== true) return;
     $("kpListe").innerHTML = acik.map(({ b, i }) => {
@@ -7571,6 +7877,13 @@ const ARAYUZ = () => {
     kaydetVeCiz();
     kpCiz();
   });
+  document.querySelectorAll("[data-kp-mod]").forEach(b => b.addEventListener("click", () => {
+    const kendi = b.dataset.kpMod === "kendi";
+    if ((durum.kendiPlan === true) === kendi) return;
+    $("kpAcik").checked = kendi;
+    $("kpAcik").dispatchEvent(new Event("change"));
+    if (kendi) setTimeout(() => { const ilk = $("kpListe").querySelector("[data-kp]"); if (ilk) ilk.focus({ preventScroll: false }); }, 50);
+  }));
   $("kpListe").addEventListener("input", (e) => { if (e.target.matches("[data-kp]")) kpOzetCiz(); });
   $("kpListe").addEventListener("change", (e) => { if (e.target.matches("[data-kp]")) kpKaydet(); });
   $("kpListe").addEventListener("click", (e) => {
@@ -7933,7 +8246,10 @@ const ARAYUZ = () => {
         ? `${s.taksitOzet(tb.odenen, tb.toplam)}${tb.kalan > 0
             ? ` · ${s.taksitKalanIfade(tb.kalan, paraFmt.format(b.payment), paraFmt.format(tb.kalan * b.payment))}${tb.sonTarih ? ` · ${s.sonTaksit(tarihFmt.format(tb.sonTarih))}` : ""}`
             : ""}`
-        : `${yuzdeYaz(yuzde)} · ${s.enAz(paraFmt.format(b.payment))}${b.dueDay ? ` · ${s.gunlu(b.dueDay)}` : ""}`;
+        : `${yuzdeYaz(yuzde)} · ${planFazlasi(b.ad) > 0.005 ? `${s.bkPlan(paraFmt.format(b.planOdeme))} · ` : ""}${s.enAz(paraFmt.format(b.payment))}${b.dueDay ? ` · ${s.gunlu(b.dueDay)}` : ""}`;
+      // Bu ay işleyen faiz/gecikme: borcun büyüdüğü görünür olsun
+      const buAyF = kapandi ? 0 : ayFaizi(b, buAyKodu());
+      const faizCip = buAyF > 0.005 ? `<p class="bk-faiz">${s.bkFaizCip(paraFmt.format(buAyF), ayFaizi(b, buAyKodu(), "gecikme") > 0.005)}</p>` : "";
       return `
       <article class="borc-kart${kapandi ? " kapali" : ""}">
         <div class="bk-ust">
@@ -7948,7 +8264,7 @@ const ARAYUZ = () => {
         <div class="bk-orta">
           <p class="bk-bakiye">${paraFmt.format(b.balance)}</p>
           ${seri ? kivilcim(seri) : ""}
-        </div>
+        </div>${faizCip}
         <span class="bk-progress"><i style="width:${yuzde}%"></i></span>
         <div class="bk-alt">
           <span class="bk-bilgi">${bilgi}</span>
@@ -8363,6 +8679,8 @@ const ARAYUZ = () => {
       veri.faizAyi = Math.abs((eski.balance || 0) - veri.balance) > 0.005 || !eski.faizAyi ? buAyKodu() : eski.faizAyi;
       if (Number.isFinite(eski.planTutar)) veri.planTutar = eski.planTutar;
       if (Number.isFinite(eski.planOdeme)) veri.planOdeme = eski.planOdeme;
+      // Faiz/gecikme geçmişi ve bakiye izi düzenlemede korunur
+      ["faizKayit", "gecikmeKayit", "gecikmeAkdi", "gecmis"].forEach(k => { if (eski[k] !== undefined) veri[k] = eski[k]; });
       durum.borclar[duzenlenen] = veri;
       duzenlemeBitir();
     } else {
@@ -9446,6 +9764,13 @@ const ARAYUZ = () => {
     return { tarih, kalanGun: Math.round((tarih - bugun) / 86400000) };
   }
 
+  /* Kendi planında borcun asgari üstü PLAN tutarı (motor bunu "ekstra" sütununa yazar) */
+  function planFazlasi(ad) {
+    if (durum.kendiPlan !== true) return 0;
+    const b = durum.borclar.find(x => x.ad === ad);
+    if (!b || !Number.isFinite(b.planOdeme)) return 0;
+    return Math.max(0, b.planOdeme - Math.min(b.payment, b.balance));
+  }
   function buAyCiz() {
     const kap = $("buAy");
     const s = sd();
@@ -9537,15 +9862,15 @@ const ARAYUZ = () => {
           ? ` <span class="muted" style="font-size:12px">${s.buayTaksit(Math.min(tb.toplam, tb.odenen + 1))}</span>` : "";
         return `
         <tr${odendi ? ' class="buay-odendi"' : ""}>
-          <td>${kacis(o.ad)}${taksitEtiketi} ${bi >= 0 && durum.kendiPlan && o.asgari + 0.005 < Math.min(durum.borclar[bi].payment, durum.borclar[bi].balance) ? `<span class="badge err">${s.kpAltRozet}</span> ` : ""}${o.kapaniyor ? `<span class="badge ok">${s.kapaniyor}</span>` : ""}${odendi ? ` <span class="badge ok">✓ ${s.odendiEtiket}</span>` : ""}</td>
+          <td>${kacis(o.ad)}${taksitEtiketi} ${bi >= 0 && durum.kendiPlan && o.asgari + 0.005 < Math.min(durum.borclar[bi].payment, durum.borclar[bi].balance) ? `<span class="badge err">${s.kpAltRozet}</span> ` : ""}${o.kapaniyor ? `<span class="badge ok">${s.kapaniyor}</span>` : ""}${odendi ? ` <span class="badge ok">✓ ${s.odendiEtiket}</span>` : ""}${!odendi && borcaOdenen > 0.005 ? `<br><span class="mini-ipucu">${s.buayKismi(paraFmt.format(borcaOdenen), paraFmt.format(hedefT - borcaOdenen))}</span>` : ""}</td>
           <td class="num" data-et="${s.thAsgari}">${paraFmt.format(o.asgari)}</td>
-          <td class="num" data-et="${s.thEkstra}">${o.ekstra > 0.005 ? paraFmt.format(o.ekstra) : "—"}</td>
+          <td class="num" data-et="${durum.kendiPlan ? s.thFazla : s.thEkstra}">${o.ekstra > 0.005 ? paraFmt.format(o.ekstra) : "—"}</td>
           <td class="num" data-et="${s.thBuAy}"><strong>${paraFmt.format(hedefT)}</strong></td>
           <td>${bi >= 0 ? `<button type="button" class="ode-btn mini${odendi ? " ghost" : ""}" data-buay-ode="${bi}">${ODE_IKON}${s.btnOde}</button>` : ""}</td>
         </tr>`;
       }).join("");
       html += `<div class="table-wrap"><table class="buay-tablo">
-        <thead><tr><th>${s.thBorc}</th><th class="num">${s.thAsgari}</th><th class="num">${s.thEkstra}</th><th class="num">${s.thBuAy}</th><th></th></tr></thead>
+        <thead><tr><th>${s.thBorc}</th><th class="num">${s.thAsgari}</th><th class="num">${durum.kendiPlan ? s.thFazla : s.thEkstra}</th><th class="num">${s.thBuAy}</th><th></th></tr></thead>
         <tbody>${satirlar}</tbody>
         <tfoot><tr><th>${s.toplam}</th><th></th><th></th><th class="num">${paraFmt.format(buAyD.toplam)}</th><th></th></tr></tfoot>
       </table></div>`;
@@ -9554,10 +9879,11 @@ const ARAYUZ = () => {
     // Sıradaki ay önizlemesi
     const gelecek = sonuc.ilkAylar[1];
     if (gelecek) {
-      const hedef = gelecek.odemeler.reduce((sec, o) => (o.ekstra > (sec ? sec.ekstra : 0) ? o : sec), null);
+      const butceEk = (o) => Math.max(0, o.ekstra - planFazlasi(o.ad)); // kendi planın fazlası "ekstra bütçe" sayılmaz
+      const hedef = gelecek.odemeler.reduce((sec, o) => (butceEk(o) > (sec ? butceEk(sec) : 0) ? o : sec), null);
       const kapananlar = gelecek.odemeler.filter(o => o.kapaniyor).map(o => kacis(o.ad));
       html += `<p class="info">${s.siradaki(paraFmt.format(gelecek.toplam))}` +
-        (hedef && hedef.ekstra > 0.005 ? s.siradakiHedef(kacis(hedef.ad), paraFmt.format(hedef.ekstra)) : "") +
+        (hedef && butceEk(hedef) > 0.005 ? s.siradakiHedef(kacis(hedef.ad), paraFmt.format(butceEk(hedef))) : "") +
         `.${kapananlar.length ? s.siradakiKapanan(kapananlar.join(", ")) : ""}</p>`;
     }
 
@@ -9596,12 +9922,17 @@ const ARAYUZ = () => {
       const d = v.d;
       if (d.tip === "gecikti" || d.tip === "eksik") hafta.push(s.haftaGecikme(kacis(v.b.ad), paraFmt.format(d.eksik)));
       else if (d.tip !== "odendi" && d.gun <= 7) {
-        hafta.push(s.haftaVade(d.gun === 0 ? `<strong>${s.haftaBugun}</strong>` : gunAyFmt.format(d.vade), kacis(v.b.ad), paraFmt.format(d.eksik > 0.005 ? d.eksik : v.b.payment)));
+        const tarihT = d.gun === 0 ? `<strong>${s.haftaBugun}</strong>` : gunAyFmt.format(d.vade);
+        const pf = planFazlasi(v.b.ad);
+        hafta.push(pf > 0.005 && d.odenen <= 0.005
+          ? s.haftaVadePlan(tarihT, kacis(v.b.ad), paraFmt.format(v.b.planOdeme), paraFmt.format(v.b.payment))
+          : s.haftaVade(tarihT, kacis(v.b.ad), paraFmt.format(d.eksik > 0.005 ? d.eksik : v.b.payment)));
       }
     }
     if (buAyD) {
       for (const o of buAyD.odemeler.filter(o => o.ekstra > 0.005)) {
-        hafta.push(s.haftaOdak(kacis(o.ad), paraFmt.format(o.ekstra)));
+        const butce = o.ekstra - Math.min(o.ekstra, planFazlasi(o.ad));
+        if (butce > 0.005) hafta.push(s.haftaOdak(kacis(o.ad), paraFmt.format(butce)));
       }
     }
     if (hafta.length === 0) hafta.push(s.haftaBos);
@@ -9641,6 +9972,337 @@ const ARAYUZ = () => {
   });
 
   /* ---- Kural tabanlı öneriler ---- */
+  /* ============================================================
+     BORCUN NASIL DEĞİŞİYOR — bu ayın dökümü + geçmiş/tahmin grafiği + uyarı.
+     Döküm olaylardan: ödemeler (payments) ve işlenen faiz/gecikme (faizKayit).
+     Geçmiş aylar rozetDurum.aylik'tan (ayın son bilinen toplamı), tahmin motordan.
+     ============================================================ */
+  function ayDokumu() {
+    const ay = buAyKodu();
+    let odenen = 0, faiz = 0, gecikme = 0;
+    for (const b of durum.borclar) {
+      for (const p of (b.payments || [])) if (String(p.tarih).slice(0, 7) === ay) odenen += +p.tutar || 0;
+      faiz += ayFaizi(b, ay, "faiz");
+      gecikme += ayFaizi(b, ay, "gecikme");
+    }
+    const simdi = durum.borclar.reduce((t, b) => t + Math.max(0, b.balance), 0);
+    return { odenen, faiz, gecikme, simdi, basi: Math.max(0, simdi + odenen - faiz - gecikme), net: faiz + gecikme - odenen };
+  }
+  function degisimCiz() {
+    const kart = $("degisimKart"), s = sd();
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    kart.hidden = durum.borclar.length === 0 || document.body.classList.contains("widget-modu");
+    if (kart.hidden) return;
+    const d = ayDokumu();
+    const ekstra = parseFloat($("ekstra").value) || 0;
+    const sim = acik.length ? ENGINE.simulatePlan(acik, ekstra, durum.yontem, durum.ayarlar) : null;
+    const hareketVar = d.odenen > 0.005 || d.faiz > 0.005 || d.gecikme > 0.005;
+    const buyudu = d.net > 0.5, eridi = d.net < -0.5;
+    const ayAd = new Intl.DateTimeFormat(s.yerel, { month: "long" }).format(new Date());
+
+    // 1) Manşet
+    let html = `<div class="dg-manset ${buyudu ? "kotu" : eridi ? "iyi" : ""}">
+      <span class="dg-ok" aria-hidden="true">${buyudu ? "▲" : eridi ? "▼" : "•"}</span>
+      <div><p class="dg-buyuk">${buyudu ? s.dgBuyudu(paraFmt.format(d.net)) : eridi ? s.dgEridi(paraFmt.format(-d.net)) : s.dgSabit}</p>
+      <p class="muted">${hareketVar ? s.dgAyNot(ayAd) : s.dgHareketYok}</p></div></div>`;
+
+    // 2) Döküm çubukları: ay başı → − ödeme → + faiz → + gecikme → şimdi
+    if (hareketVar) {
+      // Bakiyeler kendi aralarında, akışlar (ödeme/faiz/gecikme) kendi aralarında ölçeklenir
+      const maksB = Math.max(d.basi, d.simdi, 1), maksA = Math.max(d.odenen, d.faiz, d.gecikme, 1);
+      const satir = (lbl, tutar, cls, isaret) => `<div class="dg-satir ${cls}">
+        <span class="dg-lbl">${lbl}</span>
+        <span class="dg-cubuk"><i style="width:${Math.max(2, Math.min(100, (tutar / (isaret ? maksA : maksB)) * 100)).toFixed(1)}%"></i></span>
+        <span class="dg-tutar">${isaret}${paraFmt.format(tutar)}</span></div>`;
+      html += `<div class="dg-dokum">
+        ${satir(s.dgBasi(ayAd), d.basi, "notr", "")}
+        ${d.odenen > 0.005 ? satir(s.dgOdeme, d.odenen, "iyi", "−") : ""}
+        ${d.faiz > 0.005 ? satir(s.dgFaiz, d.faiz, "kotu", "+") : ""}
+        ${d.gecikme > 0.005 ? satir(s.dgGecikme, d.gecikme, "kotu", "+") : ""}
+        ${satir(s.dgSimdi, d.simdi, "simdi", "")}
+      </div>`;
+    }
+
+    // 3) Grafik: geçmiş aylar (gerçek) + bugün + tahmin (motor)
+    const simdiT = new Date(), anahtar = (t) => ayAnahtari(t);
+    const gecmis = [];
+    for (let i = 6; i >= 1; i--) {
+      const t = new Date(simdiT.getFullYear(), simdiT.getMonth() - i, 1), v = rozetDurum.aylik[anahtar(t)];
+      if (typeof v === "number") gecmis.push({ t, v, tur: "gecmis" });
+    }
+    const noktalar = gecmis.concat([{ t: new Date(simdiT.getFullYear(), simdiT.getMonth(), 1), v: d.simdi, tur: "simdi" }]);
+    if (sim) {
+      const seri = sim.bakiyeSerisi, adim = Math.max(1, Math.ceil((seri.length - 1) / 12));
+      for (let i = adim; i < seri.length; i += adim) noktalar.push({ t: new Date(simdiT.getFullYear(), simdiT.getMonth() + i, 1), v: seri[i], tur: "tahmin" });
+      const son = seri.length - 1;
+      if (son > 0 && son % adim !== 0) noktalar.push({ t: new Date(simdiT.getFullYear(), simdiT.getMonth() + son, 1), v: seri[son], tur: "tahmin" });
+    }
+    if (noktalar.length >= 2) {
+      const W = 600, H = 230, UST = 44, ALT = 34, n = noktalar.length;
+      const maks = Math.max(...noktalar.map(x => x.v), 1);
+      const bw = Math.min(56, (W / n) * 0.62), aralik = W / n;
+      const ayK = new Intl.DateTimeFormat(s.yerel, { month: "short" });
+      const yilK = new Intl.DateTimeFormat(s.yerel, { month: "short", year: "2-digit" });
+      const cubuklar = noktalar.map((x, i) => {
+        const h = Math.max(x.v > 0.5 ? 3 : 0, (x.v / maks) * (H - UST - ALT));
+        const cx = aralik * i + aralik / 2, y = H - ALT - h;
+        const onceki = noktalar[i - 1];
+        const renk = x.tur === "tahmin" ? "var(--accent)" : onceki && x.v > onceki.v + 0.5 ? "var(--danger)" : onceki && x.v < onceki.v - 0.5 ? "var(--ok)" : "var(--accent)";
+        const etiketGoster = i === 0 || x.tur === "simdi" || i === n - 1 || (n <= 8);
+        const etiket = x.tur === "simdi" ? s.dgBugun : (x.t.getMonth() === 0 || i === n - 1 ? yilK : ayK).format(x.t);
+        const capa = i === 0 ? "start" : i === n - 1 ? "end" : "middle", ex = i === 0 ? cx - bw / 2 : i === n - 1 ? cx + bw / 2 : cx;
+        const degerX = Math.min(W - 4, Math.max(4, cx)), degerCapa = cx < 70 ? "start" : cx > W - 70 ? "end" : "middle";
+        return `<rect x="${(cx - bw / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="6" fill="${renk}" opacity="${x.tur === "tahmin" ? 0.32 : x.tur === "simdi" ? 1 : 0.85}"/>` +
+          (etiketGoster ? `<text x="${ex.toFixed(1)}" y="${H - 8}" text-anchor="${capa}" font-size="20" fill="var(--text-muted)" font-weight="${x.tur === "simdi" ? 700 : 400}">${etiket}</text>` : "") +
+          (x.tur === "simdi" ? `<text x="${degerX.toFixed(1)}" y="${Math.max(22, y - 10).toFixed(1)}" text-anchor="${degerCapa}" font-size="21" font-weight="700" fill="var(--text)">${paraFmt.format(x.v)}</text>` : "");
+      }).join("");
+      const sx = noktalar.findIndex(x => x.tur === "simdi");
+      const ayrac = sx < n - 1 ? `<line x1="${(aralik * (sx + 1)).toFixed(1)}" y1="${UST - 6}" x2="${(aralik * (sx + 1)).toFixed(1)}" y2="${H - ALT}" stroke="var(--border)" stroke-dasharray="4 4"/>` +
+        `<text x="${W - 2}" y="18" text-anchor="end" font-size="18" fill="var(--text-muted)">${s.dgTahmin}</text>` : "";
+      html += `<figure class="dg-grafik" role="img" aria-label="${kacis(s.dgGrafikAria(paraFmt.format(d.simdi), sim && sim.uygulanabilir ? tarihFmt.format(sim.borcsuzTarih) : "—"))}">
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" aria-hidden="true">
+          <line x1="0" y1="${H - ALT}" x2="${W}" y2="${H - ALT}" stroke="var(--border)"/>${ayrac}${cubuklar}
+        </svg>
+        <figcaption class="dg-lejant"><span><i class="iyi"></i>${s.dgLejAzaldi}</span><span><i class="kotu"></i>${s.dgLejArtti}</span><span><i class="tahmin"></i>${s.dgLejTahmin}</span></figcaption>
+      </figure>`;
+    }
+
+    // 4) Uyarılar (öncelik sırasıyla en çok 2 tane)
+    const uyarilar = [];
+    if (buyudu) {
+      const gerek = Math.ceil((d.net + 1) / 50) * 50;
+      uyarilar.push({ tip: "kotu", m: s.dgUyariBuyudu(paraFmt.format(d.faiz + d.gecikme), paraFmt.format(d.odenen), paraFmt.format(gerek)) });
+    }
+    for (const b of acik) {
+      const dd = HATIRLATMA.donemDurumu(b, new Date());
+      if (dd && (dd.tip === "gecikti" || dd.tip === "eksik")) {
+        const oran = SIKISIK.gecikmeOrani(b, PARA.kod);
+        uyarilar.push({ tip: "kotu", m: oran ? s.dgUyariGecikme(kacis(b.ad), paraFmt.format(dd.eksik), paraFmt.format(SIKISIK.gunlukFaiz(dd.eksik, oran, 1, durum.ayarlar))) : s.dgUyariGecikmeOransiz(kacis(b.ad), paraFmt.format(dd.eksik)) });
+      }
+    }
+    for (const b of acik) {
+      if (b.type !== "revolving") continue;
+      const aylikFaiz = b.balance * ENGINE.efektifAylikOran(b.annualRate, durum.ayarlar);
+      const odeme = Number.isFinite(b.planOdeme) ? b.planOdeme : Math.min(b.payment, b.balance);
+      if (aylikFaiz > 0.5 && odeme < aylikFaiz * 1.25) uyarilar.push({ tip: "kotu", m: s.dgUyariTuzak(kacis(b.ad), paraFmt.format(aylikFaiz), paraFmt.format(odeme)) });
+    }
+    if (uyarilar.length === 0 && sim && sim.uygulanabilir) {
+      uyarilar.push({ tip: "iyi", m: eridi ? s.dgIyiEridi(tarihFmt.format(sim.borcsuzTarih)) : s.dgIyiDevam(tarihFmt.format(sim.borcsuzTarih)) });
+    }
+    html += uyarilar.slice(0, 2).map(u => `<p class="dg-uyari ${u.tip}">${u.m}</p>`).join("");
+    $("degisimIcerik").innerHTML = html;
+  }
+
+  /* ============================================================
+     KÜÇÜK DEĞİŞİKLİK, BÜYÜK ETKİ — günlük harcamadan kısınca borca etkisi.
+     Fiyatlar ÖRNEKTİR (kullanıcı değiştirir, cihazda saklanır); etki motordan:
+     simulatePlan(ekstra) ↔ simulatePlan(ekstra + tasarruf).
+     ============================================================ */
+  const KD_KALEMLER = [
+    { id: "kahve", adet: 5, fiyat: { TRY: 150, USD: 5, EUR: 4, GBP: 3.8, CHF: 5.5, AZN: 5 },
+      ikon: '<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/>' },
+    { id: "doner", adet: 3, fiyat: { TRY: 200, USD: 14, EUR: 12, GBP: 10, CHF: 20, AZN: 8 },
+      ikon: '<path d="M6 4h12l-2 16H8z"/><path d="M7 9h10M7.5 14h9"/>' },
+    { id: "siparis", adet: 0, fiyat: { TRY: 400, USD: 30, EUR: 25, GBP: 22, CHF: 35, AZN: 20 },
+      ikon: '<circle cx="7" cy="17" r="2.5"/><circle cx="17.5" cy="17" r="2.5"/><path d="M9.5 17h5.5M4.5 17V12h6l2-4h3l2 4v5"/>' },
+    { id: "sigara", adet: 0, fiyat: { TRY: 110, USD: 10, EUR: 8, GBP: 16, CHF: 9, AZN: 4 },
+      ikon: '<rect x="3" y="12" width="15" height="4" rx="1"/><path d="M18 12v4M21 12v4M19 4c0 2 2 2 2 4M17 6c0 1.5 1 1.5 1 3"/>' },
+    { id: "taksi", adet: 0, fiyat: { TRY: 300, USD: 20, EUR: 18, GBP: 15, CHF: 25, AZN: 8 },
+      ikon: '<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3zM9 3h6"/><circle cx="7.5" cy="13.5" r="1"/><circle cx="16.5" cy="13.5" r="1"/>' },
+    { id: "abonelik", adet: 0, fiyat: { TRY: 150, USD: 15, EUR: 13, GBP: 11, CHF: 15, AZN: 10 },
+      ikon: '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4M10 9l4 2-4 2z"/>' }
+  ];
+  function kdDurum() {
+    if (!durum.kucukDegisim || typeof durum.kucukDegisim !== "object") durum.kucukDegisim = {};
+    const k = durum.kucukDegisim;
+    if (!k.adet || typeof k.adet !== "object") k.adet = {};
+    if (!k.fiyat || typeof k.fiyat !== "object") k.fiyat = {};
+    if (k.para !== PARA.kod) { k.fiyat = {}; k.para = PARA.kod; } // para birimi değişince örnek fiyatlar o birimden
+    return k;
+  }
+  const kdAdet = (x) => { const v = kdDurum().adet[x.id]; return Number.isInteger(v) && v >= 0 ? v : x.adet; };
+  const kdFiyat = (x) => { const v = +kdDurum().fiyat[x.id]; return v > 0 ? v : (x.fiyat[PARA.kod] || x.fiyat.USD); };
+  const kdToplam = () => KD_KALEMLER.reduce((t, x) => t + kdAdet(x) * kdFiyat(x), 0);
+  function kdCiz() {
+    const kart = $("kdKart"), s = sd();
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    kart.hidden = acik.length === 0 || document.body.classList.contains("widget-modu");
+    if (kart.hidden) return;
+    if (!$("kdListe").contains(document.activeElement)) {
+      $("kdListe").innerHTML = KD_KALEMLER.map(x => {
+        const a = kdAdet(x), f = kdFiyat(x);
+        return `<div class="kd-satir${a > 0 ? " secili" : ""}" data-kd="${x.id}">
+          <span class="kd-ikon"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${x.ikon}</svg></span>
+          <span class="kd-ad"><strong>${s.kdAd[x.id]}</strong>
+            <label class="kd-fiyat"><span class="para-sembol">${paraSembol(PARA.kod)}</span><input type="text" inputmode="decimal" data-kd-fiyat="${x.id}" value="${f}" aria-label="${kacis(s.kdFiyatAria(s.kdAd[x.id]))}"><span>${s.kdBirim}</span></label></span>
+          <span class="kd-adet">
+            <button type="button" class="ghost" data-kd-azalt="${x.id}" aria-label="${kacis(s.kdAzAria(s.kdAd[x.id]))}">−</button>
+            <output aria-live="polite">${a}</output>
+            <button type="button" class="ghost" data-kd-artir="${x.id}" aria-label="${kacis(s.kdCokAria(s.kdAd[x.id]))}">+</button>
+          </span>
+        </div>`;
+      }).join("");
+    }
+    kdSonucCiz();
+  }
+  function kdSonucCiz() {
+    const s = sd(), k = kdDurum();
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    const tasarruf = kdToplam();
+    const kap = $("kdSonuc");
+    if (!(tasarruf > 0.5) || acik.length === 0) { kap.innerHTML = `<p class="muted">${s.kdSecHic}</p>`; return; }
+    const ekstra = parseFloat($("ekstra").value) || 0;
+    const uygulanan = +k.uygulanan > 0 ? +k.uygulanan : 0;
+    // Etki: uygulanmışsa planda zaten var → karşılaştırma "onsuz" plana göre
+    const taban = Math.max(0, ekstra - uygulanan);
+    const once = ENGINE.simulatePlan(acik, taban, durum.yontem, durum.ayarlar);
+    const sonra = ENGINE.simulatePlan(acik, taban + tasarruf, durum.yontem, durum.ayarlar);
+    const enCok = KD_KALEMLER.filter(x => kdAdet(x) > 0).sort((a, c) => kdAdet(c) * kdFiyat(c) - kdAdet(a) * kdFiyat(a))[0];
+    // İlk hedef: motorun bu ay ekstrayı yönlendirdiği borç
+    const ilk = sonra.ilkAylar[0] ? sonra.ilkAylar[0].odemeler.slice().sort((a, c) => c.ekstra - a.ekstra)[0] : null;
+    const hedefB = ilk ? acik.find(b => b.ad === ilk.ad) : null;
+    let html = `<div class="kd-buyuk"><p class="kd-tutar">${s.kdAylik(paraFmt.format(tasarruf))}</p><p class="muted">${s.kdYillik(paraFmt.format(tasarruf * 12))}</p></div>`;
+    if (once.uygulanabilir && sonra.uygulanabilir) {
+      const ay = once.aySayisi - sonra.aySayisi, faiz = once.toplamFaiz - sonra.toplamFaiz;
+      html += `<ul class="kd-etki">
+        <li><strong>${ay > 0 ? s.kdAyErken(ay) : s.kdAyAyni}</strong> ${s.kdTarih(tarihFmt.format(once.borcsuzTarih), tarihFmt.format(sonra.borcsuzTarih))}</li>
+        ${faiz > 0.5 ? `<li><strong>${s.kdFaiz(paraFmt.format(faiz))}</strong> ${s.kdFaizNot}</li>` : ""}
+        ${hedefB ? `<li>${s.kdHedef(kacis(hedefB.ad), Math.max(1, Math.round(tasarruf / hedefB.balance * 100)))}</li>` : ""}
+        ${enCok && hedefB ? `<li>${s.kdKalemCumle(kdAdet(enCok), s.kdAdCogul[enCok.id], kacis(hedefB.ad), paraFmt.format(kdAdet(enCok) * kdFiyat(enCok) * 12))}</li>` : ""}
+      </ul>`;
+    } else if (!once.uygulanabilir && sonra.uygulanabilir) {
+      html += `<p class="kd-etki-tek"><strong>${s.kdKurtarir(tarihFmt.format(sonra.borcsuzTarih))}</strong></p>`;
+    }
+    const fark = Math.abs(uygulanan - tasarruf) < 0.5;
+    html += uygulanan > 0 && fark
+      ? `<p class="kd-uygulandi">✓ ${s.kdUygulandi(paraFmt.format(uygulanan))} <button type="button" class="link-btn" data-kd-geri>${s.kdGeriAl}</button></p>`
+      : `<button type="button" class="kd-uygula" data-kd-uygula>${uygulanan > 0 ? s.kdGuncelle(paraFmt.format(tasarruf)) : s.kdUygula(paraFmt.format(tasarruf))}</button>`;
+    kap.innerHTML = html;
+  }
+  function kdEkstraAyarla(yeni) {
+    $("ekstra").value = String(Math.max(0, Math.round(yeni * 100) / 100));
+    $("ekstra").dispatchEvent(new Event("change"));
+    kaydetVeCiz();
+  }
+  $("kdListe").addEventListener("click", (e) => {
+    const az = e.target.closest("[data-kd-azalt]"), cok = e.target.closest("[data-kd-artir]");
+    if (!az && !cok) return;
+    const id = (az || cok).dataset[az ? "kdAzalt" : "kdArtir"], x = KD_KALEMLER.find(k => k.id === id);
+    const yeni = Math.max(0, Math.min(99, kdAdet(x) + (cok ? 1 : -1)));
+    kdDurum().adet[id] = yeni;
+    STORAGE.kaydet(durum);
+    const satir = (az || cok).closest(".kd-satir");
+    satir.querySelector("output").textContent = String(yeni);
+    satir.classList.toggle("secili", yeni > 0);
+    titret(8);
+    kdSonucCiz();
+  });
+  $("kdListe").addEventListener("input", (e) => {
+    const id = e.target.dataset && e.target.dataset.kdFiyat;
+    if (!id) return;
+    const v = sayiOku(e.target.value);
+    if (v > 0 && v < TUTAR_TAVANI) { kdDurum().fiyat[id] = v; STORAGE.kaydet(durum); kdSonucCiz(); }
+  });
+  $("kdSonuc").addEventListener("click", (e) => {
+    const k = kdDurum(), ekstra = parseFloat($("ekstra").value) || 0, onceki = +k.uygulanan > 0 ? +k.uygulanan : 0;
+    if (e.target.closest("[data-kd-uygula]")) {
+      const t = Math.round(kdToplam() * 100) / 100;
+      k.uygulanan = t;
+      kdEkstraAyarla(ekstra - onceki + t);
+      titret(20);
+    } else if (e.target.closest("[data-kd-geri]")) {
+      k.uygulanan = 0;
+      kdEkstraAyarla(ekstra - onceki);
+    }
+  });
+
+  /* ============================================================
+     HAMLELER — kişisel, rakamlı, motive eden taktikler (kural tabanlı).
+     Her rakam ENGINE.simulatePlan / FAIZ / SIKISIK'tan; uydurma yok.
+     ============================================================ */
+  const HAMLE_IKON = {
+    hedef: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    yuvarla: '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>',
+    ikramiye: '<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-2-4-6-4-6-1.5S9 8 12 8c3 0 6-1 6-3.5S14 4 12 8"/>',
+    kartopu: '<circle cx="12" cy="14" r="7"/><path d="M8 6a4 4 0 0 1 8 0"/>',
+    kmh: '<rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M8 14h3"/>',
+    tas: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+    kart: '<rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M4 4l16 16"/>'
+  };
+  function hamleler() {
+    const s = sd();
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    if (acik.length === 0) return [];
+    const ekstra = parseFloat($("ekstra").value) || 0;
+    const ana = ENGINE.simulatePlan(acik, ekstra, durum.yontem, durum.ayarlar);
+    const out = [];
+    const kiyas = (sonra) => (ana.uygulanabilir && sonra.uygulanabilir)
+      ? { ay: ana.aySayisi - sonra.aySayisi, faiz: ana.toplamFaiz - sonra.toplamFaiz } : null;
+    const yuvarlaBirim = PARA.kod === "TRY" ? 500 : 50, ikramiye = PARA.kod === "TRY" ? 5000 : 500;
+
+    // 1) En pahalı borç: ayda ne kadar faiz üretiyor
+    const faizli = acik.filter(b => b.type === "revolving" && b.annualRate > 0)
+      .map(b => ({ b, oran: ENGINE.efektifAylikOran(b.annualRate, durum.ayarlar) }))
+      .sort((a, c) => c.oran - a.oran)[0];
+    if (faizli) {
+      const aylik = faizli.b.balance * faizli.oran, bin = 1000 * faizli.oran * (PARA.kod === "TRY" ? 1 : 0.1);
+      out.push({ ikon: "hedef", baslik: s.hmPahali(kacis(faizli.b.ad), paraFmt.format(aylik)),
+        metin: s.hmPahaliMetin(s.oranIfade(yuvarla2(faizli.oran * 100), true), paraFmt.format(PARA.kod === "TRY" ? 1000 : 100), paraFmt.format(bin)),
+        btn: { metin: s.btnOde, veri: `data-hm-ode="${durum.borclar.indexOf(faizli.b)}"` } });
+    }
+    // 2) Yuvarlama: her ödemeyi yukarı yuvarla
+    const yuv = acik.reduce((t, b) => { const a = Math.min(b.payment, b.balance); return t + (Math.ceil(a / yuvarlaBirim) * yuvarlaBirim - a); }, 0);
+    if (yuv >= yuvarlaBirim * 0.4) {
+      const k = kiyas(ENGINE.simulatePlan(acik, ekstra + yuv, durum.yontem, durum.ayarlar));
+      if (k && (k.ay > 0 || k.faiz > 1)) out.push({ ikon: "yuvarla", baslik: s.hmYuvarla(paraFmt.format(yuv)),
+        metin: s.hmYuvarlaMetin(paraFmt.format(yuvarlaBirim), k.ay, paraFmt.format(k.faiz)),
+        btn: { metin: s.hmPlanaEkle, veri: `data-hm-ekstra="${Math.round(yuv)}"` } });
+    }
+    // 3) Tek seferlik para (ikramiye / vergi iadesi): en yüksek faizli (yoksa ilk) borca
+    const hedefB = faizli ? faizli.b : acik[0];
+    if (hedefB && hedefB.balance > ikramiye * 0.5) {
+      const kopya = acik.map(b => b === hedefB ? Object.assign({}, b, { balance: Math.max(0, b.balance - ikramiye) }) : b).filter(b => b.balance > 0.005);
+      const k = kopya.length ? kiyas(ENGINE.simulatePlan(kopya, ekstra, durum.yontem, durum.ayarlar)) : null;
+      if (k && (k.ay > 0 || k.faiz > 1)) out.push({ ikon: "ikramiye", baslik: s.hmIkramiye(paraFmt.format(ikramiye)),
+        metin: s.hmIkramiyeMetin(kacis(hedefB.ad), k.ay, paraFmt.format(k.faiz)) });
+    }
+    // 4) Kartopu etkisi: ilk kapanan borcun ödemesi serbest kalır
+    if (ana.uygulanabilir && ana.odemeSirasi.length > 1) {
+      const ilk = ana.odemeSirasi[0], b = acik.find(x => x.ad === ilk.ad);
+      const sonraki = ana.odemeSirasi[1];
+      if (b) {
+        const kapanis = new Date(new Date().getFullYear(), new Date().getMonth() + ilk.ay - 1, 1);
+        const serbest = Number.isFinite(b.planOdeme) ? b.planOdeme : b.payment;
+        out.push({ ikon: "kartopu", baslik: s.hmKartopu(kacis(b.ad), tarihFmt.format(kapanis)),
+          metin: s.hmKartopuMetin(paraFmt.format(serbest), kacis(sonraki.ad)) });
+      }
+    }
+    // 5) KMH: maaş günü yatır (günlük faiz)
+    const kmh = acik.find(b => b.type === "revolving" && b.altTur === "kmh" && b.annualRate > 0);
+    if (kmh) {
+      const tutar = Math.min(kmh.payment, kmh.balance), kaz = SIKISIK.gunlukFaiz(tutar, kmh.annualRate / 12, 10, durum.ayarlar);
+      if (kaz > 0.5) out.push({ ikon: "kmh", baslik: s.hmKmh(paraFmt.format(kaz * 12)), metin: s.hmKmhMetin(kacis(kmh.ad), paraFmt.format(tutar), paraFmt.format(kaz)) });
+    }
+    // 6) Kartı dondur: yeni harcama planı geri iter (ekstra bütçeden düşmüş gibi)
+    const kart = acik.find(b => b.type === "revolving" && b.altTur !== "kmh");
+    const harcama = PARA.kod === "TRY" ? 1000 : 100;
+    if (kart && ekstra >= harcama) {
+      const k = kiyas(ENGINE.simulatePlan(acik, ekstra - harcama, durum.yontem, durum.ayarlar));
+      if (k && k.ay < 0) out.push({ ikon: "kart", baslik: s.hmKart(kacis(kart.ad)), metin: s.hmKartMetin(paraFmt.format(harcama), -k.ay, paraFmt.format(-k.faiz)) });
+    }
+    // 7) Kilometre taşı: sıradaki %25'lik eşik
+    const ilkToplam = durum.borclar.reduce((t, b) => t + (b.initialBalance > 0 ? b.initialBalance : b.balance), 0);
+    const kalan = acik.reduce((t, b) => t + b.balance, 0);
+    if (ilkToplam > 0 && ana.uygulanabilir) {
+      const yuzde = (1 - kalan / ilkToplam) * 100, esik = [25, 50, 75].find(e => e > yuzde + 0.5);
+      if (esik) {
+        const hedefBakiye = ilkToplam * (1 - esik / 100), i = ana.bakiyeSerisi.findIndex(v => v <= hedefBakiye + 0.005);
+        if (i > 0) out.push({ ikon: "tas", baslik: s.hmTas(Math.round(yuzde), esik), metin: s.hmTasMetin(paraFmt.format(kalan - hedefBakiye), tarihFmt.format(new Date(new Date().getFullYear(), new Date().getMonth() + i - 1, 1))) });
+      }
+    }
+    return out.slice(0, 5);
+  }
+
   function oneriCiz() {
     const mesajlar = ONERI.uret({
       borclar: durum.borclar,
@@ -9649,11 +10311,25 @@ const ARAYUZ = () => {
       ayarlar: durum.ayarlar,
       dil: durum.dil
     });
-    $("oneriler").innerHTML = mesajlar.map(x =>
-      `<p class="oneri ${x.tip === "uyari" ? "uyari" : x.tip === "kutlama" ? "kutlama" : ""}">${x.metin}</p>`
-    ).join("");
+    // Uyarılar ve kutlamalar üstte kalır; ardından rakamlı hamle kartları
+    const ust = mesajlar.filter(x => x.tip === "uyari" || x.tip === "kutlama").map(x =>
+      `<p class="oneri ${x.tip === "uyari" ? "uyari" : "kutlama"}">${x.metin}</p>`).join("");
+    const hm = hamleler();
+    $("oneriler").innerHTML = ust + (hm.length ? `<div class="hm-liste">${hm.map(h => `<div class="hm-kart">
+        <span class="hm-ikon"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${HAMLE_IKON[h.ikon]}</svg></span>
+        <div><p class="hm-baslik">${h.baslik}</p><p class="hm-metin">${h.metin}</p>
+        ${h.btn ? `<button type="button" class="small ghost hm-btn" ${h.btn.veri}>${h.btn.metin}</button>` : ""}</div>
+      </div>`).join("")}</div>` : mesajlar.map(x => `<p class="oneri">${x.metin}</p>`).join(""));
+    kdCiz();
+    degisimCiz();
     planYonlendirCiz(); // Plan yönlendirmesi her veri değişiminde aynı zincirle tazelenir
   }
+  $("oneriler").addEventListener("click", (e) => {
+    const ode = e.target.closest("[data-hm-ode]");
+    if (ode) { odemeAc(Number(ode.dataset.hmOde)); return; }
+    const ek = e.target.closest("[data-hm-ekstra]");
+    if (ek) { kdEkstraAyarla((parseFloat($("ekstra").value) || 0) + Number(ek.dataset.hmEkstra)); titret(20); }
+  });
 
   /* ---- Akıllı hamle: rolü "Şunu Yaparsan" senaryolarına taşındı.
      ONERI.enIyiHamle modülü olduğu gibi duruyor; bu kart artık çizilmiyor. ---- */
@@ -12655,8 +13331,8 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
      Kayıtta değerler klasik forma yazılır ve mevcut submit tetiklenir:
      doğrulama, tahmini faiz, limit ve kayıt-sonrası TEK yerden yönetilir.
      ============================================================ */
-  const SB_SIRA = ["sbTur", "sbTutar", "sbFaiz", "sbOdeme", "sbGun", "sbAd"];
-  let sbVeri = null, sbAdimNo = 0, sbFaizOnay = false;
+  const SB_SIRA = ["sbTur", "sbTutar", "sbFaiz", "sbOdeme", "sbPlan", "sbGun", "sbAd"];
+  let sbVeri = null, sbAdimNo = 0, sbFaizOnay = false, sbPlanOnay = false;
   let sbEkAlanlar = null; // sihirbazdan kayda taşınan: altTur, faizKaynak, faizTahmini
 
   function sbAdimlar() {
@@ -12677,11 +13353,12 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
       return;
     }
     sbVeri = { tur: null, altTur: "kart", tutar: null, faiz: "", faizBirim: "aylik", faizTahmini: false, faizKaynak: null, faizYol: null,
-               odeme: null, ad: "", gun: null, taksitToplam: null, taksitOdenen: null };
+               odeme: null, plan: null, ad: "", gun: null, taksitToplam: null, taksitOdenen: null };
     sbBirimUygula();
     sbFaizOnay = false;
-    ["sbTutarInp", "sbFaizInp", "sbOdemeInp", "sbAdInp", "sbEkstreFaiz", "sbEkstreBorc"].forEach(id => { $(id).value = ""; });
-    ["sbTutarHata", "sbFaizHata", "sbOdemeHata", "sbAdHata"].forEach(id => { $(id).textContent = ""; });
+    ["sbTutarInp", "sbFaizInp", "sbOdemeInp", "sbPlanInp", "sbAdInp", "sbEkstreFaiz", "sbEkstreBorc"].forEach(id => { $(id).value = ""; });
+    ["sbTutarHata", "sbFaizHata", "sbOdemeHata", "sbPlanHata", "sbAdHata"].forEach(id => { $(id).textContent = ""; });
+    sbPlanOnay = false;
     document.querySelectorAll(".sb-tur").forEach(b => b.classList.remove("secili"));
     sbFaizYolSec(null);
     sbGunIzgaraKur();
@@ -12711,6 +13388,10 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
       $("sbHatirlatTeklif").hidden = true;
     }
     if (ad === "sbAd") sbOzetCiz();
+    if (ad === "sbPlan") {
+      $("sbPlanInp").placeholder = sbVeri.odeme ? sbVeri.odeme.toLocaleString(sd().yerel) : "";
+      $("sbPlanIpucu").textContent = sbVeri.odeme ? sd().sbPlanIpucu(paraFmt.format(sbVeri.odeme)) : st().sb_plan_ipucu;
+    }
     sbMiniCiz();
     // Geçiş (240ms) bitince alan otomatik odaklanır
     setTimeout(() => { const inp = $(ad).querySelector("input"); if (inp) inp.focus(); }, 250);
@@ -12737,6 +13418,12 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
   }
   $("sbTutarInp").addEventListener("input", () => { sbParaBicimle($("sbTutarInp")); $("sbTutarHata").textContent = ""; sbMiniCiz(); });
   $("sbOdemeInp").addEventListener("input", () => { sbParaBicimle($("sbOdemeInp")); $("sbOdemeHata").textContent = ""; sbMiniCiz(); });
+  $("sbPlanInp").addEventListener("input", () => { sbParaBicimle($("sbPlanInp")); $("sbPlanHata").textContent = ""; sbPlanOnay = false; });
+  document.querySelectorAll("[data-sb-plan]").forEach(b => b.addEventListener("click", () => {
+    if (!sbVeri || !sbVeri.odeme) return;
+    $("sbPlanInp").value = Math.round(sbVeri.odeme * parseFloat(b.dataset.sbPlan)).toLocaleString(sd().yerel);
+    $("sbPlanHata").textContent = ""; sbPlanOnay = false;
+  }));
   $("sbFaizInp").addEventListener("input", () => { $("sbFaizHata").textContent = ""; sbFaizOnay = false; sbFaizCevrimGuncelle(); });
 
   /* Sihirbazda faiz birimi: klasik formla aynı mantık, aynı şeffaflık */
@@ -12898,6 +13585,17 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
       if (n > TUTAR_TAVANI) { $("sbOdemeHata").textContent = s.hataBuyuk; return; }
       sbVeri.odeme = n;
       sbTaksitBilgiGuncelle(); // sıradaki taksit adımının ipucu satırı hazır olsun
+    } else if (ad === "sbPlan") {
+      // İsteğe bağlı: boş = asgari. Asgarinin altı bir kez uyarılır (gecikme riski), sonra kabul edilir
+      const ham = $("sbPlanInp").value.trim();
+      if (ham === "") sbVeri.plan = null;
+      else {
+        const n = sayiOku(ham);
+        if (!(n >= 0) || !Number.isFinite(n)) { $("sbPlanHata").textContent = s.hataSayi; return; }
+        if (n > TUTAR_TAVANI) { $("sbPlanHata").textContent = s.hataBuyuk; return; }
+        if (n < sbVeri.odeme - 0.005 && !sbPlanOnay) { sbPlanOnay = true; $("sbPlanHata").textContent = s.sbPlanAlti; return; }
+        sbVeri.plan = Math.abs(n - sbVeri.odeme) < 0.005 ? null : n;
+      }
     } else if (ad === "sbTaksit") {
       // Opsiyonel: boş = basit davranış; girildiyse tutarlılık şart
       const tHam = $("sbTaksitToplam").value.trim(), oHam = $("sbTaksitOdenen").value.trim();
@@ -12987,6 +13685,17 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     const onceki = durum.borclar.length;
     $("borcForm").dispatchEvent(new Event("submit", { cancelable: true }));
     if (durum.borclar.length > onceki) {
+      // Kendi tutarı girildiyse: kendi planı açılır, diğer borçlar asgariyle başlar
+      if (sbVeri.plan !== null && sbVeri.plan !== undefined) {
+        const yeni = durum.borclar[durum.borclar.length - 1];
+        yeni.planTutar = Math.round(sbVeri.plan * 100) / 100;
+        if (durum.kendiPlan !== true) {
+          durum.kendiPlan = true;
+          for (const b of durum.borclar) if (!Number.isFinite(b.planTutar)) b.planTutar = Math.min(b.payment, b.balance);
+        }
+        kpUygula();
+        kaydetVeCiz();
+      }
       sbOnayGoster(); // zarif onay; titreşim submit akışında
     } else {
       // Güvenlik ağı: beklenmedik doğrulama hatası — klasik formda göster
@@ -13284,11 +13993,24 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
       <div class="detay-cubuk"><i style="width:${y}%"></i></div>
       <p class="detay-akis">${s.odendiYuzde(y)} · ${s.basSimdi(
         `<strong>${paraFmt.format(b.initialBalance ?? b.balance)}</strong>`,
-        `<strong>${paraFmt.format(b.balance)}</strong>`)}</p>${taksitSatiri}${vadeSatiri}`;
-    const liste = (b.payments || []).slice().sort((a, c) => c.tarih.localeCompare(a.tarih));
-    $("odemeListesi").innerHTML = liste.length === 0
+        `<strong>${paraFmt.format(b.balance)}</strong>`)}</p>${taksitSatiri}${vadeSatiri}${kapandi ? "" : detayPlanHtml(b)}${kapandi ? "" : detayAyHtml(b)}`;
+    // Hareketler: ödemeler (−) + işleyen faiz / gecikme faizi (+) tek zaman çizelgesinde
+    const ayAdi = new Intl.DateTimeFormat(s.yerel, { month: "long", year: "numeric" });
+    const hareket = (b.payments || []).map(p => ({ tip: "odeme", sira: p.tarih, p }))
+      .concat((Array.isArray(b.faizKayit) ? b.faizKayit : []).map(f => ({ tip: f.tur, sira: f.ay + "-00", f })))
+      .sort((a, c) => c.sira.localeCompare(a.sira));
+    $("odemeListesi").innerHTML = hareket.length === 0
       ? `<p class="empty">${s.odemeBos}</p>`
-      : liste.map(p => {
+      : hareket.map(h => {
+          if (h.tip !== "odeme") {
+            const [yy, mm] = h.f.ay.split("-").map(Number);
+            return `<div class="odeme-satir faiz-satir ${h.tip}">
+            <span class="tarih">${ayAdi.format(new Date(yy, mm - 1, 1))}</span>
+            <span class="tutar">+${paraFmt.format(h.f.tutar)}</span>
+            <span class="not">${h.tip === "gecikme" ? s.hrGecikme : s.hrFaiz}</span>
+          </div>`;
+          }
+          const p = h.p;
           const pi = b.payments.indexOf(p);
           return `<div class="odeme-satir">
             <span class="tarih">${kisaTarih.format(new Date(p.tarih + "T12:00:00"))}</span>
@@ -13301,6 +14023,78 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
           </div>`;
         }).join("");
   }
+  /* Detayda "Aylık ödemen": asgari + kendi tutarın; buradan değiştirilebilir */
+  function detayPlanHtml(b) {
+    const s = sd(), asgari = Math.min(b.payment, b.balance);
+    const kendi = durum.kendiPlan === true && Number.isFinite(b.planOdeme);
+    let tutar = kendi ? b.planOdeme : asgari, oneriEk = 0;
+    if (!kendi) {
+      const sim = ENGINE.simulatePlan(durum.borclar, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
+      const o = sim.ilkAylar[0] && sim.ilkAylar[0].odemeler.find(x => x.ad === b.ad);
+      if (o) { oneriEk = o.ekstra; tutar = o.asgari + o.ekstra; }
+    }
+    return `<div class="detay-plan">
+      <div><span class="muted">${s.dpAylik}</span><strong>${paraFmt.format(tutar)}</strong>
+        <small class="muted">${kendi ? (tutar > asgari + 0.005 ? s.dpUstu(paraFmt.format(tutar - asgari)) : tutar < asgari - 0.005 ? s.dpAlti(paraFmt.format(asgari - tutar)) : s.dpAsgari) : oneriEk > 0.005 ? s.dpOneriEk(paraFmt.format(asgari), paraFmt.format(oneriEk)) : s.dpOneri}</small></div>
+      <button type="button" class="ghost small" data-dp-ac>${s.btnDuzenle}</button>
+      <div class="dp-form" hidden>
+        <input type="text" inputmode="decimal" data-dp-inp value="${Math.round((kendi ? tutar : asgari) * 100) / 100}" aria-label="${s.dpAylik}">
+        <div class="kp-hizli">
+          <button type="button" class="ghost small" data-dp-kat="1">${s.kpHizliAsgari}</button>
+          <button type="button" class="ghost small" data-dp-kat="1.5">${s.kpHizliKat("1,5")}</button>
+          <button type="button" class="ghost small" data-dp-kat="2">${s.kpHizliKat("2")}</button>
+        </div>
+        <p class="kp-uyari" data-dp-not hidden></p>
+        <button type="button" class="small" data-dp-kaydet>${s.dpKaydet}</button>
+      </div>
+    </div>`;
+  }
+  /* Bu ay bu borçta ne oldu: ödenen (−), faiz/gecikme (+), net */
+  function detayAyHtml(b) {
+    const s = sd(), ay = buAyKodu();
+    const odenen = (b.payments || []).filter(p => String(p.tarih).slice(0, 7) === ay).reduce((t, p) => t + (+p.tutar || 0), 0);
+    const faiz = ayFaizi(b, ay, "faiz"), gec = ayFaizi(b, ay, "gecikme");
+    if (odenen < 0.005 && faiz < 0.005 && gec < 0.005) return "";
+    const net = faiz + gec - odenen;
+    return `<div class="detay-ay ${net > 0.005 ? "artti" : "azaldi"}">
+      <span>${s.daBaslik}</span>
+      ${odenen > 0.005 ? `<span class="iyi">−${paraFmt.format(odenen)} ${s.daOdeme}</span>` : ""}
+      ${faiz > 0.005 ? `<span class="kotu">+${paraFmt.format(faiz)} ${s.daFaiz}</span>` : ""}
+      ${gec > 0.005 ? `<span class="kotu">+${paraFmt.format(gec)} ${s.daGecikme}</span>` : ""}
+      <strong>${net > 0.005 ? s.daArtti(paraFmt.format(net)) : s.daAzaldi(paraFmt.format(-net))}</strong>
+    </div>`;
+  }
+  $("detayOzet").addEventListener("click", (e) => {
+    const b = durum.borclar[detayIdx];
+    if (!b) return;
+    const kutu = $("detayOzet").querySelector(".dp-form");
+    if (e.target.closest("[data-dp-ac]")) { kutu.hidden = !kutu.hidden; if (!kutu.hidden) kutu.querySelector("input").focus(); return; }
+    const kat = e.target.closest("[data-dp-kat]");
+    if (kat) { kutu.querySelector("input").value = String(Math.round(Math.min(b.payment, b.balance) * parseFloat(kat.dataset.dpKat))); kutu.querySelector("input").dispatchEvent(new Event("input", { bubbles: true })); return; }
+    if (e.target.closest("[data-dp-kaydet]")) {
+      const v = sayiOku(kutu.querySelector("input").value);
+      if (!(v >= 0) || !Number.isFinite(v)) { const n = kutu.querySelector("[data-dp-not]"); n.hidden = false; n.textContent = sd().kpGecersiz; return; }
+      b.planTutar = Math.round(v * 100) / 100;
+      if (durum.kendiPlan !== true) {
+        durum.kendiPlan = true;
+        for (const x of durum.borclar) if (!Number.isFinite(x.planTutar)) x.planTutar = Math.min(x.payment, x.balance);
+      }
+      kpUygula();
+      kaydetVeCiz();
+      detayCiz();
+      titret(15);
+    }
+  });
+  $("detayOzet").addEventListener("input", (e) => {
+    if (!e.target.matches("[data-dp-inp]")) return;
+    const b = durum.borclar[detayIdx], s = sd(), n = $("detayOzet").querySelector("[data-dp-not]");
+    const v = sayiOku(e.target.value), asgari = Math.min(b.payment, b.balance);
+    n.hidden = false;
+    if (!(v >= 0)) { n.className = "kp-uyari"; n.textContent = s.kpGecersiz; }
+    else if (v < asgari - 0.005) { n.className = "kp-uyari"; n.textContent = b.type === "installment" ? s.kpTaksitAlti(paraFmt.format(asgari - v)) : s.kpAsgariAlti(paraFmt.format(asgari - v)); }
+    else if (v > asgari + 0.005) { n.className = "kp-fazla"; n.textContent = s.kpFazla(paraFmt.format(v - asgari)); }
+    else n.hidden = true;
+  });
   $("odemeListesi").addEventListener("click", (e) => {
     const d = e.target.closest("[data-odeme-duzenle]");
     if (d) { odemeAc(detayIdx, parseInt(d.dataset.odemeDuzenle, 10)); return; }
@@ -13477,6 +14271,15 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") aboneligiTazele(); });
   }
   erisimDegisti();
+  // Uygulamaya dönüşte (ertesi gün / yeni ay): faiz ve gecikme faizi işlensin
+  let sonFaizKontrol = Date.now();
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible" || Date.now() - sonFaizKontrol < 60000) return;
+    sonFaizKontrol = Date.now();
+    const onceki = JSON.stringify(durum.borclar.map(b => b.balance));
+    aylikFaizIsle(); gecikmeIsle();
+    if (JSON.stringify(durum.borclar.map(b => b.balance)) !== onceki) kaydetVeCiz();
+  });
   // Geliştirici modu (?dev=1): bilinen-cevap doğrulama tablosunu aç
   // Geliştirici modu da YEREL ortamla sınırlı: canlı adreste ve native
   // pakette ?dev=1 diye bir kapı yoktur (bkz. CLAUDE.md değişmez kurallar).

@@ -51,7 +51,7 @@ dilim seçimi, ekstreden oran, `aylikIsle` aylık faiz işleme; 15 test), `HATIR
 ödendi, isteğe bağlı vade+1 gecikme hatırlatması; 18 test), `BUTCE` (Tasarruf Modu:
 serbest para, önerilen ekstra, gider senaryoları; 8 test), `SIKISIK` ("bu ay
 asgarileri ödeyemiyorum": en az borcu gecikmeye düşüren dağıtım, gecikme faizi
-= akdi + 0,30 puan [TCMB], günlük faiz yardımcısı; 8 test), `YAPILANDIRMA`
+= akdi + 0,30 puan [TCMB], günlük faiz yardımcısı, `gecikmeIslet` günlük gecikme faizi işletme; 12 test), `YAPILANDIRMA`
 (seçili borçları tek krediyle kapatma: annüite vs yalnız asgari; 5 test).
 
 **2. DEPOLAMA (`DEPO` → `STORAGE`)** — iki katman:
@@ -98,7 +98,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v17`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v18`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -157,6 +157,21 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   sıfırlanır; Ayarlar'da `faizOtomatik` ile kapatılır; Genel'de bilgi satırı).
   Tam ekran pencerelerde (detay, rapor, abone, gün ekle, zil) altta sabit
   "← Geri" düğmesi (`#geriFab`, MutationObserver).
+- **Kendi ödemen + faiz görünür + hamleler** (19 Kasım 2026): Plan'da üstte
+  "Sıfırla önersin / Kendi tutarlarım" seçimi (`kpKart`, `data-kp-mod`);
+  sihirbaza kart/KMH için "ayda ne kadar ödeyeceksin?" adımı (`sbPlan`, girilirse
+  kendi planı açılır); borç detayında "Aylık ödemen" düzenleme + "bu ay bu borçta"
+  dökümü; Bu Ay'da "Fazlası" sütunu, kısmi ödeme satırı. Faiz ve **gecikme faizi**
+  borcun kendi geçmişine yazılır (`b.faizKayit` [{ay, tur: faiz|gecikme, tutar}]);
+  gecikme faizi geciken tutara günlük işler (`gecikmeIsle`, `b.gecikmeKayit`; kart/KMH
+  akdi+0,30 puan, kredide oran girildiyse akdi×1,30, yoksa tutar uydurulmaz; akdi
+  pay `b.gecikmeAkdi` ay sonu faizinden düşülür). Genel'de **"Borcun nasıl
+  değişiyor?"** (`degisimCiz`: ay başı → ödeme/faiz/gecikme → şimdi, geçmiş aylar
+  `rozetDurum.aylik` + motor tahmini çubuk grafik, büyüme/gecikme/asgari tuzağı
+  uyarısı), **"Küçük Değişiklik, Büyük Etki"** (`KD_KALEMLER`: kahve, döner,
+  sipariş, sigara, taksi, abonelik; örnek fiyat para birimine göre, kullanıcı
+  değiştirir; `durum.kucukDegisim`; "planıma ekle" ekstraya yazar) ve
+  "Sana Özel Öneriler" yerine rakamlı **hamle kartları** (`hamleler()`).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
