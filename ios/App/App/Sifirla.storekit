@@ -39,12 +39,12 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Hatırlatmalar, aylık rapor, İki Yol, Hedef ve Tasarruf Modu",
+              "description" : "Aylık rapor, İki Yol, Hedef, Tasarruf Modu ve senaryolar",
               "displayName" : "Sıfırla Pro (aylık)",
               "locale" : "tr"
             },
             {
-              "description" : "Reminders, monthly report, Two Paths, Goal and Savings Mode",
+              "description" : "Monthly report, Two Paths, Goal, Savings Mode and scenarios",
               "displayName" : "Sıfırla Pro (monthly)",
               "locale" : "en_US"
             }

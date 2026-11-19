@@ -1261,7 +1261,6 @@
   @supports (overflow: clip) { body { overflow-x: clip; } }  /* clip kaydırma kabı yaratmaz: sticky öğeler bozulmaz */
   /* Native: Safari'ye özel widget ipucu anlamsız; durum çubuğunun arkasında
      ince bir perde — kaydırılan içerik saat/pil simgeleriyle çakışmaz */
-  html.natif .widget-not { display: none; }
   html.natif body > .durum-perde { position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); z-index: 900; pointer-events: none;
     background: color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
   /* Yalnızca test telefonundaki Pro anahtarı açıkken: mağazaya yanlışlıkla gitmesin diye göze batar */
@@ -1920,9 +1919,7 @@ var GIRIS = (function () {
       </div>
     </div>
     <p class="muted no-print widget-not" style="margin-top:12px" data-i18n="geri_not">
-      Bunu widget gibi kullanmak için: <a href="?widget=1">?widget=1</a> adresini Safari'de açıp
-      Paylaş → "Ana Ekrana Ekle" de. Gerçek kilit ekranı widget'ı saf HTML ile yapılamaz;
-      bunun için uygulamanın native bir sarmalayıcıya (ör. iOS WidgetKit) taşınması gerekir.
+      Plana uydukça bu sayı her ay küçülür.
     </p>
   </section>
 
@@ -2138,7 +2135,7 @@ var GIRIS = (function () {
     </div>
     <p id="limitUyari" class="warning" hidden></p>
     <p class="muted" style="margin-top:0.6rem" data-i18n="form_not">
-      Taksitli kredide bakiye olarak <strong>kalan toplam taksit tutarını</strong> (faiz dahil) girin; faiz oranı yalnızca öncelik sıralamasında kullanılır.
+      Taksitli kredide bakiye olarak <strong>kalan toplam taksit tutarını</strong> (faiz dahil) gir; faiz oranı yalnızca öncelik sıralamasında kullanılır.
     </p>
   </section>
 
@@ -2211,6 +2208,76 @@ var GIRIS = (function () {
       <button type="button" class="ghost small" id="iyAnTekrar" data-i18n="iy_an_tekrar">O anı yeniden göster</button>
     </div>
     <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
+  </section>
+
+  <!-- Plan hesaplama -->
+  <section class="card">
+    <h2 data-i18n="plan_h">Ödeme Planı</h2>
+    <div class="form-grid no-print" style="max-width:420px">
+      <div>
+        <label for="ekstra" data-i18n="lbl_ekstra">Aylık ekstra bütçe (₺)</label>
+        <input id="ekstra" type="number" min="0" step="0.01" value="0">
+      </div>
+      <div>
+        <button id="hesaplaBtn" data-i18n="btn_hesapla">Planı hesapla</button>
+      </div>
+    </div>
+
+    <!-- "Ya şöyle yaparsam" kaydırıcısı: sürükledikçe motor canlı çağrılır -->
+    <div id="kaydiriciBolum" class="no-print" style="margin-top:1.2rem" hidden>
+      <label for="kaySlider" style="display:flex; justify-content:space-between; gap:0.6rem; font-size:0.9rem">
+        <span data-i18n="kay_lbl">Ya şöyle yaparsam: ayda şu kadar daha ödersem</span>
+        <strong id="kayDeger" style="color:var(--accent-strong)">+₺0</strong>
+      </label>
+      <input type="range" id="kaySlider" min="0" max="10000" step="100" value="0">
+      <div class="kay-statlar">
+        <div>
+          <p class="muted" id="kayTarihLbl">Borçsuz tarih</p>
+          <p class="deger" id="kayTarih">—</p>
+        </div>
+        <div>
+          <p class="muted" id="kayFaizLbl">Toplam faiz</p>
+          <p class="deger" id="kayFaiz">—</p>
+        </div>
+      </div>
+      <p id="kayCumle" class="info" style="margin-top:0.7rem"></p>
+    </div>
+
+    <div id="sonuclar" style="margin-top:1rem"></div>
+  </section>
+
+  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
+  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
+    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Kendi planını kur</span></h2>
+    <p class="muted" data-i18n="kp_alt">Her borca ayda ne kadar ödeyeceğine sen karar ver — asgariden az ya da çok. Bütün ekranlar bu plana göre hesaplanır.</p>
+    <label class="check kp-ac">
+      <input type="checkbox" id="kpAcik">
+      <span data-i18n="kp_chk">Kendi tutarlarımla ödeyeceğim</span>
+    </label>
+    <div id="kpIcerik" hidden>
+      <div id="kpListe" class="kp-liste"></div>
+      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
+      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
+    </div>
+  </section>
+
+  <!-- Sıradaki tek adım: plan ezici gelmesin — tek net eylem + hızlı Öde -->
+  <section class="card" id="tekAdimKart" hidden>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 12.5 2.3 2.3L15.5 10"/></svg><span data-i18n="tekadim_h">Sıradaki Tek Adım</span></h2>
+    <div id="tekAdimIcerik"></div>
+  </section>
+
+  <!-- Ödeme takvimi: motorun ay-ay simülasyonundan türetilen ileriye dönük plan.
+       Motor değişmez; seriler (borcSerileri/bakiyeSerisi) geri okunarak çizilir. -->
+  <section class="card" id="takvimKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15.5 2 2 4-4.5"/></svg><span data-i18n="takvim_h">Ödeme Takvimi</span></h2>
+    <p class="muted" id="takvimOzet" style="margin-bottom:4px"></p>
+    <p class="mini-ipucu" id="takvimKaydiriciNotu" hidden></p>
+    <div id="takvimListe" class="takvim"></div>
+    <div class="no-print" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+      <button type="button" id="takvimDevamBtn" class="ghost small" hidden></button>
+      <button type="button" id="takvimIndirBtn" class="ghost small" hidden data-i18n="takvim_indir">Takvimi indir (.txt)</button>
+    </div>
   </section>
 
   <!-- Hedef: "şu ayda borçsuz olmak istiyorum" → ayda ne kadar (HEDEF katmanı, motordan) -->
@@ -2403,127 +2470,6 @@ var GIRIS = (function () {
     <div id="kesSonuc" style="margin-top:12px"></div>
   </section>
 
-  <!-- Faiz & vergi ayarları: hiçbir oran koda gömülü değil -->
-  <section class="card no-print">
-    <h2><span data-i18n="vergi_h">Faiz &amp; Vergi Ayarları</span> <span class="badge accent" id="vergiTrEtiket" data-i18n="vergi_tr" hidden>Türkiye'ye özel</span></h2>
-    <label class="check">
-      <input type="checkbox" id="vergiUygula">
-      <span data-i18n="vergi_chk">Faize KKDF + BSMV ekle (kredi kartı / KMH faizlerine uygulanır)</span>
-    </label>
-    <div class="form-grid" style="max-width:340px; margin-top:0.6rem">
-      <div>
-        <label for="kkdf" data-i18n="lbl_kkdf">KKDF oranı (%)</label>
-        <input id="kkdf" type="number" min="0" step="0.01">
-      </div>
-      <div>
-        <label for="bsmv" data-i18n="lbl_bsmv">BSMV oranı (%)</label>
-        <input id="bsmv" type="number" min="0" step="0.01">
-      </div>
-      <div id="varsayilanFaizKap">
-        <!-- TL dışı eski kayıtlar için: boş bırakılmış faizde kullanılan tahmin -->
-        <label for="varsayilanFaiz" data-i18n="lbl_varsayilan_faiz">Bilinmeyen faiz için varsayılan — kredi kartı/KMH (yıllık %)</label>
-        <input id="varsayilanFaiz" type="number" min="0" max="500" step="0.5">
-      </div>
-    </div>
-    <!-- TCMB azami akdi faiz tablosu: faiz "bilmiyorum" denince kullanılır (yalnız TL) -->
-    <div class="faiz-tablo" id="faizTabloKap">
-      <h3 class="alt-baslik" data-i18n="ft_h">Faizini bilmediğin kartlar için tahmin</h3>
-      <p class="mini-ipucu" id="ftKaynak"></p>
-      <div class="tablo-kap">
-        <table class="ft">
-          <thead><tr><th data-i18n="ft_dilim">Dönem borcu</th><th data-i18n="ft_aylik">Aylık %</th></tr></thead>
-          <tbody>
-            <tr><td><span data-i18n="ft_alti">Kart · altı:</span> <input id="ftAlt" type="number" min="0" step="1000" aria-label="1"></td><td><input id="ftK1" type="number" min="0" max="20" step="0.01"></td></tr>
-            <tr><td><span data-i18n="ft_arasi">Kart · üst sınır (dahil):</span> <input id="ftUst" type="number" min="0" step="1000" aria-label="2"></td><td><input id="ftK2" type="number" min="0" max="20" step="0.01"></td></tr>
-            <tr><td data-i18n="ft_ustu">Kart · üst sınırın üstü</td><td><input id="ftK3" type="number" min="0" max="20" step="0.01"></td></tr>
-            <tr><td data-i18n="ft_kmh">KMH / nakit avans</td><td><input id="ftKmh" type="number" min="0" max="20" step="0.01"></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="mini-ipucu" data-i18n="ft_not">Banka listesi yok ve oranlar internetten çekilmez. TCMB yeni tavan açıkladığında buradan güncelleyebilirsin; elle oran girdiğin borçlar etkilenmez.</p>
-      <button type="button" class="ghost small" id="ftSifirla" data-i18n="ft_sifirla">TCMB varsayılanına dön</button>
-    </div>
-    <p class="muted" style="margin-top:0.6rem" data-i18n="vergi_not">
-      Vergiler faiz tutarı üzerinden hesaplanır: efektif aylık oran = nominal oran × (1 + KKDF% + BSMV%).
-      Faiz her ay bileşik olarak işler.
-    </p>
-    <label class="check" style="margin-top:0.8rem">
-      <input type="checkbox" id="faizOtomatik">
-      <span data-i18n="faiz_oto_chk">Kart ve KMH bakiyelerine her ay faizi otomatik ekle</span>
-    </label>
-    <p class="muted check-not" data-i18n="faiz_oto_not">Her ayın başında, faizli borçların bakiyesine geçen ayın tahmini faizi eklenir. Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yazman yeterli.</p>
-  </section>
-
-  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
-  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
-    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Kendi planını kur</span></h2>
-    <p class="muted" data-i18n="kp_alt">Her borca ayda ne kadar ödeyeceğine sen karar ver — asgariden az ya da çok. Bütün ekranlar bu plana göre hesaplanır.</p>
-    <label class="check kp-ac">
-      <input type="checkbox" id="kpAcik">
-      <span data-i18n="kp_chk">Kendi tutarlarımla ödeyeceğim</span>
-    </label>
-    <div id="kpIcerik" hidden>
-      <div id="kpListe" class="kp-liste"></div>
-      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
-      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
-    </div>
-  </section>
-
-  <!-- Plan hesaplama -->
-  <section class="card">
-    <h2 data-i18n="plan_h">Ödeme Planı</h2>
-    <div class="form-grid no-print" style="max-width:420px">
-      <div>
-        <label for="ekstra" data-i18n="lbl_ekstra">Aylık ekstra bütçe (₺)</label>
-        <input id="ekstra" type="number" min="0" step="0.01" value="0">
-      </div>
-      <div>
-        <button id="hesaplaBtn" data-i18n="btn_hesapla">Planı hesapla</button>
-      </div>
-    </div>
-
-    <!-- "Ya şöyle yaparsam" kaydırıcısı: sürükledikçe motor canlı çağrılır -->
-    <div id="kaydiriciBolum" class="no-print" style="margin-top:1.2rem" hidden>
-      <label for="kaySlider" style="display:flex; justify-content:space-between; gap:0.6rem; font-size:0.9rem">
-        <span data-i18n="kay_lbl">Ya şöyle yaparsam: ayda şu kadar daha ödersem</span>
-        <strong id="kayDeger" style="color:var(--accent-strong)">+₺0</strong>
-      </label>
-      <input type="range" id="kaySlider" min="0" max="10000" step="100" value="0">
-      <div class="kay-statlar">
-        <div>
-          <p class="muted" id="kayTarihLbl">Borçsuz tarih</p>
-          <p class="deger" id="kayTarih">—</p>
-        </div>
-        <div>
-          <p class="muted" id="kayFaizLbl">Toplam faiz</p>
-          <p class="deger" id="kayFaiz">—</p>
-        </div>
-      </div>
-      <p id="kayCumle" class="info" style="margin-top:0.7rem"></p>
-    </div>
-
-    <div id="sonuclar" style="margin-top:1rem"></div>
-  </section>
-
-  <!-- Ödeme takvimi: motorun ay-ay simülasyonundan türetilen ileriye dönük plan.
-       Motor değişmez; seriler (borcSerileri/bakiyeSerisi) geri okunarak çizilir. -->
-  <section class="card" id="takvimKart">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15.5 2 2 4-4.5"/></svg><span data-i18n="takvim_h">Ödeme Takvimi</span></h2>
-    <p class="muted" id="takvimOzet" style="margin-bottom:4px"></p>
-    <p class="mini-ipucu" id="takvimKaydiriciNotu" hidden></p>
-    <div id="takvimListe" class="takvim"></div>
-    <div class="no-print" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
-      <button type="button" id="takvimDevamBtn" class="ghost small" hidden></button>
-      <button type="button" id="takvimIndirBtn" class="ghost small" hidden data-i18n="takvim_indir">Takvimi indir (.txt)</button>
-    </div>
-  </section>
-
-  <!-- Sıradaki tek adım: plan ezici gelmesin — tek net eylem + hızlı Öde -->
-  <section class="card" id="tekAdimKart" hidden>
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 12.5 2.3 2.3L15.5 10"/></svg><span data-i18n="tekadim_h">Sıradaki Tek Adım</span></h2>
-    <div id="tekAdimIcerik"></div>
-  </section>
-
   </div>
 
   <!-- SEKME: Bu Ay — aylık eylem planı -->
@@ -2681,6 +2627,58 @@ var GIRIS = (function () {
     </p>
   </section>
 
+  <!-- Faiz & vergi ayarları: hiçbir oran koda gömülü değil -->
+  <section class="card no-print">
+    <h2><span data-i18n="vergi_h">Faiz &amp; Vergi Ayarları</span> <span class="badge accent" id="vergiTrEtiket" data-i18n="vergi_tr" hidden>Türkiye'ye özel</span></h2>
+    <label class="check">
+      <input type="checkbox" id="vergiUygula">
+      <span data-i18n="vergi_chk">Faize KKDF + BSMV ekle (kredi kartı / KMH faizlerine uygulanır)</span>
+    </label>
+    <div class="form-grid" style="max-width:340px; margin-top:0.6rem">
+      <div>
+        <label for="kkdf" data-i18n="lbl_kkdf">KKDF oranı (%)</label>
+        <input id="kkdf" type="number" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="bsmv" data-i18n="lbl_bsmv">BSMV oranı (%)</label>
+        <input id="bsmv" type="number" min="0" step="0.01">
+      </div>
+      <div id="varsayilanFaizKap">
+        <!-- TL dışı eski kayıtlar için: boş bırakılmış faizde kullanılan tahmin -->
+        <label for="varsayilanFaiz" data-i18n="lbl_varsayilan_faiz">Bilinmeyen faiz için varsayılan — kredi kartı/KMH (yıllık %)</label>
+        <input id="varsayilanFaiz" type="number" min="0" max="500" step="0.5">
+      </div>
+    </div>
+    <!-- TCMB azami akdi faiz tablosu: faiz "bilmiyorum" denince kullanılır (yalnız TL) -->
+    <div class="faiz-tablo" id="faizTabloKap">
+      <h3 class="alt-baslik" data-i18n="ft_h">Faizini bilmediğin kartlar için tahmin</h3>
+      <p class="mini-ipucu" id="ftKaynak"></p>
+      <div class="tablo-kap">
+        <table class="ft">
+          <thead><tr><th data-i18n="ft_dilim">Dönem borcu</th><th data-i18n="ft_aylik">Aylık %</th></tr></thead>
+          <tbody>
+            <tr><td><span data-i18n="ft_alti">Kart · altı:</span> <input id="ftAlt" type="number" min="0" step="1000" aria-label="1"></td><td><input id="ftK1" type="number" min="0" max="20" step="0.01"></td></tr>
+            <tr><td><span data-i18n="ft_arasi">Kart · üst sınır (dahil):</span> <input id="ftUst" type="number" min="0" step="1000" aria-label="2"></td><td><input id="ftK2" type="number" min="0" max="20" step="0.01"></td></tr>
+            <tr><td data-i18n="ft_ustu">Kart · üst sınırın üstü</td><td><input id="ftK3" type="number" min="0" max="20" step="0.01"></td></tr>
+            <tr><td data-i18n="ft_kmh">KMH / nakit avans</td><td><input id="ftKmh" type="number" min="0" max="20" step="0.01"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mini-ipucu" data-i18n="ft_not">Banka listesi yok ve oranlar internetten çekilmez. TCMB yeni tavan açıkladığında buradan güncelleyebilirsin; elle oran girdiğin borçlar etkilenmez.</p>
+      <button type="button" class="ghost small" id="ftSifirla" data-i18n="ft_sifirla">TCMB varsayılanına dön</button>
+    </div>
+    <p class="muted" style="margin-top:0.6rem" data-i18n="vergi_not">
+      Vergiler faiz tutarı üzerinden hesaplanır: efektif aylık oran = nominal oran × (1 + KKDF% + BSMV%).
+      Faiz her ay bileşik olarak işler.
+    </p>
+    <label class="check" style="margin-top:0.8rem">
+      <input type="checkbox" id="faizOtomatik">
+      <span data-i18n="faiz_oto_chk">Kart ve KMH bakiyelerine her ay faizi otomatik ekle</span>
+    </label>
+    <p class="muted check-not" data-i18n="faiz_oto_not">Her ayın başında, faizli borçların bakiyesine geçen ayın tahmini faizi eklenir. Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yazman yeterli.</p>
+  </section>
+
+
   <!-- Yedekleme: tüm veri tek JSON; isteğe bağlı parolayla şifreli -->
   <section class="card no-print">
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v5h7"/><path d="M8 21v-6h8v6"/></svg><span data-i18n="yedek_h">Yedekleme</span></h2>
@@ -2832,9 +2830,9 @@ var GIRIS = (function () {
 
   <footer id="feragatname" data-i18n="feragat">
     <strong>Feragatname:</strong> Bu araç yalnızca eğitim ve bilgilendirme amaçlıdır; finansal danışmanlık değildir.
-    Hesaplamalar basitleştirilmiş varsayımlara dayanır (aylık bileşik faiz, sabit oranlar) ve bankanızın gerçek
+    Hesaplamalar basitleştirilmiş varsayımlara dayanır (aylık bileşik faiz, sabit oranlar) ve bankanın gerçek
     hesaplama yöntemi, vergiler (KKDF/BSMV), ücretler veya oran değişiklikleri nedeniyle gerçek tutarlar farklı olabilir.
-    Önemli finansal kararlar öncesinde lütfen bir uzmana danışın.
+    Önemli finansal kararlardan önce bir uzmana danışman iyi olur.
   </footer>
 </div>
 
@@ -3314,7 +3312,7 @@ const SOZLUK = {
       iy_not: "Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.",
       lbl_market: "Aylık market (₺)", lbl_kira: "Aylık kira (₺)", lbl_bilet: "Bir bilet / keyif (₺)",
       geri_h: "Geri Sayım",
-      geri_not: 'Bunu widget gibi kullanmak için: <a href="?widget=1">?widget=1</a> adresini Safari\'de açıp Paylaş → "Ana Ekrana Ekle" de. Gerçek kilit ekranı widget\'ı saf HTML ile yapılamaz; bunun için uygulamanın native bir sarmalayıcıya (ör. iOS WidgetKit) taşınması gerekir.',
+      geri_not: 'Plana uydukça bu sayı her ay küçülür.',
       checkin_h: "Aylık Check-in",
       kazanan_h: "Hangi Yöntem?", senaryolar_h: "Şunu Yaparsan", tekadim_h: "Sıradaki Tek Adım",
       takvim_h: "Ödeme Takvimi", takvim_indir: "Takvimi indir (.txt)",
@@ -3378,7 +3376,7 @@ const SOZLUK = {
       sb_taksit_soru: "Kaç taksit?", sb_taksit_toplam_lbl: "Toplam taksit", sb_taksit_odenen_lbl: "Kaçı ödendi?",
       sb_taksit_ipucu: "Bilmiyorsan boş bırakabilirsin — sadece ilerleme göstergesi için.",
       lbl_songun: "Son ödeme günü (ayın kaçı)", ph_songun: "Örn. 26", btn_vazgec: "Vazgeç",
-      form_not: "Taksitli kredide bakiye olarak <strong>kalan toplam taksit tutarını</strong> (faiz dahil) girin; faiz oranı yalnızca öncelik sıralamasında kullanılır.",
+      form_not: "Taksitli kredide bakiye olarak <strong>kalan toplam taksit tutarını</strong> (faiz dahil) gir; faiz oranı yalnızca öncelik sıralamasında kullanılır.",
       liste_h: "Borçlarım",
       vergi_h: "Faiz &amp; Vergi Ayarları",
       vergi_chk: "Faize KKDF + BSMV ekle (kredi kartı / KMH faizlerine uygulanır)",
@@ -3402,8 +3400,8 @@ const SOZLUK = {
       faiz_oto_chk: "Kart ve KMH bakiyelerine her ay faizi otomatik ekle",
       faiz_oto_not: "Her ayın başında, faizli borçların bakiyesine geçen ayın tahmini faizi eklenir. Ekstrendeki bakiye farklıysa borcu düzenleyip gerçek bakiyeyi yazman yeterli.",
       geri_btn: "Geri",
-      dk_liste: "<li>Kilit ekranında ödeme hatırlatmaları</li><li>Aylık rapor ve “bir ay erken bitir” önerisi</li><li>İki Yol, Hedef ve Tasarruf Modu</li><li>Yapılandırma karşılaştırması ve senaryolar</li>",
-      dk_sonra: "Deneme bitince istersen ayda bir küçük ücretle Sıfırla Pro'ya geçersin. Geçmezsen borçların, temel planın ve ödeme kaydın ücretsiz kalır.",
+      dk_liste: "<li>Aylık rapor ve “bir ay erken bitir” önerisi</li><li>İki Yol, Hedef ve Tasarruf Modu</li><li>Yapılandırma karşılaştırması ve senaryolar</li>",
+      dk_sonra: "Deneme bitince istersen ayda bir küçük ücretle Sıfırla Pro'ya geçersin. Geçmezsen borçların, temel planın, ödeme kaydın ve ödeme hatırlatmaların ücretsiz kalır.",
       dk_tamam: "Ücretsiz denemeye başla", dk_fiyat: "Fiyatı gör",
       zor_h: "Bu ay asgarilerin hepsini ödeyemiyor musun?",
       zor_alt: "Elindeki tutarı yaz; gecikmeye düşen borç sayısını en aza indiren bir dağıtım çıkarayım.",
@@ -3422,8 +3420,8 @@ const SOZLUK = {
       ab_kart_h: "Sıfırla Pro", ab_yonet: "Aboneliği yönet", ab_geri: "Satın alımları geri yükle",
       ab_kapat: "Kapat", ab_al: "Abone ol", ab_sonra: "Şimdilik değil",
       ab_sartlar: "Kullanım Koşulları (EULA)", ab_gizlilik: "Gizlilik Politikası",
-      ab_liste: "<li>Kilit ekranında ödeme hatırlatmaları</li><li>Aylık rapor ve “bir ay erken bitir” önerisi</li><li>İki Yol: sadece asgari ile planın, kaydırıcıyla</li><li>Hedef: “şu ayda borçsuz olmak istiyorum”</li><li>Tasarruf Modu: bütçene göre önerilen ekstra</li><li>“Ya şöyle yaparsam” senaryoları ve PDF</li>",
-      ab_yasal: "Ödeme, satın almayı onayladığında Apple Kimliği hesabından alınır. Abonelik, dönem bitmeden en az 24 saat önce iptal edilmezse her ay aynı fiyattan otomatik yenilenir. Aboneliğini iPhone Ayarlar › adın › Abonelikler bölümünden yönetebilir ve istediğin an iptal edebilirsin. Abone olmasan da borçların, temel planın ve ödeme kaydın ücretsiz kalır.",
+      ab_liste: "<li>Aylık rapor ve “bir ay erken bitir” önerisi</li><li>İki Yol: sadece asgari ile planın, kaydırıcıyla</li><li>Hedef: “şu ayda borçsuz olmak istiyorum”</li><li>Tasarruf Modu: bütçene göre önerilen ekstra</li><li>“Ya şöyle yaparsam” senaryoları ve PDF</li>",
+      ab_yasal: "Ödeme, satın almayı onayladığında Apple Kimliği hesabından alınır. Abonelik, dönem bitmeden en az 24 saat önce iptal edilmezse her ay aynı fiyattan otomatik yenilenir. Aboneliğini iPhone Ayarlar › adın › Abonelikler bölümünden yönetebilir ve istediğin an iptal edebilirsin. Abone olmasan da borçların, temel planın, ödeme kaydın ve ödeme hatırlatmaların ücretsiz kalır.",
       lbl_sen_ekstra: "Aylık ekstraya ekle (₺)", lbl_sen_tek: "Bugün tek seferlik öde (₺)", btn_sen: "Senaryoyu hesapla",
       btn_yazdir: "PDF için yazdır", btn_rapor: "HTML raporu indir",
       ob5b: "Sana nasıl hitap edelim?",
@@ -3514,7 +3512,7 @@ const SOZLUK = {
       bil_ici_not: "Yaklaşan ödemeler, kilometre taşları ve akıllı öneriler sağ üstteki zilde birikir. Hepsi cihazında üretilir; hiçbir yere gönderilmez.",
       bil_yerel_not: "Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan tarayıcı bir kez izin ister; kilit ekranına düşen metinde asla tutar veya borç adı geçmez — yalnızca nötr bir hatırlatma görünür.",
       test_h: "Motor Doğrulama Testleri",
-      feragat: "<strong>Feragatname:</strong> Bu araç yalnızca eğitim ve bilgilendirme amaçlıdır; finansal danışmanlık değildir. Hesaplamalar basitleştirilmiş varsayımlara dayanır (aylık bileşik faiz, sabit oranlar) ve bankanızın gerçek hesaplama yöntemi, vergiler (KKDF/BSMV), ücretler veya oran değişiklikleri nedeniyle gerçek tutarlar farklı olabilir. Önemli finansal kararlar öncesinde lütfen bir uzmana danışın."
+      feragat: "<strong>Feragatname:</strong> Bu araç yalnızca eğitim ve bilgilendirme amaçlıdır; finansal danışmanlık değildir. Hesaplamalar basitleştirilmiş varsayımlara dayanır (aylık bileşik faiz, sabit oranlar) ve bankanın gerçek hesaplama yöntemi, vergiler (KKDF/BSMV), ücretler veya oran değişiklikleri nedeniyle gerçek tutarlar farklı olabilir. Önemli finansal kararlardan önce bir uzmana danışman iyi olur."
     },
     d: {
       yerel: "tr-TR",
@@ -3596,8 +3594,8 @@ const SOZLUK = {
       eksenAy: (n) => `${n} ay`,
       gunlu: (g) => `Ayın ${g}. günü`,
       btnDuzenle: "Düzenle", btnSil: "Sil", btnEkle: "Ekle", btnGuncelle: "Güncelle",
-      limit: (n) => `Ücretsiz sürümde en fazla ${n} borç eklenebilir. Sınırsız borç için aşağıdan Pro kilidini açın.`,
-      planBos: "Önce en az bir borç ekleyin.",
+      limit: (n) => `Ücretsiz sürümde en fazla ${n} borç eklenebilir. Sınırsız borç için aşağıdan Pro kilidini aç.`,
+      planBos: "Önce en az bir borç ekle.",
       uygulanamaz: "Uygulanamaz",
       uygulanamazTxt: (yil) => `Bu bütçeyle borçlar ${yil} yıl içinde kapanmıyor. Ekstra bütçeyi artırmayı deneyebilirsin.`,
       kartKartopu: "Kartopu (önce en küçük bakiye)", kartCig: "Çığ (önce en yüksek faiz)",
@@ -3608,22 +3606,23 @@ const SOZLUK = {
       vergiInfo: (k, b) => `Hesaplamalara KKDF %${k} + BSMV %${b} dahil edildi (faiz tutarı üzerinden).`,
       asgariH: "Sadece asgari ödersem ne olur?",
       asgariBitmez: (ad, yil) => `<strong>${ad}:</strong> Sadece asgari ödeme yapılırsa bu borç <strong>hiç bitmez</strong> — asgari ödeme aylık faizi karşılamıyor veya kapanış ${yil} yılı aşıyor.`,
-      asgariBiter: (ad, ay, tutar, vergili) => `<strong>${ad}:</strong> Sadece asgari ödemeyle ${ay} ayda biter; ${tutar} ${vergili ? "faiz + vergi" : "faiz"} ödersiniz.`,
-      buayBos: "Borç ekleyince aylık eylem planınız burada görünecek.",
+      asgariBiter: (ad, ay, tutar, vergili) => `<strong>${ad}:</strong> Sadece asgari ödemeyle ${ay} ayda biter; ${tutar} ${vergili ? "faiz + vergi" : "faiz"} ödersin.`,
+      buayBos: "Borç ekleyince aylık eylem planın burada görünecek.",
       buayUygulanamaz: (yil) => `Bu bütçeyle plan ${yil} yıl içinde kapanmıyor. Yine de bu ayın ödemelerine devam et; ekstra bütçeyi artırmayı deneyebilirsin.`,
       thBorc: "Borç", thAsgari: "Asgari / Taksit", thEkstra: "Ekstra", thBuAy: "Bu ay öde", toplam: "Toplam",
       kapaniyor: "bu ay kapanıyor",
-      siradaki: (t) => `<strong>Sıradaki ay:</strong> toplam ${t} ödersiniz`,
+      siradaki: (t) => `<strong>Sıradaki ay:</strong> toplam ${t} ödersin`,
       siradakiHedef: (ad, t) => `; ekstra bütçe ${ad} borcuna gider (${t})`,
       siradakiKapanan: (adlar) => ` ${adlar} o ay kapanıyor!`,
       vadeH: "Yaklaşan son ödeme günleri",
       bugun: "BUGÜN", gunKaldi: (g) => `${g} gün kaldı`, gunVar: (g) => `${g} gün var`, gunKisa: (g) => `${g} gün`,
       enAz: (t) => `en az ${t}`,
+      enAzKalan: (kalan, odenen) => `${odenen} ödendi, kalan en az ${kalan}`,
       haftaH: "Bu hafta dikkat edilecekler", haftaBugun: "Bugün",
-      haftaVade: (tarih, ad, t) => `${tarih} — <strong>${ad}</strong> son ödeme günü, en az ${t} ödeyin.`,
-      haftaOdak: (ad, t) => `Ekstra bütçenizi <strong>${ad}</strong> borcuna yönlendirin (${t}).`,
-      haftaBos: "Bu hafta son ödeme günü yok; planınıza devam edin.",
-      panoBos: 'Son ödeme günü girilmiş borç yok. Borç eklerken "son ödeme günü" alanını doldurursanız burada görünür.',
+      haftaVade: (tarih, ad, t) => `${tarih} — <strong>${ad}</strong> son ödeme günü, en az ${t} öde.`,
+      haftaOdak: (ad, t) => `Ekstra bütçeni <strong>${ad}</strong> borcuna yönlendir (${t}).`,
+      haftaBos: "Bu hafta son ödeme günü yok; planına devam et.",
+      panoBos: 'Son ödeme günü girilmiş borç yok. Borç eklerken "son ödeme günü" alanını doldurursan burada görünür.',
       bilYok: "Bu tarayıcı bildirimleri desteklemiyor; hatırlatmalar yalnızca bu panoda.",
       bilRed: "Bildirim izni tarayıcıda reddedilmiş; hatırlatmalar yalnızca bu panoda görünecek.",
       bilAcikTxt: "Kilit ekranı bildirimleri açık — yalnızca nötr metin gönderilir ve uygulama açıkken güvenilirdir.",
@@ -3700,7 +3699,7 @@ const SOZLUK = {
       faizTahminiNot: "Faiz tahmini olduğu için süre ve faiz yaklaşıktır. Gerçek oranını girersen plan netleşir.",
       faizEminMisin: (t) => `${t} sıra dışı görünüyor — eminsen bir kez daha dokun.`,
       faizBosNot: (t) => `Boş bırakabilirsin: kayıtta ${t} tahmini kullanılır (Plan sekmesindeki ayarlardan değişir).`,
-      turKmh: "KMH / nakit avans", ekstredenRozet: "ekstreden",
+      turKmh: "KMH / nakit avans", turKart: "Kredi kartı", ekstredenRozet: "ekstreden",
       sbEkstreSonuc: (o) => `<strong>${o}</strong> <span class="rozet-ince">ekstrenden hesaplandı</span>`,
       sbTahminSonuc: (o) => `<strong>${o}</strong> — TCMB azami oranı, çoğu banka bunu uygular <span class="rozet-ince">tahmini</span>`,
       sbTahminDilim: (d, T, f) => (d === "kmh" ? "KMH ve nakit avansta tek oran uygulanır."
@@ -3926,11 +3925,11 @@ const SOZLUK = {
       abYenilenir: (t) => `Aboneliğin etkin; ${t} tarihinde yenilenir. İstediğin an iptal edebilirsin.`,
       abBitecek: (t) => `Aboneliğin iptal edildi; ${t} tarihine kadar Pro açık kalır.`,
       abDenemeRozet: (n) => `Ücretsiz deneme · ${n} gün kaldı`,
-      abDenemeMetin: "İlk 30 gün tüm özellikler ücretsiz; kart ya da onay gerekmez. Deneme bitince istersen aylık abonelikle devam edersin. Abone olmazsan borçların, temel planın ve ödeme kaydın ücretsiz kalır.",
+      abDenemeMetin: "İlk 30 gün tüm özellikler ücretsiz; kart ya da onay gerekmez. Deneme bitince istersen aylık abonelikle devam edersin. Abone olmazsan borçların, temel planın, ödeme kaydın ve ödeme hatırlatmaların ücretsiz kalır.",
       abBittiRozet: "Deneme bitti",
-      abBittiMetin: "Borçların, temel planın, Bu Ay ve ödeme kaydın ücretsiz kalır. Hatırlatmalar, aylık rapor, İki Yol, Hedef ve Tasarruf Modu için Pro'ya geçebilirsin.",
+      abBittiMetin: "Borçların, temel planın, Bu Ay, ödeme kaydın ve ödeme hatırlatmaların ücretsiz kalır. Aylık rapor, İki Yol, Hedef ve Tasarruf Modu için Pro'ya geçebilirsin.",
       abSeritKalan: (n) => `Ücretsiz denemenin bitmesine <strong>${n} gün</strong> kaldı · Pro'ya göz at`,
-      abSeritBitti: "Ücretsiz deneme bitti · <strong>Pro'ya geç</strong>, hatırlatmaların ve raporun geri gelsin",
+      abSeritBitti: "Ücretsiz deneme bitti · <strong>Pro'ya geç</strong>, raporun ve İki Yol geri gelsin",
       abBaslikDeneme: "Borcunu planla bitir",
       abBaslikBitti: "Ücretsiz denemen bitti",
       abAltDeneme: (n) => `Denemende ${n} gün kaldı. Şimdi abone olursan ücret bugün başlar.`,
@@ -3948,14 +3947,14 @@ const SOZLUK = {
       abGeriTamam: "Aboneliğin geri yüklendi. Pro açık.",
       abGeriYok: "Bu Apple Kimliğinde etkin bir Sıfırla Pro aboneliği bulunamadı.",
       abBildirim: "Ücretsiz denemenin bitmesine 2 gün kaldı.",
-      abBildirimGun: (g) => g === 0 ? "Ücretsiz denemen bugün bitiyor. Hatırlatmaların ve raporun için Pro'ya geçebilirsin; otomatik ücret alınmaz."
+      abBildirimGun: (g) => g === 0 ? "Ücretsiz denemen bugün bitiyor. Ödeme hatırlatmaların ücretsiz devam eder; rapor ve İki Yol için Pro'ya geçebilirsin. Otomatik ücret alınmaz."
         : g === 1 ? "Ücretsiz denemen yarın bitiyor. Otomatik ücret alınmaz." : `Ücretsiz denemenin bitmesine ${g} gün kaldı. Otomatik ücret alınmaz.`,
       dkBaslik: (n) => n >= 30 ? "30 gün ücretsiz dene" : `Ücretsiz denemende ${n} gün var`,
       dkAlt: (t) => `${t} tarihine kadar bütün özellikler açık. Kart istemiyoruz, otomatik ücret yok.`,
       bilKilitBtn: "Pro ile aç",
       bilKilit: "Kilit ekranı hatırlatmaları Sıfırla Pro'da. Uygulama içi zil çalışmaya devam eder.",
-      senBos: "Değişiklik girmediniz; iki alandan en az birini doldurun.",
-      senBorcYok: "Önce en az bir açık borç ekleyin.",
+      senBos: "Değişiklik girmedin; iki alandan en az birini doldur.",
+      senBorcYok: "Önce en az bir açık borç ekle.",
       senUygulanamaz: "Bu senaryo da makul sürede kapanmıyor; daha yüksek bir tutar deneyebilirsin.",
       senOzet: (ayFark, faizFark, tarihYeni, aySayisi) => {
         const sureTxt = ayFark > 0 ? `<strong>${ayFark} ay erken</strong> bitiyor` : ayFark < 0 ? `<strong>${-ayFark} ay geç</strong> bitiyor` : "aynı sürede bitiyor";
@@ -4056,7 +4055,7 @@ const SOZLUK = {
       yedekSifreliOk: "✓ Şifreli yedek indirildi. Parolanı unutma — kurtarma yolu yok!",
       yedekParolaGerek: "Bu yedek şifreli: içe aktarmak için parola alanına aynı parolayı yaz.",
       yedekParolaYanlis: "Parola yanlış ya da dosya bozuk.",
-      yedekHata: "Geçersiz yedek dosyası — bu uygulamanın dışa aktardığı bir JSON seçin.",
+      yedekHata: "Geçersiz yedek dosyası — bu uygulamanın dışa aktardığı bir JSON seç.",
       yedekOnay: "Mevcut TÜM veriler bu yedekle değiştirilecek. Devam edilsin mi?",
       yedekYuklendi: "✓ Yedek geri yüklendi — sayfa yenileniyor…",
       yedekKriptoYok: "Bu ortamda şifreleme desteklenmiyor; parolasız dışa aktarmayı dene.",
@@ -4156,7 +4155,7 @@ const SOZLUK = {
       iy_not: "An estimate, not financial advice. Calculated entirely on your device by the plan engine.",
       lbl_market: "Monthly groceries (₺)", lbl_kira: "Monthly rent (₺)", lbl_bilet: "A ticket / treat (₺)",
       geri_h: "Countdown",
-      geri_not: 'To use this like a widget: open <a href="?widget=1">?widget=1</a> in Safari and tap Share → "Add to Home Screen". A real lock-screen widget cannot be built in pure HTML; the app would need a native wrapper (e.g. iOS WidgetKit).',
+      geri_not: 'Stick to the plan and this number shrinks every month.',
       checkin_h: "Monthly Check-in",
       kazanan_h: "Which Method?", senaryolar_h: "If You Do This", tekadim_h: "Your Next Single Step",
       takvim_h: "Payment Calendar", takvim_indir: "Download calendar (.txt)",
@@ -4244,8 +4243,8 @@ const SOZLUK = {
       faiz_oto_chk: "Add interest to card and overdraft balances every month",
       faiz_oto_not: "At the start of each month, last month's estimated interest is added to interest-bearing balances. If your statement differs, edit the debt and enter the real balance.",
       geri_btn: "Back",
-      dk_liste: "<li>Payment reminders on your lock screen</li><li>Monthly report with a “finish a month sooner” tip</li><li>Two Paths, Goal and Savings Mode</li><li>Restructuring comparison and scenarios</li>",
-      dk_sonra: "When the trial ends you can continue with Sıfırla Pro for a small monthly fee. If you don't, your debts, basic plan and payment log stay free.",
+      dk_liste: "<li>Monthly report with a “finish a month sooner” tip</li><li>Two Paths, Goal and Savings Mode</li><li>Restructuring comparison and scenarios</li>",
+      dk_sonra: "When the trial ends you can continue with Sıfırla Pro for a small monthly fee. If you don't, your debts, basic plan, payment log and payment reminders stay free.",
       dk_tamam: "Start my free trial", dk_fiyat: "See the price",
       zor_h: "Can't cover every minimum this month?",
       zor_alt: "Enter what you can pay and I'll split it so as few debts as possible go late.",
@@ -4264,8 +4263,8 @@ const SOZLUK = {
       ab_kart_h: "Sıfırla Pro", ab_yonet: "Manage subscription", ab_geri: "Restore purchases",
       ab_kapat: "Close", ab_al: "Subscribe", ab_sonra: "Not now",
       ab_sartlar: "Terms of Use (EULA)", ab_gizlilik: "Privacy Policy",
-      ab_liste: "<li>Payment reminders on your lock screen</li><li>Monthly report with a “finish a month sooner” tip</li><li>Two Paths: minimum-only vs. your plan, with a slider</li><li>Goal: “I want to be debt-free by…”</li><li>Savings Mode: suggested extra from your budget</li><li>“What if” scenarios and PDF export</li>",
-      ab_yasal: "Payment is charged to your Apple Account when you confirm the purchase. The subscription renews automatically every month at the same price unless cancelled at least 24 hours before the end of the current period. You can manage or cancel it anytime in iPhone Settings › your name › Subscriptions. Without a subscription, your debts, basic plan and payment log stay free.",
+      ab_liste: "<li>Monthly report with a “finish a month sooner” tip</li><li>Two Paths: minimum-only vs. your plan, with a slider</li><li>Goal: “I want to be debt-free by…”</li><li>Savings Mode: suggested extra from your budget</li><li>“What if” scenarios and PDF export</li>",
+      ab_yasal: "Payment is charged to your Apple Account when you confirm the purchase. The subscription renews automatically every month at the same price unless cancelled at least 24 hours before the end of the current period. You can manage or cancel it anytime in iPhone Settings › your name › Subscriptions. Without a subscription, your debts, basic plan, payment log and payment reminders stay free.",
       lbl_sen_ekstra: "Add to monthly extra (₺)", lbl_sen_tek: "One-off payment today (₺)", btn_sen: "Run scenario",
       btn_yazdir: "Print to PDF", btn_rapor: "Download HTML report",
       ob5b: "What should we call you?",
@@ -4458,6 +4457,7 @@ const SOZLUK = {
       vadeH: "Upcoming due dates",
       bugun: "TODAY", gunKaldi: (g) => `${g} days left`, gunVar: (g) => `${g} days away`, gunKisa: (g) => `${g} days`,
       enAz: (t) => `at least ${t}`,
+      enAzKalan: (kalan, odenen) => `${odenen} paid, at least ${kalan} left`,
       haftaH: "Watch this week", haftaBugun: "Today",
       haftaVade: (tarih, ad, t) => `${tarih} — <strong>${ad}</strong> due date, pay at least ${t}.`,
       haftaOdak: (ad, t) => `Direct your extra budget to <strong>${ad}</strong> (${t}).`,
@@ -4537,7 +4537,7 @@ const SOZLUK = {
       faizTahminiNot: "Because the rate is estimated, the time and interest are approximate. Enter your real rate to sharpen the plan.",
       faizEminMisin: (t) => `${t} looks unusual — tap once more if you're sure.`,
       faizBosNot: (t) => `You can leave this empty: an estimated ${t} will be used (changeable in Plan settings).`,
-      turKmh: "Overdraft / cash advance", ekstredenRozet: "from statement",
+      turKmh: "Overdraft / cash advance", turKart: "Credit card", ekstredenRozet: "from statement",
       sbEkstreSonuc: (o) => `<strong>${o}</strong> <span class="rozet-ince">calculated from your statement</span>`,
       sbTahminSonuc: (o) => `<strong>${o}</strong> — the TCMB maximum rate, which most banks apply <span class="rozet-ince">estimated</span>`,
       sbTahminDilim: (d, T, f) => (d === "kmh" ? "Overdrafts and cash advances have a single rate."
@@ -4758,11 +4758,11 @@ const SOZLUK = {
       abYenilenir: (t) => `Your subscription is active and renews on ${t}. Cancel anytime.`,
       abBitecek: (t) => `Your subscription is cancelled; Pro stays on until ${t}.`,
       abDenemeRozet: (n) => `Free trial · ${n} day${n === 1 ? "" : "s"} left`,
-      abDenemeMetin: "Everything is free for your first 30 days — no card, nothing to confirm. When the trial ends you can continue with a monthly subscription. Without it, your debts, basic plan and payment log stay free.",
+      abDenemeMetin: "Everything is free for your first 30 days — no card, nothing to confirm. When the trial ends you can continue with a monthly subscription. Without it, your debts, basic plan, payment log and payment reminders stay free.",
       abBittiRozet: "Trial ended",
-      abBittiMetin: "Your debts, basic plan, This Month and payment log stay free. Go Pro for reminders, the monthly report, Two Paths, Goal and Savings Mode.",
+      abBittiMetin: "Your debts, basic plan, This Month, payment log and payment reminders stay free. Go Pro for the monthly report, Two Paths, Goal and Savings Mode.",
       abSeritKalan: (n) => `Your free trial ends in <strong>${n} day${n === 1 ? "" : "s"}</strong> · See Pro`,
-      abSeritBitti: "Your free trial has ended · <strong>Go Pro</strong> to bring back reminders and your report",
+      abSeritBitti: "Your free trial has ended · <strong>Go Pro</strong> to bring back your report and Two Paths",
       abBaslikDeneme: "Finish your debt with a plan",
       abBaslikBitti: "Your free trial has ended",
       abAltDeneme: (n) => `${n} day${n === 1 ? "" : "s"} left in your trial. If you subscribe now, billing starts today.`,
@@ -4780,7 +4780,7 @@ const SOZLUK = {
       abGeriTamam: "Subscription restored. Pro is on.",
       abGeriYok: "No active Sıfırla Pro subscription was found for this Apple Account.",
       abBildirim: "Your free trial ends in 2 days.",
-      abBildirimGun: (g) => g === 0 ? "Your free trial ends today. Go Pro to keep reminders and your report — you won't be charged automatically."
+      abBildirimGun: (g) => g === 0 ? "Your free trial ends today. Payment reminders stay free; go Pro for your report and Two Paths. You won't be charged automatically."
         : g === 1 ? "Your free trial ends tomorrow. You won't be charged automatically." : `Your free trial ends in ${g} days. You won't be charged automatically.`,
       dkBaslik: (n) => n >= 30 ? "Try it free for 30 days" : `${n} day${n === 1 ? "" : "s"} left in your free trial`,
       dkAlt: (t) => `Every feature is unlocked until ${t}. No card needed, no automatic charge.`,
@@ -7118,7 +7118,7 @@ const ARAYUZ = () => {
      İlk 30 gün her şey açık (kart/onay yok). Sonra Apple aboneliği; abone
      olmayan kullanıcı borçlarını, temel planı, Bu Ay'ı, ödeme kaydını ve
      yedeklemeyi KULLANMAYA DEVAM EDER (veri asla rehin alınmaz). Kilitlenen:
-     kilit ekranı hatırlatmaları, aylık rapor, İki Yol ayrıntısı, Hedef,
+     aylık rapor, İki Yol ayrıntısı, Hedef, (ödeme hatırlatmaları ÜCRETSİZ)
      Tasarruf Modu, senaryolar, dışa aktarma.
      Web sürümünde satın alma yok → orada şimdilik her şey açık.
      Yerel test (yalnızca localhost): ?abone=1 → kilit mantığı web'de de çalışır,
@@ -7939,7 +7939,7 @@ const ARAYUZ = () => {
         <div class="bk-ust">
           <div>
             <h3>${kacis(b.ad)}</h3>
-            <p class="bk-meta">${b.type === "revolving" && b.altTur === "kmh" ? s.turKmh : s.tur[b.type]} · ${b.type === "revolving" ? s.oranIfade(yuvarla2(b.annualRate / 12), true) : yuzdeYaz(0)}${b.faizTahmini ? ` <span class="badge accent">${s.tahmini}</span>` : b.faizKaynak === "ekstre" ? ` <span class="badge ok">${s.ekstredenRozet}</span>` : ""}${kapandi ? "" : vadeRozet(b)}</p>
+            <p class="bk-meta">${b.type === "revolving" ? (b.altTur === "kmh" ? s.turKmh : b.altTur === "kart" ? s.turKart : s.tur[b.type]) : s.tur[b.type]} · ${b.type === "revolving" ? s.oranIfade(yuvarla2(b.annualRate / 12), true) : yuzdeYaz(0)}${b.faizTahmini ? ` <span class="badge accent">${s.tahmini}</span>` : b.faizKaynak === "ekstre" ? ` <span class="badge ok">${s.ekstredenRozet}</span>` : ""}${kapandi ? "" : vadeRozet(b)}</p>
           </div>
           ${kapandi
             ? `<span class="badge ok">${s.kapandiEtiket}</span>`
@@ -9405,7 +9405,7 @@ const ARAYUZ = () => {
     // Kapanış tarihleri: motorun kapanış ayından (borçsuz tarihiyle aynı sayım)
     const simdi = new Date();
     const kapanis = {};
-    if (sim && sim.uygulanabilir) for (const o of sim.odemeSirasi) kapanis[o.ad] = new Date(simdi.getFullYear(), simdi.getMonth() + o.ay, 1);
+    if (sim && sim.uygulanabilir) for (const o of sim.odemeSirasi) kapanis[o.ad] = new Date(simdi.getFullYear(), simdi.getMonth() + o.ay - 1, 1); // ay 1 = bu ay
     const ayFmt = new Intl.DateTimeFormat(durum.dil === "en" ? "en-US" : "tr-TR", { month: "short", year: "numeric" });
 
     // Dikey zaman çizelgesi: her borç bir durak (kapananlar → sıradaki → bekleyenler) + bitiş
@@ -9582,7 +9582,9 @@ const ARAYUZ = () => {
         // KMH: faiz günlük işler → erken yatırmanın tahmini kazancı (yalnızca ödenmemiş dönemde)
         const kmhIpucu = v.b.type === "revolving" && v.b.altTur === "kmh" && d.tip !== "odendi" && d.gerekli > 0.005
           ? `<br><span class="mini-ipucu">${s.kmhErken(paraFmt.format(d.gerekli), paraFmt.format(SIKISIK.gunlukFaiz(d.gerekli, v.b.annualRate / 12, 10, durum.ayarlar)))}</span>` : "";
-        html += `<p style="margin-top:0.35rem">${rozet} <strong>${kacis(v.b.ad)}</strong> — ${gunAyFmt.format(d.vade)} (${s.enAz(paraFmt.format(v.b.payment))})${kmhIpucu}</p>`;
+        const tutarNot = d.tip !== "odendi" && d.odenen > 0.005 && d.eksik > 0.005
+          ? s.enAzKalan(paraFmt.format(d.eksik), paraFmt.format(d.odenen)) : s.enAz(paraFmt.format(v.b.payment));
+        html += `<p style="margin-top:0.35rem">${rozet} <strong>${kacis(v.b.ad)}</strong> — ${gunAyFmt.format(d.vade)} (${tutarNot})${kmhIpucu}</p>`;
       }
       if (gunsuz > 0) html += `<p style="margin-top:0.5rem"><button type="button" class="link-btn ge-ac">${s.vuGunYok(gunsuz)}</button></p>`;
     }
@@ -10093,9 +10095,9 @@ const ARAYUZ = () => {
         <path d="${alanYol}" fill="url(#erimeGrad)"/>
         <path d="M ${digP.join(" L ")}" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8"/>
         <path d="M ${secP.join(" L ")}" fill="none" stroke="var(--grad-a)" stroke-width="2" stroke-linecap="round"/>
-        <text x="${SOL}" y="${UST + 4}" font-size="11" fill="var(--text-muted)">${paraFmt.format(maks)}</text>
-        <text x="${SOL}" y="${H - 8}" font-size="11" fill="var(--text-muted)">${s.eksenBugun}</text>
-        <text x="${W - SAG}" y="${H - 8}" font-size="11" text-anchor="end" fill="var(--text-muted)">${s.eksenAy(N - 1)}</text>
+        <text x="${SOL}" y="${UST + 18}" font-size="22" fill="var(--text-muted)">${paraFmt.format(maks)}</text>
+        <text x="${SOL}" y="${H - 4}" font-size="22" fill="var(--text-muted)">${s.eksenBugun}</text>
+        <text x="${W - SAG}" y="${H - 4}" font-size="22" text-anchor="end" fill="var(--text-muted)">${s.eksenAy(N - 1)}</text>
       </svg>
       <p class="muted" style="margin-top:8px; display:flex; gap:16px; flex-wrap:wrap">
         <span><svg width="22" height="8" aria-hidden="true"><line x1="1" y1="4" x2="21" y2="4" stroke="var(--grad-a)" stroke-width="2"/></svg> ${s.yontemAd[durum.yontem]}</span>
@@ -10506,19 +10508,19 @@ const ARAYUZ = () => {
     // İki zaman çizgisi: ilk plan (kesikli) vs şimdi (dolu)
     const sonNokta = new Date(Math.max(eskiHedef, simdiki || eskiHedef));
     const aralik = Math.max(1, sonNokta - bas);
-    const W = 600, X0 = 90, X1 = 590;
+    const W = 600, X0 = 120, X1 = 585; // telefonda ~%47 küçülür: yazılar 22 birim (≈11px)
     const gx = (t) => X0 + Math.max(0, Math.min(1, (t - bas) / aralik)) * (X1 - X0);
     const satir = (y, etiket, bit, duz) => bit
-      ? `<text x="4" y="${y + 4}" font-size="11" fill="var(--text-muted)">${etiket}</text>
+      ? `<text x="4" y="${y + 8}" font-size="22" fill="var(--text-muted)">${etiket}</text>
          <line x1="${X0}" y1="${y}" x2="${gx(bit).toFixed(1)}" y2="${y}" stroke="${duz ? "var(--grad-a)" : "var(--text-muted)"}" stroke-width="${duz ? 3 : 2}" ${duz ? "" : 'stroke-dasharray="5 4" opacity="0.8"'} stroke-linecap="round"/>
-         <circle cx="${gx(bit).toFixed(1)}" cy="${y}" r="4.5" fill="${duz ? "var(--grad-a)" : "var(--text-muted)"}"/>
-         <text x="${gx(bit).toFixed(1)}" y="${y - 10}" font-size="11" text-anchor="end" fill="var(--text-muted)">${tarihFmt.format(bit)}</text>`
-      : `<text x="4" y="${y + 4}" font-size="11" fill="var(--text-muted)">${etiket}</text>
-         <text x="${X0}" y="${y + 4}" font-size="11" fill="var(--danger)">∞</text>`;
+         <circle cx="${gx(bit).toFixed(1)}" cy="${y}" r="6" fill="${duz ? "var(--grad-a)" : "var(--text-muted)"}"/>
+         <text x="${gx(bit).toFixed(1)}" y="${y - 14}" font-size="22" text-anchor="end" fill="var(--text-muted)">${tarihFmt.format(bit)}</text>`
+      : `<text x="4" y="${y + 8}" font-size="22" fill="var(--text-muted)">${etiket}</text>
+         <text x="${X0}" y="${y + 8}" font-size="22" fill="var(--danger)">∞</text>`;
     $("zamanIcerik").innerHTML = metin + `
-      <svg viewBox="0 0 ${W} 84" style="width:100%; height:auto; display:block; margin-top:8px" aria-hidden="true">
-        ${satir(30, s.zamanIlk, eskiHedef, false)}
-        ${satir(64, s.zamanSimdi, simdiki, true)}
+      <svg viewBox="0 0 ${W} 130" style="width:100%; height:auto; display:block; margin-top:8px" aria-hidden="true">
+        ${satir(44, s.zamanIlk, eskiHedef, false)}
+        ${satir(108, s.zamanSimdi, simdiki, true)}
       </svg>`;
   }
 
@@ -11735,11 +11737,6 @@ const ARAYUZ = () => {
       const izin = await NATIF.bildirimIzniDurumu();
       if (izin === "denied") { btn.hidden = true; yazi.textContent = s.bilRed; return; }
       btn.hidden = false;
-      if (!tamErisim()) { // deneme bitti, abone değil: kilit ekranı hatırlatmaları Pro'da
-        btn.textContent = s.bilKilitBtn; yazi.textContent = s.bilKilit;
-        $("bildirimTestBtn").hidden = true;
-        return;
-      }
       // Test düğmesi yalnızca bildirimler gerçekten açıkken anlamlı
       $("bildirimTestBtn").hidden = !(durum.ayarlar.bildirimAcik && izin === "granted");
       if (durum.ayarlar.bildirimAcik && izin === "granted") {
@@ -11794,7 +11791,8 @@ const ARAYUZ = () => {
      Her çağrıda eski plan iptal edilip yeniden kurulur. */
   async function hatirlatmalariTazele() {
     if (!NATIF.VAR) return 0;
-    if (!durum.ayarlar.bildirimAcik || !tamErisim()) {
+    // Ödeme hatırlatmaları HERKESE ücretsiz (karar 19 Kasım 2026); yalnız aylık rapor bildirimi Pro
+    if (!durum.ayarlar.bildirimAcik) {
       await NATIF.hatirlatmalariIptal();
       bildirimDurumGoster();
       return 0;
@@ -11817,7 +11815,7 @@ const ARAYUZ = () => {
         : liste.every(h => h.gun < 0) ? s.zilYerelGecikme : s.zilYerelHatirlatma;
       kayitlar.push({ tarih: new Date(ms), baslik: s.zilYerelBaslik, govde });
     }
-    if (durum.borclar.some(b => b.balance > 0.005)) {
+    if (tamErisim() && durum.borclar.some(b => b.balance > 0.005)) {
       const [sa, dk] = (durum.ayarlar.hatirlatmaSaat || "10:00").split(":").map(Number);
       const n = new Date();
       const birinci = new Date(n.getFullYear(), n.getMonth() + 1, 1, sa || 10, dk || 0);
@@ -11841,7 +11839,6 @@ const ARAYUZ = () => {
   /* Bildirimleri aç: izin, NEDENİ anlatan metin gösterildikten SONRA istenir
      (sihirbazdaki teklif kartı ya da Ayarlar'daki gerekçe paneli). */
   async function bildirimleriAc() {
-    if (NATIF.VAR && !tamErisim()) { aboneAc("bildirim"); return false; }
     if (NATIF.VAR) {
       const n = await NATIF.bildirimIzniIste();
       if (n === "granted") {
@@ -11869,7 +11866,6 @@ const ARAYUZ = () => {
     return izin === "granted";
   }
   $("bildirimBtn").addEventListener("click", async () => {
-    if (NATIF.VAR && !tamErisim()) { aboneAc("bildirim"); return; }
     if (durum.ayarlar.bildirimAcik) {
       durum.ayarlar.bildirimAcik = false;
       STORAGE.kaydet(durum);

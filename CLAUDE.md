@@ -98,7 +98,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v16`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v17`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -193,7 +193,8 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   (uygulama içi, `durum.denemeBasMs` + Keychain); sonra Apple aboneliği
   `app.sifirla.pro.aylik` (49,99 TL kademesi, yıllık yok). Abone olmayan
   **yumuşak kilit**: borçlar, temel plan, Bu Ay, ödeme kaydı, yedekleme
-  ücretsiz; kilit ekranı hatırlatmaları, aylık rapor, İki Yol ayrıntısı,
+  ücretsiz; **ödeme hatırlatmaları da ücretsiz** (karar 19 Kasım 2026, yalnız
+  aylık rapor bildirimi Pro); Pro: aylık rapor, İki Yol ayrıntısı,
   Hedef, Tasarruf, senaryolar, dışa aktarma Pro. Tek kapı `tamErisim()`.
   StoreKit 2 köprüsü `ios/App/App/SifirlaAbonelik.swift` (nativePromise),
   JS `ABONELIK` modülü (8 test). Xcode'da `Sifirla.storekit` paylaşılan şemaya
