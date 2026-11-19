@@ -100,7 +100,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v21`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v22`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -230,6 +230,13 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 
 ## Kararlar
 
+- **1.0 TAMAMEN ÜCRETSİZ** (karar 19 Kasım 2026 — aşağıdaki 20 Ekim abonelik kararının
+  yerini alır): deneme yok, kilit yok, abone ekranı/şeridi yok, uygulama içi satın alma
+  yok. `ABONELIK_ACIK = false` → `ABONELIK_ZORUNLU` native'de de false, `tamErisim()`
+  hep true; Daha'daki abonelik kartı gizli. Altyapı (ABONELIK, StoreKit köprüsü,
+  `Sifirla.storekit`) silinmedi; Pro ileride açılacaksa bayrak true yapılır ve
+  gizlilik sayfaları + mağaza bilgileri yeniden güncellenir. Site SSS ve gizlilik
+  sayfaları "tamamen ücretsiz" diyor. App Store Connect'te abonelik ürünü AÇILMAZ.
 - **1.0 App Store'a yapay zekasız, 30 gün ücretsiz deneme + Sıfırla Pro aylık
   aboneliğiyle çıkacak** (karar 20 Ekim 2026). Deneme kart/onay istemez
   (uygulama içi, `durum.denemeBasMs` + Keychain); sonra Apple aboneliği

@@ -3021,7 +3021,7 @@ var GIRIS = (function () {
 
   <!-- "Ya şöyle yaparsam" senaryoları (Pro) -->
   <section class="card no-print">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v6l-5.2 9a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9V3"/><path d="M8.5 3h7M7.5 14.5h9"/></svg><span data-i18n="sen_h">Ya Şöyle Yaparsam? <span class="badge accent">Pro</span></span></h2>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v6l-5.2 9a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9V3"/><path d="M8.5 3h7M7.5 14.5h9"/></svg><span data-i18n="sen_h">Ya Şöyle Yaparsam?</span></h2>
     <div id="senaryoKilit" class="info">
       <span data-i18n="sen_kilit">Bu özellik Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.</span>
       <button type="button" class="pro-ac small" style="margin-top:8px" data-i18n="kilit_btn">Pro'ya geç</button>
@@ -3716,7 +3716,7 @@ const SOZLUK = {
       nav_genel: "Genel", nav_borclar: "Borçlar", nav_plan: "Plan", nav_buay: "Bu Ay", nav_daha: "Daha",
       buay_h: "Bu Ay Ne Yapmalıyım?",
       yontem_cig: "Çığ (önce en yüksek faiz)", yontem_kartopu: "Kartopu (önce en küçük bakiye)",
-      sen_h: 'Ya Şöyle Yaparsam? <span class="badge accent">Pro</span>',
+      sen_h: 'Ya Şöyle Yaparsam?',
       sen_kilit: "Bu özellik Sıfırla Pro'da: farklı ekstra bütçe ve tek seferlik ödeme senaryolarını mevcut planınla karşılaştırır.",
       kilit_b: "Sıfırla Pro ile açılır", kilit_btn: "Pro'ya geç",
       kilit_yp: "Borçlarını tek krediyle kapatmanın aylık ödemene ve toplam faizine etkisini gör.",
@@ -4661,7 +4661,7 @@ const SOZLUK = {
       nav_genel: "Overview", nav_borclar: "Debts", nav_plan: "Plan", nav_buay: "This Month", nav_daha: "More",
       buay_h: "What Should I Do This Month?",
       yontem_cig: "Avalanche (highest interest first)", yontem_kartopu: "Snowball (smallest balance first)",
-      sen_h: 'What If? <span class="badge accent">Pro</span>',
+      sen_h: 'What If?',
       sen_kilit: "This is part of Sıfırla Pro: compare different extra budgets and one-off payments against your current plan.",
       kilit_b: "Unlocks with Sıfırla Pro", kilit_btn: "Go Pro",
       kilit_yp: "See how folding your debts into one loan changes your monthly payment and total interest.",
@@ -7784,7 +7784,11 @@ const ARAYUZ = () => {
      ?abone=bitti → deneme bitmiş gibi. Canlıda ve native'de bu kapı yoktur. */
   const ABONE_YEREL = yerelOrtamMi(location.hostname, location.protocol)
     ? new URLSearchParams(location.search).get("abone") : null;
-  const ABONELIK_ZORUNLU = NATIF.VAR || ABONE_YEREL === "1" || ABONE_YEREL === "bitti";
+  // KARAR 19 Kasım 2026: 1.0 TAMAMEN ÜCRETSİZ — deneme yok, kilit yok, abone ekranı yok.
+  // Abonelik altyapısı (ABONELIK, StoreKit köprüsü) yerinde duruyor; Pro ileride
+  // açılacaksa bu bayrak true yapılır. Yerelde ?abone=1/bitti ile kilit hâlâ denenebilir.
+  const ABONELIK_ACIK = false;
+  const ABONELIK_ZORUNLU = (ABONELIK_ACIK && NATIF.VAR) || ABONE_YEREL === "1" || ABONE_YEREL === "bitti";
   const TEST_AYAR = (NATIF.VAR && window.SIFIRLA_TEST) || {};
   let aboneBilgi = null;   // ABONELIK.durum() son sonucu (yenileme tarihi vb.)
   let aboneUrun = null;    // App Store ürünü (yerel fiyat metni)
@@ -13560,6 +13564,7 @@ const ARAYUZ = () => {
     $("proBtn").hidden = !ABONELIK_ZORUNLU || durum.pro;
     $("abKartYonet").hidden = !satinalma || !NATIF.VAR;
     $("abKartGeri").hidden = !ABONELIK_ZORUNLU || durum.pro;
+    $("aboneKart").hidden = !ABONELIK_ZORUNLU; // 1.0 ücretsiz: abonelik kartı hiç görünmez
     if (!ABONELIK_ZORUNLU) {
       d.textContent = s.abWebRozet; d.className = "badge ok"; m.textContent = s.abWebMetin;
     } else if (durum.pro) {
