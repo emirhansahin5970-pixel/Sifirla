@@ -52,7 +52,9 @@ dilim seçimi, ekstreden oran, `aylikIsle` aylık faiz işleme; 15 test), `HATIR
 serbest para, önerilen ekstra, gider senaryoları; 8 test), `SIKISIK` ("bu ay
 asgarileri ödeyemiyorum": en az borcu gecikmeye düşüren dağıtım, gecikme faizi
 = akdi + 0,30 puan [TCMB], günlük faiz yardımcısı, `gecikmeIslet` günlük gecikme faizi işletme; 12 test), `YAPILANDIRMA`
-(seçili borçları tek krediyle kapatma: annüite vs yalnız asgari; 5 test).
+(seçili borçları tek krediyle kapatma: annüite vs yalnız asgari; 5 test), `SAGLIK`
+(borç sağlık puanı 0–100 + kart asgari kuralı: BDDK 1 Ekim 2026, limit ≤ 100.000 TL
+→ %20, üstü %40; 6 test).
 
 **2. DEPOLAMA (`DEPO` → `STORAGE`)** — iki katman:
 - `DEPO`: senkron yüzlü soyutlama. **Native'de** `@capacitor/preferences`
@@ -98,7 +100,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v18`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v19`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -172,6 +174,19 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   sipariş, sigara, taksi, abonelik; örnek fiyat para birimine göre, kullanıcı
   değiştirir; `durum.kucukDegisim`; "planıma ekle" ekstraya yazar) ve
   "Sana Özel Öneriler" yerine rakamlı **hamle kartları** (`hamleler()`).
+- **Harcama + eşitleme + asgari + kumbara + karne + maaş + Ödedim** (19 Kasım 2026):
+  kart/KMH'ye "+ Harcama" (`b.harcamalar`), "Ekstreyle eşitle" (`islemOverlay`,
+  `b.duzeltmeler`, son ödeme gününe ≤12 gün kala Genel'de soru; asgari/limit girilirse
+  `b.payment`, `b.asgariOran`, `b.limit`); kart asgarisi her ay bakiyeye göre
+  (`asgariGuncelle`, `ayarlar.asgariOtomatik`, oran faizden ÖNCEKİ bakiyeden türetilir);
+  Küçük Değişiklik kartında **kumbara** (`durum.kumbara`, "bugün neyi atladın?",
+  `odemeEkleDogrudan` ile borca yatır, geri al); Genel'de **sağlık puanı** halkası
+  (`durum.saglikGecmis`), **ay sonu karnesi** (ayın son 2 günü / ilk 7 günü,
+  `durum.karneKapali`, son gün 20:00 bildirimi); Bu Ay'da **maaş günü planı**
+  (`durum.maasGunu`, maaştan önce gelen vadeler uyarılır, maaş günü bildirimi);
+  bildirimde **"Ödedim"** (`NATIF.aksiyonlariKur/aksiyonDinle`, tek borçluk
+  bildirimlerde `actionTypeId: SIFIRLA_ODEME`; gerçek iPhone'da denenmedi).
+  Genel kısa bildirim: `bilgiToast(metin, geriAl)`.
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).
