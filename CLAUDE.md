@@ -48,7 +48,7 @@ ikili arama + yukarı yuvarlama + doğrulama (DOM yok, kendi 11 testi).
 Sonra üç saf katman daha: `FAIZ` (TCMB tavan tablosu `FAIZ_TABLOSU_VARSAYILAN`,
 dilim seçimi, ekstreden oran, `aylikIsle` aylık faiz işleme; 15 test), `HATIRLATMA` (vade, "o dönem
 ödendi mi", zil + yerel bildirim planı, `donemDurumu`: gecikti/eksik/bugün/
-ödendi, isteğe bağlı vade+1 gecikme hatırlatması; 18 test), `BUTCE` (Tasarruf Modu:
+ödendi, isteğe bağlı vade+1 gecikme hatırlatması, asgari değişince geçmiş dönem eski asgariyle; 19 test), `BUTCE` (Tasarruf Modu:
 serbest para, önerilen ekstra, gider senaryoları; 8 test), `SIKISIK` ("bu ay
 asgarileri ödeyemiyorum": en az borcu gecikmeye düşüren dağıtım, gecikme faizi
 = akdi + 0,30 puan [TCMB], günlük faiz yardımcısı, `gecikmeIslet` günlük gecikme faizi işletme; 12 test), `YAPILANDIRMA`
@@ -100,7 +100,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v20`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v21`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -189,6 +189,16 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   Genel kısa bildirim: `bilgiToast(metin, geriAl)`.
   Kendi planına giriş her yerde: Genel'de "Ödeme planın" kartı (`opKart`, "Kendi planını
   oluştur" → `kendiPlanaGit`), Bu Ay tablosunun altında aynı düğme (`data-kp-git`).
+- **Sadeleştirme** (19 Kasım 2026, `tasarim/SADELESTIRME.md`): her sekme tek soru.
+  Genel = tek panel: uyarı şeridi (en önemli 1 + "+N uyarı daha"), halka, "Sıradaki
+  adımın" (`tekAdimKart` + içinde ödeme planı satırı `opKart`), "Borcun nasıl
+  değişiyor" (döküm kapalı `<details>`, tek uyarı), ay sonu karnesi. Plan: ödeme
+  yöntemi, ödeme planı, plan özeti, takvim + **Araçlar** döşeme ızgarası
+  (`#aracIzgara`, `#aracAlan > .arac[data-arac]`, `.arac-acik`, `aracAc(id)`,
+  `aracIzgaraCiz()`; hidden araç döşemede görünmez). Bu Ay: özet, ödeme listesi,
+  kumbara (`#kumbaraKart`), maaş günü, zor ay, check-in. Hatırlatma ayarları Daha'da.
+  Geri sayım yalnız widget modunda. Asgari güncellenince geçmiş dönem eski asgariyle
+  ölçülür (`b.asgariOnceki {tutar, sonVade}`, `donemDurumu`; HATIRLATMA 19 test).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).

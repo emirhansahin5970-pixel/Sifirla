@@ -867,6 +867,24 @@
   .detay-ay strong { width: 100%; }
   .odeme-satir.faiz-satir .tutar { color: var(--danger); }
   .odeme-satir.faiz-satir .not { color: var(--text-muted); }
+  /* Sadeleştirme: geri sayım yalnız widget modunda; araçlar döşeme ızgarasında */
+  body:not(.widget-modu) #geriSayimKart { display: none !important; }
+  #aracAlan > .arac:not(.arac-acik) { display: none !important; }
+  #aracAlan > .arac.arac-acik { border: 1.5px solid var(--accent); scroll-margin-top: 12px; }
+  .arac-izgara { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  #araclarKart .arac-doseme { display: flex; align-items: center; gap: 8px; text-align: left; min-height: 52px; padding: 10px 12px;
+    border-radius: 14px; background: var(--surface-2); color: var(--text); border: 1.5px solid transparent; font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+  #araclarKart .arac-doseme .ikn { width: 18px; height: 18px; flex: none; color: var(--accent-strong); }
+  #araclarKart .arac-doseme[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .arac-kapat { display: flex; justify-content: flex-end; margin: -4px 0 4px; }
+  .sa-kart .op-satir { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .sa-kart .op-ikon { display: none; }
+  .sa-kart .op-baslik { font-size: 14px; }
+  .sa-kart .op-btn { margin-top: 8px; }
+  .vu-daha { display: block; margin: 6px auto 0; }
+  .vade-uyari:not(.acik) .vu-satir.fazla { display: none; }
+  .dg-detay { margin-top: 12px; }
+  .dg-detay > summary { cursor: pointer; font-weight: 600; color: var(--accent-strong); font-size: 14px; }
   .op-kart { border: 1.5px solid var(--accent); }
   .op-ic { display: flex; gap: 12px; align-items: center; }
   .op-ikon { width: 42px; height: 42px; flex: none; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-strong); }
@@ -2028,13 +2046,18 @@ var GIRIS = (function () {
     <button id="heroEkleBtn" class="borcEkleGit no-print" hidden data-i18n="btn_borc_ekle">Borç ekle</button>
   </section>
 
-  <!-- Ödeme planın: kendi planına tek dokunuşla giriş (her zaman görünür) -->
-  <section class="card op-kart no-print" id="opKart" hidden aria-labelledby="opBaslik">
-    <div class="op-ic">
-      <span class="op-ikon" aria-hidden="true"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></span>
-      <div class="op-metin"><p id="opBaslik" class="op-baslik"></p><p class="muted op-alt" id="opAlt"></p></div>
+
+  <!-- Sıradaki tek adım: plan ezici gelmesin — tek net eylem + hızlı Öde -->
+  <section class="card sa-kart" id="tekAdimKart" hidden>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 12.5 2.3 2.3L15.5 10"/></svg><span data-i18n="tekadim_h">Sıradaki adımın</span></h2>
+    <div id="tekAdimIcerik"></div>
+    <div class="op-satir no-print" id="opKart" hidden>
+      <div class="op-ic">
+        <span class="op-ikon" aria-hidden="true"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></span>
+        <div class="op-metin"><p id="opBaslik" class="op-baslik"></p><p class="muted op-alt" id="opAlt"></p></div>
+      </div>
+      <button type="button" class="op-btn" id="opBtn"></button>
     </div>
-    <button type="button" class="op-btn" id="opBtn"></button>
   </section>
 
   <!-- Borcun nasıl değişiyor: bu ayın dökümü (ödeme − / faiz + / gecikme +), geçmiş aylar + tahmin, uyarı -->
@@ -2052,25 +2075,6 @@ var GIRIS = (function () {
     <div id="karneIcerik"></div>
   </section>
 
-  <!-- Önlenen faiz → hayat karşılığı: kullanıcı tanımlı referanslarla -->
-  <section class="card" id="hayatKart">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1.5 12a2 2 0 0 1-2 1.8h-5A2 2 0 0 1 7.5 20z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span data-i18n="hayat_h">Önlenen Faizin Karşılığı</span></h2>
-    <div id="hayatSonuc"></div>
-    <div class="form-grid" style="max-width:520px; margin-top:12px">
-      <div>
-        <label for="refMarket" data-i18n="lbl_market">Aylık market (₺)</label>
-        <input id="refMarket" type="number" min="0" step="0.01">
-      </div>
-      <div>
-        <label for="refKira" data-i18n="lbl_kira">Aylık kira (₺)</label>
-        <input id="refKira" type="number" min="0" step="0.01">
-      </div>
-      <div>
-        <label for="refBilet" data-i18n="lbl_bilet">Bir bilet / keyif (₺)</label>
-        <input id="refBilet" type="number" min="0" step="0.01">
-      </div>
-    </div>
-  </section>
 
   <!-- Geri sayım: kompakt sayaç; ?widget=1 ile tek başına tam ekran açılır -->
   <section class="card" id="geriSayimKart">
@@ -2090,98 +2094,10 @@ var GIRIS = (function () {
     </p>
   </section>
 
-  <!-- Zaman makinesi: ilk plana karşı bugünkü plan -->
-  <section class="card" id="zamanKart" hidden>
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span data-i18n="zaman_h">Zaman Makinesi</span></h2>
-    <div id="zamanIcerik"></div>
-  </section>
 
-  <!-- Kurtuluş yolculuğu haritası: tamamı inline SVG, veri motordan -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span data-i18n="yol_h">Kurtuluş Yolculuğu</span></h2>
-    <div id="yolculuk"></div>
-  </section>
 
-  <!-- Küçük değişiklik, büyük etki: günlük harcamadan kısınca borca etkisi (motor hesaplar) -->
-  <section class="card kd-kart" id="kdKart" hidden aria-labelledby="kdBaslik">
-    <h2 id="kdBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c0 1.5 1.5 1.5 1.5 3M12 3c0 1.5 1.5 1.5 1.5 3"/></svg><span data-i18n="kd_h">Küçük Değişiklik, Büyük Etki</span></h2>
-    <p class="muted" data-i18n="kd_alt">Ayda neyi biraz azaltabilirsin? Seç, borcuna etkisini hemen gör. Fiyatlar örnek — dokunup kendine göre değiştir.</p>
-    <div id="kdListe" class="kd-liste"></div>
-    <div id="kdSonuc" class="kd-sonuc" aria-live="polite"></div>
-    <div id="kumbara" class="kumbara"></div>
-  </section>
 
-  <!-- Kural tabanlı kişisel hamleler (AI yok, dış çağrı yok; rakamlar motordan) -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="oneri_h">Borcunu Eritecek Hamleler</span></h2>
-    <div id="oneriler"></div>
-    <p class="muted" style="margin-top:0.7rem" data-i18n="oneri_not">
-      Bu öneriler tamamen cihazında, kural tabanlı üretilir — yapay zekâ veya internet bağlantısı
-      kullanılmaz; finansal danışmanlık değildir.
-    </p>
-  </section>
 
-  <!-- Hatırlatmalar panosu: hatırlatmaların güvenilir kaynağı budur -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span data-i18n="hat_h">Hatırlatmalar</span></h2>
-    <div class="form-grid" style="max-width:260px">
-      <div>
-        <label for="hatirlatmaGun" data-i18n="hat_esik">Kaç gün kala vurgulansın?</label>
-        <input id="hatirlatmaGun" type="number" min="0" max="31" step="1">
-      </div>
-    </div>
-    <div id="pano" style="margin-top:0.75rem"></div>
-    <!-- Bildirim ayarları — varsayılan: uygulama içi açık, kilit ekranı (yerel) kapalı -->
-    <div class="no-print" style="margin-top:0.9rem">
-      <h3 style="font-size:15px; margin:0 0 6px"><span data-i18n="bil_h">Bildirimler</span></h3>
-      <label class="check" for="zilIciAc">
-        <input type="checkbox" id="zilIciAc">
-        <span data-i18n="bil_ici">Uygulama içi bildirimler (zil paneli)</span>
-      </label>
-      <p class="muted check-not" data-i18n="bil_ici_not">
-        Yaklaşan ödemeler, kilometre taşları ve akıllı öneriler sağ üstteki zilde birikir.
-        Hepsi cihazında üretilir; hiçbir yere gönderilmez.
-      </p>
-      <p class="muted" style="margin:0 0 8px" data-i18n="bil_yerel_not">
-        Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan tarayıcı bir kez izin
-        ister; kilit ekranına düşen metinde asla tutar veya borç adı geçmez — yalnızca nötr
-        bir hatırlatma görünür.
-      </p>
-      <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap">
-        <button id="bildirimBtn" class="ghost">Kilit ekranı bildirimlerini aç</button>
-        <button type="button" id="bildirimTestBtn" class="ghost small" hidden data-i18n="bil_test">Test bildirimi gönder</button>
-        <span id="bildirimDurum" class="muted"></span>
-      </div>
-      <!-- İzin istemeden ÖNCE gerekçe -->
-      <div class="sb-teklif" id="bildirimNeden" hidden style="margin-top:10px">
-        <p class="sb-teklif-b" data-i18n="bil_neden_b">Bildirimlere neden izin istiyoruz?</p>
-        <p class="mini-ipucu" style="margin:0" data-i18n="bil_neden_m">Son ödeme gününden önce seni uyarmak için. Kilit ekranında varsayılan olarak yalnızca "yaklaşan bir ödemen var" yazar. Bildirimler cihazında kurulur; hiçbir yere veri gönderilmez.</p>
-        <div class="sb-btnlar">
-          <button type="button" id="bildirimNedenHayir" class="ghost" data-i18n="btn_vazgec">Vazgeç</button>
-          <button type="button" id="bildirimNedenEvet" data-i18n="bil_neden_evet">İzin ver</button>
-        </div>
-      </div>
-      <!-- Hatırlatma zamanı + kilit ekranı ayrıntısı -->
-      <fieldset class="hat-ayar">
-        <legend data-i18n="hat_ne_zaman">Ödeme hatırlatmaları ne zaman gelsin?</legend>
-        <div class="hat-secim">
-          <label class="check"><input type="checkbox" id="hatGun3" data-gun="3"><span data-i18n="hat_3">3 gün önce</span></label>
-          <label class="check"><input type="checkbox" id="hatGun1" data-gun="1"><span data-i18n="hat_1">1 gün önce</span></label>
-          <label class="check"><input type="checkbox" id="hatGun0" data-gun="0"><span data-i18n="hat_0">Ödeme günü</span></label>
-        </div>
-        <div style="max-width:160px; margin-top:8px">
-          <label for="hatSaat" data-i18n="hat_saat">Saat</label>
-          <input id="hatSaat" type="time" step="900">
-        </div>
-        <label class="check" style="margin-top:10px"><input type="checkbox" id="bilAyrinti"><span data-i18n="bil_ayrinti">Bildirimde ayrıntı göster (borç adı ve tutar)</span></label>
-        <p class="muted check-not" data-i18n="bil_ayrinti_not">Kapalıyken kilit ekranında yalnızca "Sıfırla: yaklaşan bir ödemen var" görünür. Açarsan telefonun kilitliyken yanındakiler borç adını ve tutarı görebilir.</p>
-      </fieldset>
-    </div>
-    <p class="muted" style="margin-top:0.5rem" data-i18n="hat_not">
-      Tarayıcı bildirimleri deneyseldir: genellikle yalnızca uygulama açıkken çalışır ve
-      hiçbir tarayıcıda garanti edilmez. Hatırlatmaların güvenilir kaynağı her zaman bu panodur.
-    </p>
-  </section>
 
   </div>
 
@@ -2330,9 +2246,139 @@ var GIRIS = (function () {
   <!-- SEKME: Plan — faiz/vergi ayarları + ödeme planı -->
   <div class="sekme" id="sekme-plan">
 
+
+  <!-- Plan hesaplama -->
+  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
+  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
+    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Aylık ödemeni nasıl belirleyelim?</span></h2>
+    <p class="muted" data-i18n="kp_alt">İstersen asgari üzerinden Sıfırla planlasın, istersen her borca kendi tutarını yaz. Bütün ekranlar seçtiğine göre hesaplanır.</p>
+    <div class="kp-mod" role="radiogroup" aria-labelledby="kpBaslik">
+      <button type="button" role="radio" aria-checked="true" data-kp-mod="oneri">
+        <strong data-i18n="kp_mod_oneri">Sıfırla önersin</strong>
+        <small data-i18n="kp_mod_oneri_alt">Asgariler + ekstra bütçe, en kârlı sırayla</small>
+      </button>
+      <button type="button" role="radio" aria-checked="false" data-kp-mod="kendi">
+        <strong data-i18n="kp_mod_kendi">Kendi planım</strong>
+        <small data-i18n="kp_mod_kendi_alt">Her borca ne ödeyeceğini sen yaz</small>
+      </button>
+    </div>
+    <input type="checkbox" id="kpAcik" hidden tabindex="-1" aria-hidden="true">
+    <div id="kpIcerik" hidden>
+      <div id="kpListe" class="kp-liste"></div>
+      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
+      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
+    </div>
+  </section>
+
+  <section class="card" id="odemePlaniKart">
+    <h2 data-i18n="plan_h">Ödeme Planı</h2>
+    <div class="form-grid no-print" style="max-width:420px">
+      <div>
+        <label for="ekstra" data-i18n="lbl_ekstra">Aylık ekstra bütçe (₺)</label>
+        <input id="ekstra" type="number" min="0" step="0.01" value="0">
+      </div>
+      <div>
+        <button id="hesaplaBtn" data-i18n="btn_hesapla">Planı hesapla</button>
+      </div>
+    </div>
+
+    <!-- "Ya şöyle yaparsam" kaydırıcısı: sürükledikçe motor canlı çağrılır -->
+    <div id="kaydiriciBolum" class="no-print" style="margin-top:1.2rem" hidden>
+      <label for="kaySlider" style="display:flex; justify-content:space-between; gap:0.6rem; font-size:0.9rem">
+        <span data-i18n="kay_lbl">Ya şöyle yaparsam: ayda şu kadar daha ödersem</span>
+        <strong id="kayDeger" style="color:var(--accent-strong)">+₺0</strong>
+      </label>
+      <input type="range" id="kaySlider" min="0" max="10000" step="100" value="0">
+      <div class="kay-statlar">
+        <div>
+          <p class="muted" id="kayTarihLbl">Borçsuz tarih</p>
+          <p class="deger" id="kayTarih">—</p>
+        </div>
+        <div>
+          <p class="muted" id="kayFaizLbl">Toplam faiz</p>
+          <p class="deger" id="kayFaiz">—</p>
+        </div>
+      </div>
+      <p id="kayCumle" class="info" style="margin-top:0.7rem"></p>
+    </div>
+
+    <div id="sonuclar" style="margin-top:1rem"></div>
+  </section>
+
+
+  <!-- Baş rakam: borçsuz tarih — planın tek kahraman verisi (Opal ilkesi) -->
+  <section class="card yukselti" id="planHeroKart" hidden>
+    <div class="statlar">
+      <div class="stat-blok kahraman" style="flex:2 1 200px">
+        <p class="buyuk" id="phTarih">—</p>
+        <p class="etiket" id="phTarihLbl"></p>
+      </div>
+      <div class="stat-blok">
+        <p class="buyuk sayac" id="phSure">—</p>
+        <p class="etiket" id="phSureLbl"></p>
+      </div>
+      <div class="stat-blok">
+        <p class="buyuk sayac" id="phFaiz">—</p>
+        <p class="etiket" id="phFaizLbl"></p>
+      </div>
+    </div>
+    <p class="mini-ipucu" id="phTahminiNot" hidden style="margin-top:10px; text-align:center"></p>
+  </section>
+
+  <!-- Ödeme takvimi: motorun ay-ay simülasyonundan türetilen ileriye dönük plan.
+       Motor değişmez; seriler (borcSerileri/bakiyeSerisi) geri okunarak çizilir. -->
+  <section class="card" id="takvimKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15.5 2 2 4-4.5"/></svg><span data-i18n="takvim_h">Ödeme Takvimi</span></h2>
+    <p class="muted" id="takvimOzet" style="margin-bottom:4px"></p>
+    <p class="mini-ipucu" id="takvimKaydiriciNotu" hidden></p>
+    <div id="takvimListe" class="takvim"></div>
+    <div class="no-print" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+      <button type="button" id="takvimDevamBtn" class="ghost small" hidden></button>
+      <button type="button" id="takvimIndirBtn" class="ghost small" hidden data-i18n="takvim_indir">Takvimi indir (.txt)</button>
+    </div>
+  </section>
+
+
+
+
+
+
+
+  <!-- Akıllı hamle: rolü "Şunu Yaparsan" kartına taşındı (ONERI modülü duruyor) -->
+  <div id="akilliHamle" class="card akilli-hamle" hidden></div>
+
+
+
+
+  <!-- ARAÇLAR: kart yığını yerine döşeme ızgarası — dokununca yalnız o araç açılır
+       (tasarim/SADELESTIRME.md). Uygulanamayan araç (hidden) döşemede görünmez. -->
+  <section class="card araclar-kart no-print" id="araclarKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span data-i18n="arac_h">Araçlar</span></h2>
+    <p class="muted" data-i18n="arac_alt">Planını derinleştirmek istediğinde: birine dokun, yalnız o açılsın.</p>
+    <div class="arac-izgara" id="aracIzgara" role="list"></div>
+  </section>
+  <div id="aracAlan">
+  <!-- Kural tabanlı kişisel hamleler (AI yok, dış çağrı yok; rakamlar motordan) -->
+  <section data-arac="hamle" class="card arac" id="hamleKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i18n="oneri_h">Borcunu Eritecek Hamleler</span></h2>
+    <div id="oneriler"></div>
+    <p class="muted" style="margin-top:0.7rem" data-i18n="oneri_not">
+      Bu öneriler tamamen cihazında, kural tabanlı üretilir — yapay zekâ veya internet bağlantısı
+      kullanılmaz; finansal danışmanlık değildir.
+    </p>
+  </section>
+
+  <!-- Küçük değişiklik, büyük etki: günlük harcamadan kısınca borca etkisi (motor hesaplar) -->
+  <section data-arac="kucuk" class="card kd-kart arac" id="kdKart" hidden aria-labelledby="kdBaslik">
+    <h2 id="kdBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c0 1.5 1.5 1.5 1.5 3M12 3c0 1.5 1.5 1.5 1.5 3"/></svg><span data-i18n="kd_h">Küçük Değişiklik, Büyük Etki</span></h2>
+    <p class="muted" data-i18n="kd_alt">Ayda neyi biraz azaltabilirsin? Seç, borcuna etkisini hemen gör. Fiyatlar örnek — dokunup kendine göre değiştir.</p>
+    <div id="kdListe" class="kd-liste"></div>
+    <div id="kdSonuc" class="kd-sonuc" aria-live="polite"></div>
+  </section>
+
   <!-- İki Yol: sadece asgari vs planla — Plan sekmesinin kahraman kartı.
        Tüm sayılar motordan (IKIYOL katmanı); kaydırıcı aylık ekstrayı canlı değiştirir. -->
-  <section class="card yukselti iy-kart" id="ikiYolKart" hidden aria-labelledby="iyBaslik">
+  <section data-arac="ikiyol" class="card yukselti iy-kart arac" id="ikiYolKart" hidden aria-labelledby="iyBaslik">
     <p class="iy-ust" id="iyBaslik" data-i18n="iy_h">İki Yol</p>
     <div class="iy-kahraman" aria-live="polite">
       <p class="iy-dev" id="iyDev">—</p>
@@ -2386,85 +2432,8 @@ var GIRIS = (function () {
     <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
   </section>
 
-  <!-- Plan hesaplama -->
-  <!-- Kendi planım: her borca kullanıcının belirlediği aylık tutar (motor: planOdeme) -->
-  <section class="card kp-kart no-print" id="kpKart" hidden aria-labelledby="kpBaslik">
-    <h2 id="kpBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-i18n="kp_h">Aylık ödemeni nasıl belirleyelim?</span></h2>
-    <p class="muted" data-i18n="kp_alt">İstersen asgari üzerinden Sıfırla planlasın, istersen her borca kendi tutarını yaz. Bütün ekranlar seçtiğine göre hesaplanır.</p>
-    <div class="kp-mod" role="radiogroup" aria-labelledby="kpBaslik">
-      <button type="button" role="radio" aria-checked="true" data-kp-mod="oneri">
-        <strong data-i18n="kp_mod_oneri">Sıfırla önersin</strong>
-        <small data-i18n="kp_mod_oneri_alt">Asgariler + ekstra bütçe, en kârlı sırayla</small>
-      </button>
-      <button type="button" role="radio" aria-checked="false" data-kp-mod="kendi">
-        <strong data-i18n="kp_mod_kendi">Kendi planım</strong>
-        <small data-i18n="kp_mod_kendi_alt">Her borca ne ödeyeceğini sen yaz</small>
-      </button>
-    </div>
-    <input type="checkbox" id="kpAcik" hidden tabindex="-1" aria-hidden="true">
-    <div id="kpIcerik" hidden>
-      <div id="kpListe" class="kp-liste"></div>
-      <div id="kpOzet" class="kp-ozet" aria-live="polite"></div>
-      <p class="mini-ipucu" data-i18n="kp_not">Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.</p>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 data-i18n="plan_h">Ödeme Planı</h2>
-    <div class="form-grid no-print" style="max-width:420px">
-      <div>
-        <label for="ekstra" data-i18n="lbl_ekstra">Aylık ekstra bütçe (₺)</label>
-        <input id="ekstra" type="number" min="0" step="0.01" value="0">
-      </div>
-      <div>
-        <button id="hesaplaBtn" data-i18n="btn_hesapla">Planı hesapla</button>
-      </div>
-    </div>
-
-    <!-- "Ya şöyle yaparsam" kaydırıcısı: sürükledikçe motor canlı çağrılır -->
-    <div id="kaydiriciBolum" class="no-print" style="margin-top:1.2rem" hidden>
-      <label for="kaySlider" style="display:flex; justify-content:space-between; gap:0.6rem; font-size:0.9rem">
-        <span data-i18n="kay_lbl">Ya şöyle yaparsam: ayda şu kadar daha ödersem</span>
-        <strong id="kayDeger" style="color:var(--accent-strong)">+₺0</strong>
-      </label>
-      <input type="range" id="kaySlider" min="0" max="10000" step="100" value="0">
-      <div class="kay-statlar">
-        <div>
-          <p class="muted" id="kayTarihLbl">Borçsuz tarih</p>
-          <p class="deger" id="kayTarih">—</p>
-        </div>
-        <div>
-          <p class="muted" id="kayFaizLbl">Toplam faiz</p>
-          <p class="deger" id="kayFaiz">—</p>
-        </div>
-      </div>
-      <p id="kayCumle" class="info" style="margin-top:0.7rem"></p>
-    </div>
-
-    <div id="sonuclar" style="margin-top:1rem"></div>
-  </section>
-
-  <!-- Sıradaki tek adım: plan ezici gelmesin — tek net eylem + hızlı Öde -->
-  <section class="card" id="tekAdimKart" hidden>
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 12.5 2.3 2.3L15.5 10"/></svg><span data-i18n="tekadim_h">Sıradaki Tek Adım</span></h2>
-    <div id="tekAdimIcerik"></div>
-  </section>
-
-  <!-- Ödeme takvimi: motorun ay-ay simülasyonundan türetilen ileriye dönük plan.
-       Motor değişmez; seriler (borcSerileri/bakiyeSerisi) geri okunarak çizilir. -->
-  <section class="card" id="takvimKart">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15.5 2 2 4-4.5"/></svg><span data-i18n="takvim_h">Ödeme Takvimi</span></h2>
-    <p class="muted" id="takvimOzet" style="margin-bottom:4px"></p>
-    <p class="mini-ipucu" id="takvimKaydiriciNotu" hidden></p>
-    <div id="takvimListe" class="takvim"></div>
-    <div class="no-print" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
-      <button type="button" id="takvimDevamBtn" class="ghost small" hidden></button>
-      <button type="button" id="takvimIndirBtn" class="ghost small" hidden data-i18n="takvim_indir">Takvimi indir (.txt)</button>
-    </div>
-  </section>
-
   <!-- Hedef: "şu ayda borçsuz olmak istiyorum" → ayda ne kadar (HEDEF katmanı, motordan) -->
-  <section class="card hd-kart" id="hedefKart" hidden aria-labelledby="hdBaslik">
+  <section data-arac="hedef" class="card hd-kart arac" id="hedefKart" hidden aria-labelledby="hdBaslik">
     <h2 id="hdBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4h11l-2 4 2 4H5"/></svg><span data-i18n="hd_h">Hedef koy</span></h2>
     <div class="pro-kilit no-print">
       <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
@@ -2497,9 +2466,23 @@ var GIRIS = (function () {
     <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
   </section>
 
+  <!-- Net kazanan: kartopu vs çığ yan yana + kişisel tek cümle + yöntem seçimi.
+       Tüm sayılar motordan; tavsiye değil, kullanıcının kendi verisiyle matematik. -->
+  <section data-arac="yontem" class="card yukselti arac" id="kazananKart" hidden>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></svg><span data-i18n="kazanan_h">Hangi Yöntem?</span></h2>
+    <div id="kazananIcerik"></div>
+  </section>
+
+  <!-- Şunu yaparsan: motordan hesaplanan en etkili 2-3 senaryo (kahraman en üstte) -->
+  <section data-arac="senaryo" class="card arac" id="senaryolarKart" hidden>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg><span data-i18n="senaryolar_h">Şunu Yaparsan</span></h2>
+    <div id="senaryoListe"></div>
+    <p class="mini-ipucu" id="senaryoVarsayim" style="margin-top:10px"></p>
+  </section>
+
   <!-- Tasarruf Modu: gelir − giderler − asgariler = serbest para → önerilen ekstra (BUTCE katmanı) -->
   <!-- Yapılandırma: seçili borçları tek krediyle kapatmak ne kazandırır? (YAPILANDIRMA) -->
-  <section class="card yp-kart" id="yapKart" hidden aria-labelledby="ypBaslik">
+  <section data-arac="yapilandirma" class="card yp-kart arac" id="yapKart" hidden aria-labelledby="ypBaslik">
     <h2 id="ypBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11M4 12h7M4 17h11"/><path d="m16 9 4 3-4 3"/></svg><span data-i18n="yp_h">Yapılandırma ve borç kapatma kredisi</span></h2>
     <div class="pro-kilit no-print">
       <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
@@ -2530,7 +2513,7 @@ var GIRIS = (function () {
     <p class="mini-ipucu" data-i18n="iy_not">Tahmindir, finansal tavsiye değildir. Hesap tamamen cihazında, plan motoruyla yapılır.</p>
   </section>
 
-  <section class="card ts-kart" id="tasarrufKart" hidden aria-labelledby="tsBaslik">
+  <section data-arac="tasarruf" class="card ts-kart arac" id="tasarrufKart" hidden aria-labelledby="tsBaslik">
     <h2 id="tsBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 7l2-3h12l2 3"/><path d="M16 14h.01"/></svg><span data-i18n="ts_h">Tasarruf Modu</span></h2>
     <div class="pro-kilit no-print">
       <p class="pro-kilit-b"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg><span data-i18n="kilit_b">Sıfırla Pro ile açılır</span></p>
@@ -2572,44 +2555,8 @@ var GIRIS = (function () {
     <p class="mini-ipucu" style="margin-top:12px" data-i18n="ts_feragat">Bu bir finansal danışmanlık değil; girdiğin rakamlarla yapılan matematiksel bir planlama. Tüm veri cihazında kalır.</p>
   </section>
 
-  <!-- Baş rakam: borçsuz tarih — planın tek kahraman verisi (Opal ilkesi) -->
-  <section class="card yukselti" id="planHeroKart" hidden>
-    <div class="statlar">
-      <div class="stat-blok kahraman" style="flex:2 1 200px">
-        <p class="buyuk" id="phTarih">—</p>
-        <p class="etiket" id="phTarihLbl"></p>
-      </div>
-      <div class="stat-blok">
-        <p class="buyuk sayac" id="phSure">—</p>
-        <p class="etiket" id="phSureLbl"></p>
-      </div>
-      <div class="stat-blok">
-        <p class="buyuk sayac" id="phFaiz">—</p>
-        <p class="etiket" id="phFaizLbl"></p>
-      </div>
-    </div>
-    <p class="mini-ipucu" id="phTahminiNot" hidden style="margin-top:10px; text-align:center"></p>
-  </section>
-
-  <!-- Net kazanan: kartopu vs çığ yan yana + kişisel tek cümle + yöntem seçimi.
-       Tüm sayılar motordan; tavsiye değil, kullanıcının kendi verisiyle matematik. -->
-  <section class="card yukselti" id="kazananKart" hidden>
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></svg><span data-i18n="kazanan_h">Hangi Yöntem?</span></h2>
-    <div id="kazananIcerik"></div>
-  </section>
-
-  <!-- Şunu yaparsan: motordan hesaplanan en etkili 2-3 senaryo (kahraman en üstte) -->
-  <section class="card" id="senaryolarKart" hidden>
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg><span data-i18n="senaryolar_h">Şunu Yaparsan</span></h2>
-    <div id="senaryoListe"></div>
-    <p class="mini-ipucu" id="senaryoVarsayim" style="margin-top:10px"></p>
-  </section>
-
-  <!-- Akıllı hamle: rolü "Şunu Yaparsan" kartına taşındı (ONERI modülü duruyor) -->
-  <div id="akilliHamle" class="card akilli-hamle" hidden></div>
-
   <!-- Faiz sızıntısı: kalan toplam faiz + her ay faize giden tutar -->
-  <section class="card" id="sizintiKart" hidden>
+  <section data-arac="sizinti" class="card arac" id="sizintiKart" hidden>
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0C6 9.5 12 3 12 3z"/></svg><span data-i18n="siz_h">Faiz Sızıntısı</span></h2>
     <div class="sizinti">
       <svg width="64" height="100" viewBox="0 0 64 100" aria-hidden="true">
@@ -2632,13 +2579,13 @@ var GIRIS = (function () {
   </section>
 
   <!-- Erime eğrisi: bakiyenin ay ay düşüşü (kartopu vs çığ) — inline SVG -->
-  <section class="card" id="erimeKart" hidden>
+  <section data-arac="erime" class="card arac" id="erimeKart" hidden>
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-6 4 3 6-8"/><path d="M3 21h18"/></svg><span data-i18n="erime_h">Erime Eğrisi</span></h2>
     <div id="erime"></div>
   </section>
 
   <!-- "Ya kartı kesersem?": devam eden harcama vs kesme karşılaştırması -->
-  <section class="card" id="kesKart" hidden>
+  <section data-arac="kes" class="card arac" id="kesKart" hidden>
     <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.5 8 20 19.5M8.5 16 20 4.5"/></svg><span data-i18n="kes_h">Ya Kartı Kesersem?</span></h2>
     <div class="form-grid" style="max-width:520px">
       <div>
@@ -2652,6 +2599,78 @@ var GIRIS = (function () {
     </div>
     <div id="kesSonuc" style="margin-top:12px"></div>
   </section>
+
+  <!-- Kurtuluş yolculuğu haritası: tamamı inline SVG, veri motordan -->
+  <section data-arac="yolculuk" class="card arac" id="yolKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span data-i18n="yol_h">Kurtuluş Yolculuğu</span></h2>
+    <div id="yolculuk"></div>
+  </section>
+
+  <!-- Zaman makinesi: ilk plana karşı bugünkü plan -->
+  <section data-arac="zaman" class="card arac" id="zamanKart" hidden>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span data-i18n="zaman_h">Zaman Makinesi</span></h2>
+    <div id="zamanIcerik"></div>
+  </section>
+
+  <!-- Önlenen faiz → hayat karşılığı: kullanıcı tanımlı referanslarla -->
+  <section data-arac="hayat" class="card arac" id="hayatKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1.5 12a2 2 0 0 1-2 1.8h-5A2 2 0 0 1 7.5 20z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span data-i18n="hayat_h">Önlenen Faizin Karşılığı</span></h2>
+    <div id="hayatSonuc"></div>
+    <div class="form-grid" style="max-width:520px; margin-top:12px">
+      <div>
+        <label for="refMarket" data-i18n="lbl_market">Aylık market (₺)</label>
+        <input id="refMarket" type="number" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="refKira" data-i18n="lbl_kira">Aylık kira (₺)</label>
+        <input id="refKira" type="number" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="refBilet" data-i18n="lbl_bilet">Bir bilet / keyif (₺)</label>
+        <input id="refBilet" type="number" min="0" step="0.01">
+      </div>
+    </div>
+  </section>
+
+  <!-- Ödeme serisi ısı haritası: aylık bakiye kayıtlarından türetilir -->
+  <section data-arac="seri" class="card arac" id="seriKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.5-3 5-3 8.5a3 3 0 0 0 6 .2c0-1.2-.5-2.2-1.2-3.2 2.2 1 4.2 3 4.2 5.7A6 6 0 0 1 6 14.5C6 9.5 10.5 7 12 3z"/></svg><span data-i18n="seri_h">Ödeme Serisi</span></h2>
+    <div id="seri"></div>
+  </section>
+
+  <!-- Başarı rozetleri: kural tabanlı kilometre taşları -->
+  <section data-arac="rozet" class="card arac" id="rozetKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="m9 13-1.5 8 4.5-2.5L16.5 21 15 13"/></svg><span data-i18n="rozet_h">Başarı Rozetleri</span></h2>
+    <div id="rozetler" class="rozetler"></div>
+  </section>
+
+  <!-- Başarı kartı: Canvas ile cihazda üretilir, paylaş/indir -->
+  <section data-arac="paylas" class="card no-print arac" id="paylasKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4h4l1.5 3"/></svg><span data-i18n="paylas_h">Başarı Kartını Paylaş</span></h2>
+    <div id="paylasIcerik">
+      <label class="check">
+        <input type="checkbox" id="paylasGizle">
+        <span data-i18n="paylas_gizle">Kişisel rakamları gizle</span>
+      </label>
+      <!-- Ad varsayılan olarak kartta GÖRÜNMEZ; kullanıcı isterse açar -->
+      <label class="check">
+        <input type="checkbox" id="paylasAd">
+        <span data-i18n="paylas_ad">Adımı kartta göster</span>
+      </label>
+      <canvas id="paylasKanvas" width="1080" height="1080"
+        style="width:100%; max-width:340px; border-radius:14px; margin-top:0.75rem; display:block; border:1px solid var(--border)"></canvas>
+      <div style="display:flex; gap:0.6rem; margin-top:0.75rem; flex-wrap:wrap">
+        <button id="paylasBtn" data-i18n="btn_paylas">Paylaş</button>
+        <button id="indirBtn" class="ghost" data-i18n="btn_indir">PNG indir</button>
+      </div>
+    </div>
+    <p id="paylasBos" class="empty" hidden></p>
+    <p class="muted" style="margin-top:0.6rem" data-i18n="paylas_not">
+      Görsel tamamen cihazında üretilir; sen paylaşmadıkça hiçbir yere gönderilmez.
+    </p>
+  </section>
+
+  </div>
 
   </div>
 
@@ -2694,26 +2713,8 @@ var GIRIS = (function () {
   </section>
 
   <!-- Aylık check-in ritüeli: tek dokunuş, seri + ısı haritası + tasarruf -->
-  <!-- Maaş günü planı: ödemeler maaşa göre; maaştan önce gelen vadeler uyarılır -->
-  <section class="card maas-kart no-print" id="maasKart" hidden aria-labelledby="maasBaslik">
-    <h2 id="maasBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M12 2v3M9.5 3.5 12 2l2.5 1.5"/></svg><span data-i18n="maas_h">Maaş günü planı</span></h2>
-    <div class="maas-sec">
-      <label for="maasGunu" data-i18n="maas_lbl">Maaşın ayın kaçında yatıyor?</label>
-      <select id="maasGunu"></select>
-    </div>
-    <div id="maasIcerik"></div>
-  </section>
 
-  <section class="card" id="checkinKart" hidden>
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="checkin_h">Aylık Check-in</span></h2>
-    <div id="checkinIcerik"></div>
-  </section>
 
-  <!-- Ödeme serisi ısı haritası: aylık bakiye kayıtlarından türetilir -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.5-3 5-3 8.5a3 3 0 0 0 6 .2c0-1.2-.5-2.2-1.2-3.2 2.2 1 4.2 3 4.2 5.7A6 6 0 0 1 6 14.5C6 9.5 10.5 7 12 3z"/></svg><span data-i18n="seri_h">Ödeme Serisi</span></h2>
-    <div id="seri"></div>
-  </section>
 
   <!-- Bu ay ne yapmalıyım: seçili yönteme göre aylık eylem planı -->
   <section class="card">
@@ -2726,6 +2727,21 @@ var GIRIS = (function () {
   </section>
 
   <!-- Sıkışık ay: asgarilerin hepsi ödenemiyorsa en az zararlı dağıtım (SIKISIK) -->
+  <!-- Kumbara: "bugün neyi atladın?" → parası birikir, tek dokunuşla borca -->
+  <section class="card kb-kart no-print" id="kumbaraKart" hidden>
+    <div id="kumbara" class="kumbara"></div>
+  </section>
+
+  <!-- Maaş günü planı: ödemeler maaşa göre; maaştan önce gelen vadeler uyarılır -->
+  <section class="card maas-kart no-print" id="maasKart" hidden aria-labelledby="maasBaslik">
+    <h2 id="maasBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M12 2v3M9.5 3.5 12 2l2.5 1.5"/></svg><span data-i18n="maas_h">Maaş günü planı</span></h2>
+    <div class="maas-sec">
+      <label for="maasGunu" data-i18n="maas_lbl">Maaşın ayın kaçında yatıyor?</label>
+      <select id="maasGunu"></select>
+    </div>
+    <div id="maasIcerik"></div>
+  </section>
+
   <section class="card zor-kart no-print" id="zorAyKart" hidden>
     <details id="zorAyDetay">
       <summary><span class="zor-baslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.1"/></svg><span data-i18n="zor_h">Bu ay asgarilerin hepsini ödeyemiyor musun?</span></span></summary>
@@ -2743,37 +2759,12 @@ var GIRIS = (function () {
     </details>
   </section>
 
-  <!-- Başarı rozetleri: kural tabanlı kilometre taşları -->
-  <section class="card">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="m9 13-1.5 8 4.5-2.5L16.5 21 15 13"/></svg><span data-i18n="rozet_h">Başarı Rozetleri</span></h2>
-    <div id="rozetler" class="rozetler"></div>
+  <section class="card" id="checkinKart" hidden>
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="checkin_h">Aylık Check-in</span></h2>
+    <div id="checkinIcerik"></div>
   </section>
 
-  <!-- Başarı kartı: Canvas ile cihazda üretilir, paylaş/indir -->
-  <section class="card no-print">
-    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8.5 7 10 4h4l1.5 3"/></svg><span data-i18n="paylas_h">Başarı Kartını Paylaş</span></h2>
-    <div id="paylasIcerik">
-      <label class="check">
-        <input type="checkbox" id="paylasGizle">
-        <span data-i18n="paylas_gizle">Kişisel rakamları gizle</span>
-      </label>
-      <!-- Ad varsayılan olarak kartta GÖRÜNMEZ; kullanıcı isterse açar -->
-      <label class="check">
-        <input type="checkbox" id="paylasAd">
-        <span data-i18n="paylas_ad">Adımı kartta göster</span>
-      </label>
-      <canvas id="paylasKanvas" width="1080" height="1080"
-        style="width:100%; max-width:340px; border-radius:14px; margin-top:0.75rem; display:block; border:1px solid var(--border)"></canvas>
-      <div style="display:flex; gap:0.6rem; margin-top:0.75rem; flex-wrap:wrap">
-        <button id="paylasBtn" data-i18n="btn_paylas">Paylaş</button>
-        <button id="indirBtn" class="ghost" data-i18n="btn_indir">PNG indir</button>
-      </div>
-    </div>
-    <p id="paylasBos" class="empty" hidden></p>
-    <p class="muted" style="margin-top:0.6rem" data-i18n="paylas_not">
-      Görsel tamamen cihazında üretilir; sen paylaşmadıkça hiçbir yere gönderilmez.
-    </p>
-  </section>
+
 
   </div>
 
@@ -2817,6 +2808,68 @@ var GIRIS = (function () {
       Verilerin yalnızca bu cihazda tutulur. Telefonu kaybedersen geri getirmenin
       tek yolu senin aldığın yedektir — hemen aşağıdaki <strong>Yedekleme</strong>
       bölümünden tek dosya olarak indirebilirsin.
+    </p>
+  </section>
+
+  <!-- Hatırlatmalar panosu: hatırlatmaların güvenilir kaynağı budur -->
+  <section class="card" id="hatKart">
+    <h2><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span data-i18n="hat_h">Hatırlatmalar</span></h2>
+    <div class="form-grid" style="max-width:260px">
+      <div>
+        <label for="hatirlatmaGun" data-i18n="hat_esik">Kaç gün kala vurgulansın?</label>
+        <input id="hatirlatmaGun" type="number" min="0" max="31" step="1">
+      </div>
+    </div>
+    <div id="pano" style="margin-top:0.75rem"></div>
+    <!-- Bildirim ayarları — varsayılan: uygulama içi açık, kilit ekranı (yerel) kapalı -->
+    <div class="no-print" style="margin-top:0.9rem">
+      <h3 style="font-size:15px; margin:0 0 6px"><span data-i18n="bil_h">Bildirimler</span></h3>
+      <label class="check" for="zilIciAc">
+        <input type="checkbox" id="zilIciAc">
+        <span data-i18n="bil_ici">Uygulama içi bildirimler (zil paneli)</span>
+      </label>
+      <p class="muted check-not" data-i18n="bil_ici_not">
+        Yaklaşan ödemeler, kilometre taşları ve akıllı öneriler sağ üstteki zilde birikir.
+        Hepsi cihazında üretilir; hiçbir yere gönderilmez.
+      </p>
+      <p class="muted" style="margin:0 0 8px" data-i18n="bil_yerel_not">
+        Kilit ekranı bildirimleri varsayılan olarak kapalıdır. Açarsan tarayıcı bir kez izin
+        ister; kilit ekranına düşen metinde asla tutar veya borç adı geçmez — yalnızca nötr
+        bir hatırlatma görünür.
+      </p>
+      <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap">
+        <button id="bildirimBtn" class="ghost">Kilit ekranı bildirimlerini aç</button>
+        <button type="button" id="bildirimTestBtn" class="ghost small" hidden data-i18n="bil_test">Test bildirimi gönder</button>
+        <span id="bildirimDurum" class="muted"></span>
+      </div>
+      <!-- İzin istemeden ÖNCE gerekçe -->
+      <div class="sb-teklif" id="bildirimNeden" hidden style="margin-top:10px">
+        <p class="sb-teklif-b" data-i18n="bil_neden_b">Bildirimlere neden izin istiyoruz?</p>
+        <p class="mini-ipucu" style="margin:0" data-i18n="bil_neden_m">Son ödeme gününden önce seni uyarmak için. Kilit ekranında varsayılan olarak yalnızca "yaklaşan bir ödemen var" yazar. Bildirimler cihazında kurulur; hiçbir yere veri gönderilmez.</p>
+        <div class="sb-btnlar">
+          <button type="button" id="bildirimNedenHayir" class="ghost" data-i18n="btn_vazgec">Vazgeç</button>
+          <button type="button" id="bildirimNedenEvet" data-i18n="bil_neden_evet">İzin ver</button>
+        </div>
+      </div>
+      <!-- Hatırlatma zamanı + kilit ekranı ayrıntısı -->
+      <fieldset class="hat-ayar">
+        <legend data-i18n="hat_ne_zaman">Ödeme hatırlatmaları ne zaman gelsin?</legend>
+        <div class="hat-secim">
+          <label class="check"><input type="checkbox" id="hatGun3" data-gun="3"><span data-i18n="hat_3">3 gün önce</span></label>
+          <label class="check"><input type="checkbox" id="hatGun1" data-gun="1"><span data-i18n="hat_1">1 gün önce</span></label>
+          <label class="check"><input type="checkbox" id="hatGun0" data-gun="0"><span data-i18n="hat_0">Ödeme günü</span></label>
+        </div>
+        <div style="max-width:160px; margin-top:8px">
+          <label for="hatSaat" data-i18n="hat_saat">Saat</label>
+          <input id="hatSaat" type="time" step="900">
+        </div>
+        <label class="check" style="margin-top:10px"><input type="checkbox" id="bilAyrinti"><span data-i18n="bil_ayrinti">Bildirimde ayrıntı göster (borç adı ve tutar)</span></label>
+        <p class="muted check-not" data-i18n="bil_ayrinti_not">Kapalıyken kilit ekranında yalnızca "Sıfırla: yaklaşan bir ödemen var" görünür. Açarsan telefonun kilitliyken yanındakiler borç adını ve tutarı görebilir.</p>
+      </fieldset>
+    </div>
+    <p class="muted" style="margin-top:0.5rem" data-i18n="hat_not">
+      Tarayıcı bildirimleri deneyseldir: genellikle yalnızca uygulama açıkken çalışır ve
+      hiçbir tarayıcıda garanti edilmez. Hatırlatmaların güvenilir kaynağı her zaman bu panodur.
     </p>
   </section>
 
@@ -3582,7 +3635,7 @@ const SOZLUK = {
       geri_h: "Geri Sayım",
       geri_not: 'Plana uydukça bu sayı her ay küçülür.',
       checkin_h: "Aylık Check-in",
-      kazanan_h: "Hangi Yöntem?", senaryolar_h: "Şunu Yaparsan", tekadim_h: "Sıradaki Tek Adım",
+      kazanan_h: "Hangi Yöntem?", senaryolar_h: "Şunu Yaparsan", tekadim_h: "Sıradaki adımın",
       takvim_h: "Ödeme Takvimi", takvim_indir: "Takvimi indir (.txt)",
       rapor_gizle: "Tutarları gizle (paylaşım için)", rapor_paylas: "Görseli paylaş", rapor_indir_png: "Görseli indir (PNG)",
       kurulum_ekle: "Ekle",
@@ -3633,6 +3686,7 @@ const SOZLUK = {
       sifirla_yedek: "Önce yedek al",
       oneri_h: "Borcunu Eritecek Hamleler",
       dg_h: "Borcun nasıl değişiyor?",
+      arac_h: "Araçlar", arac_alt: "Planını derinleştirmek istediğinde: birine dokun, yalnız o açılsın.",
       maas_h: "Maaş günü planı", maas_lbl: "Maaşın ayın kaçında yatıyor?", kd_geri: "Geri al",
       es_bakiye: "Bankanın gösterdiği güncel borç", es_asgari: "Ekstredeki asgari ödeme (isteğe bağlı)", es_limit: "Kart limitin (isteğe bağlı)",
       kd_h: "Küçük Değişiklik, Büyük Etki",
@@ -4227,6 +4281,11 @@ const SOZLUK = {
       hmKartMetin: (t, ay, f) => `Bu karta ayda ${t} yeni harcama eklemek, borçsuz günü ${ay} ay öteler ve ${f} fazla faiz demek. Kartı bir süre cüzdandan çıkar.`,
       hmTas: (y, e) => `%${y} tamam — sıradaki durak %${e}`,
       hmTasMetin: (t, tarih) => `Sadece ${t} kaldı. Bu tempoyla ${tarih}'de oradasın. Her ödeme seni bir adım yaklaştırır.`,
+      aracAd: { hamle: "Borcunu eritecek hamleler", kucuk: "Küçük değişiklik", ikiyol: "İki Yol", hedef: "Hedef koy", yontem: "Kartopu mu çığ mı?",
+        senaryo: "Şunu yaparsan", yapilandirma: "Yapılandırma", tasarruf: "Tasarruf modu", sizinti: "Faiz sızıntısı", erime: "Erime eğrisi",
+        kes: "Ya kartı kesersem?", yolculuk: "Kurtuluş yolculuğu", zaman: "Zaman makinesi", hayat: "Önlenen faizin karşılığı",
+        seri: "Ödeme serisi", rozet: "Rozetler", paylas: "Başarı kartı" },
+      vuDaha: (n) => `+${n} uyarı daha`, vuDahaAz: "Daha az göster", dgDokum: "Bu ayın dökümü",
       opOneriB: "Ödeme planın: Sıfırla'nın önerisi", opKendiB: "Ödeme planın: kendi tutarların",
       opAlt: (t, tarih) => `Bu ay toplam <strong>${t}</strong> · borçsuz <strong>${tarih}</strong>`,
       opOlustur: "Kendi planını oluştur", opDuzenle: "Tutarlarını düzenle",
@@ -4521,7 +4580,7 @@ const SOZLUK = {
       geri_h: "Countdown",
       geri_not: 'Stick to the plan and this number shrinks every month.',
       checkin_h: "Monthly Check-in",
-      kazanan_h: "Which Method?", senaryolar_h: "If You Do This", tekadim_h: "Your Next Single Step",
+      kazanan_h: "Which Method?", senaryolar_h: "If You Do This", tekadim_h: "Your next step",
       takvim_h: "Payment Calendar", takvim_indir: "Download calendar (.txt)",
       rapor_gizle: "Hide amounts (for sharing)", rapor_paylas: "Share image", rapor_indir_png: "Download image (PNG)",
       kurulum_ekle: "Add",
@@ -4572,6 +4631,7 @@ const SOZLUK = {
       sifirla_yedek: "Back up first",
       oneri_h: "Moves That Melt Your Debt",
       dg_h: "How is your debt changing?",
+      arac_h: "Tools", arac_alt: "When you want to go deeper: tap one and only that one opens.",
       maas_h: "Payday plan", maas_lbl: "Which day of the month is your payday?", kd_geri: "Undo",
       es_bakiye: "Current debt shown by your bank", es_asgari: "Minimum payment on the statement (optional)", es_limit: "Your card limit (optional)",
       kd_h: "Small Change, Big Impact",
@@ -5156,6 +5216,11 @@ const SOZLUK = {
       hmKartMetin: (t, ay, f) => `Adding ${t} of new spending a month pushes your debt-free day back ${ay} month${ay === 1 ? "" : "s"} and costs ${f} more interest. Take the card out of your wallet for a while.`,
       hmTas: (y, e) => `${y}% done — next stop ${e}%`,
       hmTasMetin: (t, tarih) => `Only ${t} to go. At this pace you're there by ${tarih}. Every payment moves you closer.`,
+      aracAd: { hamle: "Moves that melt your debt", kucuk: "Small change", ikiyol: "Two Paths", hedef: "Set a goal", yontem: "Snowball or avalanche?",
+        senaryo: "What if you…", yapilandirma: "Consolidation", tasarruf: "Savings mode", sizinti: "Interest leak", erime: "Melt curve",
+        kes: "What if I cut the card?", yolculuk: "Freedom journey", zaman: "Time machine", hayat: "Interest saved, in real life",
+        seri: "Payment streak", rozet: "Badges", paylas: "Share card" },
+      vuDaha: (n) => `+${n} more alert${n === 1 ? "" : "s"}`, vuDahaAz: "Show less", dgDokum: "This month's breakdown",
       opOneriB: "Your payment plan: Sıfırla's suggestion", opKendiB: "Your payment plan: your own amounts",
       opAlt: (t, tarih) => `This month <strong>${t}</strong> in total · debt-free <strong>${tarih}</strong>`,
       opOlustur: "Build your own plan", opDuzenle: "Edit your amounts",
@@ -6443,8 +6508,12 @@ const HATIRLATMA = (() => {
     const gecen = oncekiVade(sonraki, gun);            // en son geçmiş vade (< bugün)
     const gecenOnce = oncekiVade(gecen, gun);
     const gerekli = Math.max(0, Math.min(+borc.payment || 0, borc.balance + 0.005));
-    const yeter = (x) => x >= gerekli * 0.98 - 0.5;    // asgari tahmini: küçük farklar sayılmaz
     const nG = gunNo(gecen), nGO = gunNo(gecenOnce), nB = gunNo(b);
+    // Asgari sonradan güncellendiyse (yeni ekstre), geçmiş dönem ESKİ asgariyle ölçülür
+    const eskiA = borc.asgariOnceki, eskiSon = eskiA && /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(eskiA.sonVade || ""));
+    const gerekliGecen = eskiSon && nG <= +eskiSon[1] * 10000 + +eskiSon[2] * 100 + +eskiSon[3] && +eskiA.tutar > 0
+      ? Math.max(0, Math.min(+eskiA.tutar, borc.balance + 0.005)) : gerekli;
+    const yeter = (x, g) => x >= (g === undefined ? gerekli : g) * 0.98 - 0.5;    // asgari tahmini: küçük farklar sayılmaz
     let gecenOdenen = 0, sonra = 0;
     for (const p of borc.payments || []) {
       const n = odemeNo(p);
@@ -6452,14 +6521,14 @@ const HATIRLATMA = (() => {
       if (n <= nG) gecenOdenen += +p.tutar; else sonra += +p.tutar;
     }
     const eklenme = +borc.eklenmeMs > 0 ? gunBasi(new Date(+borc.eklenmeMs)) : null;
-    const gecenSayilir = eklenme !== null && eklenme <= gecen && gerekli > 0.005;
+    const gecenSayilir = eklenme !== null && eklenme <= gecen && gerekliGecen > 0.005;
     const gun2 = (a, c) => Math.round((c - a) / 86400000);
-    if (gecenSayilir && !yeter(gecenOdenen)) {
-      const ek = Math.min(sonra, gerekli - gecenOdenen);   // geç ödeme önce geçen dönemi kapatır
+    if (gecenSayilir && !yeter(gecenOdenen, gerekliGecen)) {
+      const ek = Math.min(sonra, gerekliGecen - gecenOdenen);   // geç ödeme önce geçen dönemi kapatır
       gecenOdenen += ek; sonra -= ek;
-      if (!yeter(gecenOdenen)) {
+      if (!yeter(gecenOdenen, gerekliGecen)) {
         return { tip: gecenOdenen > 0.005 ? "eksik" : "gecikti", vade: gecen, gun: gun2(gecen, b),
-                 gerekli, odenen: gecenOdenen, eksik: Math.max(0, gerekli - gecenOdenen) };
+                 gerekli: gerekliGecen, odenen: gecenOdenen, eksik: Math.max(0, gerekliGecen - gecenOdenen) };
       }
     }
     const kalan = gun2(b, sonraki);
@@ -6506,6 +6575,9 @@ const HATIRLATMA = (() => {
     k("Vade günü (geçen dönem ödenmiş) → bugün", d5 && d5.tip === "bugun" && d5.gun === 0, JSON.stringify(d5));
     const d6 = donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 1000, tarih: "2026-09-10" }, { tutar: 1000, tarih: "2026-10-02" }] }), new Date(2026, 9, 13));
     k("Dönem içinde tam ödendi → ödendi; 2 gün kala", d6 && d6.tip === "odendi" && d6.gun === 2, JSON.stringify(d6));
+    const yeniAsgari = Object.assign({}, eskiKart, { payment: 1300, asgariOnceki: { tutar: 1000, sonVade: "2026-10-15" }, payments: [{ tutar: 1000, tarih: "2026-10-10" }] });
+    k("Asgari sonradan arttıysa geçmiş dönem ESKİ asgariyle ölçülür (eksik görünmez)",
+      donemDurumu(yeniAsgari, new Date(2026, 9, 18)).tip === "bekliyor" && donemDurumu(yeniAsgari, new Date(2026, 9, 18)).gerekli === 1300, JSON.stringify(donemDurumu(yeniAsgari, new Date(2026, 9, 18))));
     k("Asgari tahmininden küçük fark sayılmaz (%98)", donemDurumu(Object.assign({}, eskiKart, { payments: [{ tutar: 985, tarih: "2026-10-10" }] }), new Date(2026, 9, 18)).tip !== "eksik", "");
     return r;
   }
@@ -7999,7 +8071,10 @@ const ARAYUZ = () => {
     }
     satirlar.sort((a, c) => a.sira - c.sira);
     kap.hidden = satirlar.length === 0 || document.body.classList.contains("widget-modu");
-    kap.innerHTML = satirlar.map(x => x.html).join("");
+    // Sade pano: en önemli tek uyarı görünür, kalanlar "+N uyarı daha" ile açılır
+    kap.innerHTML = satirlar.map((x, i) => i === 0 ? x.html : x.html.replace('class="vu-satir ', 'class="vu-satir fazla ')).join("") +
+      (satirlar.length > 1 ? `<button type="button" class="ghost small vu-daha" data-vu-daha aria-expanded="${kap.classList.contains("acik")}">${kap.classList.contains("acik") ? s.vuDahaAz : s.vuDaha(satirlar.length - 1)}</button>` : "");
+    if (satirlar.length <= 1) kap.classList.remove("acik");
   }
   document.addEventListener("click", (e) => {
     const t = e.target.closest ? e.target : null;
@@ -8007,6 +8082,7 @@ const ARAYUZ = () => {
     const ode = t.closest("[data-vu-ode]");
     if (ode) { odemeAc(Number(ode.dataset.vuOde)); return; }
     if (t.closest(".ge-ac")) { e.preventDefault(); gunEkleAc(); return; }
+    if (t.closest("[data-vu-daha]")) { $("vadeUyari").classList.toggle("acik"); vadeUyariCiz(); return; }
     const esAc = t.closest("[data-es-ac]");
     if (esAc) { islemAc("esitle", Number(esAc.dataset.esAc)); return; }
     const esSonra = t.closest("[data-es-sonra]");
@@ -9023,7 +9099,7 @@ const ARAYUZ = () => {
       if (Number.isFinite(eski.planTutar)) veri.planTutar = eski.planTutar;
       if (Number.isFinite(eski.planOdeme)) veri.planOdeme = eski.planOdeme;
       // Faiz/gecikme geçmişi ve bakiye izi düzenlemede korunur
-      ["faizKayit", "gecikmeKayit", "gecikmeAkdi", "harcamalar", "duzeltmeler", "limit", "ekstreDonem", "ekstreSoruldu"].forEach(k => { if (eski[k] !== undefined) veri[k] = eski[k]; });
+      ["faizKayit", "gecikmeKayit", "gecikmeAkdi", "harcamalar", "duzeltmeler", "limit", "ekstreDonem", "ekstreSoruldu", "asgariOnceki"].forEach(k => { if (eski[k] !== undefined) veri[k] = eski[k]; });
       if (Math.abs((eski.payment || 0) - veri.payment) < 0.005 && eski.asgariOran > 0) veri.asgariOran = eski.asgariOran; // asgari elle değiştiyse oran yeniden türetilir
       durum.borclar[duzenlenen] = veri;
       duzenlemeBitir();
@@ -9455,8 +9531,7 @@ const ARAYUZ = () => {
   });
   $("ikiYolKart").addEventListener("click", (e) => {
     if (!e.target.closest("[data-iy-hayat]")) return;
-    sekmeGoster("genel");
-    $("hayatKart").scrollIntoView({ behavior: azHareket.matches ? "auto" : "smooth", block: "center" });
+    aracAc("hayatKart");
     $("refKira").focus({ preventScroll: true });
   });
 
@@ -9574,8 +9649,7 @@ const ARAYUZ = () => {
     iyAnZaman.forEach(clearTimeout);
     iyAnZaman = [];
     $("iyAnOverlay").hidden = true;
-    sekmeGoster("plan");
-    requestAnimationFrame(() => $("ikiYolKart").scrollIntoView({ behavior: "auto", block: "start" }));
+    aracAc("ikiYolKart", true);
   }
   $("iyAnBtn").addEventListener("click", iyAnKapat);
   document.addEventListener("keydown", (e) => {
@@ -9808,7 +9882,7 @@ const ARAYUZ = () => {
     STORAGE.kaydet(durum);
     tsKapat();
     tasarrufCiz();
-    requestAnimationFrame(() => $("tasarrufKart").scrollIntoView({ behavior: azHareket.matches ? "auto" : "smooth", block: "start" }));
+    aracAc("tasarrufKart");
   }
   $("tsGeriBtn").addEventListener("click", tsGeri);
   $("tsIleriBtn").addEventListener("click", tsIleri);
@@ -10371,7 +10445,7 @@ const ARAYUZ = () => {
         <span class="dg-lbl">${lbl}</span>
         <span class="dg-cubuk"><i style="width:${Math.max(2, Math.min(100, (tutar / (isaret ? maksA : maksB)) * 100)).toFixed(1)}%"></i></span>
         <span class="dg-tutar">${isaret}${paraFmt.format(tutar)}</span></div>`;
-      html += `<div class="dg-dokum">
+      html += `<details class="dg-detay"${buyudu ? " open" : ""}><summary>${s.dgDokum}</summary><div class="dg-dokum">
         ${satir(s.dgBasi(ayAd), d.basi, "notr", "")}
         ${d.odenen > 0.005 ? satir(s.dgOdeme, d.odenen, "iyi", "−") : ""}
         ${d.faiz > 0.005 ? satir(s.dgFaiz, d.faiz, "kotu", "+") : ""}
@@ -10379,7 +10453,7 @@ const ARAYUZ = () => {
         ${d.harcama > 0.005 ? satir(s.dgHarcama, d.harcama, "kotu", "+") : ""}
         ${Math.abs(d.duzeltme) > 0.005 ? satir(s.dgDuzeltme, Math.abs(d.duzeltme), d.duzeltme > 0 ? "kotu" : "iyi", d.duzeltme > 0 ? "+" : "−") : ""}
         ${satir(s.dgSimdi, d.simdi, "simdi", "")}
-      </div>`;
+      </div></details>`;
     }
 
     // 3) Grafik: geçmiş aylar (gerçek) + bugün + tahmin (motor)
@@ -10434,13 +10508,7 @@ const ARAYUZ = () => {
         ? s.dgUyariHarcama(paraFmt.format(d.harcama), paraFmt.format(d.odenen))
         : s.dgUyariBuyudu(paraFmt.format(d.faiz + d.gecikme), paraFmt.format(d.odenen), paraFmt.format(gerek)) });
     }
-    for (const b of acik) {
-      const dd = HATIRLATMA.donemDurumu(b, new Date());
-      if (dd && (dd.tip === "gecikti" || dd.tip === "eksik")) {
-        const oran = SIKISIK.gecikmeOrani(b, PARA.kod);
-        uyarilar.push({ tip: "kotu", m: oran ? s.dgUyariGecikme(kacis(b.ad), paraFmt.format(dd.eksik), paraFmt.format(SIKISIK.gunlukFaiz(dd.eksik, oran, 1, durum.ayarlar))) : s.dgUyariGecikmeOransiz(kacis(b.ad), paraFmt.format(dd.eksik)) });
-      }
-    }
+    // Gecikme uyarısı panonun üstündeki uyarı şeridinde; burada yalnız değişimle ilgili uyarılar
     for (const b of acik) {
       if (b.type !== "revolving") continue;
       const aylikFaiz = b.balance * ENGINE.efektifAylikOran(b.annualRate, durum.ayarlar);
@@ -10450,7 +10518,7 @@ const ARAYUZ = () => {
     if (uyarilar.length === 0 && sim && sim.uygulanabilir) {
       uyarilar.push({ tip: "iyi", m: eridi ? s.dgIyiEridi(tarihFmt.format(sim.borcsuzTarih)) : s.dgIyiDevam(tarihFmt.format(sim.borcsuzTarih)) });
     }
-    html += uyarilar.slice(0, 2).map(u => `<p class="dg-uyari ${u.tip}">${u.m}</p>`).join("");
+    html += uyarilar.slice(0, 1).map(u => `<p class="dg-uyari ${u.tip}">${u.m}</p>`).join("");
     $("degisimIcerik").innerHTML = html;
   }
 
@@ -10485,6 +10553,7 @@ const ARAYUZ = () => {
   const kdFiyat = (x) => { const v = +kdDurum().fiyat[x.id]; return v > 0 ? v : (x.fiyat[PARA.kod] || x.fiyat.USD); };
   const kdToplam = () => KD_KALEMLER.reduce((t, x) => t + kdAdet(x) * kdFiyat(x), 0);
   function kdCiz() {
+    kumbaraCiz(); // kumbara Bu Ay'da kendi kartında; küçük değişiklik Araçlar'da
     const kart = $("kdKart"), s = sd();
     const acik = durum.borclar.filter(b => b.balance > 0.005);
     kart.hidden = acik.length === 0 || document.body.classList.contains("widget-modu");
@@ -10505,7 +10574,6 @@ const ARAYUZ = () => {
       }).join("");
     }
     kdSonucCiz();
-    kumbaraCiz();
   }
   function kdSonucCiz() {
     const s = sd(), k = kdDurum();
@@ -10602,6 +10670,8 @@ const ARAYUZ = () => {
   function kumbaraCiz() {
     const kap = $("kumbara"), s = sd(), k = kbDurum();
     if (!kap) return;
+    $("kumbaraKart").hidden = !durum.borclar.some(b => b.balance > 0.005) && !(k.bakiye > 0.5);
+    if ($("kumbaraKart").hidden) return;
     const ay = buAyKodu(), buAy = k.kayit.filter(x => String(x.tarih).slice(0, 7) === ay);
     const buAyT = buAy.reduce((t, x) => t + x.tutar, 0);
     const hedef = kbHedefIdx();
@@ -10905,6 +10975,39 @@ const ARAYUZ = () => {
     return out.slice(0, 6);
   }
 
+  /* ============================================================
+     ARAÇLAR — Plan'ın altında döşeme ızgarası. Yalnız açık (hidden olmayan)
+     araçlar döşeme olur; dokununca o araç açılır, diğeri kapanır.
+     ============================================================ */
+  const ARAC_YEDEK_IKON = '<svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
+  function aracIzgaraCiz() {
+    const s = sd(), izgara = $("aracIzgara");
+    const araclar = [...$("aracAlan").children].filter(el => el.classList.contains("arac") && !el.hidden);
+    $("araclarKart").hidden = araclar.length === 0;
+    izgara.innerHTML = araclar.map(el => {
+      const ikon = el.querySelector("h2 svg.ikn");
+      return `<button type="button" class="arac-doseme" role="listitem" data-arac-ac="${el.id}" aria-controls="${el.id}" aria-expanded="${el.classList.contains("arac-acik")}">${ikon ? ikon.outerHTML : ARAC_YEDEK_IKON}<span>${s.aracAd[el.dataset.arac] || el.dataset.arac}</span></button>`;
+    }).join("");
+  }
+  function aracAc(id, anlik) {
+    const el = $(id);
+    if (!el) return;
+    sekmeGoster("plan");
+    [...$("aracAlan").children].forEach(x => x.classList.toggle("arac-acik", x === el));
+    aracIzgaraCiz();
+    requestAnimationFrame(() => el.scrollIntoView({ behavior: anlik || azHareket.matches ? "auto" : "smooth", block: "start" }));
+  }
+  $("aracIzgara").addEventListener("click", (e) => {
+    const d = e.target.closest("[data-arac-ac]");
+    if (!d) return;
+    const el = $(d.dataset.aracAc);
+    if (el.classList.contains("arac-acik")) { el.classList.remove("arac-acik"); aracIzgaraCiz(); return; }
+    aracAc(d.dataset.aracAc);
+  });
+  // Bir aracın uygulanabilirliği (hidden) değişince döşemeler kendiliğinden tazelenir
+  new MutationObserver(() => aracIzgaraCiz()).observe($("aracAlan"), { attributes: true, attributeFilter: ["hidden"], subtree: false, childList: false });
+  [...$("aracAlan").children].forEach(el => new MutationObserver(() => aracIzgaraCiz()).observe(el, { attributes: true, attributeFilter: ["hidden"] }));
+
   /* Genel'deki "Ödeme planın" kartı: kendi planına giriş her zaman bir dokunuş uzakta */
   function opCiz() {
     const kart = $("opKart"), s = sd();
@@ -10952,7 +11055,8 @@ const ARAYUZ = () => {
     degisimCiz();
     karneCiz();
     maasCiz();
-    planYonlendirCiz(); // Plan yönlendirmesi her veri değişiminde aynı zincirle tazelenir
+    planYonlendirCiz();
+    aracIzgaraCiz(); // Plan yönlendirmesi her veri değişiminde aynı zincirle tazelenir
   }
   $("oneriler").addEventListener("click", (e) => {
     const ode = e.target.closest("[data-hm-ode]");
@@ -11111,7 +11215,7 @@ const ARAYUZ = () => {
       } else if (b.dataset.senAksiyon === "yontem") {
         yontemSec("avalanche");
       } else {
-        $("kesKart").scrollIntoView({ behavior: davranis, block: "center" });
+        aracAc("kesKart");
       }
     }));
 
@@ -14714,6 +14818,7 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     b.faizAyi = buAyKodu(); // bankanın rakamı bugünü kapsar: bu ayın faizi ayrıca eklenmez
     if (limit > 0) b.limit = Math.round(limit);
     if (asgari !== null && asgari > 0) {
+      if (Math.abs(asgari - b.payment) >= 1) asgariOncekiSakla(b);
       b.payment = Math.round(asgari * 100) / 100;
       const o = SAGLIK.ekstreOrani(asgari, yeni);
       if (o !== null) b.asgariOran = o;
@@ -14747,8 +14852,18 @@ ${plan(s.kartKartopu, kar)}${plan(s.kartCig, cig)}
     }
     const yeni = SAGLIK.asgariTahmin(b.balance, oran);
     if (!(yeni > 0) || Math.abs(yeni - b.payment) < 1) return false;
+    asgariOncekiSakla(b);
     b.payment = yeni;
     return true;
+  }
+  /* Asgari değişmeden önce: son GEÇMİŞ vadeye kadar eski asgari geçerli (geçmiş dönem şişmesin) */
+  function asgariOncekiSakla(b) {
+    if (!Number.isInteger(b.dueDay) || !(b.payment > 0)) return;
+    const n = new Date(), bugun = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    const yap = (y, m) => new Date(y, m, Math.min(b.dueDay, new Date(y, m + 1, 0).getDate()));
+    let v = yap(n.getFullYear(), n.getMonth());
+    if (v >= bugun) v = yap(n.getFullYear(), n.getMonth() - 1);
+    b.asgariOnceki = { tutar: b.payment, sonVade: `${v.getFullYear()}-${String(v.getMonth() + 1).padStart(2, "0")}-${String(v.getDate()).padStart(2, "0")}` };
   }
   /* Ekstre dönemi anahtarı: yaklaşan son ödeme gününün ayı (YYYY-MM) */
   function ekstreDonemi(b) {
