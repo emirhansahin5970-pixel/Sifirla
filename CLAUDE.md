@@ -100,7 +100,7 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
 - **Feragatname** her hesaplama yüzeyinde görünür kalır (finansal tavsiye değil).
 - **Metin değişikliği TR + EN birlikte** yapılır (`SOZLUK`).
 - **Her yayın öncesi** `uygulama/sw.js` içindeki `ONBELLEK` sürümü artırılır
-  (şu an `sifirla-v19`), yoksa mevcut kullanıcılar eski dosyada kalır.
+  (şu an `sifirla-v20`), yoksa mevcut kullanıcılar eski dosyada kalır.
 
 ---
 
@@ -187,6 +187,8 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   bildirimde **"Ödedim"** (`NATIF.aksiyonlariKur/aksiyonDinle`, tek borçluk
   bildirimlerde `actionTypeId: SIFIRLA_ODEME`; gerçek iPhone'da denenmedi).
   Genel kısa bildirim: `bilgiToast(metin, geriAl)`.
+  Kendi planına giriş her yerde: Genel'de "Ödeme planın" kartı (`opKart`, "Kendi planını
+  oluştur" → `kendiPlanaGit`), Bu Ay tablosunun altında aynı düğme (`data-kp-git`).
 - **Özellikler:** ödeme kaydı + geçmiş, rehber Plan sekmesi (yöntem seçimi,
   senaryolar, ödeme takvimi), aylık rapor + paylaşılabilir PNG kart, ödeme
   serisi ısı haritası, rozetler, check-in, yedekleme (isteğe bağlı şifreli).

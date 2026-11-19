@@ -835,11 +835,11 @@
   .kb-alt { margin: 0; font-size: 12.5px; }
   .kb-soru { margin: 14px 0 6px; font-weight: 600; font-size: 14px; }
   .kb-cipler { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .kb-cip { display: grid; grid-template-columns: 20px 1fr; grid-template-rows: auto auto; gap: 0 8px; align-items: center; text-align: left; padding: 8px 10px; border-radius: 12px;
+  #kumbara .kb-cip { display: grid; grid-template-columns: 20px 1fr; grid-template-rows: auto auto; gap: 0 8px; align-items: center; text-align: left; padding: 8px 10px; border-radius: 12px;
     background: var(--surface-2); color: var(--text); border: 1.5px solid transparent; min-height: 52px; font-size: 13px; font-weight: 500; }
-  .kb-cip .ikn { grid-row: 1 / 3; width: 18px; height: 18px; color: var(--accent-strong); }
-  .kb-cip strong { color: var(--ok); font-size: 12.5px; }
-  .kb-cip.oneri { border-color: var(--accent); }
+  #kumbara .kb-cip .ikn { grid-row: 1 / 3; width: 18px; height: 18px; color: var(--accent-strong); }
+  #kumbara .kb-cip strong { color: var(--ok); font-size: 12.5px; }
+  #kumbara .kb-cip.oneri { border-color: var(--accent); }
   .kb-cip:active { transform: scale(0.97); }
   .kb-yatir { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 14px; }
   @media (prefers-reduced-motion: reduce) { .kb-cip:active { transform: none; } }
@@ -867,12 +867,19 @@
   .detay-ay strong { width: 100%; }
   .odeme-satir.faiz-satir .tutar { color: var(--danger); }
   .odeme-satir.faiz-satir .not { color: var(--text-muted); }
+  .op-kart { border: 1.5px solid var(--accent); }
+  .op-ic { display: flex; gap: 12px; align-items: center; }
+  .op-ikon { width: 42px; height: 42px; flex: none; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-strong); }
+  .op-baslik { margin: 0; font-weight: 700; font-size: 15.5px; }
+  .op-alt { margin: 2px 0 0; font-size: 13px; }
+  .op-btn { width: 100%; margin-top: 12px; }
+  .buay-kp { margin-top: 10px; }
   .kp-mod { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-  .kp-mod button { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left; padding: 12px; border-radius: 14px;
+  #kpKart .kp-mod button { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left; padding: 12px; border-radius: 14px;
     background: var(--surface-2); color: var(--text); border: 1.5px solid transparent; min-height: 74px; }
-  .kp-mod button small { font-size: 12px; font-weight: 400; color: var(--text-muted); line-height: 1.35; }
-  .kp-mod button[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
-  .kp-mod button[aria-checked="true"] strong::before { content: "● "; color: var(--accent); }
+  #kpKart .kp-mod button small { font-size: 12px; font-weight: 400; color: var(--text-muted); line-height: 1.35; }
+  #kpKart .kp-mod button[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  #kpKart .kp-mod button[aria-checked="true"] strong::before { content: "● "; color: var(--accent); }
   .kp-liste { display: grid; gap: 10px; margin-top: 12px; }
   .kp-satir { padding: 12px; border-radius: 14px; background: var(--surface-2); }
   .kp-ust { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
@@ -2021,6 +2028,15 @@ var GIRIS = (function () {
     <button id="heroEkleBtn" class="borcEkleGit no-print" hidden data-i18n="btn_borc_ekle">Borç ekle</button>
   </section>
 
+  <!-- Ödeme planın: kendi planına tek dokunuşla giriş (her zaman görünür) -->
+  <section class="card op-kart no-print" id="opKart" hidden aria-labelledby="opBaslik">
+    <div class="op-ic">
+      <span class="op-ikon" aria-hidden="true"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></span>
+      <div class="op-metin"><p id="opBaslik" class="op-baslik"></p><p class="muted op-alt" id="opAlt"></p></div>
+    </div>
+    <button type="button" class="op-btn" id="opBtn"></button>
+  </section>
+
   <!-- Borcun nasıl değişiyor: bu ayın dökümü (ödeme − / faiz + / gecikme +), geçmiş aylar + tahmin, uyarı -->
   <section class="card dg-kart" id="degisimKart" hidden aria-labelledby="dgBaslik">
     <h2 id="dgBaslik"><svg class="ikn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span data-i18n="dg_h">Borcun nasıl değişiyor?</span></h2>
@@ -2381,7 +2397,7 @@ var GIRIS = (function () {
         <small data-i18n="kp_mod_oneri_alt">Asgariler + ekstra bütçe, en kârlı sırayla</small>
       </button>
       <button type="button" role="radio" aria-checked="false" data-kp-mod="kendi">
-        <strong data-i18n="kp_mod_kendi">Kendi tutarlarım</strong>
+        <strong data-i18n="kp_mod_kendi">Kendi planım</strong>
         <small data-i18n="kp_mod_kendi_alt">Her borca ne ödeyeceğini sen yaz</small>
       </button>
     </div>
@@ -3653,7 +3669,7 @@ const SOZLUK = {
       kp_h: "Aylık ödemeni nasıl belirleyelim?",
       kp_alt: "İstersen asgari üzerinden Sıfırla planlasın, istersen her borca kendi tutarını yaz. Bütün ekranlar seçtiğine göre hesaplanır.",
       kp_mod_oneri: "Sıfırla önersin", kp_mod_oneri_alt: "Asgariler + ekstra bütçe, en kârlı sırayla",
-      kp_mod_kendi: "Kendi tutarlarım", kp_mod_kendi_alt: "Her borca ne ödeyeceğini sen yaz",
+      kp_mod_kendi: "Kendi planım", kp_mod_kendi_alt: "Her borca ne ödeyeceğini sen yaz",
       kp_chk: "Kendi tutarlarımla ödeyeceğim",
       kp_not: "Kapanan borcun tutarı sıradaki borca aktarılır. Aşağıdaki aylık ekstra bütçe bu tutarların üstüne eklenir.",
       faiz_oto_chk: "Kart ve KMH bakiyelerine her ay faizi otomatik ekle",
@@ -4211,6 +4227,9 @@ const SOZLUK = {
       hmKartMetin: (t, ay, f) => `Bu karta ayda ${t} yeni harcama eklemek, borçsuz günü ${ay} ay öteler ve ${f} fazla faiz demek. Kartı bir süre cüzdandan çıkar.`,
       hmTas: (y, e) => `%${y} tamam — sıradaki durak %${e}`,
       hmTasMetin: (t, tarih) => `Sadece ${t} kaldı. Bu tempoyla ${tarih}'de oradasın. Her ödeme seni bir adım yaklaştırır.`,
+      opOneriB: "Ödeme planın: Sıfırla'nın önerisi", opKendiB: "Ödeme planın: kendi tutarların",
+      opAlt: (t, tarih) => `Bu ay toplam <strong>${t}</strong> · borçsuz <strong>${tarih}</strong>`,
+      opOlustur: "Kendi planını oluştur", opDuzenle: "Tutarlarını düzenle",
       dpAylik: "Aylık ödemen", dpOneri: "Asgari — Sıfırla'nın önerdiği planda", dpOneriEk: (a, e) => `Sıfırla'nın planı: asgari ${a} + ekstra ${e}`, dpAsgari: "Asgari kadar (kendi planın)",
       dpUstu: (t) => `Asgarinin ${t} üstü (kendi planın)`, dpAlti: (t) => `Asgarinin ${t} altı — gecikme riski`, dpKaydet: "Bu tutarla öde",
       daBaslik: "Bu ay bu borçta", daOdeme: "ödeme", daFaiz: "faiz", daGecikme: "gecikme faizi", daHarcama: "harcama", daDuzeltme: "ekstre düzeltmesi",
@@ -4589,7 +4608,7 @@ const SOZLUK = {
       kp_h: "How should we set your monthly payment?",
       kp_alt: "Let Sıfırla plan from the minimums, or type your own amount for each debt. Every screen follows your choice.",
       kp_mod_oneri: "Let Sıfırla suggest", kp_mod_oneri_alt: "Minimums + extra budget, in the smartest order",
-      kp_mod_kendi: "My own amounts", kp_mod_kendi_alt: "You decide what each debt gets",
+      kp_mod_kendi: "My own plan", kp_mod_kendi_alt: "You decide what each debt gets",
       kp_chk: "I'll pay my own amounts",
       kp_not: "When a debt closes, its amount rolls to the next one. Your monthly extra budget below is added on top.",
       faiz_oto_chk: "Add interest to card and overdraft balances every month",
@@ -5137,6 +5156,9 @@ const SOZLUK = {
       hmKartMetin: (t, ay, f) => `Adding ${t} of new spending a month pushes your debt-free day back ${ay} month${ay === 1 ? "" : "s"} and costs ${f} more interest. Take the card out of your wallet for a while.`,
       hmTas: (y, e) => `${y}% done — next stop ${e}%`,
       hmTasMetin: (t, tarih) => `Only ${t} to go. At this pace you're there by ${tarih}. Every payment moves you closer.`,
+      opOneriB: "Your payment plan: Sıfırla's suggestion", opKendiB: "Your payment plan: your own amounts",
+      opAlt: (t, tarih) => `This month <strong>${t}</strong> in total · debt-free <strong>${tarih}</strong>`,
+      opOlustur: "Build your own plan", opDuzenle: "Edit your amounts",
       dpAylik: "Your monthly payment", dpOneri: "Minimum — in Sıfırla's suggested plan", dpOneriEk: (a, e) => `Sıfırla's plan: minimum ${a} + extra ${e}`, dpAsgari: "The minimum (your own plan)",
       dpUstu: (t) => `${t} above the minimum (your own plan)`, dpAlti: (t) => `${t} below the minimum — late risk`, dpKaydet: "Pay this amount",
       daBaslik: "This month on this debt", daOdeme: "paid", daFaiz: "interest", daGecikme: "late interest", daHarcama: "spending", daDuzeltme: "statement correction",
@@ -10200,7 +10222,8 @@ const ARAYUZ = () => {
         <thead><tr><th>${s.thBorc}</th><th class="num">${s.thAsgari}</th><th class="num">${durum.kendiPlan ? s.thFazla : s.thEkstra}</th><th class="num">${s.thBuAy}</th><th></th></tr></thead>
         <tbody>${satirlar}</tbody>
         <tfoot><tr><th>${s.toplam}</th><th></th><th></th><th class="num">${paraFmt.format(buAyD.toplam)}</th><th></th></tr></tfoot>
-      </table></div>`;
+      </table></div>
+      <p class="buay-kp no-print"><button type="button" class="ghost small" data-kp-git>${durum.kendiPlan ? s.opDuzenle : s.opOlustur}</button></p>`;
     }
 
     // Sıradaki ay önizlemesi
@@ -10882,7 +10905,33 @@ const ARAYUZ = () => {
     return out.slice(0, 6);
   }
 
+  /* Genel'deki "Ödeme planın" kartı: kendi planına giriş her zaman bir dokunuş uzakta */
+  function opCiz() {
+    const kart = $("opKart"), s = sd();
+    const acik = durum.borclar.filter(b => b.balance > 0.005);
+    kart.hidden = acik.length === 0 || document.body.classList.contains("widget-modu");
+    if (kart.hidden) return;
+    const sim = ENGINE.simulatePlan(acik, parseFloat($("ekstra").value) || 0, durum.yontem, durum.ayarlar);
+    const toplam = sim.ilkAylar[0] ? sim.ilkAylar[0].toplam : 0;
+    const kendi = durum.kendiPlan === true;
+    $("opBaslik").textContent = kendi ? s.opKendiB : s.opOneriB;
+    $("opAlt").innerHTML = s.opAlt(paraFmt.format(toplam), sim.uygulanabilir ? tarihFmt.format(sim.borcsuzTarih) : "—");
+    $("opBtn").textContent = kendi ? s.opDuzenle : s.opOlustur;
+    $("opBtn").classList.toggle("ghost", kendi);
+  }
+  function kendiPlanaGit(ac) {
+    sekmeGoster("plan");
+    if (ac && durum.kendiPlan !== true) { $("kpAcik").checked = true; $("kpAcik").dispatchEvent(new Event("change")); }
+    setTimeout(() => {
+      $("kpKart").scrollIntoView({ behavior: azHareket.matches ? "auto" : "smooth", block: "start" });
+      const ilk = $("kpListe").querySelector("[data-kp]");
+      if (ilk) ilk.focus({ preventScroll: true });
+    }, 150);
+  }
+  $("opBtn").addEventListener("click", () => kendiPlanaGit(true));
+  document.addEventListener("click", (e) => { if (e.target.closest && e.target.closest("[data-kp-git]")) kendiPlanaGit(true); });
   function oneriCiz() {
+    opCiz();
     const mesajlar = ONERI.uret({
       borclar: durum.borclar,
       ekstra: parseFloat($("ekstra").value) || 0,
