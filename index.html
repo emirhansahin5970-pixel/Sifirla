@@ -78,7 +78,6 @@
   .acilis .sabit{align-content:start;padding-top:clamp(92px,15vh,150px)}
   .acilis h1{font-size:clamp(44px,8.6vw,112px);max-width:12ch;margin:0 auto}
   .acilis .alt{margin:22px auto 0;max-width:34ch;text-align:center;color:var(--soluk);font-size:clamp(17px,1.8vw,21px)}
-  .acilis .metin{opacity:calc(1 - var(--p,0) * 2.2)}
   .js .acilis .k{opacity:0;filter:blur(14px);transform:translateY(.12em);color:var(--mavi)}
   .js.hazir .acilis .k{animation:netles 1s var(--ease) forwards;animation-delay:calc(var(--i)*90ms + 150ms)}
   @keyframes netles{60%{color:var(--mavi)}to{opacity:1;filter:blur(0);transform:none;color:var(--murekkep)}}
@@ -92,8 +91,8 @@
 
   /* Yatık duran, kaydırdıkça doğrulan telefon (video: perspektifli ekran) */
   .sahnelik{position:absolute;left:50%;bottom:0;transform:translateX(-50%);perspective:1100px;width:min(92vw,980px);height:58vh;pointer-events:none}
-  .yatik{position:absolute;left:50%;top:36%;transform-origin:50% 0;
-    transform:translateX(-50%) rotateX(calc((1 - var(--p,0)) * 52deg)) translateY(calc(var(--p,0) * -14vh)) scale(calc(.92 + var(--p,0)*.18))}
+  .yatik{position:absolute;left:50%;top:36%;transform-origin:50% 0;transform:translateX(-50%) rotateX(52deg) scale(.92)}
+  .hareketli{will-change:transform,opacity;backface-visibility:hidden}
   .zemin-isik{position:absolute;inset:auto 0 -10% 0;height:70%;background:radial-gradient(60% 60% at 50% 100%,rgba(47,111,235,.18),transparent 70%)}
 
   /* Telefon çerçevesi */
@@ -107,19 +106,16 @@
 
   /* ---------- 2) Tünel (sitenin tek büyük anı) ---------- */
   .tunel .sabit{perspective:900px;background:radial-gradient(70% 60% at 50% 50%,#fff,var(--zemin) 70%)}
-  .tunel .govde{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;
-    transform:translateZ(calc(var(--p,0) * 380px - 240px))}
+  .tunel .govde{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transform:translateZ(-240px)}
   .duvar{position:absolute;left:0;top:0;transform-style:preserve-3d}
   .duvar .tel{--g:min(30vh,300px);position:absolute;left:0;top:0}
   .duvar.sol .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * -1.55)) rotateY(62deg)}
   .duvar.sag .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * 1.55)) rotateY(-62deg)}
   .duvar.ust-d .tel{transform:translate(-50%,-50%) translateY(calc(var(--g) * -1.32)) rotateX(-64deg) rotateZ(90deg)}
   .duvar.alt-d .tel{transform:translate(-50%,-50%) translateY(calc(var(--g) * 1.32)) rotateX(64deg) rotateZ(-90deg)}
-  .tunel .orta{position:relative;z-index:2;text-align:center;padding:40px 60px;background:radial-gradient(closest-side,rgba(245,247,251,.92),rgba(245,247,251,0));
-    opacity:calc(1 - max(0, (var(--p,0) - .8) * 5))}
+  .tunel .orta{position:relative;z-index:2;text-align:center;padding:40px 60px;background:radial-gradient(closest-side,rgba(245,247,251,.92),rgba(245,247,251,0))}
   .tunel h2{font-size:clamp(32px,4.4vw,60px)}
   .tunel .orta p{margin-top:14px;color:var(--soluk);font-size:clamp(16px,1.6vw,19px)}
-  .tunel .k{filter:blur(calc(max(0, .25 - var(--p,0)) * 48px));opacity:calc(.25 + min(1, var(--p,0) * 3.2))}
 
   /* ---------- 3) Eriyen borç (video: dolan çubuk, tersine) ---------- */
   .erime .sabit{padding:0 clamp(18px,5vw,64px)}
@@ -133,12 +129,11 @@
   .yol.plan .ay{background:linear-gradient(90deg,var(--mavi),var(--murekkep));-webkit-background-clip:text;background-clip:text;color:transparent}
   .ray{height:clamp(30px,5vh,46px);border-radius:999px;background:var(--zemin-2);overflow:hidden;position:relative}
   .ray i{position:absolute;inset:0;border-radius:inherit;transform-origin:0 50%}
-  .yol.asgari .ray i{background:linear-gradient(90deg,#AEB9C9,#C9D2DF);transform:scaleX(calc(1 - var(--p,0) * 0.5))}
+  .yol.asgari .ray i{background:linear-gradient(90deg,#AEB9C9,#C9D2DF)}
   .yol.plan .ray i{background:linear-gradient(90deg,#6A5CFF,var(--mavi) 45%,var(--mavi-acik));box-shadow:0 0 30px rgba(47,111,235,.45);
-    transform:scaleX(max(0.0001, 1 - var(--p,0)))}
+    transform:scaleX(.5)}
   .yol-alt{margin-top:8px;color:var(--soluk);font-size:15px}
-  .sonuc{margin-top:clamp(24px,5vh,44px);font-size:clamp(19px,2.2vw,26px);font-weight:600;max-width:36ch;
-    opacity:calc(min(1, max(0, (var(--p,0) - .75) * 5)))}
+  .sonuc{margin-top:clamp(24px,5vh,44px);font-size:clamp(19px,2.2vw,26px);font-weight:600;max-width:36ch}
   .sonuc b{color:var(--mavi)}
   .not{margin-top:14px;font-size:13px;color:var(--soluk);max-width:70ch}
 
@@ -148,14 +143,13 @@
   .kalem .alt{position:relative;z-index:2;text-align:center;color:var(--soluk);margin-top:14px;max-width:40ch}
   .kalem .icerik{display:grid;justify-items:center}
   .cip{position:absolute;display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--buz);border-radius:20px;padding:14px 18px;
-    box-shadow:0 20px 40px -24px rgba(12,31,61,.35);font-weight:600;white-space:nowrap;
-    --k:calc(1 - min(1, var(--p,0) * 1.6))}
+    box-shadow:0 20px 40px -24px rgba(12,31,61,.35);font-weight:600;white-space:nowrap}
   .cip span{color:var(--soluk);font-weight:500;font-variant-numeric:tabular-nums}
   .cip svg{width:26px;height:26px;color:var(--mavi);flex:none}
-  .cip.c1{left:8%;top:16%;transform:translate(calc(var(--k) * -60vw),calc(var(--k) * -30vh)) rotate(-7deg)}
-  .cip.c2{right:8%;top:20%;transform:translate(calc(var(--k) * 60vw),calc(var(--k) * -30vh)) rotate(6deg)}
-  .cip.c3{left:10%;bottom:18%;transform:translate(calc(var(--k) * -60vw),calc(var(--k) * 30vh)) rotate(5deg)}
-  .cip.c4{right:10%;bottom:16%;transform:translate(calc(var(--k) * 60vw),calc(var(--k) * 30vh)) rotate(-6deg)}
+  .cip.c1{left:8%;top:16%;transform:rotate(-7deg)}
+  .cip.c2{right:8%;top:20%;transform:rotate(6deg)}
+  .cip.c3{left:10%;bottom:18%;transform:rotate(5deg)}
+  .cip.c4{right:10%;bottom:16%;transform:rotate(-6deg)}
 
   /* ---------- 5) Gizlilik (cam) ---------- */
   .gizlilik{padding:clamp(90px,16vh,160px) 20px;display:grid;justify-items:center;text-align:center}
@@ -219,10 +213,7 @@
   @media (prefers-reduced-motion:reduce){
     .sahne{height:auto!important}
     .sahne .sabit{position:relative;height:auto;min-height:100svh;padding-top:90px;padding-bottom:60px}
-    .sahne{--p:1!important}
-    .acilis{--p:.6!important}
-    .tunel .govde{transform:translateZ(-150px)}
-    .tunel .orta{opacity:1}
+    .yatik{transform:translateX(-50%)}
     .js .acilis .k,.js .acilis .alt,.js .acilis .dugmeler{opacity:1;filter:none;transform:none;animation:none;transition:none}
     .sahnelik{position:relative;left:auto;transform:none;margin:30px auto 0}
     .cip{display:none}
@@ -254,7 +245,7 @@
       </div>
       <div class="sahnelik" aria-hidden="true">
         <div class="zemin-isik"></div>
-        <div class="yatik"><div class="tel"><div class="cam"><img src="assets/site/tr/1.jpg" data-src-en="assets/site/en/1.jpg" width="780" height="1688" alt="" fetchpriority="high"></div></div></div>
+        <div class="yatik hareketli"><div class="tel"><div class="cam"><img src="assets/site/tr/1.jpg" data-src-en="assets/site/en/1.jpg" width="780" height="1688" alt="" fetchpriority="high"></div></div></div>
       </div>
     </div>
   </section>
@@ -262,13 +253,13 @@
   <!-- 2) Tünel -->
   <section class="sahne tunel uzun-2" aria-labelledby="h-tunel" data-sahne>
     <div class="sabit">
-      <div class="govde" aria-hidden="true">
-        <div class="duvar sol"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
-        <div class="duvar sag"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
-        <div class="duvar ust-d"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
-        <div class="duvar alt-d"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
+      <div class="govde hareketli" aria-hidden="true">
+        <div class="duvar sol"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar sag"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar ust-d"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar alt-d"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
       </div>
-      <div class="orta">
+      <div class="orta hareketli">
         <h2 id="h-tunel" class="kinetik" data-kinetik data-en="Every debt, one place.">Bütün borçların tek yerde.</h2>
         <p data-en="Cards, overdrafts and loans: this month, the plan and the progress.">Kart, KMH, kredi: bu ay, plan ve ilerleme.</p>
       </div>
@@ -300,10 +291,10 @@
   <!-- 4) Küçük değişiklikler -->
   <section class="sahne kalem uzun-1" aria-labelledby="h-kalem" data-sahne>
     <div class="sabit">
-      <div class="cip c1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v4a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/></svg><b data-en="Coffee out">Dışarıda kahve</b><span data-en="5 a month">ayda 5</span></div>
-      <div class="cip c2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M5 13a7 7 0 0 1 14 0"/><path d="M4 17h16l-1 3H5z"/></svg><b data-en="Food delivery">Yemek siparişi</b><span data-en="2 fewer">2 eksik</span></div>
-      <div class="cip c3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/></svg><b data-en="Taxi">Taksi</b><span data-en="walk once">bir kez yürü</span></div>
-      <div class="cip c4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M10 9l4 2-4 2z"/></svg><b data-en="A subscription">Bir abonelik</b><span data-en="pause it">dondur</span></div>
+      <div class="cip hareketli c1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v4a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/></svg><b data-en="Coffee out">Dışarıda kahve</b><span data-en="5 a month">ayda 5</span></div>
+      <div class="cip hareketli c2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M5 13a7 7 0 0 1 14 0"/><path d="M4 17h16l-1 3H5z"/></svg><b data-en="Food delivery">Yemek siparişi</b><span data-en="2 fewer">2 eksik</span></div>
+      <div class="cip hareketli c3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/></svg><b data-en="Taxi">Taksi</b><span data-en="walk once">bir kez yürü</span></div>
+      <div class="cip hareketli c4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M10 9l4 2-4 2z"/></svg><b data-en="A subscription">Bir abonelik</b><span data-en="pause it">dondur</span></div>
       <div class="icerik">
         <h2 id="h-kalem" class="kinetik" data-kinetik data-en="Small changes, sooner zero.">Küçük değişiklik, erken sıfır.</h2>
         <p class="alt" data-en="Pick what you can cut back. The app shows how many months it takes off your debt, and you can save it in a jar and pay it in with one tap.">Neyi azaltabileceğini seç. Uygulama borcunu kaç ay erken bitirdiğini gösterir; kumbarada biriktirip tek dokunuşla borca yatırırsın.</p>
@@ -329,12 +320,12 @@
     <h2 id="h-ekran" data-en="A look inside">Uygulamadan kareler</h2>
     <p class="not" data-en="Real screens from the app. The sample data is made up.">Uygulamanın gerçek ekranları. Örnekteki veriler uydurmadır.</p>
     <div class="serit" role="list">
-      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/1.jpg" data-src-en="assets/site/en/1.jpg" width="780" height="1688" loading="lazy" alt="Ne kadarını ödediğini ve borçsuz olacağın ayı gösteren ana ekran" data-alt-en="Home screen showing how much you've paid and your debt-free month"></div></div><figcaption data-en="What you've paid and your debt-free month">Ne kadarını ödediğin ve borçsuz olacağın ay</figcaption></figure>
-      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" loading="lazy" alt="Borcun ay ay nasıl değiştiğini gösteren grafik ve sağlık puanı" data-alt-en="Chart of how your debt changes month by month, with a health score"></div></div><figcaption data-en="Is your debt melting or growing?">Borcun eriyor mu, büyüyor mu?</figcaption></figure>
-      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" loading="lazy" alt="Sadece asgari ödemek ile planla ödemeyi karşılaştıran İki Yol ekranı" data-alt-en="Two Paths screen comparing minimum-only payments with a plan"></div></div><figcaption data-en="Minimum only, or a plan?">Sadece asgari mi, planla mı?</figcaption></figure>
-      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" loading="lazy" alt="Bu ay ne kadar ödeneceğini gösteren Bu Ay ekranı" data-alt-en="This Month screen showing what's due"></div></div><figcaption data-en="This month's payments at a glance">Bu ay ne ödeyeceğin, tek bakışta</figcaption></figure>
-      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" loading="lazy" alt="Küçük harcamaları azaltmanın borca etkisini gösteren ekran" data-alt-en="Screen showing how cutting small spending affects your debt"></div></div><figcaption data-en="Small changes, measured">Küçük değişikliklerin etkisi</figcaption></figure>
-      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/6.jpg" data-src-en="assets/site/en/6.jpg" width="780" height="1688" loading="lazy" alt="Borç türü seçilen borç ekleme ekranı" data-alt-en="Add-debt screen where you choose the debt type"></div></div><figcaption data-en="Add a debt in seconds">Borç eklemek saniyeler sürer</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/1.jpg" data-src-en="assets/site/en/1.jpg" width="780" height="1688" loading="lazy" decoding="async" alt="Ne kadarını ödediğini ve borçsuz olacağın ayı gösteren ana ekran" data-alt-en="Home screen showing how much you've paid and your debt-free month"></div></div><figcaption data-en="What you've paid and your debt-free month">Ne kadarını ödediğin ve borçsuz olacağın ay</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" loading="lazy" decoding="async" alt="Borcun ay ay nasıl değiştiğini gösteren grafik ve sağlık puanı" data-alt-en="Chart of how your debt changes month by month, with a health score"></div></div><figcaption data-en="Is your debt melting or growing?">Borcun eriyor mu, büyüyor mu?</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" loading="lazy" decoding="async" alt="Sadece asgari ödemek ile planla ödemeyi karşılaştıran İki Yol ekranı" data-alt-en="Two Paths screen comparing minimum-only payments with a plan"></div></div><figcaption data-en="Minimum only, or a plan?">Sadece asgari mi, planla mı?</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" loading="lazy" decoding="async" alt="Bu ay ne kadar ödeneceğini gösteren Bu Ay ekranı" data-alt-en="This Month screen showing what's due"></div></div><figcaption data-en="This month's payments at a glance">Bu ay ne ödeyeceğin, tek bakışta</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" loading="lazy" decoding="async" alt="Küçük harcamaları azaltmanın borca etkisini gösteren ekran" data-alt-en="Screen showing how cutting small spending affects your debt"></div></div><figcaption data-en="Small changes, measured">Küçük değişikliklerin etkisi</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/6.jpg" data-src-en="assets/site/en/6.jpg" width="780" height="1688" loading="lazy" decoding="async" alt="Borç türü seçilen borç ekleme ekranı" data-alt-en="Add-debt screen where you choose the debt type"></div></div><figcaption data-en="Add a debt in seconds">Borç eklemek saniyeler sürer</figcaption></figure>
     </div>
   </section>
 
@@ -417,21 +408,73 @@
   dilBtn.addEventListener('click',function(){uygulaDil(kok.lang==='en'?'tr':'en');});
   requestAnimationFrame(function(){kok.classList.add('hazir');});
 
-  /* ---- Sahneler: her sahnenin kaydırma ilerlemesi --p (0..1) ---- */
+  /* ---- Sahneler ----
+     Akıcılık için: (1) kaydırma yalnızca HEDEF ilerlemeyi okur; (2) ekrandaki ilerleme her karede hedefe
+     yumuşakça yaklaşır (kare hızından bağımsız üstel yumuşatma), fare tekerinin basamakları kaybolur;
+     (3) değerler CSS değişkeniyle bütün alt ağaca değil, doğrudan hareket eden öğelerin transform/opacity'sine
+     yazılır (yalnızca birleştirici); (4) kaydırmaya bağlı bulanıklık yok; (5) döngü yalnızca görünür sahne
+     varken ve hareket sürerken çalışır. */
   if(azHareket)return;
-  var sahneler=[].slice.call(document.querySelectorAll('[data-sahne]')),tik=false;
-  function ciz(){
+  function $(q,k){return (k||document).querySelector(q);}
+  function sinir(x){return x<0?0:x>1?1:x;}
+  function yumus(x){return x*x*(3-2*x);}
+  var acilis=$('.acilis'),tunel=$('.tunel'),erime=$('.erime'),kalem=$('.kalem');
+  var metin=$('.metin',acilis),yatik=$('.yatik',acilis);
+  var govde=$('.govde',tunel),orta=$('.orta',tunel),tunelH=$('h2',tunel);
+  var rayA=$('.yol.asgari .ray i',erime),rayP=$('.yol.plan .ray i',erime),sonuc=$('.sonuc',erime);
+  var cipler=[].slice.call(kalem.querySelectorAll('.cip')),cipYon=[[-1,-1,-7],[1,-1,6],[-1,1,5],[1,1,-6]];
+  var ciz={
+    acilis:function(p){
+      metin.style.opacity=sinir(1-p*2.2);
+      yatik.style.transform='translateX(-50%) translateY('+(-p*14).toFixed(3)+'vh) rotateX('+((1-p)*52).toFixed(3)+'deg) scale('+(.92+p*.18).toFixed(4)+')';
+    },
+    tunel:function(p){
+      govde.style.transform='translateZ('+(p*380-240).toFixed(2)+'px)';
+      var g=yumus(sinir(p*3.5));
+      tunelH.style.opacity=(.15+.85*g).toFixed(3);
+      tunelH.style.transform='scale('+(.94+.06*g).toFixed(4)+')';
+      orta.style.opacity=sinir(1-(p-.8)*5).toFixed(3);
+    },
+    erime:function(p){
+      var q=sinir(p/.85);                       /* son %15: sonuç okunur */
+      rayA.style.transform='scaleX('+Math.max(.0001,1-q).toFixed(4)+')';           /* 38 ay: sona kadar */
+      rayP.style.transform='scaleX('+Math.max(.0001,1-sinir(q*2)).toFixed(4)+')';  /* 19 ay: yarı yolda biter */
+      sonuc.style.opacity=yumus(sinir((q-.5)*2.5)).toFixed(3);
+    },
+    kalem:function(p){
+      var k=1-yumus(sinir(p*1.6));
+      cipler.forEach(function(c,i){var y=cipYon[i];
+        c.style.transform='translate3d('+(y[0]*k*60).toFixed(2)+'vw,'+(y[1]*k*30).toFixed(2)+'vh,0) rotate('+y[2]+'deg)';
+        c.style.opacity=(1-k*.6).toFixed(3);});
+    }
+  };
+  var sahneler=[{el:acilis,f:ciz.acilis},{el:tunel,f:ciz.tunel},{el:erime,f:ciz.erime},{el:kalem,f:ciz.kalem}];
+  sahneler.forEach(function(s){s.hedef=0;s.simdi=0;s.gorunur=true;});
+  function hedefleriOku(){
     var vh=innerHeight;
-    sahneler.forEach(function(s){
-      var r=s.getBoundingClientRect(),yol=r.height-vh;
-      var p=yol>0?Math.min(1,Math.max(0,-r.top/yol)):0;
-      s.style.setProperty('--p',p.toFixed(4));
-    });
-    tik=false;
+    sahneler.forEach(function(s){var r=s.el.getBoundingClientRect(),yol=r.height-vh;s.hedef=yol>0?sinir(-r.top/yol):0;});
   }
-  addEventListener('scroll',function(){if(!tik){tik=true;requestAnimationFrame(ciz);}},{passive:true});
-  addEventListener('resize',ciz);
-  ciz();
+  if('IntersectionObserver' in window){
+    var gozcu=new IntersectionObserver(function(g){g.forEach(function(e){sahneler.forEach(function(s){if(s.el===e.target)s.gorunur=e.isIntersecting;});});});
+    sahneler.forEach(function(s){gozcu.observe(s.el);});
+  }
+  var dongu=0,onceki=0;
+  function kare(t){
+    var dt=onceki?Math.min(64,t-onceki):16;onceki=t;
+    var a=1-Math.exp(-dt/110);   /* ~110 ms zaman sabiti: akıcı ama gecikmeli hissettirmez */
+    var hareket=false;
+    sahneler.forEach(function(s){
+      if(!s.gorunur)return;
+      var fark=s.hedef-s.simdi;
+      if(Math.abs(fark)>.0005){s.simdi+=fark*a;hareket=true;}else{s.simdi=s.hedef;}
+      if(s.son!==s.simdi){s.f(s.simdi);s.son=s.simdi;}
+    });
+    if(hareket){dongu=requestAnimationFrame(kare);}else{dongu=0;onceki=0;}
+  }
+  function uyan(){hedefleriOku();if(!dongu){onceki=0;dongu=requestAnimationFrame(kare);}}
+  addEventListener('scroll',uyan,{passive:true});
+  addEventListener('resize',uyan);
+  hedefleriOku();sahneler.forEach(function(s){s.simdi=s.hedef;s.f(s.simdi);s.son=s.simdi;});
 })();
 </script>
 </body>
