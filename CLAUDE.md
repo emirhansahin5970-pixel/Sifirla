@@ -221,6 +221,12 @@ Bunlar tercih değil, kısıt. Değiştirmeden önce sor.
   ile piksel aynı ilk kareden başlar; splash ilk kare çizilince kaldırılır.
   Dokunmak atlatır, Hareketi Azalt'ta yalnızca kısa geçiş. Tanıtım sitesi de
   yeni logoya geçti.
+- **Yeni site** (26 Kasım 2026, `site-yeni`): video tarzı, açık tema, kaydırmaya bağlı sahneler —
+  açılış (kelime kelime netleşen başlık + doğrulan telefon), 3D telefon tüneli, "aynı borç iki yol"
+  eriyen çubuklar (Maya örneği, motor rakamları), köşelerden gelen kalemler, gizlilik, ekran şeridi, SSS.
+  Ekranlar `node tasarim/site-ekran-uret.js [en]` → `assets/site/{tr,en}/1..6.jpg` (açık tema).
+  Akıcılık: ilerleme yumuşatılır, doğrudan transform/opacity yazılır; 3D gövdeye `will-change:opacity`
+  KONMAZ (perspektifi düzleştirir). Hareketi Azalt'ta sahneler düz.
 - **Site:** gerçek uygulama ekranları (`node tasarim/ekran-uret.js` [en] →
   `assets/ekran-1..4[-en].jpg`, örnek veri uydurma, banka adı yok), "Telefonuna
   ekle" bölümü (Android/iPhone ana ekrana ekleme), og.png yeni logoyla
