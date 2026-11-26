@@ -2,653 +2,399 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title data-en="Sıfırla — Zero out your debt">Sıfırla — Borcunu sıfırla</title>
-<meta name="description" id="metaDesc" data-en="Add your debts and see exactly when they'll be gone, using proven payoff methods. Your data never leaves your phone." content="Borçlarını gir, bilimsel yöntemlerle ne zaman biteceğini gör. Verilerin telefonundan çıkmaz.">
+<meta name="description" id="metaDesc" data-en="See exactly when your debt will be gone and what to pay each month. Free, no account, no bank linking — your data never leaves your phone." content="Borcunun ne zaman biteceğini ve her ay ne ödeyeceğini gör. Ücretsiz; hesap yok, banka bağlantısı yok, verilerin telefonundan çıkmaz.">
 <link rel="canonical" href="https://sifirla.app/">
-<meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0A1220" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F7FB">
 <link rel="icon" type="image/svg+xml" href="uygulama/icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="uygulama/icons/favicon-32.png">
 <link rel="apple-touch-icon" href="uygulama/icons/apple-touch-icon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sifirla.app/">
 <meta property="og:title" content="Sıfırla — Borcunu sıfırla.">
-<meta property="og:description" content="Borçlarını gir, bilimsel yöntemlerle ne zaman biteceğini gör. Verilerin telefonundan çıkmaz.">
+<meta property="og:description" content="Borcunun ne zaman biteceğini ve her ay ne ödeyeceğini gör. Ücretsiz; verilerin telefonundan çıkmaz.">
 <meta property="og:image" content="https://sifirla.app/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Sıfırla — Borcunu sıfırla.">
-<meta name="twitter:description" content="Borçlarını gir, bilimsel yöntemlerle ne zaman biteceğini gör. Verilerin telefonundan çıkmaz.">
 <meta name="twitter:image" content="https://sifirla.app/assets/og.png">
 <link rel="alternate" hreflang="tr" href="https://sifirla.app/">
 <link rel="alternate" hreflang="en" href="https://sifirla.app/?lang=en">
 <script>
-/* FOUC'suz tema + dil: render öncesi uygula. Yalnızca yerel tercih / sistem ayarı. */
+/* Dil: render öncesi. Yalnızca yerel tercih / tarayıcı dili; dış çağrı yok. */
 (function(){try{
-  document.documentElement.classList.add('js'); /* JS varsa giriş animasyonlarını etkinleştir; yoksa içerik zaten görünür */
-  var t=localStorage.getItem('sifirla-tema');
-  if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
-  document.documentElement.dataset.theme=t;
+  document.documentElement.classList.add('js');
   var q=new URLSearchParams(location.search).get('lang');
   var l=q||localStorage.getItem('sifirla-dil')||(navigator.language||'tr').slice(0,2).toLowerCase();
   document.documentElement.lang=(l==='en')?'en':'tr';
-}catch(e){document.documentElement.dataset.theme='light';document.documentElement.lang='tr';}})();
+}catch(e){document.documentElement.lang='tr';}})();
 </script>
 <style>
   :root{
-    --bg:#F4F6F8;--surface:#fff;--surface-2:#EDF0F4;--text:#131A22;--text-muted:#5A6672;
-    --accent:#24406B;--accent-strong:#142E52;--accent-soft:#E2E9F2;--border:#E3E7EC;--kotu:#A3412E;--kotu-bg:#F7E7E2;
-    --amber:#24406B;--amber-ink:#F4F6F9;--ok:#276A4A;--ok-bg:#E3F0E9;
-    --grad-a:#24406B;--grad-b:#3A5C8C;--sicak:#8A7442;--halka-a:#24406B;--halka-b:#A68E58;
-    --shadow:0 1px 2px rgba(19,26,34,.04),0 2px 8px rgba(19,26,34,.05);
-    --aura:rgba(36,64,107,.06);--gren-op:.035;
-    /* dekoratif mesh lekeleri (açık modda çok kısık) */
-    --mesh1:rgba(36,64,107,.05);--mesh2:rgba(76,63,140,.045);--mesh3:rgba(94,141,146,.045);
-    /* sayfa zemin yolculuğu (açık modda neredeyse düz) */
-    --yol-1:#F4F6F8;--yol-2:#EEF0F6;--yol-3:#F1F1F7;--yol-4:#F4F6F8;
-    --cam-ust:rgba(255,255,255,.7);--cam-kenar-a:rgba(19,26,34,.10);--cam-kenar-b:rgba(19,26,34,.03);
-    --font-baslik:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --font-govde:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  }
-  :root[data-theme="dark"]{
-    --bg:#0A1220;--surface:#111C2E;--surface-2:#182740;--text:#F4F8FD;--text-muted:#AEC0D6;
-    --accent:#7FA0C8;--accent-strong:#DCE7F4;--accent-soft:#1B2A44;--border:#243756;--kotu:#E79A88;--kotu-bg:#2A1B20;
-    --amber:#E4EBF5;--amber-ink:#101B2D;--ok:#A5D2BD;--ok-bg:#16283C;
-    --grad-a:#7FA0C8;--grad-b:#BCD1E6;--sicak:#E3C88F;--halka-a:#7FA0C8;--halka-b:#E8D9B8;
-    --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.28);
-    --aura:rgba(127,160,200,.16);--gren-op:.05;
-    --mesh1:rgba(90,120,190,.16);--mesh2:rgba(96,84,180,.14);--mesh3:rgba(111,168,168,.12);
-    --yol-1:#0A1220;--yol-2:#0D1226;--yol-3:#0B1020;--yol-4:#0A1220;
-    --cam-ust:rgba(238,242,247,.06);--cam-kenar-a:rgba(238,242,247,.14);--cam-kenar-b:rgba(238,242,247,.02);
+    --zemin:#F5F7FB;      /* buz beyazı */
+    --zemin-2:#EAF0FA;
+    --murekkep:#0C1F3D;   /* logonun laciverti */
+    --soluk:#5B6B82;
+    --mavi:#2F6FEB;       /* tek vurgu */
+    --mavi-acik:#8DB4FF;
+    --buz:#DCE7FB;
+    --sampanya:#C9A97C;   /* logodaki sıfır; yalnızca "sıfır" anlarında */
+    --cizgi:#DDE4EF;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --ease:cubic-bezier(.22,.7,.2,1);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none}
-  @supports (overflow:clip){body{overflow-x:clip}}
-  body{font-family:var(--font-govde);font-size:16px;line-height:1.6;color:var(--text);-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;
-    background:linear-gradient(180deg,var(--yol-1) 0%,var(--yol-2) 34%,var(--yol-3) 68%,var(--yol-4) 100%);}
-  h1,h2,h3{font-family:var(--font-baslik);line-height:1.15;letter-spacing:-0.02em}
-  a{color:var(--accent);text-decoration:none}
-  img,svg{max-width:100%}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-  .atla{position:absolute;left:-999px;top:0;background:var(--surface);color:var(--text);padding:10px 16px;border-radius:8px;z-index:200}
-  .atla:focus{left:12px;top:12px}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+  html{overflow-x:hidden;-webkit-text-size-adjust:100%}
+  @supports (overflow:clip){html{overflow-x:clip}}
+  body{font-family:var(--font);background:var(--zemin);color:var(--murekkep);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  img{display:block;max-width:100%}
+  :focus-visible{outline:2.5px solid var(--mavi);outline-offset:3px;border-radius:6px}
+  .gizli{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-  /* ---- Dekoratif katmanlar (sabit, en arkada) ---- */
-  .arka{position:fixed;inset:0;z-index:-3;pointer-events:none;overflow:hidden}
-  .blob{position:absolute;border-radius:50%;filter:none;opacity:1}
-  .blob.b1{width:70vw;height:70vw;left:-15vw;top:-10vh;background:radial-gradient(circle,var(--mesh1),transparent 62%)}
-  .blob.b2{width:65vw;height:65vw;right:-18vw;top:34vh;background:radial-gradient(circle,var(--mesh2),transparent 62%)}
-  .blob.b3{width:60vw;height:60vw;left:6vw;top:78vh;background:radial-gradient(circle,var(--mesh3),transparent 62%)}
-  .gren{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:var(--gren-op);
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  @media (prefers-reduced-motion:no-preference){
-    .blob.b1{animation:suz1 34s ease-in-out infinite}
-    .blob.b2{animation:suz2 42s ease-in-out infinite}
-    .blob.b3{animation:suz3 38s ease-in-out infinite}
+  /* ---------- Üst çubuk ---------- */
+  .ust{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:14px clamp(16px,4vw,40px);padding-top:max(14px,env(safe-area-inset-top));
+    background:linear-gradient(var(--zemin) 40%,rgba(245,247,251,0))}
+  .marka{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:19px;letter-spacing:-.02em}
+  .marka svg{width:46px;height:auto}
+  .ust-sag{display:flex;gap:8px;align-items:center}
+  .dil{font:600 14px var(--font);color:var(--murekkep);background:#fff;border:1px solid var(--cizgi);border-radius:999px;height:38px;min-width:44px;padding:0 12px;cursor:pointer}
+  .ust .dene{font:600 14px var(--font);text-decoration:none;background:var(--murekkep);color:#fff;border-radius:999px;height:38px;display:inline-flex;align-items:center;padding:0 16px}
+
+  /* ---------- Sahne iskeleti: yapışkan, kaydırmaya bağlı ---------- */
+  .sahne{position:relative}
+  .sahne .sabit{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;place-items:center}
+  .uzun-1{height:220vh}.uzun-2{height:260vh}.uzun-3{height:240vh}
+
+  /* Kelime kelime bulanıktan netleşen başlık (video: "Audio", "Just drop and go") */
+  .kinetik{font-weight:650;letter-spacing:-.035em;line-height:1.02;text-align:center}
+  .kinetik .k{display:inline-block;white-space:pre}
+
+  /* ---------- 1) Açılış ---------- */
+  .acilis .sabit{align-content:start;padding-top:clamp(92px,15vh,150px)}
+  .acilis h1{font-size:clamp(44px,8.6vw,112px);max-width:12ch;margin:0 auto}
+  .acilis .alt{margin:22px auto 0;max-width:34ch;text-align:center;color:var(--soluk);font-size:clamp(17px,1.8vw,21px)}
+  .acilis .metin{opacity:calc(1 - var(--p,0) * 2.2)}
+  .js .acilis .k{opacity:0;filter:blur(14px);transform:translateY(.12em);color:var(--mavi)}
+  .js.hazir .acilis .k{animation:netles 1s var(--ease) forwards;animation-delay:calc(var(--i)*90ms + 150ms)}
+  @keyframes netles{60%{color:var(--mavi)}to{opacity:1;filter:blur(0);transform:none;color:var(--murekkep)}}
+  .js .acilis .alt,.js .acilis .dugmeler{opacity:0;transition:opacity .8s .9s}
+  .js.hazir .acilis .alt,.js.hazir .acilis .dugmeler{opacity:1}
+  .dugmeler{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+  .btn{font:600 16px var(--font);text-decoration:none;border-radius:999px;padding:14px 22px;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent}
+  .btn-ana{background:var(--mavi);color:#fff;box-shadow:0 10px 30px -10px rgba(47,111,235,.7)}
+  .btn-ikinci{background:#fff;border-color:var(--cizgi);color:var(--murekkep)}
+  .btn-ikinci small{font-size:12px;font-weight:600;color:var(--soluk);background:var(--zemin-2);border-radius:999px;padding:2px 8px}
+
+  /* Yatık duran, kaydırdıkça doğrulan telefon (video: perspektifli ekran) */
+  .sahnelik{position:absolute;left:50%;bottom:0;transform:translateX(-50%);perspective:1100px;width:min(92vw,980px);height:58vh;pointer-events:none}
+  .yatik{position:absolute;left:50%;top:36%;transform-origin:50% 0;
+    transform:translateX(-50%) rotateX(calc((1 - var(--p,0)) * 52deg)) translateY(calc(var(--p,0) * -14vh)) scale(calc(.92 + var(--p,0)*.18))}
+  .zemin-isik{position:absolute;inset:auto 0 -10% 0;height:70%;background:radial-gradient(60% 60% at 50% 100%,rgba(47,111,235,.18),transparent 70%)}
+
+  /* Telefon çerçevesi */
+  .tel{--g:280px;width:var(--g);aspect-ratio:390/844;border-radius:calc(var(--g)*.15);padding:calc(var(--g)*.032);
+    background:linear-gradient(145deg,#B9BCC3,#F2F3F5 35%,#9DA1A8 70%,#DCDEE2);
+    box-shadow:0 40px 80px -30px rgba(12,31,61,.45),0 0 0 1px rgba(12,31,61,.06)}
+  .tel .cam{position:relative;width:100%;height:100%;border-radius:calc(var(--g)*.125);overflow:hidden;background:#F4F6F8}
+  .tel img{width:100%;height:100%;object-fit:cover}
+  .tel .cam::before{content:"";position:absolute;inset:0 0 auto 0;height:9%;background:linear-gradient(#F4F6F8 62%,rgba(244,246,248,0));z-index:1}
+  .tel .cam::after{content:"";position:absolute;top:2.4%;left:50%;transform:translateX(-50%);width:30%;height:3.6%;border-radius:99px;background:#0A0A0C;z-index:2}
+
+  /* ---------- 2) Tünel (sitenin tek büyük anı) ---------- */
+  .tunel .sabit{perspective:900px;background:radial-gradient(70% 60% at 50% 50%,#fff,var(--zemin) 70%)}
+  .tunel .govde{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;
+    transform:translateZ(calc(var(--p,0) * 380px - 240px))}
+  .duvar{position:absolute;left:0;top:0;transform-style:preserve-3d}
+  .duvar .tel{--g:min(30vh,300px);position:absolute;left:0;top:0}
+  .duvar.sol .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * -1.55)) rotateY(62deg)}
+  .duvar.sag .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * 1.55)) rotateY(-62deg)}
+  .duvar.ust-d .tel{transform:translate(-50%,-50%) translateY(calc(var(--g) * -1.32)) rotateX(-64deg) rotateZ(90deg)}
+  .duvar.alt-d .tel{transform:translate(-50%,-50%) translateY(calc(var(--g) * 1.32)) rotateX(64deg) rotateZ(-90deg)}
+  .tunel .orta{position:relative;z-index:2;text-align:center;padding:40px 60px;background:radial-gradient(closest-side,rgba(245,247,251,.92),rgba(245,247,251,0));
+    opacity:calc(1 - max(0, (var(--p,0) - .8) * 5))}
+  .tunel h2{font-size:clamp(32px,4.4vw,60px)}
+  .tunel .orta p{margin-top:14px;color:var(--soluk);font-size:clamp(16px,1.6vw,19px)}
+  .tunel .k{filter:blur(calc(max(0, .25 - var(--p,0)) * 48px));opacity:calc(.25 + min(1, var(--p,0) * 3.2))}
+
+  /* ---------- 3) Eriyen borç (video: dolan çubuk, tersine) ---------- */
+  .erime .sabit{padding:0 clamp(18px,5vw,64px)}
+  .erime .kutu{width:min(100%,920px)}
+  .erime h2{font-size:clamp(32px,4.8vw,60px);text-align:left;margin-bottom:10px}
+  .erime .kim{color:var(--soluk);max-width:52ch;margin-bottom:clamp(28px,6vh,56px)}
+  .yol{margin-top:26px}
+  .yol-bas{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px;font-weight:600}
+  .yol-bas .ay{font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .yol.asgari .ay{color:var(--soluk)}
+  .yol.plan .ay{background:linear-gradient(90deg,var(--mavi),var(--murekkep));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ray{height:clamp(30px,5vh,46px);border-radius:999px;background:var(--zemin-2);overflow:hidden;position:relative}
+  .ray i{position:absolute;inset:0;border-radius:inherit;transform-origin:0 50%}
+  .yol.asgari .ray i{background:linear-gradient(90deg,#AEB9C9,#C9D2DF);transform:scaleX(calc(1 - var(--p,0) * 0.5))}
+  .yol.plan .ray i{background:linear-gradient(90deg,#6A5CFF,var(--mavi) 45%,var(--mavi-acik));box-shadow:0 0 30px rgba(47,111,235,.45);
+    transform:scaleX(max(0.0001, 1 - var(--p,0)))}
+  .yol-alt{margin-top:8px;color:var(--soluk);font-size:15px}
+  .sonuc{margin-top:clamp(24px,5vh,44px);font-size:clamp(19px,2.2vw,26px);font-weight:600;max-width:36ch;
+    opacity:calc(min(1, max(0, (var(--p,0) - .75) * 5)))}
+  .sonuc b{color:var(--mavi)}
+  .not{margin-top:14px;font-size:13px;color:var(--soluk);max-width:70ch}
+
+  /* ---------- 4) Köşelerden gelen kalemler ---------- */
+  .kalem .sabit{padding:0 20px}
+  .kalem h2{font-size:clamp(32px,5vw,64px);text-align:center;position:relative;z-index:2;max-width:14ch}
+  .kalem .alt{position:relative;z-index:2;text-align:center;color:var(--soluk);margin-top:14px;max-width:40ch}
+  .kalem .icerik{display:grid;justify-items:center}
+  .cip{position:absolute;display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--buz);border-radius:20px;padding:14px 18px;
+    box-shadow:0 20px 40px -24px rgba(12,31,61,.35);font-weight:600;white-space:nowrap;
+    --k:calc(1 - min(1, var(--p,0) * 1.6))}
+  .cip span{color:var(--soluk);font-weight:500;font-variant-numeric:tabular-nums}
+  .cip svg{width:26px;height:26px;color:var(--mavi);flex:none}
+  .cip.c1{left:8%;top:16%;transform:translate(calc(var(--k) * -60vw),calc(var(--k) * -30vh)) rotate(-7deg)}
+  .cip.c2{right:8%;top:20%;transform:translate(calc(var(--k) * 60vw),calc(var(--k) * -30vh)) rotate(6deg)}
+  .cip.c3{left:10%;bottom:18%;transform:translate(calc(var(--k) * -60vw),calc(var(--k) * 30vh)) rotate(5deg)}
+  .cip.c4{right:10%;bottom:16%;transform:translate(calc(var(--k) * 60vw),calc(var(--k) * 30vh)) rotate(-6deg)}
+
+  /* ---------- 5) Gizlilik (cam) ---------- */
+  .gizlilik{padding:clamp(90px,16vh,160px) 20px;display:grid;justify-items:center;text-align:center}
+  .cam-kilit{width:132px;height:132px;border-radius:36px;position:relative;margin-bottom:34px;
+    background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(220,231,251,.65));border:1px solid rgba(47,111,235,.35);
+    box-shadow:0 0 0 10px rgba(47,111,235,.05),0 30px 60px -24px rgba(47,111,235,.55);display:grid;place-items:center;backdrop-filter:blur(10px)}
+  .cam-kilit svg{width:58px;height:58px;color:var(--mavi)}
+  .gizlilik h2{font-size:clamp(32px,5vw,64px);max-width:15ch}
+  .liste{list-style:none;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px;max-width:640px}
+  .liste li{background:#fff;border:1px solid var(--cizgi);border-radius:999px;padding:10px 16px;font-weight:600;font-size:15px}
+
+  /* ---------- 6) Ekranlar şeridi ---------- */
+  .ekranlar{padding:20px 0 clamp(80px,14vh,140px)}
+  .ekranlar h2{font-size:clamp(28px,3.6vw,44px);text-align:center;padding:0 20px}
+  .ekranlar .not{text-align:center;margin:10px auto 0;padding:0 20px}
+  .serit{display:flex;gap:clamp(18px,3vw,34px);overflow-x:auto;scroll-snap-type:x mandatory;padding:40px max(20px,calc(50vw - 560px)) 30px;scrollbar-width:none}
+  .serit::-webkit-scrollbar{display:none}
+  .serit figure{scroll-snap-align:center;flex:none;display:grid;gap:16px;justify-items:center}
+  .serit .tel{--g:clamp(220px,24vw,270px)}
+  .serit figcaption{max-width:24ch;text-align:center;font-weight:600;font-size:15px}
+
+  /* ---------- SSS ---------- */
+  .sss{max-width:760px;margin:0 auto;padding:0 20px clamp(80px,12vh,120px)}
+  .sss h2{font-size:clamp(28px,3.6vw,44px);margin-bottom:20px}
+  .sss details{border-top:1px solid var(--cizgi)}
+  .sss details:last-of-type{border-bottom:1px solid var(--cizgi)}
+  .sss summary{list-style:none;cursor:pointer;padding:18px 0;font-weight:600;font-size:18px;display:flex;justify-content:space-between;gap:16px}
+  .sss summary::-webkit-details-marker{display:none}
+  .sss summary::after{content:"+";color:var(--mavi);font-size:24px;line-height:1;transition:transform .25s}
+  .sss details[open] summary::after{transform:rotate(45deg)}
+  .sss details p{padding:0 0 18px;color:var(--soluk);max-width:62ch}
+
+  /* ---------- Kapanış ---------- */
+  .kapanis{min-height:80vh;display:grid;place-items:center;text-align:center;padding:60px 20px;
+    background:radial-gradient(60% 50% at 50% 60%,var(--buz),var(--zemin) 70%)}
+  .kapanis .logo-buyuk{width:min(300px,64vw);margin:0 auto 26px}
+  .kapanis h2{font-size:clamp(34px,5vw,64px);letter-spacing:-.035em;font-weight:650}
+  .kapanis .adres{margin-top:16px;color:var(--soluk);font-weight:600}
+
+  footer{padding:30px 20px calc(30px + env(safe-area-inset-bottom));border-top:1px solid var(--cizgi);font-size:14px;color:var(--soluk);text-align:center}
+  footer nav{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+  footer a{text-decoration:none;font-weight:600;color:var(--murekkep)}
+  footer p{max-width:60ch;margin:6px auto 0}
+
+  /* ---------- Dar ekran ---------- */
+  @media (max-width:640px){
+    .ust .dene{display:none}
+    .sahnelik{height:44vh}
+    .yatik{top:30%}
+    .tel{--g:230px}
+    .duvar .tel{--g:min(24vh,170px)}
+    .duvar.sol .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * -1.25)) rotateY(66deg)}
+    .duvar.sag .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * 1.25)) rotateY(-66deg)}
+    .duvar.ust-d .tel{transform:translate(-50%,-50%) translateY(calc(var(--g) * -1.6)) rotateX(-66deg) rotateZ(90deg)}
+    .duvar.alt-d .tel{transform:translate(-50%,-50%) translateY(calc(var(--g) * 1.6)) rotateX(66deg) rotateZ(-90deg)}
+    .cip{padding:10px 13px;font-size:14px;border-radius:16px}
+    .cip.c1{left:4%;top:13%}.cip.c2{right:4%;top:22%}.cip.c3{left:4%;bottom:20%}.cip.c4{right:4%;bottom:11%}
   }
-  @keyframes suz1{0%,100%{transform:translate(0,0)}50%{transform:translate(6vw,4vh)}}
-  @keyframes suz2{0%,100%{transform:translate(0,0)}50%{transform:translate(-5vw,-3vh)}}
-  @keyframes suz3{0%,100%{transform:translate(0,0)}50%{transform:translate(4vw,-5vh)}}
 
-  /* ---- Kaydırma ilerleme çubuğu ---- */
-  .ilerleme{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;z-index:120;
-    background:linear-gradient(90deg,var(--halka-a),var(--sicak));will-change:transform}
-
-  /* ---- Üst bar ---- */
-  header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.5) blur(10px);border-bottom:1px solid var(--border)}
-  .ust{display:flex;align-items:center;justify-content:space-between;height:60px}
-  .marka{display:flex;align-items:center;gap:9px;font-family:var(--font-baslik);font-weight:700;font-size:20px;letter-spacing:-0.02em;color:var(--accent-strong)}
-  .marka svg{height:22px;width:auto;flex:none;display:block;overflow:visible;transform:translateY(1px)}
-  .marka .mi{position:relative}
-  .marka .mi::after{content:"";position:absolute;top:-.02em;left:50%;transform:translateX(-50%);width:.12em;height:.12em;border-radius:50%;background:var(--sicak)}
-  .araclar{display:flex;align-items:center;gap:8px}
-  .ikbtn{display:inline-flex;align-items:center;justify-content:center;height:38px;min-width:38px;padding:0 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:border-color .2s,transform .15s}
-  .ikbtn:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .ikbtn svg{width:18px;height:18px}
-
-  /* ---- Butonlar ---- */
-  .btn{position:relative;display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:13px 22px;border-radius:12px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:transform .15s ease,box-shadow .25s ease;overflow:hidden}
-  .btn-primary{color:var(--amber-ink);background:linear-gradient(100deg,var(--grad-a),var(--grad-b),var(--grad-a));background-size:220% 100%;background-position:0 0;box-shadow:0 4px 14px -4px color-mix(in srgb,var(--grad-a) 60%,transparent)}
-  .btn-primary:hover{transform:translateY(-2px) scale(1.02);background-position:100% 0;box-shadow:0 10px 26px -6px color-mix(in srgb,var(--grad-a) 70%,transparent)}
-  @media (prefers-reduced-motion:no-preference){.btn-primary{transition:transform .15s ease,box-shadow .25s ease,background-position 1.2s ease}}
-  .btn-ghost{background:var(--surface);color:var(--text);border-color:var(--border)}
-  .btn-ghost:hover{transform:translateY(-2px) scale(1.02);border-color:var(--accent);box-shadow:0 8px 20px -8px rgba(0,0,0,.3)}
-  .btn[disabled],.btn[aria-disabled="true"]{opacity:.6;cursor:not-allowed;pointer-events:none;transform:none}
-  .yakinda{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent-strong);padding:2px 7px;border-radius:999px}
-
-  /* ---- Gradyan metin (imza vurgu) ---- */
-  .grad{color:var(--accent-strong)}
-  @supports ((-webkit-background-clip:text) or (background-clip:text)){
-    .grad{background:linear-gradient(100deg,var(--accent-strong) 12%,var(--sicak) 50%,var(--accent-strong) 88%);background-size:230% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-    .grad.yikandi{background-position:0 0}
-    @media (prefers-reduced-motion:no-preference){.grad{transition:background-position 1.2s ease}}
-  }
-
-  /* ---- Bölümler + ayırıcılar ---- */
-  section{position:relative;padding:60px 0}
-  .ayirici{height:1px;border:0;max-width:1080px;margin:0 auto;background:linear-gradient(90deg,transparent,var(--border),transparent);opacity:.8}
-  .bolum-bas{text-align:center;max-width:640px;margin:0 auto 40px}
-  /* ---- Amacımız ---- */
-  .amac{max-width:760px;text-align:center}
-  .amac-buyuk{font-family:var(--font-baslik);font-size:clamp(21px,3.6vw,28px);font-weight:700;line-height:1.35;color:var(--accent-strong);letter-spacing:-.01em}
-  .amac-metin{margin-top:18px;color:var(--text-muted);font-size:17px;line-height:1.65}
-  /* ---- İki hikâye: kök → iki dal (karar ağacı) ---- */
-  .senaryo{max-width:980px;margin:0 auto 56px}
-  .sn-kok{position:relative;max-width:560px;margin:0 auto;padding:20px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
-  .sn-ad{font-family:var(--font-baslik);font-size:22px;font-weight:800;color:var(--accent-strong)}
-  .sn-yas{font-weight:500;font-size:15px;color:var(--text-muted)}
-  .sn-durum{margin-top:6px;color:var(--text);font-size:15.5px;line-height:1.5}
-  .sn-dallar{position:relative;display:grid;gap:22px;margin-top:44px}
-  .sn-dallar::before{content:"";position:absolute;left:50%;top:-44px;height:44px;width:2px;background:var(--border);transform:translateX(-50%)}
-  .sn-dal{position:relative;padding:20px 20px 18px;border-radius:18px;border:1px solid var(--border);background:var(--surface)}
-  .sn-dal.kotu{background:var(--kotu-bg);border-color:transparent}
-  .sn-dal.iyi{background:var(--ok-bg);border-color:transparent}
-  .sn-etiket{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:800;font-size:13px;letter-spacing:.03em;text-transform:uppercase}
-  .kotu .sn-etiket{background:var(--kotu);color:var(--surface)}
-  .iyi .sn-etiket{background:var(--ok);color:var(--surface)}
-  .sn-adimlar{list-style:none;margin:14px 0 0;padding:0 0 0 22px;position:relative}
-  .sn-adimlar::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;border-radius:2px;background:currentColor;opacity:.25}
-  .kotu .sn-adimlar{color:var(--kotu)} .iyi .sn-adimlar{color:var(--ok)}
-  .sn-adimlar li{position:relative;color:var(--text);font-size:15px;line-height:1.5;margin:0 0 12px}
-  .sn-adimlar li::before{content:"";position:absolute;left:-21px;top:7px;width:10px;height:10px;border-radius:50%;background:currentColor;color:inherit}
-  .kotu .sn-adimlar li::before{background:var(--kotu)} .iyi .sn-adimlar li::before{background:var(--ok)}
-  .sn-sonuc{margin-top:6px;padding:14px 16px;border-radius:14px;background:var(--surface)}
-  .sn-sonuc p{color:var(--text-muted);font-size:14.5px;line-height:1.45}
-  .sn-rakam{font-family:var(--font-baslik);font-size:30px!important;font-weight:800;line-height:1.1!important;margin-bottom:4px}
-  .kotu .sn-rakam{color:var(--kotu)!important} .iyi .sn-rakam{color:var(--ok)!important}
-  .sn-not{max-width:720px;margin:0 auto;text-align:center;color:var(--text-muted);font-size:13px;line-height:1.55}
-  @media (min-width:760px){
-    .sn-dallar{grid-template-columns:1fr 1fr;gap:28px}
-    .sn-dallar::after{content:"";position:absolute;top:-22px;left:25%;right:25%;height:22px;border:2px solid var(--border);border-bottom:0;border-radius:14px 14px 0 0}
-    .sn-dallar::before{top:-44px;height:22px}
-  }
-
-  .bolum-bas h2{font-size:clamp(26px,5vw,36px);display:inline-block}
-  .bolum-bas p{color:var(--text-muted);margin-top:10px}
-
-  /* ---- Reveal (kaydırmayla giriş) — yalnızca JS varken gizle ---- */
-  .js .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,.61,.36,1);transition-delay:calc(var(--i,0)*80ms)}
-  .js .reveal.gorundu{opacity:1;transform:none}
-
-  /* ---- Hero ---- */
-  .hero{overflow:visible;text-align:center;padding:76px 0 40px}
-  .hero-logo{position:relative;width:200px;margin:0 auto 26px}
-  .hero-logo::before{content:"";position:absolute;inset:-55%;z-index:-1;border-radius:50%;
-    background:radial-gradient(circle closest-side,var(--aura),transparent 72%)}
-  @media (prefers-reduced-motion:no-preference){.hero-logo::before{animation:nefes 8s ease-in-out infinite}}
-  @keyframes nefes{0%,100%{opacity:.6;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
-  .hero-logo svg{width:100%;height:auto;display:block;overflow:visible}
-  .hero-logo .logo-tus{transform-box:fill-box}
-  .js .hero-logo .logo-tus{transform:translateX(160%)}
-  .js.yuklendi .hero-logo .logo-tus,.yuklendi .hero-logo .logo-tus{animation:tusKay 1s .3s cubic-bezier(.5,0,.2,1) forwards}
-  @keyframes tusKay{to{transform:translateX(0)}}
-  .hero h1{font-size:clamp(42px,9vw,70px);font-weight:700}
-  .hero .slogan{font-size:clamp(20px,4.5vw,28px);font-weight:600;color:var(--text);margin-top:6px}
-  .hero p.aciklama{max-width:560px;margin:18px auto 0;color:var(--text-muted);font-size:17px}
-  .hero-btnlar{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
-  .gizlilik-rozet{display:inline-flex;align-items:center;gap:7px;margin-top:22px;font-size:13px;color:var(--text-muted)}
-  .gizlilik-rozet svg{width:15px;height:15px;color:var(--ok)}
-  /* hero giriş stagger — yalnızca JS varken gizle */
-  .js .hero .anim{opacity:0;transform:translateY(16px)}
-  .yuklendi .hero .anim{animation:girYukari .7s cubic-bezier(.22,.61,.36,1) forwards;animation-delay:var(--d,0ms)}
-  @keyframes girYukari{to{opacity:1;transform:none}}
-
-  /* ---- Örnek plan sayaçları ---- */
-  .ornek{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:760px;margin:0 auto}
-  .ornek-eyebrow{text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
-  .stat{position:relative;flex:1 1 200px;max-width:240px;padding:22px 20px;border-radius:16px;text-align:center;
-    background:linear-gradient(180deg,var(--cam-ust),transparent 60%),var(--surface);
-    border:1px solid transparent;background-clip:padding-box;box-shadow:var(--shadow)}
-  .stat::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;pointer-events:none;
-    background:linear-gradient(180deg,var(--cam-kenar-a),var(--cam-kenar-b));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-  .stat .buyuk{font-family:var(--font-baslik);font-size:34px;font-weight:700;color:var(--accent-strong);letter-spacing:-0.02em;line-height:1.1}
-  .stat .etiket{margin-top:6px;font-size:13px;color:var(--text-muted)}
-
-  /* ---- Ekran görüntüleri + gerçekçi telefon ---- */
-  .ekranlar{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 20px 20px;-webkit-overflow-scrolling:touch;scrollbar-width:none;perspective:1400px}
-  .ekranlar::-webkit-scrollbar{display:none}
-  .ekran-kart{scroll-snap-align:center;flex:0 0 auto;width:236px;text-align:center}
-  .telefon{position:relative;width:236px;aspect-ratio:9/19.5;border-radius:30px;padding:5px;
-    background:linear-gradient(150deg,#59697f 0%,#20293a 24%,#0e1522 52%,#182234 74%,#3a4658 100%);
-    box-shadow:0 30px 55px -22px rgba(0,0,0,.55),0 10px 22px -10px rgba(0,0,0,.4);
-    transform:rotateY(var(--ry,0deg)) translateY(var(--py,0px));transition:transform .5s cubic-bezier(.22,.61,.36,1)}
-  .telefon .ekran{position:relative;width:100%;height:100%;border-radius:25px;overflow:hidden;background:#0A1220}
-  .telefon .ekran img{width:100%;height:100%;object-fit:cover;display:block}
-  .telefon .ekran img.ph{object-fit:cover}
-  .telefon .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:64px;height:19px;border-radius:99px;background:#05080f;z-index:3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
-  .telefon .ekran::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
-    background:linear-gradient(125deg,rgba(255,255,255,.11) 0%,rgba(255,255,255,0) 30%)}
-  .ekran-kart p{margin-top:16px;font-size:14px;color:var(--text-muted);padding:0 6px}
-  @media (min-width:920px){.ekranlar{justify-content:center;overflow:visible;flex-wrap:wrap}}
-
-  /* ---- Cam kartlar ---- */
-  .kartlar{display:grid;grid-template-columns:1fr;gap:18px}
-  @media (min-width:720px){.kartlar{grid-template-columns:repeat(3,1fr)}}
-  .kart{position:relative;border-radius:16px;padding:26px;
-    background:linear-gradient(180deg,var(--cam-ust),transparent 55%),var(--surface);
-    box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease;transform-style:preserve-3d}
-  .kart::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;pointer-events:none;
-    background:linear-gradient(180deg,var(--cam-kenar-a),var(--cam-kenar-b));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;transition:background .25s ease}
-  .kart:hover{box-shadow:0 18px 40px -18px rgba(0,0,0,.4)}
-  .kart:hover::before{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 55%,transparent),var(--cam-kenar-b))}
-  .kart .ic{transition:transform .25s ease}
-  .kart:hover .ic{transform:translateY(-2px)}
-  .kart .ikon{width:44px;height:44px;border-radius:11px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);margin-bottom:14px}
-  .kart .ikon svg{width:24px;height:24px}
-  .kart h3{font-size:18px;color:var(--accent-strong);margin-bottom:6px}
-  .kart p{color:var(--text-muted);font-size:15px}
-
-  /* ---- Telefonuna ekle ---- */
-  .hero-kur{margin-top:14px;font-size:14px}
-  .kur-kartlar{display:grid;grid-template-columns:1fr;gap:16px}
-  @media (min-width:720px){.kur-kartlar{grid-template-columns:repeat(2,1fr)}}
-  .kur-kart h3{margin-bottom:12px}
-  .kur-kart ol{margin:0;padding-left:20px;color:var(--text-muted);font-size:15px;line-height:1.55}
-  .kur-kart li+li{margin-top:6px}
-  .kur-kart strong{color:var(--accent-strong)}
-  .kur-cta{text-align:center;margin-top:26px}
-  .kur-not{text-align:center;margin-top:12px;font-size:14px;color:var(--text-muted)}
-
-  /* ---- Nasıl çalışır ---- */
-  .adimlar{display:grid;grid-template-columns:1fr;gap:16px;counter-reset:adim}
-  @media (min-width:720px){.adimlar{grid-template-columns:repeat(3,1fr)}}
-  .adim{position:relative;border-radius:16px;padding:24px;
-    background:linear-gradient(180deg,var(--cam-ust),transparent 55%),var(--surface);box-shadow:var(--shadow)}
-  .adim::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;pointer-events:none;
-    background:linear-gradient(180deg,var(--cam-kenar-a),var(--cam-kenar-b));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-  .adim .no{counter-increment:adim;width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,var(--grad-a),var(--grad-b));color:var(--amber-ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-baslik);margin-bottom:12px}
-  .adim .no::before{content:counter(adim)}
-  .adim h3{font-size:17px;color:var(--accent-strong);margin-bottom:5px}
-  .adim p{color:var(--text-muted);font-size:15px}
-
-  /* ---- SSS (yumuşak akordiyon) ---- */
-  .sss{max-width:760px;margin:0 auto}
-  .sss-oge{border-radius:12px;margin-bottom:10px;overflow:hidden;
-    background:linear-gradient(180deg,var(--cam-ust),transparent 60%),var(--surface);position:relative}
-  .sss-oge::before{content:"";position:absolute;inset:0;border-radius:12px;padding:1px;pointer-events:none;
-    background:linear-gradient(180deg,var(--cam-kenar-a),var(--cam-kenar-b));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-  .sss-soru{width:100%;text-align:left;cursor:pointer;padding:16px 20px;font-weight:600;font-size:16px;color:var(--accent-strong);
-    background:none;border:0;font-family:var(--font-baslik);display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .sss-soru .ok{width:11px;height:11px;border-right:2px solid var(--text-muted);border-bottom:2px solid var(--text-muted);transform:rotate(45deg);flex:none;margin-top:-4px;transition:transform .3s ease}
-  .sss-soru[aria-expanded="true"] .ok{transform:rotate(-135deg);margin-top:2px}
-  .sss-sar{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}
-  .sss-soru[aria-expanded="true"]+.sss-sar{grid-template-rows:1fr}
-  .sss-ic{overflow:hidden}
-  .cevap{padding:0 20px 18px;color:var(--text-muted);font-size:15px}
-
-  /* ---- Bağlantı alt çizgi çizimi ---- */
-  .cizgi-link{position:relative;background-image:linear-gradient(currentColor,currentColor);background-size:0% 1.5px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .3s ease}
-  .cizgi-link:hover{background-size:100% 1.5px}
-
-  /* ---- Alt bilgi ---- */
-  footer{border-top:1px solid var(--border);padding:44px 0 52px;margin-top:24px;position:relative}
-  .footer-ic{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
-  .footer-linkler{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;font-size:14px}
-  .telif{font-size:13px;color:var(--text-muted)}
-  .feragat{font-size:12px;color:var(--text-muted);max-width:600px;margin:6px auto 0;opacity:.85}
-
-  /* ---- İmleç halesi (yalnızca masaüstü) ---- */
-  .imlec{position:fixed;top:0;left:0;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;
-    transform:translate(-50%,-50%);transition:opacity .4s ease;
-    background:radial-gradient(circle,var(--aura),transparent 62%);mix-blend-mode:normal}
-
-  /* ---- prefers-reduced-motion: tüm hareket dur, yalnızca görünürlük ---- */
+  /* ---------- Hareketi azalt: sahneler son hâlinde, yapışkanlık yok ---------- */
   @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto}
-    *{animation:none !important;transition-duration:.001ms !important}
-    .reveal{opacity:1;transform:none}
-    .hero .anim{opacity:1;transform:none}
-    .hero-logo .logo-tus{transform:none !important}
-    .blob{animation:none !important}
-    .imlec{display:none}
+    .sahne{height:auto!important}
+    .sahne .sabit{position:relative;height:auto;min-height:100svh;padding-top:90px;padding-bottom:60px}
+    .sahne{--p:1!important}
+    .acilis{--p:.6!important}
+    .tunel .govde{transform:translateZ(-150px)}
+    .tunel .orta{opacity:1}
+    .js .acilis .k,.js .acilis .alt,.js .acilis .dugmeler{opacity:1;filter:none;transform:none;animation:none;transition:none}
+    .sahnelik{position:relative;left:auto;transform:none;margin:30px auto 0}
+    .cip{display:none}
   }
 </style>
 </head>
 <body>
-<a class="atla" href="#icerik" data-en="Skip to content">İçeriğe geç</a>
-<div class="ilerleme" id="ilerleme" aria-hidden="true"></div>
-<div class="arka" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
-<div class="gren" aria-hidden="true"></div>
-<div class="imlec" id="imlec" aria-hidden="true"></div>
 
-<header>
-  <div class="wrap ust">
-    <a class="marka" href="#" aria-label="Sıfırla">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-798 -346 1596 692" aria-hidden="true"><defs><linearGradient id="suh" gradientUnits="userSpaceOnUse" x1="-792" y1="0" x2="792" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.52" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="sus" gradientUnits="userSpaceOnUse" x1="-697" y1="0" x2="-295" y2="0"><stop offset="0" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/><stop offset="0.47" style="stop-color:var(--logo-sampanya-orta,#FBE4BF)"/><stop offset="1" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/></linearGradient><linearGradient id="sut" gradientUnits="userSpaceOnUse" x1="-178" y1="0" x2="178" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="suy" gradientUnits="userSpaceOnUse" x1="129" y1="0" x2="697" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.6" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="sur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--logo-gumus-ust,#DEDFE1)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-alt,#97989A)"/></linearGradient></defs><path d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z" style="fill:var(--logo-zemin,#0C1F3D)"/><path class="logo-hap" d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z M-452,-288A288,288 0 0 0 -740,0V0A288,288 0 0 0 -452,288H452A288,288 0 0 0 740,0V0A288,288 0 0 0 452,-288Z" fill="url(#suh)"/><path class="logo-hap-cizgi" d="M-452,-288H452A288,288 0 0 1 740,0V0A288,288 0 0 1 452,288H-452A288,288 0 0 1 -740,0V0A288,288 0 0 1 -452,-288Z M-452,-280A280,280 0 0 0 -732,0V0A280,280 0 0 0 -452,280H452A280,280 0 0 0 732,0V0A280,280 0 0 0 452,-280Z" style="fill:var(--logo-gumus-ic,#6B6C70)"/><path class="logo-sifir" d="M-496,-240C-375.4,-240 -295,-144 -295,0C-295,144 -375.4,240 -496,240C-616.6,240 -697,144 -697,0C-697,-144 -616.6,-240 -496,-240Z M-496,-156C-554.8,-156 -594,-93.6 -594,0C-594,93.6 -554.8,156 -496,156C-437.2,156 -398,93.6 -398,0C-398,-93.6 -437.2,-156 -496,-156Z" fill="url(#sus)"/><g class="logo-tus"><path d="M-129,-207H129A78,78 0 0 1 207,-129V129A78,78 0 0 1 129,207H-129A78,78 0 0 1 -207,129V-129A78,78 0 0 1 -129,-207Z" fill="url(#sur)"/><path d="M-128,-178H128A50,50 0 0 1 178,-128V128A50,50 0 0 1 128,178H-128A50,50 0 0 1 -178,128V-128A50,50 0 0 1 -128,-178Z" fill="url(#sut)"/><path class="logo-ok" d="M-12.387301627791913,-80L-92.38730162779191,0L-12.387301627791913,80M-92.38730162779191,0H123.5" fill="none" style="stroke:var(--logo-ok,#0C1F3D)" stroke-width="44" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path class="logo-yuva" d="M129,-240H457A240,240 0 0 1 457,240H129A111,111 0 0 0 217.5,196H457A196,196 0 0 0 457,-196H217.5A111,111 0 0 0 129,-240Z" fill="url(#suy)"/></svg>
-      <span>S<span class="mi">ı</span>fırla</span>
-    </a>
-    <div class="araclar">
-      <button class="ikbtn" id="dilBtn" type="button" aria-label="Dili değiştir">EN</button>
-      <button class="ikbtn" id="temaBtn" type="button" aria-label="Açık/koyu tema" aria-pressed="false"></button>
-    </div>
+<header class="ust">
+  <a class="marka" href="#" aria-label="Sıfırla"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-798 -346 1596 692" aria-hidden="true"><defs><linearGradient id="suh" gradientUnits="userSpaceOnUse" x1="-792" y1="0" x2="792" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.52" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="sus" gradientUnits="userSpaceOnUse" x1="-697" y1="0" x2="-295" y2="0"><stop offset="0" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/><stop offset="0.47" style="stop-color:var(--logo-sampanya-orta,#FBE4BF)"/><stop offset="1" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/></linearGradient><linearGradient id="sut" gradientUnits="userSpaceOnUse" x1="-178" y1="0" x2="178" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="suy" gradientUnits="userSpaceOnUse" x1="129" y1="0" x2="697" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.6" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="sur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--logo-gumus-ust,#DEDFE1)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-alt,#97989A)"/></linearGradient></defs><path d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z" style="fill:var(--logo-zemin,#0C1F3D)"/><path class="logo-hap" d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z M-452,-288A288,288 0 0 0 -740,0V0A288,288 0 0 0 -452,288H452A288,288 0 0 0 740,0V0A288,288 0 0 0 452,-288Z" fill="url(#suh)"/><path class="logo-hap-cizgi" d="M-452,-288H452A288,288 0 0 1 740,0V0A288,288 0 0 1 452,288H-452A288,288 0 0 1 -740,0V0A288,288 0 0 1 -452,-288Z M-452,-280A280,280 0 0 0 -732,0V0A280,280 0 0 0 -452,280H452A280,280 0 0 0 732,0V0A280,280 0 0 0 452,-280Z" style="fill:var(--logo-gumus-ic,#6B6C70)"/><path class="logo-sifir" d="M-496,-240C-375.4,-240 -295,-144 -295,0C-295,144 -375.4,240 -496,240C-616.6,240 -697,144 -697,0C-697,-144 -616.6,-240 -496,-240Z M-496,-156C-554.8,-156 -594,-93.6 -594,0C-594,93.6 -554.8,156 -496,156C-437.2,156 -398,93.6 -398,0C-398,-93.6 -437.2,-156 -496,-156Z" fill="url(#sus)"/><g class="logo-tus"><path d="M-129,-207H129A78,78 0 0 1 207,-129V129A78,78 0 0 1 129,207H-129A78,78 0 0 1 -207,129V-129A78,78 0 0 1 -129,-207Z" fill="url(#sur)"/><path d="M-128,-178H128A50,50 0 0 1 178,-128V128A50,50 0 0 1 128,178H-128A50,50 0 0 1 -178,128V-128A50,50 0 0 1 -128,-178Z" fill="url(#sut)"/><path class="logo-ok" d="M-12.387301627791913,-80L-92.38730162779191,0L-12.387301627791913,80M-92.38730162779191,0H123.5" fill="none" style="stroke:var(--logo-ok,#0C1F3D)" stroke-width="44" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path class="logo-yuva" d="M129,-240H457A240,240 0 0 1 457,240H129A111,111 0 0 0 217.5,196H457A196,196 0 0 0 457,-196H217.5A111,111 0 0 0 129,-240Z" fill="url(#suy)"/></svg><span>Sıfırla</span></a>
+  <div class="ust-sag">
+    <a class="dene" href="uygulama/" data-en="Try it in your browser">Tarayıcıda dene</a>
+    <button class="dil" id="dilBtn" type="button" aria-label="İngilizceye geç">EN</button>
   </div>
 </header>
 
-<main id="icerik">
+<main>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="wrap">
-      <div class="hero-logo anim" style="--d:0ms" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-798 -346 1596 692" aria-hidden="true"><defs><linearGradient id="shh" gradientUnits="userSpaceOnUse" x1="-792" y1="0" x2="792" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.52" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shs" gradientUnits="userSpaceOnUse" x1="-697" y1="0" x2="-295" y2="0"><stop offset="0" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/><stop offset="0.47" style="stop-color:var(--logo-sampanya-orta,#FBE4BF)"/><stop offset="1" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/></linearGradient><linearGradient id="sht" gradientUnits="userSpaceOnUse" x1="-178" y1="0" x2="178" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shy" gradientUnits="userSpaceOnUse" x1="129" y1="0" x2="697" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.6" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--logo-gumus-ust,#DEDFE1)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-alt,#97989A)"/></linearGradient></defs><path d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z" style="fill:var(--logo-zemin,#0C1F3D)"/><path class="logo-hap" d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z M-452,-288A288,288 0 0 0 -740,0V0A288,288 0 0 0 -452,288H452A288,288 0 0 0 740,0V0A288,288 0 0 0 452,-288Z" fill="url(#shh)"/><path class="logo-hap-cizgi" d="M-452,-288H452A288,288 0 0 1 740,0V0A288,288 0 0 1 452,288H-452A288,288 0 0 1 -740,0V0A288,288 0 0 1 -452,-288Z M-452,-280A280,280 0 0 0 -732,0V0A280,280 0 0 0 -452,280H452A280,280 0 0 0 732,0V0A280,280 0 0 0 452,-280Z" style="fill:var(--logo-gumus-ic,#6B6C70)"/><path class="logo-sifir" d="M-496,-240C-375.4,-240 -295,-144 -295,0C-295,144 -375.4,240 -496,240C-616.6,240 -697,144 -697,0C-697,-144 -616.6,-240 -496,-240Z M-496,-156C-554.8,-156 -594,-93.6 -594,0C-594,93.6 -554.8,156 -496,156C-437.2,156 -398,93.6 -398,0C-398,-93.6 -437.2,-156 -496,-156Z" fill="url(#shs)"/><g class="logo-tus"><path d="M-129,-207H129A78,78 0 0 1 207,-129V129A78,78 0 0 1 129,207H-129A78,78 0 0 1 -207,129V-129A78,78 0 0 1 -129,-207Z" fill="url(#shr)"/><path d="M-128,-178H128A50,50 0 0 1 178,-128V128A50,50 0 0 1 128,178H-128A50,50 0 0 1 -178,128V-128A50,50 0 0 1 -128,-178Z" fill="url(#sht)"/><path class="logo-ok" d="M-12.387301627791913,-80L-92.38730162779191,0L-12.387301627791913,80M-92.38730162779191,0H123.5" fill="none" style="stroke:var(--logo-ok,#0C1F3D)" stroke-width="44" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path class="logo-yuva" d="M129,-240H457A240,240 0 0 1 457,240H129A111,111 0 0 0 217.5,196H457A196,196 0 0 0 457,-196H217.5A111,111 0 0 0 129,-240Z" fill="url(#shy)"/></svg>
+  <!-- 1) Açılış -->
+  <section class="sahne acilis uzun-1" aria-labelledby="h-acilis" data-sahne>
+    <div class="sabit">
+      <div class="metin">
+        <h1 id="h-acilis" class="kinetik" data-kinetik data-en="When will your debt be gone?">Borcun ne zaman biter?</h1>
+        <p class="alt" data-en="Add your debts once. See your debt-free month, what to pay this month and how much interest you can avoid.">Borçlarını bir kez gir. Borçsuz olacağın ayı, bu ay ne ödeyeceğini ve ne kadar faizden kurtulabileceğini gör.</p>
+        <div class="dugmeler">
+          <a class="btn btn-ana" href="uygulama/" data-en="Try it in your browser">Tarayıcıda dene</a>
+          <span class="btn btn-ikinci" aria-disabled="true"><span data-en="App Store">App Store</span><small data-en="Soon">Yakında</small></span>
+        </div>
       </div>
-      <h1 class="grad anim" style="--d:80ms">Sıfırla</h1>
-      <p class="slogan anim" style="--d:160ms" data-en="Zero out your debt.">Borcunu sıfırla.</p>
-      <p class="aciklama anim" style="--d:240ms" data-en="Add your debts and see exactly when they'll be gone, using proven payoff methods. Your data never leaves your phone.">Borçlarını gir, bilimsel yöntemlerle ne zaman biteceğini gör. Verilerin telefonundan çıkmaz.</p>
-      <div class="hero-btnlar anim" style="--d:320ms">
-        <a class="btn btn-primary" href="#senaryolar" data-en="See how it helps">Nasıl işe yarar?</a>
-        <!-- Mağaza yayınlanınca APP_STORE_LINKI / PLAY_STORE_LINKI buraya bağlanacak -->
-        <button class="btn btn-ghost" type="button" disabled aria-disabled="true">
-          <span data-en="App Store · Google Play">App Store · Google Play</span>
-          <span class="yakinda" data-en="Soon">Yakında</span>
-        </button>
-      </div>
-      <p class="gizlilik-rozet anim" style="--d:400ms">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
-        <span data-en="No account, no server, no tracking.">Hesap yok, sunucu yok, izleme yok.</span>
-      </p>
-    </div>
-  </section>
-
-  <!-- ÖRNEK PLAN (sayaçlar) -->
-  <section aria-labelledby="ornek-bas">
-    <div class="wrap">
-      <p class="ornek-eyebrow reveal" id="ornek-bas" data-en="An example plan">Örnek bir plan</p>
-      <div class="ornek">
-        <div class="stat reveal" style="--i:0">
-          <div class="buyuk"><span class="sayac" data-hedef="40" data-tip="yuzde">%0</span></div>
-          <div class="etiket" data-en="paid off">ödendi</div>
-        </div>
-        <div class="stat reveal" style="--i:1">
-          <div class="buyuk"><span class="sayac" data-hedef="43000" data-tip="para">₺0</span></div>
-          <div class="etiket" data-en="remaining balance">kalan bakiye</div>
-        </div>
-        <div class="stat reveal" style="--i:2">
-          <div class="buyuk"><span class="sayac" data-hedef="28" data-tip="sayi">0</span> <span data-en="mo">ay</span></div>
-          <div class="etiket" data-en="estimated time">tahmini süre</div>
-        </div>
+      <div class="sahnelik" aria-hidden="true">
+        <div class="zemin-isik"></div>
+        <div class="yatik"><div class="tel"><div class="cam"><img src="assets/site/tr/1.jpg" data-src-en="assets/site/en/1.jpg" width="780" height="1688" alt="" fetchpriority="high"></div></div></div>
       </div>
     </div>
   </section>
 
-  <hr class="ayirici">
-
-  <!-- AMACIMIZ -->
-  <section aria-labelledby="amac-bas">
-    <div class="wrap amac">
-      <div class="bolum-bas">
-        <h2 id="amac-bas" class="grad reveal" data-en="Our mission">Amacımız</h2>
+  <!-- 2) Tünel -->
+  <section class="sahne tunel uzun-2" aria-labelledby="h-tunel" data-sahne>
+    <div class="sabit">
+      <div class="govde" aria-hidden="true">
+        <div class="duvar sol"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
+        <div class="duvar sag"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
+        <div class="duvar ust-d"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
+        <div class="duvar alt-d"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" alt="" loading="lazy"></div></div></div>
       </div>
-      <p class="amac-buyuk reveal" data-en="Minimum payments make debt feel under control, while interest quietly starts over every month.">Asgari ödeme borcu kontrol altındaymış gibi hissettirir; oysa faiz her ay sessizce yeniden işler.</p>
-      <p class="amac-metin reveal" data-en="Sıfırla exists so anyone can see, in plain numbers, when their debt will end, how much interest they'll pay and how to finish sooner — without linking a bank and without handing their data to anyone. It doesn't lend money or sell loans. It only shows the way.">Sıfırla, herkesin borcunun ne zaman biteceğini, ne kadar faiz ödeyeceğini ve nasıl daha erken bitirebileceğini sade rakamlarla görebilmesi için var — banka bağlamadan, verisini kimseye vermeden. Kredi vermez, kredi satmaz. Yalnızca yolu gösterir.</p>
-    </div>
-  </section>
-
-  <hr class="ayirici">
-
-  <!-- İKİ HİKÂYE: Sıfırla olmadan / Sıfırla ile — rakamlar uygulamanın kendi motoruyla hesaplandı
-       (tasarim/senaryo notu: ENGINE.minimumOnlyProjection + simulatePlan; KKDF/BSMV ve yeni harcama yok) -->
-  <section aria-labelledby="senaryo-bas" id="senaryolar">
-    <div class="wrap">
-      <div class="bolum-bas">
-        <h2 id="senaryo-bas" class="grad reveal" data-en="Two stories, two paths">İki hikâye, iki yol</h2>
-        <p class="reveal" data-en="Two made-up people with everyday debt. What happens without Sıfırla, and what changes with it?">Sıradan borçları olan iki kurgusal kişi. Sıfırla olmadan ne oluyor, Sıfırla ile ne değişiyor?</p>
-      </div>
-
-      <article class="senaryo reveal">
-        <div class="sn-kok">
-          <p class="sn-ad">Maya<span class="sn-yas" data-en=" · 29, designer"> · 29, tasarımcı</span></p>
-          <p class="sn-durum" data-en="Has ₺40,000 on a credit card (3.75% a month). Pays ₺2,000 every month.">Kredi kartında ₺40.000 borcu var (aylık faiz %3,75). Her ay ₺2.000 ödüyor.</p>
-        </div>
-        <div class="sn-dallar">
-          <div class="sn-dal kotu">
-            <p class="sn-etiket" data-en="Without Sıfırla">Sıfırla olmadan</p>
-            <ol class="sn-adimlar">
-              <li data-en="Of the first ₺2,000 she pays, ₺1,500 goes to interest.">Ödediği ilk ₺2.000'in ₺1.500'ü faize gidiyor.</li>
-              <li data-en="The balance barely moves; she has no idea when it will end.">Bakiye zor kıpırdıyor; borcun ne zaman biteceğini bilmiyor.</li>
-              <li data-en="Month after month, the same payment.">Aylar boyunca hep aynı ödeme.</li>
-            </ol>
-            <div class="sn-sonuc">
-              <p class="sn-rakam" data-en="38 months">38 ay</p>
-              <p data-en="₺35,322 in interest · ₺75,322 paid to the bank in total">₺35.322 faiz · bankaya toplam ₺75.322</p>
-            </div>
-          </div>
-          <div class="sn-dal iyi">
-            <p class="sn-etiket" data-en="With Sıfırla">Sıfırla ile</p>
-            <ol class="sn-adimlar">
-              <li data-en="Two Paths shows her the gap: at this pace it's 38 months.">İki Yol ekranı farkı gösteriyor: bu tempoyla 38 ay.</li>
-              <li data-en="She decides to pay ₺1,000 more a month; her plan updates instantly.">Ayda ₺1.000 fazla ödemeye karar veriyor; plan anında güncelleniyor.</li>
-              <li data-en="Reminders and the This Month screen keep her on track.">Hatırlatmalar ve Bu Ay ekranı onu yolda tutuyor.</li>
-            </ol>
-            <div class="sn-sonuc">
-              <p class="sn-rakam" data-en="19 months">19 ay</p>
-              <p data-en="₺16,493 in interest → done 19 months sooner, ₺18,829 less interest">₺16.493 faiz → 19 ay erken biter, ₺18.829 daha az faiz</p>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="senaryo reveal">
-        <div class="sn-kok">
-          <p class="sn-ad">Alex<span class="sn-yas" data-en=" · 34, sales rep"> · 34, satış temsilcisi</span></p>
-          <p class="sn-durum" data-en="Three debts: credit card ₺25,000 (pays ₺1,500), overdraft ₺12,000 (pays ₺900), personal loan ₺30,000 (₺3,000 installments). No extra money to spare.">Üç borcu var: kredi kartı ₺25.000 (₺1.500 ödüyor), KMH ₺12.000 (₺900 ödüyor), ihtiyaç kredisi ₺30.000 (₺3.000 taksit). Fazladan parası yok.</p>
-        </div>
-        <div class="sn-dallar">
-          <div class="sn-dal kotu">
-            <p class="sn-etiket" data-en="Without Sıfırla">Sıfırla olmadan</p>
-            <ol class="sn-adimlar">
-              <li data-en="Three different due dates. Forget one, and late interest hits the unpaid minimum (about ₺61 a month on the card).">Üç ayrı son ödeme günü. Birini unutunca asgarinin ödenmeyen kısmına gecikme faizi işliyor (kartta ayda ≈ ₺61).</li>
-              <li data-en="Each late payment shows on his credit record; 3 in a year close the card to cash use.">Her gecikme kredi kaydına yansıyor; yılda 3 gecikmede kart nakit kullanımına kapanıyor.</li>
-              <li data-en="When the loan ends, the freed ₺3,000 just gets spent.">Kredi bitince boşalan ₺3.000 harcanıp gidiyor.</li>
-            </ol>
-            <div class="sn-sonuc">
-              <p class="sn-rakam" data-en="27 months">27 ay</p>
-              <p data-en="₺21,055 in interest">₺21.055 faiz</p>
-            </div>
-          </div>
-          <div class="sn-dal iyi">
-            <p class="sn-etiket" data-en="With Sıfırla">Sıfırla ile</p>
-            <ol class="sn-adimlar">
-              <li data-en="A reminder before every due date — no late payments.">Her son ödeme gününden önce hatırlatma geliyor; gecikme yok.</li>
-              <li data-en="When the loan ends, the plan moves its ₺3,000 to the overdraft, then the card.">Kredi bitince plan o ₺3.000'i önce KMH'ye, sonra karta yönlendiriyor.</li>
-              <li data-en="Same money, not a single extra lira.">Aynı parayla, bir lira bile fazla ödemeden.</li>
-            </ol>
-            <div class="sn-sonuc">
-              <p class="sn-rakam" data-en="16 months">16 ay</p>
-              <p data-en="₺15,783 in interest → done 11 months sooner, ₺5,272 less interest">₺15.783 faiz → 11 ay erken biter, ₺5.272 daha az faiz</p>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <p class="sn-not reveal" data-en="Made-up examples. Calculated with the same engine the app uses: fixed monthly payments, monthly compound interest; taxes, fees and new spending not included. Real amounts depend on your bank. Not financial advice.">Kurgusal örneklerdir. Uygulamanın kullandığı hesap motoruyla hesaplandı: sabit aylık ödeme, aylık bileşik faiz; vergi, masraf ve yeni harcamalar dahil değil. Gerçek tutarlar bankana göre değişir. Finansal tavsiye değildir.</p>
-    </div>
-  </section>
-
-  <hr class="ayirici">
-
-  <!-- EKRAN GÖRÜNTÜLERİ -->
-  <section aria-labelledby="ekranlar-bas">
-    <div class="wrap bolum-bas">
-      <h2 id="ekranlar-bas" class="grad reveal" data-en="A look inside">Uygulamadan kareler</h2>
-      <p class="reveal" data-en="Real screens from the app. The sample data is made up.">Uygulamanın gerçek ekranları. Örnekteki veriler uydurmadır.</p>
-    </div>
-    <div class="ekranlar" role="list">
-      <div class="ekran-kart reveal" role="listitem" style="--i:0">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-1.jpg" data-src-en="assets/ekran-1-en.jpg" width="360" height="780" loading="lazy" alt="Ne kadarını ödediğini ve borçsuz olacağın ayı gösteren ana ekran" data-alt-en="Home screen showing how much you've paid and your debt-free month" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-1.jpg — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="See how much you've paid and your debt-free date">Ne kadarını ödediğini ve borçsuz olacağın günü gör</p>
-      </div>
-      <div class="ekran-kart reveal" role="listitem" style="--i:1">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-2.jpg" data-src-en="assets/ekran-2-en.jpg" width="360" height="780" loading="lazy" alt="Sadece asgari ödemek ile planla ödemeyi karşılaştıran İki Yol ekranı" data-alt-en="Two Paths screen comparing minimum-only payments with a plan" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-2.jpg — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="Minimum only or a plan? See the difference">Sadece asgari mi, planla mı? Farkı gör</p>
-      </div>
-      <div class="ekran-kart reveal" role="listitem" style="--i:2">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-3.jpg" data-src-en="assets/ekran-3-en.jpg" width="360" height="780" loading="lazy" alt="Bu ay ne kadar ödeneceğini ve ne kadarının ödendiğini gösteren ekran" data-alt-en="Screen showing what's due this month and how much is paid" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-3.jpg — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="This month's payments at a glance">Bu ay ne ödeyeceğin, tek bakışta</p>
-      </div>
-      <div class="ekran-kart reveal" role="listitem" style="--i:3">
-        <div class="telefon" data-tilt><span class="island"></span><div class="ekran"><img src="assets/ekran-4.jpg" data-src-en="assets/ekran-4-en.jpg" width="360" height="780" loading="lazy" alt="Borçların kapanış sırasını gösteren kurtuluş yolculuğu ekranı" data-alt-en="Payoff journey screen showing the order your debts close" onerror="this.onerror=null;this.src='assets/ekran-placeholder.svg';this.classList.add('ph');console.warn('[Sıfırla] Ekran görüntüsü bulunamadı: assets/ekran-4.jpg — yer tutucu gösteriliyor.')"></div></div>
-        <p data-en="Your payoff journey, debt by debt">Borç borç kurtuluş yolculuğun</p>
+      <div class="orta">
+        <h2 id="h-tunel" class="kinetik" data-kinetik data-en="Every debt, one place.">Bütün borçların tek yerde.</h2>
+        <p data-en="Cards, overdrafts and loans: this month, the plan and the progress.">Kart, KMH, kredi: bu ay, plan ve ilerleme.</p>
       </div>
     </div>
   </section>
 
-  <hr class="ayirici">
-
-  <!-- NEDEN SIFIRLA -->
-  <section aria-labelledby="neden-bas">
-    <div class="wrap">
-      <div class="bolum-bas">
-        <h2 id="neden-bas" class="grad reveal" data-en="Why Sıfırla">Neden Sıfırla</h2>
-      </div>
-      <div class="kartlar">
-        <div class="kart reveal" style="--i:0"><div class="ic">
-          <div class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/></svg></div>
-          <h3 data-en="Your data stays with you">Verilerin sende kalır</h3>
-          <p data-en="No server, no bank linking, no account. Everything runs on your device.">Sunucu yok, banka bağlama yok, hesap yok. Her şey cihazında çalışır.</p>
-        </div></div>
-        <div class="kart reveal" style="--i:1"><div class="ic">
-          <div class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 19v-6M12 19V9M16 19v-9"/></svg></div>
-          <h3 data-en="Proven method">Bilimsel yöntem</h3>
-          <p data-en="It runs the snowball (smallest balance first) and avalanche (highest interest first) strategies month by month.">Kartopu (en küçük borç önce) ve çığ (en yüksek faiz önce) stratejilerini ay ay hesaplar.</p>
-        </div></div>
-        <div class="kart reveal" style="--i:2"><div class="ic">
-          <div class="ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.1"/></svg></div>
-          <h3 data-en="See the minimum-payment trap">Asgari tuzağını gör</h3>
-          <p data-en="It shows, with clear numbers, why paying only the minimum can keep you in debt.">Sadece asgari ödersen borcunun neden bitmediğini net rakamlarla gösterir.</p>
-        </div></div>
+  <!-- 3) Eriyen borç — rakamlar uygulamanın motoruyla hesaplandı (ENGINE.minimumOnlyProjection + simulatePlan) -->
+  <section class="sahne erime uzun-3" aria-labelledby="h-erime" data-sahne>
+    <div class="sabit">
+      <div class="kutu">
+        <h2 id="h-erime" class="kinetik" style="text-align:left" data-en="Same debt, two paths.">Aynı borç, iki yol.</h2>
+        <p class="kim" data-en="Maya owes ₺40,000 on a credit card at 3.75% a month.">Maya'nın kredi kartında ₺40.000 borcu var, aylık faiz %3,75.</p>
+        <div class="yol asgari">
+          <div class="yol-bas"><span data-en="Pays ₺2,000 a month">Ayda ₺2.000 öderse</span><span class="ay" data-en="38 months">38 ay</span></div>
+          <div class="ray"><i></i></div>
+          <p class="yol-alt" data-en="₺35,322 goes to interest">₺35.322 faize gider</p>
+        </div>
+        <div class="yol plan">
+          <div class="yol-bas"><span data-en="Pays ₺3,000 with a plan">Planla ₺3.000 öderse</span><span class="ay" data-en="19 months">19 ay</span></div>
+          <div class="ray"><i></i></div>
+          <p class="yol-alt" data-en="₺16,493 goes to interest">₺16.493 faize gider</p>
+        </div>
+        <p class="sonuc" data-en="Done 19 months sooner, with ₺18,829 less interest.">19 ay erken biter, ₺18.829 daha az faiz.</p>
+        <p class="not" data-en="Made-up example, calculated with the app's own engine: fixed monthly payment, monthly compound interest; taxes, fees and new spending not included. Not financial advice.">Kurgusal örnek, uygulamanın kendi hesap motoruyla: sabit aylık ödeme, aylık bileşik faiz; vergi, masraf ve yeni harcama dahil değil. Finansal tavsiye değildir.</p>
       </div>
     </div>
   </section>
 
-  <hr class="ayirici">
-
-  <!-- NASIL ÇALIŞIR -->
-  <section aria-labelledby="nasil-bas">
-    <div class="wrap">
-      <div class="bolum-bas">
-        <h2 id="nasil-bas" class="grad reveal" data-en="How it works">Nasıl çalışır</h2>
-      </div>
-      <div class="adimlar">
-        <div class="adim reveal" style="--i:0">
-          <div class="no" aria-hidden="true"></div>
-          <h3 data-en="Add your debts">Borçlarını ekle</h3>
-          <p data-en="Enter your credit cards, overdrafts and installment loans.">Kredi kartı, KMH ve taksitli kredilerini gir.</p>
-        </div>
-        <div class="adim reveal" style="--i:1">
-          <div class="no" aria-hidden="true"></div>
-          <h3 data-en="See your plan">Planını gör</h3>
-          <p data-en="How many months, how much interest, which debt first — all clear.">Kaç ay, ne kadar faiz, hangi borç önce — hepsi net.</p>
-        </div>
-        <div class="adim reveal" style="--i:2">
-          <div class="no" aria-hidden="true"></div>
-          <h3 data-en="Check in monthly">Her ay işaretle</h3>
-          <p data-en="Track your progress and build your streak.">İlerlemeni takip et, serini büyüt.</p>
-        </div>
+  <!-- 4) Küçük değişiklikler -->
+  <section class="sahne kalem uzun-1" aria-labelledby="h-kalem" data-sahne>
+    <div class="sabit">
+      <div class="cip c1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v4a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/></svg><b data-en="Coffee out">Dışarıda kahve</b><span data-en="5 a month">ayda 5</span></div>
+      <div class="cip c2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h18"/><path d="M5 13a7 7 0 0 1 14 0"/><path d="M4 17h16l-1 3H5z"/></svg><b data-en="Food delivery">Yemek siparişi</b><span data-en="2 fewer">2 eksik</span></div>
+      <div class="cip c3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/></svg><b data-en="Taxi">Taksi</b><span data-en="walk once">bir kez yürü</span></div>
+      <div class="cip c4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M10 9l4 2-4 2z"/></svg><b data-en="A subscription">Bir abonelik</b><span data-en="pause it">dondur</span></div>
+      <div class="icerik">
+        <h2 id="h-kalem" class="kinetik" data-kinetik data-en="Small changes, sooner zero.">Küçük değişiklik, erken sıfır.</h2>
+        <p class="alt" data-en="Pick what you can cut back. The app shows how many months it takes off your debt, and you can save it in a jar and pay it in with one tap.">Neyi azaltabileceğini seç. Uygulama borcunu kaç ay erken bitirdiğini gösterir; kumbarada biriktirip tek dokunuşla borca yatırırsın.</p>
       </div>
     </div>
   </section>
 
-  <hr class="ayirici">
+  <!-- 5) Gizlilik -->
+  <section class="gizlilik" aria-labelledby="h-gizlilik">
+    <div class="cam-kilit" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/><path d="M12 14.5v2.5"/></svg></div>
+    <h2 id="h-gizlilik" class="kinetik" data-en="Your data never leaves your phone.">Verilerin telefonundan çıkmaz.</h2>
+    <ul class="liste">
+      <li data-en="No account">Hesap yok</li>
+      <li data-en="No bank linking">Banka bağlantısı yok</li>
+      <li data-en="Works offline">İnternetsiz çalışır</li>
+      <li data-en="No ads, no tracking">Reklam ve izleme yok</li>
+      <li data-en="Completely free">Tamamen ücretsiz</li>
+    </ul>
+  </section>
 
+  <!-- 6) Ekranlar -->
+  <section class="ekranlar" aria-labelledby="h-ekran">
+    <h2 id="h-ekran" data-en="A look inside">Uygulamadan kareler</h2>
+    <p class="not" data-en="Real screens from the app. The sample data is made up.">Uygulamanın gerçek ekranları. Örnekteki veriler uydurmadır.</p>
+    <div class="serit" role="list">
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/1.jpg" data-src-en="assets/site/en/1.jpg" width="780" height="1688" loading="lazy" alt="Ne kadarını ödediğini ve borçsuz olacağın ayı gösteren ana ekran" data-alt-en="Home screen showing how much you've paid and your debt-free month"></div></div><figcaption data-en="What you've paid and your debt-free month">Ne kadarını ödediğin ve borçsuz olacağın ay</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" loading="lazy" alt="Borcun ay ay nasıl değiştiğini gösteren grafik ve sağlık puanı" data-alt-en="Chart of how your debt changes month by month, with a health score"></div></div><figcaption data-en="Is your debt melting or growing?">Borcun eriyor mu, büyüyor mu?</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" loading="lazy" alt="Sadece asgari ödemek ile planla ödemeyi karşılaştıran İki Yol ekranı" data-alt-en="Two Paths screen comparing minimum-only payments with a plan"></div></div><figcaption data-en="Minimum only, or a plan?">Sadece asgari mi, planla mı?</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" loading="lazy" alt="Bu ay ne kadar ödeneceğini gösteren Bu Ay ekranı" data-alt-en="This Month screen showing what's due"></div></div><figcaption data-en="This month's payments at a glance">Bu ay ne ödeyeceğin, tek bakışta</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" loading="lazy" alt="Küçük harcamaları azaltmanın borca etkisini gösteren ekran" data-alt-en="Screen showing how cutting small spending affects your debt"></div></div><figcaption data-en="Small changes, measured">Küçük değişikliklerin etkisi</figcaption></figure>
+      <figure role="listitem"><div class="tel"><div class="cam"><img src="assets/site/tr/6.jpg" data-src-en="assets/site/en/6.jpg" width="780" height="1688" loading="lazy" alt="Borç türü seçilen borç ekleme ekranı" data-alt-en="Add-debt screen where you choose the debt type"></div></div><figcaption data-en="Add a debt in seconds">Borç eklemek saniyeler sürer</figcaption></figure>
+    </div>
+  </section>
 
   <!-- SSS -->
-  <section aria-labelledby="sss-bas">
-    <div class="wrap">
-      <div class="bolum-bas">
-        <h2 id="sss-bas" class="grad reveal" data-en="FAQ">Sıkça sorulan sorular</h2>
+  <section class="sss" aria-labelledby="h-sss">
+    <h2 id="h-sss" data-en="Questions">Sorular</h2>
+    <details><summary data-en="Is it free?">Ücretsiz mi?</summary><p data-en="Yes. Every feature is free: no trial, no subscription, no ads.">Evet. Tüm özellikler ücretsiz: deneme süresi, abonelik ya da reklam yok.</p></details>
+    <details><summary data-en="Where does my data go?">Verilerim nereye gidiyor?</summary><p data-en="Nowhere. Everything is stored on your device; there is no server.">Hiçbir yere. Her şey cihazında saklanır; sunucu yok.</p></details>
+    <details><summary data-en="Do I need to link my bank?">Banka hesabımı bağlamam gerekiyor mu?</summary><p data-en="No, never. You enter the numbers yourself.">Hayır, hiçbir zaman. Rakamları sen girersin.</p></details>
+    <details><summary data-en="Which debts does it support?">Hangi borçları destekliyor?</summary><p data-en="Credit cards, overdrafts, installment loans and installment purchases.">Kredi kartı, KMH, taksitli krediler ve taksitli alışverişler.</p></details>
+    <details><summary data-en="Is this financial advice?">Bu finansal danışmanlık mı?</summary><p data-en="No. It is an educational and mathematical planning tool; your bank's actual amounts may differ.">Hayır. Eğitim ve matematiksel planlama aracıdır; bankanın gerçek tutarları farklı olabilir.</p></details>
+    <details><summary data-en="iPhone or Android?">iPhone mu, Android mi?</summary><p data-en="The iPhone version is in App Store review. Until then, and on Android, you can use it in your browser and add it to your home screen.">iPhone sürümü App Store incelemesinde. O zamana kadar, Android'de de, tarayıcında kullanıp ana ekranına ekleyebilirsin.</p></details>
+  </section>
+
+  <!-- Kapanış -->
+  <section class="kapanis" aria-labelledby="h-kapanis">
+    <div>
+      <div class="logo-buyuk" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-798 -346 1596 692" aria-hidden="true"><defs><linearGradient id="shh" gradientUnits="userSpaceOnUse" x1="-792" y1="0" x2="792" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.52" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shs" gradientUnits="userSpaceOnUse" x1="-697" y1="0" x2="-295" y2="0"><stop offset="0" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/><stop offset="0.47" style="stop-color:var(--logo-sampanya-orta,#FBE4BF)"/><stop offset="1" style="stop-color:var(--logo-sampanya-kenar,#D3B48E)"/></linearGradient><linearGradient id="sht" gradientUnits="userSpaceOnUse" x1="-178" y1="0" x2="178" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shy" gradientUnits="userSpaceOnUse" x1="129" y1="0" x2="697" y2="0"><stop offset="0" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/><stop offset="0.6" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-kenar,#9C9DA0)"/></linearGradient><linearGradient id="shr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--logo-gumus-ust,#DEDFE1)"/><stop offset="0.5" style="stop-color:var(--logo-gumus-orta,#E6E7E9)"/><stop offset="1" style="stop-color:var(--logo-gumus-alt,#97989A)"/></linearGradient></defs><path d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z" style="fill:var(--logo-zemin,#0C1F3D)"/><path class="logo-hap" d="M-452,-340H452A340,340 0 0 1 792,0V0A340,340 0 0 1 452,340H-452A340,340 0 0 1 -792,0V0A340,340 0 0 1 -452,-340Z M-452,-288A288,288 0 0 0 -740,0V0A288,288 0 0 0 -452,288H452A288,288 0 0 0 740,0V0A288,288 0 0 0 452,-288Z" fill="url(#shh)"/><path class="logo-hap-cizgi" d="M-452,-288H452A288,288 0 0 1 740,0V0A288,288 0 0 1 452,288H-452A288,288 0 0 1 -740,0V0A288,288 0 0 1 -452,-288Z M-452,-280A280,280 0 0 0 -732,0V0A280,280 0 0 0 -452,280H452A280,280 0 0 0 732,0V0A280,280 0 0 0 452,-280Z" style="fill:var(--logo-gumus-ic,#6B6C70)"/><path class="logo-sifir" d="M-496,-240C-375.4,-240 -295,-144 -295,0C-295,144 -375.4,240 -496,240C-616.6,240 -697,144 -697,0C-697,-144 -616.6,-240 -496,-240Z M-496,-156C-554.8,-156 -594,-93.6 -594,0C-594,93.6 -554.8,156 -496,156C-437.2,156 -398,93.6 -398,0C-398,-93.6 -437.2,-156 -496,-156Z" fill="url(#shs)"/><g class="logo-tus"><path d="M-129,-207H129A78,78 0 0 1 207,-129V129A78,78 0 0 1 129,207H-129A78,78 0 0 1 -207,129V-129A78,78 0 0 1 -129,-207Z" fill="url(#shr)"/><path d="M-128,-178H128A50,50 0 0 1 178,-128V128A50,50 0 0 1 128,178H-128A50,50 0 0 1 -178,128V-128A50,50 0 0 1 -128,-178Z" fill="url(#sht)"/><path class="logo-ok" d="M-12.387301627791913,-80L-92.38730162779191,0L-12.387301627791913,80M-92.38730162779191,0H123.5" fill="none" style="stroke:var(--logo-ok,#0C1F3D)" stroke-width="44" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path class="logo-yuva" d="M129,-240H457A240,240 0 0 1 457,240H129A111,111 0 0 0 217.5,196H457A196,196 0 0 0 457,-196H217.5A111,111 0 0 0 129,-240Z" fill="url(#shy)"/></svg></div>
+      <h2 id="h-kapanis" data-en="Zero out your debt.">Borcunu sıfırla.</h2>
+      <div class="dugmeler">
+        <a class="btn btn-ana" href="uygulama/" data-en="Try it in your browser">Tarayıcıda dene</a>
+        <span class="btn btn-ikinci" aria-disabled="true"><span data-en="App Store">App Store</span><small data-en="Soon">Yakında</small></span>
       </div>
-      <div class="sss" id="sss">
-        <div class="sss-oge reveal" style="--i:0">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Is it free?">Ücretsiz mi?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Yes. Every feature is free: no trial, no subscription, no card, no ads. Your data never leaves your phone.">Evet. Tüm özellikler ücretsiz: deneme süresi, abonelik, kart ya da reklam yok. Verilerin telefonundan hiç çıkmaz.</div></div></div>
-        </div>
-        <div class="sss-oge reveal" style="--i:1">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Where does my data go?">Verilerim nereye gidiyor?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Nowhere. Everything is stored on your device.">Hiçbir yere. Her şey cihazında saklanır.</div></div></div>
-        </div>
-        <div class="sss-oge reveal" style="--i:2">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Do I need to link my bank account?">Banka hesabımı bağlamam gerekiyor mu?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="No, never.">Hayır, hiçbir zaman.</div></div></div>
-        </div>
-        <div class="sss-oge reveal" style="--i:3">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Is this financial advice?">Bu finansal danışmanlık mı?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="No. It is an educational and mathematical planning tool.">Hayır. Eğitim ve matematiksel planlama aracıdır.</div></div></div>
-        </div>
-        <div class="sss-oge reveal" style="--i:4">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Which debts does it support?">Hangi borçları destekliyor?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="Credit cards, overdrafts, installment loans and installment purchases.">Kredi kartı, KMH, taksitli krediler ve taksitli alışverişler.</div></div></div>
-        </div>
-        <div class="sss-oge reveal" style="--i:5">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Do I need an internet connection?">İnternet gerekiyor mu?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="No, it works offline.">Hayır, çevrimdışı çalışır.</div></div></div>
-        </div>
-        <div class="sss-oge reveal" style="--i:6">
-          <button class="sss-soru" type="button" aria-expanded="false"><span data-en="Does it work on Android?">Android'de çalışıyor mu?</span><span class="ok" aria-hidden="true"></span></button>
-          <div class="sss-sar"><div class="sss-ic"><div class="cevap" data-en="The iPhone version comes first; the Google Play version is on the way.">Önce iPhone sürümü çıkıyor; Google Play sürümü de yolda.</div></div></div>
-        </div>
-      </div>
+      <p class="adres">sifirla.app</p>
     </div>
   </section>
 
 </main>
 
 <footer>
-  <div class="wrap footer-ic">
-    <div class="footer-linkler">
-      <a class="cizgi-link" href="mailto:destek@sifirla.app" data-en="Contact">İletişim</a>
-      <a class="cizgi-link" href="gizlilik.html" id="gizlilikLink" data-en="Privacy Policy" data-href-en="privacy.html">Gizlilik Politikası</a>
-      <a class="cizgi-link" href="veri-silme.html" id="veriSilmeLink" data-en="Delete Your Data" data-href-en="data-deletion.html">Verilerinizi Silme</a>
-    </div>
-    <p class="telif">© 2026 Sıfırla</p>
-    <p class="feragat" data-en="Sıfırla is not licensed financial advice; it is for educational and mathematical planning purposes only.">Sıfırla lisanslı finansal danışmanlık değildir; yalnızca eğitim ve matematiksel planlama amaçlıdır.</p>
-  </div>
+  <nav>
+    <a href="mailto:destek@sifirla.app" data-en="Contact">İletişim</a>
+    <a href="gizlilik.html" data-href-en="privacy.html" data-en="Privacy Policy">Gizlilik Politikası</a>
+    <a href="veri-silme.html" data-href-en="data-deletion.html" data-en="Delete Your Data">Verilerini Silme</a>
+  </nav>
+  <p>© 2026 Sıfırla</p>
+  <p data-en="Sıfırla is not licensed financial advice; it is for educational and mathematical planning purposes only.">Sıfırla lisanslı finansal danışmanlık değildir; yalnızca eğitim ve matematiksel planlama amaçlıdır.</p>
 </footer>
 
 <script>
 (function(){
   var kok=document.documentElement;
   var azHareket=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var inceImlec=matchMedia('(pointer:fine)').matches;
-  var masaustu=matchMedia('(min-width:920px)').matches;
-
-  /* ---- Giriş: hero stagger + logo ring (senkron ekle: rAF'a bağımlı değil) ---- */
-  document.body.classList.add('yuklendi');
-
-  /* ---- Tema ---- */
-  var temaBtn=document.getElementById('temaBtn');
-  var gunes='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
-  var ay='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13A8 8 0 1 1 11 4a6.5 6.5 0 0 0 9 9z"/></svg>';
-  function temaGoster(){var d=kok.dataset.theme==='dark';temaBtn.innerHTML=d?gunes:ay;temaBtn.setAttribute('aria-pressed',String(d));}
-  temaGoster();
-  temaBtn.addEventListener('click',function(){
-    var yeni=kok.dataset.theme==='dark'?'light':'dark';
-    kok.dataset.theme=yeni;try{localStorage.setItem('sifirla-tema',yeni);}catch(e){}temaGoster();
-  });
 
   /* ---- Dil ---- */
   var dilBtn=document.getElementById('dilBtn');
-  var titleEl=document.querySelector('title'), descEl=document.getElementById('metaDesc');
-  var trBaslik=titleEl.textContent, enBaslik=titleEl.getAttribute('data-en');
-  var trDesc=descEl.getAttribute('content'), enDesc=descEl.getAttribute('data-en');
-  // data-href-en taşıyan tüm linkler dille birlikte hedef değiştirir (gizlilik, veri silme…)
-  var ciftDilliLinkler=document.querySelectorAll('[data-href-en]');
-  ciftDilliLinkler.forEach(function(el){ el.dataset.hrefTr=el.getAttribute('href'); });
+  var titleEl=document.querySelector('title'),descEl=document.getElementById('metaDesc');
+  var trB=titleEl.textContent,enB=titleEl.getAttribute('data-en'),trD=descEl.getAttribute('content'),enD=descEl.getAttribute('data-en');
+  function kinetikBol(el){
+    /* Başlığı kelimelere böl: her kelime ayrı netleşir. Ekran okuyucu düz metni okur. */
+    var metin=el.textContent;el.setAttribute('aria-label',metin);el.innerHTML='';
+    metin.split(' ').forEach(function(s,i,a){var k=document.createElement('span');k.className='k';k.setAttribute('aria-hidden','true');k.style.setProperty('--i',i);k.textContent=s+(i<a.length-1?' ':'');el.appendChild(k);});
+  }
   function uygulaDil(l){
     kok.lang=l;
     document.querySelectorAll('[data-en]').forEach(function(el){
       if(el===titleEl||el===descEl)return;
       if(el.dataset.tr===undefined)el.dataset.tr=el.textContent;
       el.textContent=(l==='en')?el.dataset.en:el.dataset.tr;
+      if(el.classList.contains('kinetik'))kinetikBol(el);
     });
     document.querySelectorAll('[data-src-en]').forEach(function(el){
       if(el.dataset.srcTr===undefined)el.dataset.srcTr=el.getAttribute('src');
@@ -658,116 +404,34 @@
       if(el.dataset.altTr===undefined)el.dataset.altTr=el.getAttribute('alt')||'';
       el.setAttribute('alt',(l==='en')?el.dataset.altEn:el.dataset.altTr);
     });
-    titleEl.textContent=(l==='en')?enBaslik:trBaslik;
-    descEl.setAttribute('content',(l==='en')?enDesc:trDesc);
-    ciftDilliLinkler.forEach(function(el){ el.setAttribute('href',(l==='en')?el.dataset.hrefEn:el.dataset.hrefTr); });
+    document.querySelectorAll('[data-href-en]').forEach(function(el){
+      if(el.dataset.hrefTr===undefined)el.dataset.hrefTr=el.getAttribute('href');
+      el.setAttribute('href',(l==='en')?el.dataset.hrefEn:el.dataset.hrefTr);
+    });
+    titleEl.textContent=(l==='en')?enB:trB;descEl.setAttribute('content',(l==='en')?enD:trD);
     dilBtn.textContent=(l==='en')?'TR':'EN';
     dilBtn.setAttribute('aria-label',(l==='en')?'Switch to Turkish':'İngilizceye geç');
     try{localStorage.setItem('sifirla-dil',l);}catch(e){}
-    sayaclariBicimle(); // dil değişince sayaç birimi güncellensin
   }
-
-  /* ---- Sayaçlar ---- */
-  var sayaclar=[].slice.call(document.querySelectorAll('.sayac'));
-  function bicim(v,tip){
-    var l=kok.lang==='en'?'en-US':'tr-TR';
-    var n=Math.round(v);
-    if(tip==='para')return '₺'+n.toLocaleString(l);
-    if(tip==='yuzde')return kok.lang==='en'?(n+'%'):('%'+n);
-    return n.toLocaleString(l);
-  }
-  function sayaclariBicimle(){sayaclar.forEach(function(el){el.textContent=bicim(el._deger!=null?el._deger:0,el.dataset.tip);});}
-  function saydir(el){
-    if(el._calisti)return;el._calisti=true;
-    var hedef=parseFloat(el.dataset.hedef),tip=el.dataset.tip,sure=800,bas=null;
-    if(azHareket){el._deger=hedef;el.textContent=bicim(hedef,tip);return;}
-    function adim(t){
-      if(!bas)bas=t;var p=Math.min(1,(t-bas)/sure);var e=1-Math.pow(1-p,3);
-      el._deger=hedef*e;el.textContent=bicim(el._deger,tip);
-      if(p<1)requestAnimationFrame(adim);else{el._deger=hedef;el.textContent=bicim(hedef,tip);}
-    }
-    requestAnimationFrame(adim);
-  }
-
-  /* ---- IntersectionObserver: reveal + gradyan yıkama + sayaç ---- */
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(giren){
-      giren.forEach(function(e){
-        if(!e.isIntersecting)return;
-        var el=e.target;
-        el.classList.add('gorundu');
-        if(el.classList.contains('grad'))el.classList.add('yikandi');
-        el.querySelectorAll&&el.querySelectorAll('.sayac').forEach(saydir);
-        if(el.classList.contains('sayac'))saydir(el);
-        io.unobserve(el);
-      });
-    },{threshold:.18,rootMargin:'0px 0px -8% 0px'});
-    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
-    document.querySelectorAll('.stat').forEach(function(el){io.observe(el);});
-  }else{
-    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('gorundu');});
-    sayaclar.forEach(saydir);
-  }
-
   uygulaDil(kok.lang==='en'?'en':'tr');
   dilBtn.addEventListener('click',function(){uygulaDil(kok.lang==='en'?'tr':'en');});
+  requestAnimationFrame(function(){kok.classList.add('hazir');});
 
-  /* ---- SSS akordiyon ---- */
-  document.querySelectorAll('.sss-soru').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var acik=btn.getAttribute('aria-expanded')==='true';
-      btn.setAttribute('aria-expanded',String(!acik));
+  /* ---- Sahneler: her sahnenin kaydırma ilerlemesi --p (0..1) ---- */
+  if(azHareket)return;
+  var sahneler=[].slice.call(document.querySelectorAll('[data-sahne]')),tik=false;
+  function ciz(){
+    var vh=innerHeight;
+    sahneler.forEach(function(s){
+      var r=s.getBoundingClientRect(),yol=r.height-vh;
+      var p=yol>0?Math.min(1,Math.max(0,-r.top/yol)):0;
+      s.style.setProperty('--p',p.toFixed(4));
     });
-  });
-
-  /* ---- Kaydırma ilerleme çubuğu (rAF throttle) ---- */
-  var cubuk=document.getElementById('ilerleme'),tik=false;
-  function ilerlemeCiz(){
-    var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
-    var o=max>0?h.scrollTop/max:0;cubuk.style.transform='scaleX('+o+')';tik=false;
+    tik=false;
   }
-  addEventListener('scroll',function(){if(!tik){tik=true;requestAnimationFrame(ilerlemeCiz);}},{passive:true});
-  ilerlemeCiz();
-
-  /* ---- Telefon parallax + hafif 3D tilt (yalnızca masaüstü, hareket açık) ---- */
-  var telefonlar=[].slice.call(document.querySelectorAll('.telefon[data-tilt]'));
-  if(!azHareket&&masaustu&&telefonlar.length){
-    var ptik=false;
-    function parCiz(){
-      var vh=innerHeight;
-      telefonlar.forEach(function(t,i){
-        var r=t.getBoundingClientRect();var orta=r.top+r.height/2;
-        var d=(orta-vh/2)/vh; // -0.5..0.5
-        var py=(-(d)*18*((i%2)?1.4:1)).toFixed(1); // farklı hız
-        var ry=(d*6).toFixed(2); // maks ~6 derece
-        t.style.setProperty('--py',py+'px');
-        t.style.setProperty('--ry',ry+'deg');
-      });
-      ptik=false;
-    }
-    addEventListener('scroll',function(){if(!ptik){ptik=true;requestAnimationFrame(parCiz);}},{passive:true});
-    parCiz();
-  }
-
-  /* ---- Kart tilt (fareyle, masaüstü) ---- */
-  if(!azHareket&&inceImlec&&masaustu){
-    document.querySelectorAll('.kart').forEach(function(k){
-      k.addEventListener('mousemove',function(e){
-        var r=k.getBoundingClientRect();
-        var mx=(e.clientX-r.left)/r.width-.5, my=(e.clientY-r.top)/r.height-.5;
-        k.style.transform='perspective(700px) rotateY('+(mx*2).toFixed(2)+'deg) rotateX('+(-my*2).toFixed(2)+'deg) translateY(-2px)';
-      });
-      k.addEventListener('mouseleave',function(){k.style.transform='';});
-    });
-  }
-
-  /* ---- İmleç halesi (masaüstü) ---- */
-  if(!azHareket&&inceImlec&&masaustu){
-    var imlec=document.getElementById('imlec'),mtik=false,mx=0,my=0;
-    addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;if(!mtik){mtik=true;requestAnimationFrame(function(){
-      imlec.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)';imlec.style.opacity='1';mtik=false;});}},{passive:true});
-    addEventListener('mouseleave',function(){imlec.style.opacity='0';});
-  }
+  addEventListener('scroll',function(){if(!tik){tik=true;requestAnimationFrame(ciz);}},{passive:true});
+  addEventListener('resize',ciz);
+  ciz();
 })();
 </script>
 </body>
