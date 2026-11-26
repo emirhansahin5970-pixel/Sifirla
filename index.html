@@ -93,6 +93,8 @@
   .sahnelik{position:absolute;left:50%;bottom:0;transform:translateX(-50%);perspective:1100px;width:min(92vw,980px);height:58vh;pointer-events:none}
   .yatik{position:absolute;left:50%;top:36%;transform-origin:50% 0;transform:translateX(-50%) rotateX(52deg) scale(.92)}
   .hareketli{will-change:transform,opacity;backface-visibility:hidden}
+  /* 3D gövdede opacity/backface gruplaması perspektifi düzleştirir: yalnızca transform */
+  .tunel .govde.hareketli{will-change:transform;backface-visibility:visible}
   .zemin-isik{position:absolute;inset:auto 0 -10% 0;height:70%;background:radial-gradient(60% 60% at 50% 100%,rgba(47,111,235,.18),transparent 70%)}
 
   /* Telefon çerçevesi */
@@ -105,16 +107,19 @@
   .tel .cam::after{content:"";position:absolute;top:2.4%;left:50%;transform:translateX(-50%);width:30%;height:3.6%;border-radius:99px;background:#0A0A0C;z-index:2}
 
   /* ---------- 2) Tünel (sitenin tek büyük anı) ---------- */
-  .tunel .sabit{perspective:1500px;background:radial-gradient(70% 60% at 50% 50%,#fff,var(--zemin) 70%)}
-  .tunel .govde{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transform:translateZ(-240px)}
+  .tunel .sabit{perspective:800px;background:radial-gradient(60% 55% at 50% 50%,#fff,var(--zemin) 75%)}
+  /* Gerçek tünel: dört duvar, her duvarda farklı derinlikte dik telefonlar. Kaydırınca gövde kameraya doğru
+     ilerler, kamera telefonların arasından geçer. Telefonlar yan yatırılmaz (oranı bozuluyordu). */
+  .tunel .govde{--g:min(46vh,420px);--kx:min(34vw,520px);--ky:min(31vh,280px);
+    position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transform:translateZ(-260px)}
   .duvar{position:absolute;left:0;top:0;transform-style:preserve-3d}
-  .duvar .tel{--g:min(36vh,330px);position:absolute;left:0;top:0}
-  /* İki yanda dik duran telefonlar: koridor. Ön ikili yakın, arka ikili geride ve dışarıda. */
-  .duvar.sol .tel {transform:translate(-50%,-50%) translateX(calc(var(--g) * -1.55)) rotateY(30deg)}
-  .duvar.sag .tel {transform:translate(-50%,-50%) translateX(calc(var(--g) *  1.55)) rotateY(-30deg)}
-  .duvar.sol2 .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * -2.45)) translateZ(calc(var(--g) * -1.2)) rotateY(30deg)}
-  .duvar.sag2 .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) *  2.45)) translateZ(calc(var(--g) * -1.2)) rotateY(-30deg)}
-  .tunel .orta{position:relative;z-index:2;text-align:center;padding:40px 60px;background:radial-gradient(closest-side,rgba(245,247,251,.92),rgba(245,247,251,0))}
+  .duvar .tel{--g:inherit;position:absolute;left:0;top:0;box-shadow:0 0 0 1px rgba(12,31,61,.06)}
+  .duvar .tel{transform:translate(-50%,-50%) translate3d(var(--tx,0px),var(--ty,0px),calc(var(--z) * -1px)) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg))}
+  .duvar.sol{--tx:calc(var(--kx) * -1);--ry:68deg}
+  .duvar.sag{--tx:var(--kx);--ry:-68deg}
+  .duvar.ust{--ty:calc(var(--ky) * -1);--rx:-70deg}
+  .duvar.alt{--ty:var(--ky);--rx:70deg}
+  .tunel .orta{position:relative;z-index:2;text-align:center;padding:40px 60px;text-shadow:0 0 24px var(--zemin),0 0 48px var(--zemin)}
   .tunel h2{font-size:clamp(32px,4.4vw,60px)}
   .tunel .orta p{margin-top:14px;color:var(--soluk);font-size:clamp(16px,1.6vw,19px)}
 
@@ -201,11 +206,7 @@
     .sahnelik{height:44vh}
     .yatik{top:30%}
     .tel{--g:230px}
-    .duvar .tel{--g:min(21vh,150px)}
-    .duvar.sol .tel {transform:translate(-50%,-50%) translateX(calc(var(--g) * -.6)) translateY(calc(var(--g) * -1.42)) rotateY(18deg) rotateX(-14deg)}
-    .duvar.sag .tel {transform:translate(-50%,-50%) translateX(calc(var(--g) *  .6)) translateY(calc(var(--g) * -1.42)) rotateY(-18deg) rotateX(-14deg)}
-    .duvar.sol2 .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) * -.6)) translateY(calc(var(--g) * 1.42)) rotateY(18deg) rotateX(14deg)}
-    .duvar.sag2 .tel{transform:translate(-50%,-50%) translateX(calc(var(--g) *  .6)) translateY(calc(var(--g) * 1.42)) rotateY(-18deg) rotateX(14deg)}
+    .tunel .govde{--g:min(30vh,220px);--kx:50vw;--ky:min(31vh,270px)}
     .tunel .orta{padding:20px 16px}
     .cip{padding:10px 13px;font-size:14px;border-radius:16px}
     .cip.c1{left:4%;top:13%}.cip.c2{right:4%;top:22%}.cip.c3{left:4%;bottom:20%}.cip.c4{right:4%;bottom:11%}
@@ -256,10 +257,10 @@
   <section class="sahne tunel uzun-2" aria-labelledby="h-tunel" data-sahne>
     <div class="sabit">
       <div class="govde hareketli" aria-hidden="true">
-        <div class="duvar sol"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
-        <div class="duvar sag"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
-        <div class="duvar sol2"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
-        <div class="duvar sag2"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar sol" style="--z:0"><div class="tel"><div class="cam"><img src="assets/site/tr/4.jpg" data-src-en="assets/site/en/4.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar sag" style="--z:0"><div class="tel"><div class="cam"><img src="assets/site/tr/3.jpg" data-src-en="assets/site/en/3.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar ust" style="--z:0"><div class="tel"><div class="cam"><img src="assets/site/tr/2.jpg" data-src-en="assets/site/en/2.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
+        <div class="duvar alt" style="--z:0"><div class="tel"><div class="cam"><img src="assets/site/tr/5.jpg" data-src-en="assets/site/en/5.jpg" width="780" height="1688" alt="" decoding="async"></div></div></div>
       </div>
       <div class="orta hareketli">
         <h2 id="h-tunel" class="kinetik" data-kinetik data-en="Every debt, one place.">Bütün borçların tek yerde.</h2>
@@ -431,11 +432,11 @@
       yatik.style.transform='translateX(-50%) translateY('+(-p*14).toFixed(3)+'vh) rotateX('+((1-p)*52).toFixed(3)+'deg) scale('+(.92+p*.18).toFixed(4)+')';
     },
     tunel:function(p){
-      govde.style.transform='translateZ('+(p*380-240).toFixed(2)+'px)';
+      govde.style.transform='translateZ('+(-260+p*520).toFixed(1)+'px)';
       var g=yumus(sinir(p*3.5));
       tunelH.style.opacity=(.15+.85*g).toFixed(3);
       tunelH.style.transform='scale('+(.94+.06*g).toFixed(4)+')';
-      orta.style.opacity=sinir(1-(p-.8)*5).toFixed(3);
+      orta.style.opacity=sinir(1-(p-.86)*7).toFixed(3);
     },
     erime:function(p){
       var q=sinir(p/.85);                       /* son %15: sonuç okunur */
